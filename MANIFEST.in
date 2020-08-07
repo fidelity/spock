@@ -1,0 +1,2 @@
+include versioneer.py
+include spock/_version.py

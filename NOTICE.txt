@@ -1,0 +1,15 @@
+// ------------------------------------------------------------------
+// NOTICE file corresponding to the section 4d of The Apache License,
+// Version 2.0, in this case for Spock
+// ------------------------------------------------------------------
+
+Spock
+Copyright [2109-2020] FMR LLC
+
+This product includes software developed at
+FMR LLC (https://www.fidelity.com/).
+
+This product relies on the following works (and the dependencies thereof), installed separately:
+- GitPython | https://github.com/gitpython-developers/GitPython | BSD 3-Clause License
+- PyYAML | https://github.com/yaml/pyyaml | MIT License
+- toml | https://github.com/toml-lang/toml | MIT License

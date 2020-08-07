@@ -1,0 +1,61 @@
+[tool.portray]
+extra_dirs = ["resources"]
+
+[tool.portray.mkdocs]
+repo_url = "https://github.com/fidelity/spock"
+
+[tool.portray.mkdocs.theme]
+favicon = "resources/images/logo_small.png"
+logo = "resources/images/logo_small.png"
+name = "material"
+palette = {primary = "blue grey", accent = "pink"}
+
+[[tool.portray.mkdocs.nav]]
+Home = "README.md"
+
+[[tool.portray.mkdocs.nav]]
+Installation = "docs/Installation.md"
+
+[[tool.portray.mkdocs.nav]]
+Motivation = "docs/Motivation.md"
+
+[[tool.portray.mkdocs.nav]]
+"Quick Start" = "docs/Quick-Start.md"
+
+# Basic Tutorial
+[[tool.portray.mkdocs.nav]]
+    [[tool.portray.mkdocs.nav."Basic Tutorial"]]
+        "About" = "docs/basic_tutorial/About.md"
+    [[tool.portray.mkdocs.nav."Basic Tutorial"]]
+        "Define" = "docs/basic_tutorial/Define.md"
+    [[tool.portray.mkdocs.nav."Basic Tutorial"]]
+        "Building" = "docs/basic_tutorial/Building.md"
+    [[tool.portray.mkdocs.nav."Basic Tutorial"]]
+        "Configuration Files" = "docs/basic_tutorial/Configuration-Files.md"
+    [[tool.portray.mkdocs.nav."Basic Tutorial"]]
+        "Saving" = "docs/basic_tutorial/Saving.md"
+    [[tool.portray.mkdocs.nav."Basic Tutorial"]]
+        "Running" = "docs/basic_tutorial/Run.md"
+
+# Advanced Features
+[[tool.portray.mkdocs.nav]]
+    [[tool.portray.mkdocs.nav."Advanced Features"]]
+    "About" = "docs/advanced_features/About.md"
+    [[tool.portray.mkdocs.nav."Advanced Features"]]
+    "Default Values" = "docs/advanced_features/Defaults.md"
+    [[tool.portray.mkdocs.nav."Advanced Features"]]
+    "Optional Parameters" = "docs/advanced_features/Optional-Parameters.md"
+    [[tool.portray.mkdocs.nav."Advanced Features"]]
+    "Parameter Groups" = "docs/advanced_features/Parameter-Groups.md"
+    [[tool.portray.mkdocs.nav."Advanced Features"]]
+    "Inheritance" = "docs/advanced_features/Inheritance.md"
+    [[tool.portray.mkdocs.nav."Advanced Features"]]
+    "Local Overrides" = "docs/advanced_features/Local-Overrides.md"
+    [[tool.portray.mkdocs.nav."Advanced Features"]]
+    "Composition" = "docs/advanced_features/Composition.md"
+
+[[tool.portray.mkdocs.nav]]
+Contributing = "CONTRIBUTING.md"
+
+[[tool.portray.mkdocs.nav]]
+Changelog = "CHANGELOG.md"

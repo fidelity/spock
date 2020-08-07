@@ -1,0 +1,20 @@
+# Run
+
+In summary, we have constructed the four basic pieces of `spock`.
+
+1. A `spock` class that defines our parameters (Basics)
+2. Generated the `spock` namespace object (Building)
+3. Referenced `spock` parameters in other code (Building)
+4. Created a configuration file (Configuration Files)
+
+Now we can run our basic neural network example.
+
+### Running Our Code
+
+To run `tutorial.py` we pass the path to the configuration file as a command line argument:
+
+```bash
+$ python tutorial.py --config tutorial.yaml
+```
+
+The complete basic example can be found [here](/examples).

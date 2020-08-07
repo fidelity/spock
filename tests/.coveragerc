@@ -1,0 +1,5 @@
+[run]
+omit =
+    spock/__init__.py
+    spock/_dataclasses.py
+    spock/_version.py

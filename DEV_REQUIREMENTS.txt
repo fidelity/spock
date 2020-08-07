@@ -1,0 +1,6 @@
+-r REQUIREMENTS.txt
+anybadge
+portray
+pytest
+pytest-cov
+pylint
