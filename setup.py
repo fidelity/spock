@@ -15,6 +15,7 @@ setuptools.setup(
     name='spock-config',
     description='Spock is a framework designed to help manage complex parameter configurations for Python applications',
     long_description=long_description,
+    long_description_content_type='text/markdown',
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
     author="FMR LLC",
