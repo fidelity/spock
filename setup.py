@@ -31,7 +31,8 @@ setuptools.setup(
         "Topic :: Software Development :: Libraries :: Python Modules"
     ],
     project_urls={
-        "Source": "https://github.com/fidelity/spock"
+        "Source": "https://github.com/fidelity/spock",
+        "Documentation": "https://fidelity.github.io/spock/"
     },
     keywords="dataclass config argparser parameter configuration",
     packages=setuptools.find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
