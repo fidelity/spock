@@ -19,13 +19,11 @@ support inheritance, read from multiple markdown formats, and allow hierarchical
 
 #### Key Features:
 
-* Simple Declaration: Parameters are defined within a `@spock_config` decorated class. Supports types, 
-required/optional, and automatic defaults.
+* Simple Declaration: Parameters are defined within a `@spock_config` decorated class. Supports types, required/optional, and automatic defaults.
 
 * Easily Managed Parameter Groups: Each class automatically generates its own object within a single namespace.
 
-* Parameter Inheritance: Classes support inheritance allowing for complex configurations derived from a common base set
- of parameters.
+* Parameter Inheritance: Classes support inheritance allowing for complex configurations derived from a common base set of parameters.
 
 * Multiple Configuration File Types: Configurations are specified from YAML, TOML, or JSON files.
 
