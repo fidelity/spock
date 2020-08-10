@@ -8,16 +8,21 @@
 
 ### Install/Upgrade
 
-#### Using Pip
+#### Pip/PyPi
+```bash
+pip install spock-config
+```
+
+#### Pip From Source
 ```bash
 pip install git+https://github.com/fidelity/spock
 ```
 
-#### From Source
+#### Build From Source
 ```bash
 git clone https://github.com/fidelity/spock
 cd spock
 pip install setuptools wheel
 python setup.py bdist_wheel
-pip install /dist/spock-X.X.XxX-py3-none-any.whl
+pip install /dist/spock-config-X.X.XxX-py3-none-any.whl
 ```

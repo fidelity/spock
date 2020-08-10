@@ -12,7 +12,7 @@ with open('REQUIREMENTS.txt', 'r') as fid:
     install_reqs = [str(req) for req in parse_requirements(fid)]
 
 setuptools.setup(
-    name='spock',
+    name='spock-config',
     description='Spock is a framework designed to help manage complex parameter configurations for Python applications',
     long_description=long_description,
     version=versioneer.get_version(),
@@ -24,6 +24,7 @@ setuptools.setup(
         "Intended Audience :: Developers",
         "Natural Language :: English",
         "License :: OSI Approved :: Apache Software License",
+        "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.7",
         "Operating System :: OS Independent",
         "Topic :: Software Development :: Libraries :: Python Modules"

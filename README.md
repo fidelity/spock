@@ -1,4 +1,4 @@
-![Spock](./resources/images/logo.png)
+[![Spock](./resources/images/logo.png)](https://fidelity.github.io/spock/)
 > Managing complex configurations any other way would be highly illogical...
 
 [![License](./resources/images/license.svg)](https://opensource.org/licenses/Apache-2.0)
@@ -17,7 +17,19 @@ creating ArgParsers, reading configuration files, implementing traceability etc.
 In short, `spock` configurations are defined by simple and familiar class-based structures. This allows `spock` to 
 support inheritance, read from multiple markdown formats, and allow hierarchical configuration by composition.
 
-#### Key Features:
+## Documentation
+
+Current documentation and more information can be found [here](https://fidelity.github.io/spock/).
+
+## Quick Install
+
+Supports Python 3.7+
+
+```bash
+pip install spock-config
+```
+
+## Key Features
 
 * Simple Declaration: Parameters are defined within a `@spock_config` decorated class. Supports types, required/optional, and automatic defaults.
 * Easily Managed Parameter Groups: Each class automatically generates its own object within a single namespace.
@@ -26,10 +38,6 @@ support inheritance, read from multiple markdown formats, and allow hierarchical
 * Hierarchical Configuration: composed from multiple configuration files via simple include statements.
 * Immutable: All classes are *frozen* preventing any misuse or accidental overwrites.
 * Tractability and Reproducibility: Save currently running parameter configuration with a single chained command. 
-
-#### Documentation
-
-Current documentation and more information can be found [here](https://fidelity.github.io/spock/).
 
 #### Main Contributors
 
