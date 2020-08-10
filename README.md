@@ -42,6 +42,6 @@ pip install spock-config
 #### Main Contributors
 
 [Nicholas Cilfone](https://github.com/ncilfone), [Siddharth Narayanan](https://github.com/sidnarayanan)
-
+___
 `spock` is developed and maintained by the **Artificial Intelligence Center of Excellence at Fidelity Investments**.
 
