@@ -20,17 +20,11 @@ support inheritance, read from multiple markdown formats, and allow hierarchical
 #### Key Features:
 
 * Simple Declaration: Parameters are defined within a `@spock_config` decorated class. Supports types, required/optional, and automatic defaults.
-
 * Easily Managed Parameter Groups: Each class automatically generates its own object within a single namespace.
-
 * Parameter Inheritance: Classes support inheritance allowing for complex configurations derived from a common base set of parameters.
-
 * Multiple Configuration File Types: Configurations are specified from YAML, TOML, or JSON files.
-
 * Hierarchical Configuration: composed from multiple configuration files via simple include statements.
-
 * Immutable: All classes are *frozen* preventing any misuse or accidental overwrites.
-
 * Tractability and Reproducibility: Save currently running parameter configuration with a single chained command. 
 
 #### Documentation
@@ -40,6 +34,6 @@ Current documentation and more information can be found [here](https://fidelity.
 #### Main Contributors
 
 [Nicholas Cilfone](https://github.com/ncilfone), [Siddharth Narayanan](https://github.com/sidnarayanan)
-__________
+
 `spock` is developed and maintained by the **Artificial Intelligence Center of Excellence at Fidelity Investments**.
 
