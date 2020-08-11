@@ -84,7 +84,7 @@ also use TOML or JSON), `simple.yaml`:
 
 ```yaml
 # Parameters
---parameter
+parameter: true
 fancy_parameter: 8.8
 fancier_parameter: 64.64
 most_fancy_parameter: [768, 768, 512, 128]
@@ -93,5 +93,5 @@ most_fancy_parameter: [768, 768, 512, 128]
 Finally, we would then pass the path to the configuration file to the command line (-c or --config):
 
 ```bash
-$ python tutorial.py -c /configs/tutorial.yaml
+$ python simple.py -c simple.yaml
 ```
