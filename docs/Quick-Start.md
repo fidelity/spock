@@ -4,7 +4,7 @@ This is a quick and dirty guide to getting up and running with `spock`. Read the
 [Basic Tutorial](basic_tutorial/About.md) as a simple guide and then explore more
 [Advanced Features](advanced_features/About.md) for in-depth usage.
 
-All examples can be found [here](/examples).
+All examples can be found [here](https://github.com/fidelity/spock/blob/master/examples).
 
 ### TL;DR
 1. Import the necessary components from `spock`

@@ -17,10 +17,6 @@ creating ArgParsers, reading configuration files, implementing traceability etc.
 In short, `spock` configurations are defined by simple and familiar class-based structures. This allows `spock` to 
 support inheritance, read from multiple markdown formats, and allow hierarchical configuration by composition.
 
-## Documentation
-
-Current documentation and more information can be found [here](https://fidelity.github.io/spock/).
-
 ## Quick Install
 
 Supports Python 3.7+
@@ -28,6 +24,12 @@ Supports Python 3.7+
 ```bash
 pip install spock-config
 ```
+
+## Documentation
+
+Current documentation and more information can be found [here](https://fidelity.github.io/spock/).
+
+Example `spock` usage is located [here](https://github.com/fidelity/spock/blob/master/examples).
 
 ## Key Features
 

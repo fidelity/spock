@@ -17,4 +17,4 @@ To run `tutorial.py` we pass the path to the configuration file as a command lin
 $ python tutorial.py --config tutorial.yaml
 ```
 
-The complete basic example can be found [here](/examples).
+The complete basic example can be found [here](https://github.com/fidelity/spock/blob/master/examples).

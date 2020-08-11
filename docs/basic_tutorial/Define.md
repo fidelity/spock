@@ -5,7 +5,7 @@ multiple classes decorated with `@spock_config`. Parameters are defined with `sp
 Once built, all parameters can be found within an automatically generated namespace object that contains each class 
 that can be accessed with the `spock_config` class name.
 
-All examples can be found [here](/examples).
+All examples can be found [here](https://github.com/fidelity/spock/blob/master/examples).
 
 ### Supported Parameter Types
 

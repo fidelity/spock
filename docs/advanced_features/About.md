@@ -5,4 +5,4 @@ understand the additional functionality that `spock` provides and be able to use
 own code.
 
 
-The example used in the Advanced Features series of pages can be found [here](/examples).
+The example used in the Advanced Features series of pages can be found [here](https://github.com/fidelity/spock/blob/master/examples).
