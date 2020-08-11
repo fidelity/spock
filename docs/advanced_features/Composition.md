@@ -55,7 +55,7 @@ grad_clip: 5.0
 # SGD Config
 weight_decay: 1E-5
 momentum: 0.9
---nesterov
+nesterov: true
 ```
 
 

@@ -74,7 +74,7 @@ grad_clip: 5.0
 # SGD Config
 weight_decay: 1E-5
 momentum: 0.9
---nesterov
+nesterov: true
 ```
 
 This configuration file would set both parameters to use the `/tmp/cache/` value (i.e. it would set the parameter value 
@@ -109,5 +109,5 @@ grad_clip: 5.0
 # SGD Config
 weight_decay: 1E-5
 momentum: 0.9
---nesterov
+nesterov: true
 ```
