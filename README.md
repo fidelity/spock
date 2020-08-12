@@ -2,11 +2,9 @@
 > Managing complex configurations any other way would be highly illogical...
 
 [![License](./resources/images/license.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Python](./resources/images/python.svg)]()
-[![docs](./resources/images/docs.svg)]()
-[![PyLint](./resources/images/pylint.svg)]()
-[![Coverage](./resources/images/coverage.svg)]()
-[![Tests](./resources/images/tests.svg)]()
+[![Python](https://img.shields.io/badge/python-3.7+-blue.svg)]()
+[![PyPI version](https://badge.fury.io/py/spock-config.svg)](https://badge.fury.io/py/spock-config)
+![Tests](https://github.com/fidelity/spock/workflows/pytest/badge.svg)
 
 ## About
 

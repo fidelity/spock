@@ -169,6 +169,25 @@ class TestConfigKwarg(AllTypes):
             return config.generate()
 
 
+class TestNoCmdLineKwarg(AllTypes):
+    """Testing to see that the kwarg no cmd line works"""
+    @staticmethod
+    @pytest.fixture
+    def arg_builder(monkeypatch):
+        with monkeypatch.context() as m:
+            config = ConfigArgBuilder(TypeConfig, TypeOptConfig, no_cmd_line=True,
+                                      configs=['./tests/conf/yaml/test.yaml'])
+            return config.generate()
+
+
+class TestNoCmdLineRaise:
+    """Check raise when no cmd line and no configs works as expected """
+    def test_choice_raise(self, monkeypatch):
+        with monkeypatch.context() as m:
+            with pytest.raises(ValueError):
+                ConfigArgBuilder(TypeConfig, TypeOptConfig, no_cmd_line=True)
+
+
 class TestComposition:
     """Check all composed files work as expected """
     @staticmethod
