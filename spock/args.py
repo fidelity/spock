@@ -243,7 +243,7 @@ class TupleOptArg(Tuple[__T]):  # pylint: disable=too-few-public-methods
 class ChoiceArg:  # pylint: disable=too-few-public-methods
     """Spock type of a choice set
 
-    Requires defaults or file values to be from a predefined set
+    Requires default or value to be from a predefined set
 
     """
     def __init__(self, choice_set: List, default=None):

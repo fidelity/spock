@@ -11,7 +11,7 @@ Say we want defaults for the hidden layer sizes and the activation function as w
 default value.
 
 For basic types (`FloatArg`, `IntArg`, `StrArg`, `BoolArg`) default values are set with the `=` operator. For 
-`ListArg` and `TupleArg` types, defaults are set using the `.defualt()` method. For `ChoiceArg` the default value is set
+`ListArg` and `TupleArg` types, defaults are set using the `.default()` method. For `ChoiceArg` the default value is set
 using the `default` keyword arg.
 
 Let's modify the definition in: `tutorial.py`
