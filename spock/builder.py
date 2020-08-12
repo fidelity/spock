@@ -27,15 +27,18 @@ class ConfigArgBuilder:
     *Attributes*:
 
         _arg_namespace: generated argument namespace
+        _configs: None or List of configs to read from
         _create_save_path: boolean to make the path to save to
         _data_classes: all of the data classes from *args
+        _desc: description for the arg parser
         _dict_args: dictionary args from the command line
+        _no_cmd_line: flag to force no command line reads
         _optional_types: Dictionary that holds the names of types that are
         optional
         _save_path: list of path(s) to save the configs to
 
     """
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, configs=None, create_save_path=False, desc='', no_cmd_line=False, **kwargs):
         self._save_path = None
         self._optional_types = {'FloatOptArg', 'IntOptArg', 'StrOptArg',
                                 'ListOptArg', 'TupleOptArg', 'SavePathOptArg'}
@@ -43,9 +46,12 @@ class ConfigArgBuilder:
         for arg in self._data_classes:
             if not is_dataclass(arg):
                 raise TypeError('*arg inputs to ConfigArgBuilder must all be instances of @dataclass')
-        self._create_save_path = kwargs.get('create_save_path', False)
+        self._configs = configs
+        self._create_save_path = create_save_path
+        self._desc = desc
+        self._no_cmd_line = no_cmd_line
         try:
-            self._dict_args = self._get_payload(**kwargs)
+            self._dict_args = self._get_payload()
             self._arg_namespace = self._generate()
         except ValueError as e:
             self.print_usage_and_exit(str(e), sys_exit=False)
@@ -84,35 +90,38 @@ class ConfigArgBuilder:
         if sys_exit:
             sys.exit(1)
 
-    def _get_config_paths(self, **kwargs):
+    def _get_config_paths(self):
         """Get config paths from all methods
 
         Config paths can enter from either the command line or be added in the class init call
         as a kwarg (configs=[])
-
-        *Args*:
-
-            **kwargs: keyword args
 
         *Returns*:
 
             args: namespace of args
 
         """
-        args = self._get_from_arg_parser(**kwargs)
-        if kwargs.get('configs') is not None:
-            args = self._get_from_kwargs(args, **kwargs)
+        # Check if the no_cmd_line is not flagged and if the configs are not empty
+
+        if self._no_cmd_line and (self._configs is None):
+            raise ValueError("Flag set for preventing command line read but no paths were passed to the config kwarg")
+        if not self._no_cmd_line:
+            args = self._get_from_arg_parser(self._desc)
+        else:
+            args = Namespace(config=[], help=False)
+        if self._configs is not None:
+            args = self._get_from_kwargs(args, self._configs)
         return args
 
     @staticmethod
-    def _get_from_arg_parser(**kwargs):
+    def _get_from_arg_parser(desc):
         """Get configs from command line
 
         Gets the config file(s) from the command line arg parser
 
         *Args*:
 
-            **kwargs: keyword args
+            desc: description text for the cmd line argparser
 
         *Returns*:
 
@@ -120,48 +129,44 @@ class ConfigArgBuilder:
 
         """
         # Pull in args via the arg parser pointing to the config file
-        parser = argparse.ArgumentParser(description=kwargs.get('desc'), add_help=False)
+        parser = argparse.ArgumentParser(description=desc, add_help=False)
         parser.add_argument('-c', '--config', required=False, nargs='+', default=[])
         parser.add_argument('-h', '--help', action='store_true')
         args, _ = parser.parse_known_args(sys.argv)
         return args
 
     @staticmethod
-    def _get_from_kwargs(args, **kwargs):
+    def _get_from_kwargs(args, configs):
         """Get configs from the configs kwarg
 
 
         *Args*:
 
             args: argument namespace
-            **kwargs: keyword args
+            configs: config kwarg
 
         *Returns*:
 
             args: arg namespace
 
         """
-        if type(kwargs.get('configs')).__name__ == 'list':
-            args.config.extend(kwargs.get('configs'))
+        if type(configs).__name__ == 'list':
+            args.config.extend(configs)
         else:
             raise TypeError('configs kwarg must be of type list')
         return args
 
-    def _get_payload(self, **kwargs):
+    def _get_payload(self):
         """Get the parameter payload from the config file(s)
 
         Calls the various ways to get configs and then parses to retrieve the parameter payload
-
-        *Args*:
-
-            **kwargs: keyword args
 
         *Returns*:
 
             payload: dictionary of parameter values
 
         """
-        args = self._get_config_paths(**kwargs)
+        args = self._get_config_paths()
         if args.help:
             self.print_usage_and_exit()
         payload = {}
