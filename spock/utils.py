@@ -13,6 +13,7 @@ from typing import List
 from typing import Tuple
 import git
 from spock._dataclasses import field
+import subprocess
 
 
 def add_info(out_dict):
@@ -51,14 +52,20 @@ def add_repo_info(out_dict):
     try:
         # Assume we are working out of a repo
         repo = git.Repo(os.getcwd())
-        out_dict.update({'# Git BRANCH': repo.active_branch.name})
-        out_dict.update({'# Git COMMIT SHA': repo.head.object.hexsha})
-        if len(repo.untracked_files) > 0 or len(repo.head.commit.diff(None)) > 0:
-            git_status = 'DIRTY'
+        # Check if we are really in a detached head state as this will fail
+        head_result = subprocess.run('git rev-parse --abbrev-ref --symbolic-full-name HEAD', capture_output=True,
+                                     shell=True)
+        if head_result.stdout.decode().rstrip('\n') == 'HEAD':
+            out_dict = make_blank_git(out_dict)
         else:
-            git_status = 'CLEAN'
-        out_dict.update({'# Git STATUS': git_status})
-        out_dict.update({'# Git ORIGIN': repo.remotes.origin.url})
+            out_dict.update({'# Git BRANCH': repo.active_branch.name})
+            out_dict.update({'# Git COMMIT SHA': repo.head.object.hexsha})
+            if len(repo.untracked_files) > 0 or len(repo.head.commit.diff(None)) > 0:
+                git_status = 'DIRTY'
+            else:
+                git_status = 'CLEAN'
+            out_dict.update({'# Git STATUS': git_status})
+            out_dict.update({'# Git ORIGIN': repo.remotes.origin.url})
     except git.InvalidGitRepositoryError:
         # But it's okay if we are not
         out_dict = make_blank_git(out_dict)
