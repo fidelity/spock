@@ -31,6 +31,12 @@ def add_info(out_dict):
     return out_dict
 
 
+def make_blank_git(out_dict):
+    for key in ('BRANCH', 'COMMIT SHA', 'STATUS', 'ORIGIN'):
+        out_dict.update({f'# Git {key}': 'UNKNOWN'})
+    return out_dict
+
+
 def add_repo_info(out_dict):
     """Adds GIT information to the output dictionary
 
@@ -55,8 +61,7 @@ def add_repo_info(out_dict):
         out_dict.update({'# Git ORIGIN': repo.remotes.origin.url})
     except git.InvalidGitRepositoryError:
         # But it's okay if we are not
-        for key in ('BRANCH', 'COMMIT SHA', 'STATUS', 'ORIGIN'):
-            out_dict.update({f'# Git {key}': 'UNKNOWN'})
+        out_dict = make_blank_git(out_dict)
 
     return out_dict
 
