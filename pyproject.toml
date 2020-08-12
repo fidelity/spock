@@ -51,6 +51,8 @@ Motivation = "docs/Motivation.md"
     "Inheritance" = "docs/advanced_features/Inheritance.md"
     [[tool.portray.mkdocs.nav."Advanced Features"]]
     "Local Overrides" = "docs/advanced_features/Local-Overrides.md"
+    [[tool.portray.mkdocs.nav."Keyword Configs"]]
+    "Keyword Configs" = "docs/advanced_features/Keyword-Configs.md"
     [[tool.portray.mkdocs.nav."Advanced Features"]]
     "Composition" = "docs/advanced_features/Composition.md"
 
