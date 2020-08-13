@@ -4,11 +4,12 @@
 # SPDX-License-Identifier: Apache-2.0
 
 """Creates the spock config decorator that wraps dataclasses"""
+
 from attr import s
 from spock._dataclasses import dataclass
 
 
-def spock_dataclass(*args, **kwargs):
+def _spock_dataclass(*args, **kwargs):
     """Wrapper to dataclass that forms the base of Spock configs
 
     *Args*:
@@ -24,7 +25,7 @@ def spock_dataclass(*args, **kwargs):
     return dataclass(*args, **kwargs)
 
 
-def spock(cls):
+def _spock_attrs(cls):
     """Wrapper to attrs that forms the base of Spock configs
 
     *Args*:
@@ -35,8 +36,11 @@ def spock(cls):
 
         cls: slotted attrs class that is frozen and kw only
     """
-    return s(cls, auto_attribs=True, kw_only=True, frozen=True, slots=True)
+    return s(cls, kw_only=True, frozen=True, slots=True)
 
 
 # For legacy support
-spock_config = spock_dataclass
+spock_config = _spock_dataclass
+
+# Simplified decorator
+spock = _spock_attrs

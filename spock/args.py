@@ -3,7 +3,7 @@
 # Copyright 2019 FMR LLC <opensource@fidelity.com>
 # SPDX-License-Identifier: Apache-2.0
 
-"""Handles the definitions of arguments types for Spock"""
+"""Handles the definitions of arguments types for Spock (backend: dataclass)"""
 
 from typing import List
 from typing import Tuple
