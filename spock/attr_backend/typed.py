@@ -6,14 +6,9 @@
 """Handles the definitions of arguments types for Spock (backend: attrs)"""
 
 import attr
-from enum import Enum
-from typing import List
-from typing import Tuple
+from typing import Union
+from typing import _GenericAlias
 
-
-class SpockTypes(Enum):
-    LIST = List
-    TUPLE = Tuple
 
 
 def _validate_subscripted_generic(_, attribute, value):
@@ -68,17 +63,16 @@ def _generic_alias_katra(typed, default=None, optional=False):
         x: Attribute from attrs
 
     """
-    base_typed = SpockTypes[typed._name.upper()].value
-    if optional and default:
-        raise TypeError(f"Cannot set a value to be both optional (optional: {optional}) and default "
-                        f"(default: {default}) as they are mutually exclusive")
+    base_typed = typed.__origin__ # base python class from which a GenericAlias is derived
+    if default is not None:
+        # if a default is provided, that takes precedence
+        x = attr.ib(validator=[attr.validators.instance_of(base_typed), _validate_subscripted_generic],
+                    default=default, type=base_typed, metadata={'type': _extract_base_type(typed)})
     elif optional:
+        # if there's no default, but marked as optional, then set the default to None
         x = attr.ib(validator=[attr.validators.optional(attr.validators.instance_of(base_typed)),
                                _validate_subscripted_generic], type=base_typed,
                     metadata={'type': _extract_base_type(typed)})
-    elif default:
-        x = attr.ib(validator=[attr.validators.instance_of(base_typed), _validate_subscripted_generic],
-                    default=default, type=base_typed, metadata={'type': _extract_base_type(typed)})
     else:
         x = attr.ib(validator=[attr.validators.instance_of(base_typed), _validate_subscripted_generic],
                     type=base_typed, metadata={'type': _extract_base_type(typed)})
@@ -106,16 +100,15 @@ def _type_katra(typed, default=None, optional=False):
 
     """
     # Default booleans to false and optional due to the nature of a boolean
-    if type(typed) == type and typed.__name__ == "bool":
+    if isinstance(typed, type) and typed.__name__ == "bool":
         optional = True
         default = False
-    if optional and default is not None:
-        raise TypeError(f"Cannot set a value to be both optional (optional: {optional}) and default "
-                        f"(default: {default}) as they are mutually exclusive")
-    elif optional:
-        x = attr.ib(validator=attr.validators.optional(attr.validators.instance_of(typed)), default=None)
-    elif default is not None:
+    if default is not None:
+        # if a default is provided, that takes precedence
         x = attr.ib(validator=attr.validators.instance_of(typed), default=default)
+    elif optional:
+        # if no default is provided, but it's marked as optional, set default=None
+        x = attr.ib(validator=attr.validators.optional(attr.validators.instance_of(typed)), default=None)
     else:
         x = attr.ib(validator=attr.validators.instance_of(typed), type=typed)
     return x
@@ -136,12 +129,13 @@ def _handle_optional_typing(typed):
         typed: type (modified if Optional)
         optional: boolean for katra creation
     """
-    # Check the length of type __args__
-    # If it is more than one than it is most likely optional but check against NoneType in the tuple to verify
-    if (len(typed.__args__) > 1) and (type(None) in typed.__args__):
+    type_args = typed.__args__ 
+    # Optional[X] has type_args = (X, None) and is equal to Union[X, None]
+    if (len(type_args) == 2) and (typed == Union[type_args[0], None]):
+        # this is truly an Optional type
         # Since this is true we need to strip out the OG type
         # Grab all the types that are not NoneType and collapse to a list
-        type_list = [val for val in typed.__args__ if val is not type(None)]
+        type_list = [val for val in type_args if val is not type(None)]
         if len(type_list) > 1:
             raise TypeError(f"Passing multiple subscript types to GenericAlias is not supported: {type_list}")
         else:
@@ -172,12 +166,16 @@ def katra(typed, default=None):
         x: Attribute from attrs
 
     """
-    # Handle optional typing
-    typed, optional = _handle_optional_typing(typed)
     # We need to check if the type is a _GenericAlias so that we can handle subscripted general types
+    is_generic_alias = isinstance(typed, _GenericAlias)
+    # Handle optional typing
+    if is_generic_alias:
+        typed, optional = _handle_optional_typing(typed)
+    else:
+        optional = False
     # The second check is to see if the generic type is subscript typed
     # If it is subscript typed it will not be T which python uses as a generic type name
-    if type(typed).__name__ == '_GenericAlias' and typed.__args__[0].__name__ != "T":
+    if is_generic_alias and typed.__args__[0].__name__ != "T":
         x = _generic_alias_katra(typed=typed, default=default, optional=optional)
     else:
         x = _type_katra(typed=typed, default=default, optional=optional)
