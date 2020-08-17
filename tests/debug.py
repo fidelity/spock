@@ -1,20 +1,28 @@
 # -*- coding: utf-8 -*-
 
+from spock.args import IntArg
 from spock.config import spock
+from spock.config import spock_config
 from typing import List
 from typing import Optional
 from typing import Tuple
-
+from spock.builder import NewConfigArgBuilder
 
 @spock
 class Test:
-    other: Optional[int]
-    test: Tuple[float]
-    value: List[int] = [1, 2]
+    other: int
+    value: Optional[List[int]]
+
+
+@spock_config
+class Test2:
+    other: IntArg = 1
 
 
 def main():
-    test = Test(test=(1.0, 2.0))
+    test = Test(other=1, foo=2)
+    attrs_class = NewConfigArgBuilder(Test)
+    dc_class = NewConfigArgBuilder(Test2)
     print("Hi Mom")
 
 

@@ -75,13 +75,14 @@ def _generic_alias_katra(typed, default=None, optional=False):
     elif optional:
         x = attr.ib(validator=[attr.validators.optional(attr.validators.instance_of(base_typed)),
                                _validate_subscripted_generic], type=base_typed,
-                    metadata={'type': _extract_base_type(typed)})
+                    metadata={'type': _extract_base_type(typed), 'optional': True, 'base': base_typed._name})
     elif default:
         x = attr.ib(validator=[attr.validators.instance_of(base_typed), _validate_subscripted_generic],
-                    default=default, type=base_typed, metadata={'type': _extract_base_type(typed)})
+                    default=default, type=base_typed, metadata={'type': _extract_base_type(typed),
+                                                                'base': base_typed._name})
     else:
         x = attr.ib(validator=[attr.validators.instance_of(base_typed), _validate_subscripted_generic],
-                    type=base_typed, metadata={'type': _extract_base_type(typed)})
+                    type=base_typed, metadata={'type': _extract_base_type(typed), 'base': base_typed._name})
     return x
 
 
@@ -113,11 +114,12 @@ def _type_katra(typed, default=None, optional=False):
         raise TypeError(f"Cannot set a value to be both optional (optional: {optional}) and default "
                         f"(default: {default}) as they are mutually exclusive")
     elif optional:
-        x = attr.ib(validator=attr.validators.optional(attr.validators.instance_of(typed)), default=None)
+        x = attr.ib(validator=attr.validators.optional(attr.validators.instance_of(typed)), default=None,
+                    metadata={'optional': True, 'base': typed.__name__})
     elif default is not None:
-        x = attr.ib(validator=attr.validators.instance_of(typed), default=default)
+        x = attr.ib(validator=attr.validators.instance_of(typed), default=default, metadata={'base': typed.__name__})
     else:
-        x = attr.ib(validator=attr.validators.instance_of(typed), type=typed)
+        x = attr.ib(validator=attr.validators.instance_of(typed), type=typed, metadata={'base': typed.__name__})
     return x
 
 
@@ -172,8 +174,11 @@ def katra(typed, default=None):
         x: Attribute from attrs
 
     """
-    # Handle optional typing
-    typed, optional = _handle_optional_typing(typed)
+    # Handle optional typing -- filter only on those that are not standard types
+    if type(typed) is not type:
+        typed, optional = _handle_optional_typing(typed)
+    else:
+        optional = False
     # We need to check if the type is a _GenericAlias so that we can handle subscripted general types
     # The second check is to see if the generic type is subscript typed
     # If it is subscript typed it will not be T which python uses as a generic type name
