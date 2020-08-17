@@ -8,8 +8,8 @@
 from typing import List
 from typing import Tuple
 from typing import TypeVar
-from spock.utils import _def_list
-from spock.utils import _def_tuple
+from spock.backend.dataclass.utils import _def_list
+from spock.backend.dataclass.utils import _def_tuple
 
 
 class BoolArg(int):

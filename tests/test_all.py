@@ -5,7 +5,7 @@
 
 import glob
 import pytest
-from spock._dataclasses import FrozenInstanceError
+from spock.backend.dataclass._dataclasses import FrozenInstanceError
 from spock.builder import ConfigArgBuilder
 from tests.configs_test import *
 import sys
@@ -280,6 +280,18 @@ class TestYAMLWriter:
             with open(fname, 'r') as fin:
                 print(fin.read())
             assert len(list(tmp_path.iterdir())) == 1
+
+
+class TestWritePathRaise:
+    def test_yaml_file_writer(self, monkeypatch, tmp_path):
+        """Test the YAML writer works correctly"""
+        with monkeypatch.context() as m:
+            m.setattr(sys, 'argv', ['', '--config',
+                                    './tests/conf/yaml/test.yaml'])
+            config = ConfigArgBuilder(TypeConfig, TypeOptConfig, desc='Test Builder')
+            # Test the chained version
+            with pytest.raises(FileNotFoundError):
+                config.save(user_specified_path=str(tmp_path)+'/foo.bar/fizz.buzz/', file_extension='.yaml').generate()
 
 
 # TOML TESTS

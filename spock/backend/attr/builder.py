@@ -6,15 +6,14 @@
 """Handles the building/saving of the configurations from the Spock config classes"""
 
 import attr
-from spock.builder import BaseBuilder
+from spock.backend.base import BaseBuilder
 import sys
 
 
 class AttrBuilder(BaseBuilder):
     def __init__(self, *args, configs=None, create_save_path=False, desc='', no_cmd_line=False, **kwargs):
-        super(AttrBuilder, self).__init__(*args, configs=configs, create_save_path=create_save_path, desc=desc,
+        super().__init__(*args, configs=configs, create_save_path=create_save_path, desc=desc,
                                                no_cmd_line=no_cmd_line, **kwargs)
-        self.input_classes = args
         for arg in self.input_classes:
             if not attr.has(arg):
                 raise TypeError('*arg inputs to ConfigArgBuilder must all be class instances with attrs attributes')
@@ -37,3 +36,15 @@ class AttrBuilder(BaseBuilder):
             print(msg)
         if sys_exit:
             sys.exit(1)
+
+    def _handle_arguments(self, args, class_obj):
+        attr_name = class_obj.__name__
+        fields = {}
+        for val in class_obj.__attrs_attrs__:
+            # Check if namespace is named and then check for key -- checking for local class def
+            if attr_name in args and val.name in args[attr_name]:
+                fields[val.name] = args[attr_name][val.name]
+            # If not named then just check for keys -- checking for global def
+            elif val.name in args:
+                fields[val.name] = args[val.name]
+        return fields

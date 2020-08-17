@@ -5,21 +5,19 @@
 
 """Handles the building/saving of the configurations from the Spock config classes"""
 
-from argparse import Namespace
 from spock.backend.dataclass._dataclasses import is_dataclass
-from spock.builder import BaseBuilder
-from spock.utils import cast
+from spock.backend.base import BaseBuilder
+from spock.backend.dataclass.utils import cast
 import sys
 from typing import _GenericAlias, Generic
 
 
 class DataClassBuilder(BaseBuilder):
     def __init__(self, *args, configs=None, create_save_path=False, desc='', no_cmd_line=False, **kwargs):
-        super(DataClassBuilder, self).__init__(*args, configs=configs, create_save_path=create_save_path, desc=desc,
-                                               no_cmd_line=no_cmd_line, **kwargs)
+        super().__init__(*args, configs=configs, create_save_path=create_save_path, desc=desc,
+                         no_cmd_line=no_cmd_line, **kwargs)
         self._optional_types = {'FloatOptArg', 'IntOptArg', 'StrOptArg',
                                 'ListOptArg', 'TupleOptArg', 'SavePathOptArg'}
-        self.input_classes = args
         for arg in self.input_classes:
             if not is_dataclass(arg):
                 raise TypeError('*arg inputs to ConfigArgBuilder must all be instances of dataclass')
@@ -28,7 +26,7 @@ class DataClassBuilder(BaseBuilder):
         print('USAGE:')
         print(f'  {sys.argv[0]} -c [--config] config1 [config2, config3, ...]')
         print('CONFIG:')
-        for data_class in self._input_classes:
+        for data_class in self.input_classes:
             print('  ' + data_class.__name__ + ':')
             dc_vars = vars(data_class)
             for key, val in dc_vars.get('__dataclass_fields__').items():
@@ -46,52 +44,12 @@ class DataClassBuilder(BaseBuilder):
         if sys_exit:
             sys.exit(1)
 
-    def generate(self, dict_args):
-        auto_dc = {}
-        for data_classes in self.input_classes:
-            dc_build = self._auto_generate(dict_args, data_classes)
-            auto_dc.update({type(dc_build).__name__: dc_build})
-        return Namespace(**auto_dc)
-
-    def _auto_generate(self, args, data_class):
-        """Builds an instance of a DataClass
-
-        Builds an instance of a dataclass with the necessary field values from the argument
-        dictionary read from the config file(s)
-
-        *Args*:
-
-            args: dictionary of arguments read from the config file(s)
-            data_class: data class to build
-
-        *Returns*:
-
-            An instance of data_class with correct values assigned to fields
-        """
-        # Handle the basic data types
-        fields = self._handle_basic_arguments(args, data_class)
-        return data_class(**fields)
-
-    def _handle_basic_arguments(self, args, data_class):
-        """Handles all base types
-
-        These can be easily mapped from the dataclass to another dataclass by some var inspection
-
-        *Args*:
-
-            args: read file arguments
-            data_class: instance of a dataclass
-
-        *Returns*:
-
-            fields: dictionary of mapped parameters
-
-        """
+    def _handle_arguments(self, args, class_obj):
         fields = {}
         # Access the vars
-        dc_vars = vars(data_class)
+        dc_vars = vars(class_obj)
         # Get the dataclass name
-        dc_name = data_class.__name__
+        dc_name = class_obj.__name__
         for key, val in dc_vars.get('__dataclass_fields__').items():
             # pure magic -- Lists, Tuples, etc. are not of type type (they are GenericAlias) so one must
             # check against this before accessing the __name__ attribute which GenericAlias does not have
