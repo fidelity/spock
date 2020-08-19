@@ -55,7 +55,7 @@ class BaseSaver(ABC):
         if file_extension not in list(self._writers.keys()):
             raise ValueError(f'Invalid fileout extension. Expected a fileout from {supported_extensions}')
         # Make the filename
-        name = str(uuid1()) + '.spck.cfg' + file_extension
+        name = str(uuid1()) + '.spock.cfg' + file_extension
         fid = path / name
         # Fix up values
         out_dict = self._clean_up_values(payload, extra_info, file_extension)
@@ -122,7 +122,7 @@ class BaseBuilder(ABC):
         self._create_save_path = create_save_path
         self._desc = desc
         self._no_cmd_line = no_cmd_line
-        self._save_path = None
+        self.save_path = None
 
     @abstractmethod
     def print_usage_and_exit(self, msg=None, sys_exit=True):
@@ -276,6 +276,27 @@ class BasePayload(ABC):
     """
     def __init__(self):
         self._loaders = {'.yaml': YAMLHandler(), '.toml': TOMLHandler(), '.json': JSONHandler()}
+
+    @staticmethod
+    @abstractmethod
+    def _update_payload(base_payload, input_classes, payload):
+        """Updates the payload
+
+        Checks the parameters defined in the config files against the provided classes and if
+        passable adds them to the payload
+
+        *Args*:
+
+            base_payload: current payload
+            input_classes: class to roll into
+            payload: total payload
+
+        *Returns*:
+
+            payload: updated payload
+
+        """
+        pass
 
     def payload(self, input_classes, path):
         # Match to loader based on file-extension

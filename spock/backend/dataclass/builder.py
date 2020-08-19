@@ -55,7 +55,7 @@ class DataClassBuilder(BaseBuilder):
             # check against this before accessing the __name__ attribute which GenericAlias does not have
             if type(val.type) == type:
                 if val.type.__name__ == 'SavePathOptArg':
-                    self._save_path = args.get(key)
+                    self.save_path = args.get(key)
             # Check if namespace is named and then check for key -- checking for local def
             if dc_name in args and key in args[dc_name]:
                 fields[key] = self._check_function(args[dc_name][key], val)

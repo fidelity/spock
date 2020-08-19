@@ -12,6 +12,16 @@ from typing import TypeVar
 from typing import Union
 
 
+class SavePath(str):
+    """Spock special key for saving the Spock config to file
+
+    Defines a special key use to save the current Spock config to file
+
+    """
+    def __new__(cls, x):
+        return super().__new__(cls, x)
+
+
 def _extract_base_type(typed):
     """Extracts the name of the type from a _GenericAlias
 
@@ -158,19 +168,25 @@ def _type_katra(typed, default=None, optional=False):
         x: Attribute from attrs
 
     """
+    special_key = None
     # Default booleans to false and optional due to the nature of a boolean
     if isinstance(typed, type) and typed.__name__ == "bool":
         optional = True
         default = False
+    # For the save path type we need to swap the type back to it's base class (str)
+    elif isinstance(typed, type) and typed.__name__ == "SavePath":
+        special_key = typed.__name__
+        typed = str
     if default is not None:
         # if a default is provided, that takes precedence
         x = attr.ib(validator=attr.validators.instance_of(typed), default=default, type=typed,
-                    metadata={'base': typed.__name__})
+                    metadata={'base': typed.__name__, 'special_key': special_key})
     elif optional:
         x = attr.ib(validator=attr.validators.optional(attr.validators.instance_of(typed)), default=default, type=typed,
-                    metadata={'optional': True, 'base': typed.__name__})
+                    metadata={'optional': True, 'base': typed.__name__, 'special_key': special_key})
     else:
-        x = attr.ib(validator=attr.validators.instance_of(typed), type=typed, metadata={'base': typed.__name__})
+        x = attr.ib(validator=attr.validators.instance_of(typed), type=typed, metadata={'base': typed.__name__,
+                                                                                        'special_key': special_key})
     return x
 
 

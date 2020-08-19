@@ -7,6 +7,7 @@ from typing import List
 from typing import Optional
 from enum import Enum
 from spock.builder import ConfigArgBuilder
+from spock.backend.attr.typed import SavePath
 
 
 class Choice(Enum):
@@ -17,10 +18,11 @@ class Choice(Enum):
 @spock
 class Test:
     # new_choice: Optional[Choice]
-    # new: int
+    new: int
     # fail: List
     # fail: List[int]
     fail: List[List[int]]
+    save_path: SavePath = '/tmp'
     # other: Optional[int]
     value: Optional[List[int]] = [1, 2]
 
@@ -33,7 +35,7 @@ class Test2:
 
 def main():
     # test = Test()
-    attrs_class = ConfigArgBuilder(Test).generate()
+    attrs_class = ConfigArgBuilder(Test).save().generate()
     print(attrs_class)
     # dc_class = ConfigArgBuilder(Test2).save(user_specified_path='/tmp', file_extension='.yaml').generate()
 

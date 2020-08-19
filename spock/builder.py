@@ -19,7 +19,6 @@ from spock.backend.dataclass._dataclasses import is_dataclass
 class ConfigArgBuilder:
     def __init__(self, *args, configs=None, create_save_path=False, desc='', no_cmd_line=False, **kwargs):
         backend = self._set_backend(args)
-        self._save_path = None
         self._create_save_path = create_save_path
         self._builder_obj = backend.get('builder')(
             *args, configs=configs, create_save_path=create_save_path, desc=desc, no_cmd_line=no_cmd_line, **kwargs)
@@ -132,8 +131,8 @@ class ConfigArgBuilder:
         """
         if user_specified_path is not None:
             save_path = Path(user_specified_path)
-        elif self._save_path is not None:
-            save_path = Path(self._save_path)
+        elif self._builder_obj.save_path is not None:
+            save_path = Path(self._builder_obj.save_path)
         else:
             raise ValueError('Save did not receive a valid path from: (1) markup file(s) or (2) '
                              'the keyword arg user_specified_path')

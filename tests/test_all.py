@@ -231,7 +231,7 @@ class TestOverrideRaise:
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
                                     './tests/conf/yaml/test.yaml'])
-            with pytest.raises(TypeError):
+            with pytest.raises(ValueError):
                 ConfigArgBuilder(TypeInherited, desc='Test Builder')
 
 

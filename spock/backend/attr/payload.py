@@ -30,22 +30,6 @@ class AttrPayload(BasePayload):
 
     @staticmethod
     def _update_payload(base_payload, input_classes, payload):
-        """Updates the payload
-
-        Checks the parameters defined in the config files against the provided attr classes and if
-        passable adds them to the payload
-
-        *Args*:
-
-            base_payload: current payload
-            input_classes: attr classes to roll into
-            payload: total payload
-
-        *Returns*:
-
-            payload: updated payload
-
-        """
         # Get basic args
         attr_fields = {attr.__name__: [val.name for val in attr.__attrs_attrs__] for attr in input_classes}
         for keys, values in base_payload.items():

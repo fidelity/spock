@@ -30,22 +30,6 @@ class DataClassPayload(BasePayload):
 
     @staticmethod
     def _update_payload(base_payload, input_classes, payload):
-        """Updates the payload
-
-        Checks the parameters defined in the config files against the provided dataclasses and if
-        passable adds them to the payload
-
-        *Args*:
-
-            base_payload: current payload
-            input_classes: dataclass to roll into
-            payload: total payload
-
-        *Returns*:
-
-            payload: updated payload
-
-        """
         # Get basic args
         dc_fields = {dc.__name__: list(vars(dc).get('__dataclass_fields__').keys()) for dc in input_classes}
         # Get the choice args and insert them

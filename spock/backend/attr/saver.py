@@ -7,12 +7,14 @@
 
 import attr
 from spock.backend.base import BaseSaver
-from spock.utils import add_info
 
 
 class AttrSaver(BaseSaver):
     def __init__(self):
         super().__init__()
+
+    def __call__(self, *args, **kwargs):
+        return AttrSaver()
 
     def _clean_up_values(self, payload, extra_info, file_extension):
         out_dict = {}

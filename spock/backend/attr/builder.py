@@ -45,4 +45,10 @@ class AttrBuilder(BaseBuilder):
             # If not named then just check for keys -- checking for global def
             elif val.name in args:
                 fields[val.name] = args[val.name]
+            # Check for special keys to set
+            if 'special_key' in val.metadata and val.metadata['special_key'] is not None:
+                if val.name in args:
+                    self.save_path = args[val.name]
+                elif val.default is not None:
+                    self.save_path = val.default
         return fields

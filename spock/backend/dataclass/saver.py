@@ -7,7 +7,6 @@
 
 from spock.backend.base import BaseSaver
 from spock.backend.dataclass._dataclasses import asdict
-from spock.utils import add_info
 
 
 class DataClassSaver(BaseSaver):
