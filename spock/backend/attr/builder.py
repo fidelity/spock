@@ -26,8 +26,6 @@ class AttrBuilder(BaseBuilder):
             print('  ' + attrs_class.__name__ + ':')
             for val in attrs_class.__attrs_attrs__:
                 type_string = val.metadata['base']
-                if 'type' in val.metadata:
-                    type_string += "[{0}]".format(val.metadata['type'])
                 # Construct the type with the metadata
                 if 'optional' in val.metadata:
                     type_string = "Optional[{0}]".format(type_string)

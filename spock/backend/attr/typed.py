@@ -8,26 +8,8 @@
 import attr
 from enum import EnumMeta
 from typing import _GenericAlias
+from typing import TypeVar
 from typing import Union
-
-
-def _validate_subscripted_generic(_, attribute, value):
-    """Validator for subscripted GenericAlias types
-
-    Checks that the values set for the Attribute match the subscripted GenericAlias type
-
-    Args:
-        _: instance (unused)
-        attribute: Attribute type
-        value: current value
-
-    Returns:
-
-    """
-    if 'optional' not in attribute.metadata and value is not None:
-        if not all([type(val).__name__ == attribute.metadata['type'] for val in value]):
-            raise TypeError(f"Incorrect value subscript type passed to katra {attribute.name} of "
-                            f"type {type(value).__name__}: Must be of type {attribute.metadata['type']}")
 
 
 def _extract_base_type(typed):
@@ -41,7 +23,40 @@ def _extract_base_type(typed):
 
         name of type
     """
-    return typed.__args__[0].__name__
+    if hasattr(typed, '__args__'):
+        bracket_val = f"{typed._name}[{_extract_base_type(typed.__args__[0])}]"
+        return bracket_val
+    else:
+        bracket_value = typed.__name__
+    return bracket_value
+
+
+def _recursive_generic_validator(typed):
+    """Recursively assembles the validators for nested generic types
+
+    Walks through the nested type structure and determines whether to recurse all the way to a base type. Once it
+    hits the base type it bubbles up the correct validator that is nested within the upper validator
+
+    *Args*:
+
+        typed: input type
+
+    *Returns*:
+
+        return_type: recursively built deep_iterable validators
+
+    """
+    if hasattr(typed, '__args__'):
+        # If there are more __args__ then we still need to recurse as it is still a GenericAlias
+        return_type = attr.validators.deep_iterable(
+            member_validator=_recursive_generic_validator(typed.__args__[0]),
+            iterable_validator=attr.validators.instance_of(typed.__origin__)
+        )
+        return return_type
+    else:
+        # If no more __args__ then we are to the base type and need to bubble up the type
+        return_type = attr.validators.instance_of(typed)
+    return return_type
 
 
 def _generic_alias_katra(typed, default=None, optional=False):
@@ -67,22 +82,21 @@ def _generic_alias_katra(typed, default=None, optional=False):
     # base python class from which a GenericAlias is derived
     base_typed = typed.__origin__
     if default is not None:
-        x = attr.ib(validator=attr.validators.deep_iterable(
-            member_validator=attr.validators.instance_of(typed.__args__[0]),
-            iterable_validator=attr.validators.instance_of(base_typed)
-        ), type=base_typed, default=default, metadata={'type': _extract_base_type(typed), 'base': typed._name})
+        x = attr.ib(validator=_recursive_generic_validator(typed), default=default, type=base_typed,
+                    metadata={'base': _extract_base_type(typed)})
+        # x = attr.ib(validator=_recursive_generic_iterator(typed), default=default, type=base_typed,
+        #             metadata={'base': _extract_base_type(typed)})
     elif optional:
         # if there's no default, but marked as optional, then set the default to None
-        x = attr.ib(validator=attr.validators.optional(attr.validators.deep_iterable(
-            member_validator=attr.validators.instance_of(typed.__args__[0]),
-            iterable_validator=attr.validators.instance_of(base_typed)
-        )), type=base_typed, default=default,
-            metadata={'type': _extract_base_type(typed), 'optional': True, 'base': typed._name})
+        x = attr.ib(validator=attr.validators.optional(_recursive_generic_validator(typed)), type=base_typed,
+                    default=default, metadata={'optional': True, 'base': _extract_base_type(typed)})
+        # x = attr.ib(validator=attr.validators.optional(_recursive_generic_iterator(typed)), type=base_typed,
+        #             default=default, metadata={'optional': True, 'base': _extract_base_type(typed)})
     else:
-        x = attr.ib(validator=attr.validators.deep_iterable(
-            member_validator=attr.validators.instance_of(typed.__args__[0]),
-            iterable_validator=attr.validators.instance_of(base_typed)
-        ), type=base_typed, metadata={'type': _extract_base_type(typed), 'base': typed._name})
+        x = attr.ib(validator=_recursive_generic_validator(typed), type=base_typed,
+                    metadata={'base': _extract_base_type(typed)})
+        # x = attr.ib(validator=_recursive_generic_iterator(typed), type=base_typed,
+        #             metadata={'base': _extract_base_type(typed)})
     return x
 
 
@@ -218,7 +232,7 @@ def katra(typed, default=None):
     typed, optional = _handle_optional_typing(typed)
     # We need to check if the type is a _GenericAlias so that we can handle subscripted general types
     # If it is subscript typed it will not be T which python uses as a generic type name
-    if isinstance(typed, _GenericAlias) and typed.__args__[0].__name__ != "T":
+    if isinstance(typed, _GenericAlias) and (not isinstance(typed.__args__[0], TypeVar)):
         x = _generic_alias_katra(typed=typed, default=default, optional=optional)
     elif isinstance(typed, EnumMeta):
         x = _enum_katra(typed=typed, default=default, optional=optional)

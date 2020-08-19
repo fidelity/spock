@@ -28,7 +28,7 @@ class ConfigArgBuilder:
         try:
             self._dict_args = self._get_payload()
             self._arg_namespace = self._builder_obj.generate(self._dict_args)
-        except ValueError as e:
+        except Exception as e:
             self._builder_obj.print_usage_and_exit(str(e), sys_exit=False)
             raise ValueError(e)
 

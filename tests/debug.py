@@ -16,9 +16,12 @@ class Choice(Enum):
 
 @spock
 class Test:
-    new_choice: Optional[Choice]
-    new: int
-    other: Optional[int]
+    # new_choice: Optional[Choice]
+    # new: int
+    # fail: List
+    # fail: List[int]
+    fail: List[List[int]]
+    # other: Optional[int]
     value: Optional[List[int]] = [1, 2]
 
 
