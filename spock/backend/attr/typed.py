@@ -93,18 +93,18 @@ def _generic_alias_katra(typed, default=None, optional=False):
     base_typed = typed.__origin__
     if default is not None:
         x = attr.ib(validator=_recursive_generic_validator(typed), default=default, type=base_typed,
-                    metadata={'base': _extract_base_type(typed)})
+                    metadata={'base': _extract_base_type(typed), 'type': typed})
         # x = attr.ib(validator=_recursive_generic_iterator(typed), default=default, type=base_typed,
         #             metadata={'base': _extract_base_type(typed)})
     elif optional:
         # if there's no default, but marked as optional, then set the default to None
         x = attr.ib(validator=attr.validators.optional(_recursive_generic_validator(typed)), type=base_typed,
-                    default=default, metadata={'optional': True, 'base': _extract_base_type(typed)})
+                    default=default, metadata={'optional': True, 'base': _extract_base_type(typed), 'type': typed})
         # x = attr.ib(validator=attr.validators.optional(_recursive_generic_iterator(typed)), type=base_typed,
         #             default=default, metadata={'optional': True, 'base': _extract_base_type(typed)})
     else:
         x = attr.ib(validator=_recursive_generic_validator(typed), type=base_typed,
-                    metadata={'base': _extract_base_type(typed)})
+                    metadata={'base': _extract_base_type(typed), 'type': typed})
         # x = attr.ib(validator=_recursive_generic_iterator(typed), type=base_typed,
         #             metadata={'base': _extract_base_type(typed)})
     return x
@@ -172,9 +172,11 @@ def _type_katra(typed, default=None, optional=False):
     # Default booleans to false and optional due to the nature of a boolean
     if isinstance(typed, type) and typed.__name__ == "bool":
         optional = True
-        default = False
+        if default is not True:
+            default = False
     # For the save path type we need to swap the type back to it's base class (str)
     elif isinstance(typed, type) and typed.__name__ == "SavePath":
+        optional = True
         special_key = typed.__name__
         typed = str
     if default is not None:

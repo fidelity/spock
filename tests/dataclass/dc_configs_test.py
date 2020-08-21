@@ -3,7 +3,7 @@
 # Copyright 2019 FMR LLC <opensource@fidelity.com>
 # SPDX-License-Identifier: Apache-2.0
 
-from spock.backend.dataclass.args import *
+from spock.args import *
 from spock.config import spock_config
 
 

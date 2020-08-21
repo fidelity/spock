@@ -1,9 +1,14 @@
-new: 1
+#new: 1
 #other: 1
-fail: [[1, 2], [2, 1]]
-value: [1, 2]
+#new_other: 1
+#fail: [[1, 2], [2, 1]]
+#value: [1, 2]
+fix_me: [[1, 2], [2, 1]]
+Test:
+    fix_me: [[11, 2], [22, 1]]
 #new_choice: pear
 #Test2:
 #    other: 12
 #Test:
 #    other: 12
+#ccccombo_breaker: 10

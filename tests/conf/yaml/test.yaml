@@ -1,7 +1,7 @@
 # conf file for all YAML tests
 ### Required or Boolean Base Types ###
 # Boolean - Set
---bool_p_set
+bool_p_set: true
 # Required Int
 int_p: 10
 # Required Float
@@ -32,4 +32,4 @@ choice_p_int: 10
 choice_p_float: 10.0
 # Override general definition
 TypeConfig:
-    float_p: 12
+    float_p: 12.0

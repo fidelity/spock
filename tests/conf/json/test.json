@@ -15,6 +15,6 @@
   "choice_p_int": 10,
   "choice_p_float": 10.0,
   "TypeConfig": {
-    "float_p": 12
+    "float_p": 12.0
   }
 }

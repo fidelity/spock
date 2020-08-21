@@ -6,6 +6,7 @@
 """Handles payloads from markup files"""
 
 from itertools import chain
+from spock.backend.attr.utils import convert_to_tuples
 from spock.backend.base import BasePayload
 
 
@@ -32,8 +33,18 @@ class AttrPayload(BasePayload):
     def _update_payload(base_payload, input_classes, payload):
         # Get basic args
         attr_fields = {attr.__name__: [val.name for val in attr.__attrs_attrs__] for attr in input_classes}
+        # Parse out the types if generic
+        type_fields = {}
+        for attr in input_classes:
+            input_attr = {}
+            for val in attr.__attrs_attrs__:
+                if 'type' in val.metadata:
+                    input_attr.update({val.name: val.metadata['type']})
+                else:
+                    input_attr.update({val.name: None})
+            type_fields.update({attr.__name__: input_attr})
         for keys, values in base_payload.items():
-            # check if the keys, value pair is expected by a dataclass
+            # check if the keys, value pair is expected by the attr class
             if keys != 'config':
                 # Dict infers that we are overriding a global setting in a specific config
                 if isinstance(values, dict):
@@ -52,4 +63,6 @@ class AttrPayload(BasePayload):
                 payload[keys].update(values)
             else:
                 payload[keys] = values
+        tuple_payload = convert_to_tuples(payload, type_fields)
+        payload.update(tuple_payload)
         return payload
