@@ -10,10 +10,10 @@ import attr
 from spock.backend.attr.builder import AttrBuilder
 from spock.backend.attr.payload import AttrPayload
 from spock.backend.attr.saver import AttrSaver
-from spock.backend.dataclass.builder import DataClassBuilder
-from spock.backend.dataclass.payload import DataClassPayload
-from spock.backend.dataclass.saver import DataClassSaver
-from spock.backend.dataclass._dataclasses import is_dataclass
+# from spock.backend.dataclass.builder import DataClassBuilder
+# from spock.backend.dataclass.payload import DataClassPayload
+# from spock.backend.dataclass.saver import DataClassSaver
+# from spock.backend.dataclass._dataclasses import is_dataclass
 
 
 class ConfigArgBuilder:
@@ -70,14 +70,10 @@ class ConfigArgBuilder:
         """
         # Gather if all attr backend
         type_attrs = all([attr.has(arg) for arg in args])
-        # Gather if all dataclass backend
-        type_dataclass = all([is_dataclass(arg) for arg in args])
-        if (not type_attrs) and (not type_dataclass):
-            raise TypeError(f"*args must be of all attrs backend or dataclass backend")
+        if not type_attrs:
+            raise TypeError(f"*args must be of all attrs backend")
         elif type_attrs:
             backend = {'builder': AttrBuilder, 'payload': AttrPayload, 'saver': AttrSaver}
-        elif type_dataclass:
-            backend = {'builder': DataClassBuilder, 'payload': DataClassPayload, 'saver': DataClassSaver}
         else:
             raise TypeError(f"*args must be of all attrs backend or dataclass backend")
         return backend

@@ -36,6 +36,6 @@ setuptools.setup(
     },
     keywords="dataclass config argparser parameter configuration",
     packages=setuptools.find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
-    python_requires='>=3.7',
+    python_requires='>=3.6',
     install_requires=install_reqs
 )
