@@ -168,26 +168,33 @@ def _type_katra(typed, default=None, optional=False):
         x: Attribute from attrs
 
     """
+    # Grab the name first based on if it is a base type or GenericAlias
+    if isinstance(typed, type):
+        name = typed.__name__
+    elif isinstance(typed, _GenericAlias):
+        name = typed._name
+    else:
+        raise TypeError('Encountered an uxpected type in _type_katra')
     special_key = None
     # Default booleans to false and optional due to the nature of a boolean
-    if isinstance(typed, type) and typed.__name__ == "bool":
+    if isinstance(typed, type) and name == "bool":
         optional = True
         if default is not True:
             default = False
     # For the save path type we need to swap the type back to it's base class (str)
-    elif isinstance(typed, type) and typed.__name__ == "SavePath":
+    elif isinstance(typed, type) and name == "SavePath":
         optional = True
-        special_key = typed.__name__
+        special_key = name
         typed = str
     if default is not None:
         # if a default is provided, that takes precedence
         x = attr.ib(validator=attr.validators.instance_of(typed), default=default, type=typed,
-                    metadata={'base': typed.__name__, 'special_key': special_key})
+                    metadata={'base': name, 'special_key': special_key})
     elif optional:
         x = attr.ib(validator=attr.validators.optional(attr.validators.instance_of(typed)), default=default, type=typed,
-                    metadata={'optional': True, 'base': typed.__name__, 'special_key': special_key})
+                    metadata={'optional': True, 'base': name, 'special_key': special_key})
     else:
-        x = attr.ib(validator=attr.validators.instance_of(typed), type=typed, metadata={'base': typed.__name__,
+        x = attr.ib(validator=attr.validators.instance_of(typed), type=typed, metadata={'base': name,
                                                                                         'special_key': special_key})
     return x
 
