@@ -40,7 +40,11 @@ def _extract_base_type(typed):
         name of type
     """
     if hasattr(typed, '__args__'):
-        bracket_val = f"{typed._name}[{_extract_base_type(typed.__args__[0])}]"
+        if minor < 7:
+            name = typed.__name__
+        else:
+            name = typed._name
+        bracket_val = f"{name}[{_extract_base_type(typed.__args__[0])}]"
         return bracket_val
     else:
         bracket_value = typed.__name__
@@ -178,7 +182,10 @@ def _type_katra(typed, default=None, optional=False):
     if isinstance(typed, type):
         name = typed.__name__
     elif isinstance(typed, _GenericAlias):
-        name = typed._name
+        if minor < 7:
+            name = typed.__name__
+        else:
+            name = typed._name
     else:
         raise TypeError('Encountered an uxpected type in _type_katra')
     special_key = None

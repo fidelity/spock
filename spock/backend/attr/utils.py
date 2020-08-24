@@ -83,7 +83,7 @@ def _recursive_list_to_tuple(value, typed):
         for idx, val in enumerate(value):
             value[idx] = _recursive_list_to_tuple(val, typed.__args__[0])
         # First check if list and then swap to tuple if the origin is tuple
-        if isinstance(value, list) and typed.__origin__.__name__ == 'tuple':
+        if isinstance(value, list) and typed.__origin__.__name__.lower() == 'tuple':
             value = tuple(value)
     else:
         return value

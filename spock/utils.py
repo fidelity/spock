@@ -10,6 +10,8 @@ from time import localtime
 from time import strftime
 import git
 import subprocess
+import sys
+minor = sys.version_info.minor
 
 
 def add_info(out_dict):
@@ -49,8 +51,12 @@ def add_repo_info(out_dict):
         # Assume we are working out of a repo
         repo = git.Repo(os.getcwd())
         # Check if we are really in a detached head state as this will fail
-        head_result = subprocess.run('git rev-parse --abbrev-ref --symbolic-full-name HEAD', capture_output=True,
-                                     shell=True)
+        if minor < 7:
+            head_result = subprocess.run('git rev-parse --abbrev-ref --symbolic-full-name HEAD', stdout=subprocess.PIPE,
+                                         shell=True)
+        else:
+            head_result = subprocess.run('git rev-parse --abbrev-ref --symbolic-full-name HEAD', capture_output=True,
+                                         shell=True)
         if head_result.stdout.decode().rstrip('\n') == 'HEAD':
             out_dict = make_blank_git(out_dict)
         else:
