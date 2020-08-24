@@ -9,7 +9,12 @@ from spock.backend.dataclass._dataclasses import is_dataclass
 from spock.backend.base import BaseBuilder
 from spock.backend.dataclass.utils import cast
 import sys
-from typing import _GenericAlias, Generic
+minor = sys.version_info.minor
+if minor < 7:
+    from typing import GenericMeta as _GenericAlias
+else:
+    from typing import _GenericAlias
+from typing import Generic
 
 
 class DataClassBuilder(BaseBuilder):
