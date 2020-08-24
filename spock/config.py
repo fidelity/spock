@@ -8,7 +8,7 @@
 from spock.backend.dataclass.config import spock_dataclass
 from spock.backend.attr.config import spock_attr
 
-# Dataclasses for legacy support
+# Dataclasses for legacy support -- now wraps attr via an adapter
 spock_config = spock_dataclass
 
 # Simplified decorator for attrs

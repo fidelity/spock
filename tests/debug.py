@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from spock.backend.dataclass.args import IntArg, ListArg, IntOptArg
+from spock.backend.dataclass.args import IntArg, ListArg, IntOptArg, ChoiceArg, SavePathOptArg
 from spock.config import spock
 from spock.config import spock_config
 from typing import List
@@ -18,7 +18,7 @@ class Choice(Enum):
 
 @spock
 class Test:
-    # new_choice: Optional[Choice]
+    new_choice: Optional[Choice]
     # fix_me: Tuple[Tuple[int]]
     new: int
     # fail: List
@@ -40,13 +40,15 @@ class Test:
 
 @spock_config
 class Old:
-    test: ListArg
+    choice: ChoiceArg(choice_set=['relu', 'gelu', 'tanh'], default='relu')
+    test: ListArg[int] = ListArg.defaults([1, 2])
     new: IntArg = 1
 
 
 @spock_config
 class OldInherit(Old):
     fail: IntOptArg
+    save_path: SavePathOptArg
 
 
 

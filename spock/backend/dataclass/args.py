@@ -8,8 +8,6 @@
 from typing import List
 from typing import Tuple
 from typing import TypeVar
-from spock.backend.dataclass.utils import _def_list
-from spock.backend.dataclass.utils import _def_tuple
 
 
 class BoolArg(int):
@@ -174,7 +172,7 @@ class ListArg(List[__T]):  # pylint: disable=too-few-public-methods
 
             list variable
         """
-        return _def_list(values)
+        return values
 
 
 class ListOptArg(List[__T]):  # pylint: disable=too-few-public-methods
@@ -195,7 +193,7 @@ class ListOptArg(List[__T]):  # pylint: disable=too-few-public-methods
 
             list variable
         """
-        return _def_list(values)
+        return values
 
 
 class TupleArg(Tuple[__T]):  # pylint: disable=too-few-public-methods
@@ -216,7 +214,7 @@ class TupleArg(Tuple[__T]):  # pylint: disable=too-few-public-methods
 
             tuple variable
         """
-        return _def_tuple(values)
+        return values
 
 
 class TupleOptArg(Tuple[__T]):  # pylint: disable=too-few-public-methods
@@ -237,7 +235,7 @@ class TupleOptArg(Tuple[__T]):  # pylint: disable=too-few-public-methods
 
             tuple variable
         """
-        return _def_tuple(values)
+        return values
 
 
 class ChoiceArg:  # pylint: disable=too-few-public-methods
