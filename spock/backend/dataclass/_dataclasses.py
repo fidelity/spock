@@ -3,6 +3,8 @@
 # Copyright 2019 FMR LLC <opensource@fidelity.com>
 # SPDX-License-Identifier: Apache-2.0
 
+"""Manual fork of Python3.7 dataclass"""
+
 import re
 import sys
 import copy

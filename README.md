@@ -1,8 +1,8 @@
-[![Spock](./resources/images/logo.png)](https://fidelity.github.io/spock/)
+[![Spock](https://raw.githubusercontent.com/fidelity/spock/master/resources/images/logo.png)](https://fidelity.github.io/spock/)
 > Managing complex configurations any other way would be highly illogical...
 
-[![License](./resources/images/license.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Python](https://img.shields.io/badge/python-3.7+-blue.svg)]()
+[![License](https://img.shields.io/badge/License-Apache%202.0-9cf)](https://opensource.org/licenses/Apache-2.0)
+[![Python](https://img.shields.io/badge/python-3.7+-informational.svg)]()
 [![PyPI version](https://badge.fury.io/py/spock-config.svg)](https://badge.fury.io/py/spock-config)
 ![Tests](https://github.com/fidelity/spock/workflows/pytest/badge.svg)
 

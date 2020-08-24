@@ -3,11 +3,11 @@
 # Copyright 2019 FMR LLC <opensource@fidelity.com>
 # SPDX-License-Identifier: Apache-2.0
 
+from attr.exceptions import FrozenInstanceError
 import glob
 import pytest
-from spock._dataclasses import FrozenInstanceError
 from spock.builder import ConfigArgBuilder
-from tests.configs_test import *
+from tests.attr.attr_configs_test import *
 import sys
 
 
@@ -20,10 +20,10 @@ class AllTypes:
         assert arg_builder.TypeConfig.int_p == 10
         assert arg_builder.TypeConfig.float_p == 12.0
         assert arg_builder.TypeConfig.string_p == 'Spock'
-        assert arg_builder.TypeConfig.list_p_float == (10.0, 20.0)
-        assert arg_builder.TypeConfig.list_p_int == (10, 20)
-        assert arg_builder.TypeConfig.list_p_str == ('Spock', 'Package')
-        assert arg_builder.TypeConfig.list_p_bool == (True, False)
+        assert arg_builder.TypeConfig.list_p_float == [10.0, 20.0]
+        assert arg_builder.TypeConfig.list_p_int == [10, 20]
+        assert arg_builder.TypeConfig.list_p_str == ['Spock', 'Package']
+        assert arg_builder.TypeConfig.list_p_bool == [True, False]
         assert arg_builder.TypeConfig.tuple_p_float == (10.0, 20.0)
         assert arg_builder.TypeConfig.tuple_p_int == (10, 20)
         assert arg_builder.TypeConfig.tuple_p_str == ('Spock', 'Package')
@@ -52,10 +52,10 @@ class AllDefaults:
         assert arg_builder.TypeDefaultConfig.int_p_def == 10
         assert arg_builder.TypeDefaultConfig.float_p_def == 10.0
         assert arg_builder.TypeDefaultConfig.string_p_def == 'Spock'
-        assert arg_builder.TypeDefaultConfig.list_p_float_def == (10.0, 20.0)
-        assert arg_builder.TypeDefaultConfig.list_p_int_def == (10, 20)
-        assert arg_builder.TypeDefaultConfig.list_p_str_def == ('Spock', 'Package')
-        assert arg_builder.TypeDefaultConfig.list_p_bool_def == (True, False)
+        assert arg_builder.TypeDefaultConfig.list_p_float_def == [10.0, 20.0]
+        assert arg_builder.TypeDefaultConfig.list_p_int_def == [10, 20]
+        assert arg_builder.TypeDefaultConfig.list_p_str_def == ['Spock', 'Package']
+        assert arg_builder.TypeDefaultConfig.list_p_bool_def == [True, False]
         assert arg_builder.TypeDefaultConfig.tuple_p_float_def == (10.0, 20.0)
         assert arg_builder.TypeDefaultConfig.tuple_p_int_def == (10, 20)
         assert arg_builder.TypeDefaultConfig.tuple_p_str_def == ('Spock', 'Package')
@@ -65,10 +65,10 @@ class AllDefaults:
         assert arg_builder.TypeDefaultOptConfig.int_p_opt_def == 10
         assert arg_builder.TypeDefaultOptConfig.float_p_opt_def == 10.0
         assert arg_builder.TypeDefaultOptConfig.string_p_opt_def == 'Spock'
-        assert arg_builder.TypeDefaultOptConfig.list_p_opt_def_float == (10.0, 20.0)
-        assert arg_builder.TypeDefaultOptConfig.list_p_opt_def_int == (10, 20)
-        assert arg_builder.TypeDefaultOptConfig.list_p_opt_def_str == ('Spock', 'Package')
-        assert arg_builder.TypeDefaultOptConfig.list_p_opt_def_bool == (True, False)
+        assert arg_builder.TypeDefaultOptConfig.list_p_opt_def_float == [10.0, 20.0]
+        assert arg_builder.TypeDefaultOptConfig.list_p_opt_def_int == [10, 20]
+        assert arg_builder.TypeDefaultOptConfig.list_p_opt_def_str == ['Spock', 'Package']
+        assert arg_builder.TypeDefaultOptConfig.list_p_opt_def_bool == [True, False]
         assert arg_builder.TypeDefaultOptConfig.tuple_p_opt_def_float == (10.0, 20.0)
         assert arg_builder.TypeDefaultOptConfig.tuple_p_opt_def_int == (10, 20)
         assert arg_builder.TypeDefaultOptConfig.tuple_p_opt_def_str == ('Spock', 'Package')
@@ -83,10 +83,10 @@ class AllInherited:
         assert arg_builder.TypeInherited.int_p == 10
         assert arg_builder.TypeInherited.float_p == 10.0
         assert arg_builder.TypeInherited.string_p == 'Spock'
-        assert arg_builder.TypeInherited.list_p_float == (10.0, 20.0)
-        assert arg_builder.TypeInherited.list_p_int == (10, 20)
-        assert arg_builder.TypeInherited.list_p_str == ('Spock', 'Package')
-        assert arg_builder.TypeInherited.list_p_bool == (True, False)
+        assert arg_builder.TypeInherited.list_p_float == [10.0, 20.0]
+        assert arg_builder.TypeInherited.list_p_int == [10, 20]
+        assert arg_builder.TypeInherited.list_p_str == ['Spock', 'Package']
+        assert arg_builder.TypeInherited.list_p_bool == [True, False]
         assert arg_builder.TypeInherited.tuple_p_float == (10.0, 20.0)
         assert arg_builder.TypeInherited.tuple_p_int == (10, 20)
         assert arg_builder.TypeInherited.tuple_p_str == ('Spock', 'Package')
@@ -98,10 +98,10 @@ class AllInherited:
         assert arg_builder.TypeInherited.int_p_opt_def == 10
         assert arg_builder.TypeInherited.float_p_opt_def == 10.0
         assert arg_builder.TypeInherited.string_p_opt_def == 'Spock'
-        assert arg_builder.TypeInherited.list_p_opt_def_float == (10.0, 20.0)
-        assert arg_builder.TypeInherited.list_p_opt_def_int == (10, 20)
-        assert arg_builder.TypeInherited.list_p_opt_def_str == ('Spock', 'Package')
-        assert arg_builder.TypeInherited.list_p_opt_def_bool == (True, False)
+        assert arg_builder.TypeInherited.list_p_opt_def_float == [10.0, 20.0]
+        assert arg_builder.TypeInherited.list_p_opt_def_int == [10, 20]
+        assert arg_builder.TypeInherited.list_p_opt_def_str == ['Spock', 'Package']
+        assert arg_builder.TypeInherited.list_p_opt_def_bool == [True, False]
         assert arg_builder.TypeInherited.tuple_p_opt_def_float == (10.0, 20.0)
         assert arg_builder.TypeInherited.tuple_p_opt_def_int == (10, 20)
         assert arg_builder.TypeInherited.tuple_p_opt_def_str == ('Spock', 'Package')
@@ -231,7 +231,7 @@ class TestOverrideRaise:
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
                                     './tests/conf/yaml/test.yaml'])
-            with pytest.raises(TypeError):
+            with pytest.raises(ValueError):
                 ConfigArgBuilder(TypeInherited, desc='Test Builder')
 
 
@@ -280,6 +280,18 @@ class TestYAMLWriter:
             with open(fname, 'r') as fin:
                 print(fin.read())
             assert len(list(tmp_path.iterdir())) == 1
+
+
+class TestWritePathRaise:
+    def test_yaml_file_writer(self, monkeypatch, tmp_path):
+        """Test the YAML writer works correctly"""
+        with monkeypatch.context() as m:
+            m.setattr(sys, 'argv', ['', '--config',
+                                    './tests/conf/yaml/test.yaml'])
+            config = ConfigArgBuilder(TypeConfig, TypeOptConfig, desc='Test Builder')
+            # Test the chained version
+            with pytest.raises(FileNotFoundError):
+                config.save(user_specified_path=str(tmp_path)+'/foo.bar/fizz.buzz/', file_extension='.yaml').generate()
 
 
 # TOML TESTS

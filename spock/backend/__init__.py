@@ -8,10 +8,4 @@ Spock is a framework that helps manage complex parameter configurations for Pyth
 
 Please refer to the documentation provided in the README.md
 """
-
-from spock._version import get_versions
-
-__all__ = ["args", "builder", "config"]
-
-__version__ = get_versions()['version']
-del get_versions
+__all__ = ["attr", "dataclass"]

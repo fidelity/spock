@@ -13,7 +13,7 @@ max-line-length=120
 [BASIC]
 
 # Good variable names which should always be accepted, separated by a comma
-good-names=i,j,k,e,x,Run,_
+good-names=i,j,k,v,e,x,Run,_
 
 # Include a hint for the correct naming format with invalid-name
 include-naming-hint=yes
