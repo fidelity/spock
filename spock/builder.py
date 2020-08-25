@@ -108,8 +108,7 @@ class ConfigArgBuilder:
             self._builder_obj.print_usage_and_exit()
         payload = {}
         for configs in args.config:
-            pass
-            payload.update(self._payload_obj().payload(self._builder_obj.input_classes, configs))
+            payload.update(self._payload_obj().payload(self._builder_obj.input_classes, configs, args))
         return payload
 
     def save(self, user_specified_path=None, extra_info=True, file_extension='.yaml'):

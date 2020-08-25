@@ -2,6 +2,7 @@
 ### Required or Boolean Base Types ###
 # Boolean - Set
 --bool_p_set
+failure: 10.0
 # Required Int
 int_p: 10
 # Required Float
@@ -12,8 +13,6 @@ string_p: Spock
 list_p_float: [10.0, 20.0]
 # Required List -- Int
 list_p_int: [10, 20]
-# Required List of Lists
-list_list_p_int: [[10, 20], [10, 20]]
 # Required List -- Str
 list_p_str: [Spock, Package]
 # Required List -- Bool
@@ -32,3 +31,6 @@ choice_p_str: option_1
 choice_p_int: 10
 # Required Choice -- Str
 choice_p_float: 10.0
+# Override general definition
+TypeConfig:
+    float_p: 12.0

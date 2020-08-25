@@ -18,9 +18,10 @@ class Choice(Enum):
 
 @spock
 class Test:
-    new_choice: Optional[Choice]
+    new_choice: Choice
     # fix_me: Tuple[Tuple[int]]
     new: int
+    fail: bool
     # fail: List
     test: List[int]
     # fail: List[List[int]]
@@ -38,26 +39,12 @@ class Test:
 #     ccccombo_breaker: int
 
 
-@spock_config
-class Old:
-    choice: ChoiceArg(choice_set=['relu', 'gelu', 'tanh'], default='relu')
-    test: ListArg[int] = ListArg.defaults([1, 2])
-    new: IntArg = 1
-
-
-@spock_config
-class OldInherit(Old):
-    fail: IntOptArg
-    save_path: SavePathOptArg
-
-
-
 def main():
     # test = Test()
-    # attrs_class = ConfigArgBuilder(Test).generate()
-    # print(attrs_class)
-    dc_class = ConfigArgBuilder(OldInherit).generate()
-    print(dc_class)
+    attrs_class = ConfigArgBuilder(Test).generate()
+    print(attrs_class)
+    # dc_class = ConfigArgBuilder(OldInherit).generate()
+    # print(dc_class)
 
 
 if __name__ == '__main__':

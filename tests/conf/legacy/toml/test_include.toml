@@ -1,0 +1,5 @@
+# additional conf file to test inheritance
+# include another file
+config = ["test.toml"]
+# override a paramter
+int_p = 9

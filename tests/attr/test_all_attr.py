@@ -31,6 +31,7 @@ class AllTypes:
         assert arg_builder.TypeConfig.choice_p_str == 'option_1'
         assert arg_builder.TypeConfig.choice_p_int == 10
         assert arg_builder.TypeConfig.choice_p_float == 10.0
+        assert arg_builder.TypeConfig.list_list_p_int == [[10, 20], [10, 20]]
         # Optional #
         assert arg_builder.TypeOptConfig.int_p_opt_no_def is None
         assert arg_builder.TypeOptConfig.float_p_opt_no_def is None
@@ -94,6 +95,7 @@ class AllInherited:
         assert arg_builder.TypeInherited.choice_p_str == 'option_1'
         assert arg_builder.TypeInherited.choice_p_int == 10
         assert arg_builder.TypeInherited.choice_p_float == 10.0
+        assert arg_builder.TypeInherited.list_list_p_int == [[10, 20], [10, 20]]
         # Optional w/ Defaults #
         assert arg_builder.TypeInherited.int_p_opt_def == 10
         assert arg_builder.TypeInherited.float_p_opt_def == 10.0
@@ -156,6 +158,44 @@ class TestFrozen:
             arg_builder.TypeConfig.list_p_float = [1.0, 2.0]
         with pytest.raises(FrozenInstanceError):
             arg_builder.TypeOptConfig.tuple_p_opt_no_def_float = (1.0, 2.0)
+
+
+class TestGeneralCmdLineOverride:
+    """Testing command line overrides"""
+    @staticmethod
+    @pytest.fixture
+    def arg_builder(monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, 'argv', ['', '--config',
+                                    './tests/conf/yaml/test.yaml',
+                                    '--bool_p', '--int_p', '11', '--TypeConfig.float_p', '11.0', '--string_p', 'Hooray',
+                                    '--list_p_float', '[11.0, 21.0]', '--list_p_int', '[11, 21]',
+                                    '--list_p_str', "['Hooray', 'Working']", '--list_p_bool', '[False, True]',
+                                    '--tuple_p_float', '(11.0, 21.0)', '--tuple_p_int', '(11, 21)',
+                                    '--tuple_p_str', "('Hooray', 'Working')", '--tuple_p_bool', '(False, True)',
+                                    '--list_list_p_int', "[[11, 21], [11, 21]]", '--choice_p_str', 'option_2',
+                                    '--choice_p_int', '20', '--choice_p_float', '20.0'
+                                    ])
+            config = ConfigArgBuilder(TypeConfig, desc='Test Builder')
+            return config.generate()
+
+    def test_overrides(self, arg_builder):
+        assert arg_builder.TypeConfig.bool_p is True
+        assert arg_builder.TypeConfig.int_p == 11
+        assert arg_builder.TypeConfig.float_p == 11.0
+        assert arg_builder.TypeConfig.string_p == 'Hooray'
+        assert arg_builder.TypeConfig.list_p_float == [11.0, 21.0]
+        assert arg_builder.TypeConfig.list_p_int == [11, 21]
+        assert arg_builder.TypeConfig.list_p_str == ['Hooray', 'Working']
+        assert arg_builder.TypeConfig.list_p_bool == [False, True]
+        assert arg_builder.TypeConfig.tuple_p_float == (11.0, 21.0)
+        assert arg_builder.TypeConfig.tuple_p_int == (11, 21)
+        assert arg_builder.TypeConfig.tuple_p_str == ('Hooray', 'Working')
+        assert arg_builder.TypeConfig.tuple_p_bool == (False, True)
+        assert arg_builder.TypeConfig.choice_p_str == 'option_2'
+        assert arg_builder.TypeConfig.choice_p_int == 20
+        assert arg_builder.TypeConfig.choice_p_float == 20.0
+        assert arg_builder.TypeConfig.list_list_p_int == [[11, 21], [11, 21]]
 
 
 class TestConfigKwarg(AllTypes):

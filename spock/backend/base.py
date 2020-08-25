@@ -14,6 +14,7 @@ from spock.handlers import JSONHandler
 from spock.handlers import TOMLHandler
 from spock.handlers import YAMLHandler
 from spock.utils import add_info
+from spock.utils import make_argument
 import sys
 from uuid import uuid1
 
@@ -212,12 +213,60 @@ class BaseBuilder(ABC):
         if self._no_cmd_line and (self._configs is None):
             raise ValueError("Flag set for preventing command line read but no paths were passed to the config kwarg")
         if not self._no_cmd_line:
-            args = self._get_from_arg_parser(self._desc)
+            args = self._build_override_parsers(desc=self._desc)
         else:
             args = argparse.Namespace(config=[], help=False)
         if self._configs is not None:
             args = self._get_from_kwargs(args, self._configs)
         return args
+
+    def _build_override_parsers(self, desc):
+        parser = argparse.ArgumentParser(description=desc, add_help=False)
+        parser.add_argument('-c', '--config', required=False, nargs='+', default=[])
+        parser.add_argument('-h', '--help', action='store_true')
+        # Build out a general parser for parent level attr
+        parser = self._make_general_override_parser(parser=parser, input_classes=self.input_classes)
+        # Build out each class specific parser
+        for val in self.input_classes:
+            parser = self._make_group_override_parser(parser=parser, class_obj=val)
+        # args = parser.parse_args()
+        args, _ = parser.parse_known_args(sys.argv)
+        return args
+
+    def _make_general_override_parser(self, parser, input_classes):
+        # Make all names list
+        all_attr = {}
+        for class_obj in input_classes:
+            for val in class_obj.__attrs_attrs__:
+                val_type = val.metadata['type'] if 'type' in val.metadata else val.type
+                if hasattr(all_attr, val.name):
+                    if all_attr[val.name] is not val_type:
+                        print(f"Warning: Ignoring general override for {val.name} as the class specific types differ")
+                else:
+                    all_attr.update({val.name: val_type})
+        self._check_protected_keys(all_attr)
+        group_parser = parser.add_argument_group(title="General Overrides")
+        for k, v in all_attr.items():
+            arg_name = '--' + k
+            group_parser = make_argument(arg_name, v, group_parser)
+        return parser
+
+    @staticmethod
+    def _make_group_override_parser(parser, class_obj):
+        attr_name = class_obj.__name__
+        group_parser = parser.add_argument_group(title=str(attr_name) + " Specific Overrides")
+        for val in class_obj.__attrs_attrs__:
+            val_type = val.metadata['type'] if 'type' in val.metadata else val.type
+            arg_name = '--' + str(attr_name) + '.' + val.name
+            group_parser = make_argument(arg_name, val_type, group_parser)
+        return parser
+
+    @staticmethod
+    def _check_protected_keys(all_attr):
+        protected_names = ['config', 'help']
+        if any([val in all_attr.keys() for val in protected_names]):
+            raise ValueError(f"Using a protected name from {protected_names} at general class level which prevents "
+                             f"command line overrides")
 
     @staticmethod
     def _get_from_arg_parser(desc):
@@ -298,7 +347,12 @@ class BasePayload(ABC):
         """
         pass
 
-    def payload(self, input_classes, path):
+    def payload(self, input_classes, path, cmd_args):
+        payload = self._payload(input_classes, path)
+        payload = self._handle_overrides(payload, cmd_args)
+        return payload
+
+    def _payload(self, input_classes, path):
         # Match to loader based on file-extension
         config_extension = Path(path).suffix.lower()
         supported_extensions = list(self._loaders.keys())
@@ -314,8 +368,7 @@ class BasePayload(ABC):
         payload = self._update_payload(base_payload, input_classes, payload)
         return payload
 
-    def _handle_includes(self, base_payload, config_extension, input_classes, path,
-                         payload):  # pylint: disable=too-many-arguments
+    def _handle_includes(self, base_payload, config_extension, input_classes, path, payload):  # pylint: disable=too-many-arguments
         included_params = {}
         for inc_path in base_payload['config']:
             if not os.path.exists(inc_path):
@@ -325,6 +378,39 @@ class BasePayload(ABC):
                 abs_inc_path = inc_path
             if not os.path.exists(abs_inc_path):
                 raise RuntimeError(f'Could not find included {config_extension} file {inc_path}!')
-            included_params.update(self.payload(input_classes, abs_inc_path))
+            included_params.update(self._payload(input_classes, abs_inc_path))
         payload.update(included_params)
+        return payload
+
+    def _handle_overrides(self, payload, args):
+        skip_keys = ['config', 'help']
+        for k, v in vars(args).items():
+            # If the name has a . then we are at the class level so we need to get the dict and check
+            if len(k.split('.')) > 1:
+                dict_key = k.split('.')[0]
+                val_name = k.split('.')[1]
+                if k not in skip_keys and v is not None:
+                    # Handle bool types slightly differently as they are store_true
+                    if isinstance(vars(args)[k], bool):
+                        if vars(args)[k] is not False:
+                            payload = self._dict_payload_override(payload, dict_key, val_name, v)
+                    else:
+                        payload = self._dict_payload_override(payload, dict_key, val_name, v)
+            # else search the first level
+            else:
+                # Override the value in the payload if present
+                if k not in skip_keys and v is not None:
+                    # Handle bool types slightly differently as they are store_true
+                    if isinstance(vars(args)[k], bool):
+                        if vars(args)[k] is not False:
+                            payload.update({k: v})
+                    else:
+                        payload.update({k: v})
+        return payload
+
+    @staticmethod
+    def _dict_payload_override(payload, dict_key, val_name, value):
+        if not hasattr(payload, dict_key):
+            payload.update({dict_key: {}})
+        payload[dict_key].update({val_name: value})
         return payload

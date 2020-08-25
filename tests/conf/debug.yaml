@@ -1,4 +1,3 @@
-new: 1
 #other: 1
 #new_other: 1
 #fail: [[1, 2], [2, 1]]
@@ -6,6 +5,17 @@ new: 1
 #fix_me: [[1, 2], [2, 1]]
 #Test:
 #    fix_me: [[11, 2], [22, 1]]
+new_choice: pear
+#Test2:
+#    other: 12
+#Test:
+#    new: 12
+#fail: false
+#ccccombo_breaker: 10
+#new: 1
+#fail: 1
+test: [1, 2]
+#save_path: /tmp
 #new_choice: pear
 #Test2:
 #    other: 12
@@ -14,5 +24,3 @@ new: 1
 #ccccombo_breaker: 10
 new: 1
 #fail: 1
-test: [1, 2]
-save_path: /tmp

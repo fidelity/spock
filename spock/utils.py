@@ -5,6 +5,8 @@
 
 """Utility functions for Spock"""
 
+import ast
+from enum import EnumMeta
 import os
 from time import localtime
 from time import strftime
@@ -12,6 +14,31 @@ import git
 import subprocess
 import sys
 minor = sys.version_info.minor
+if minor < 7:
+    from typing import GenericMeta as _GenericAlias
+else:
+    from typing import _GenericAlias
+
+
+def make_argument(arg_name, arg_type, parser):
+    # For generic alias we take the input string and use a custom type callable to convert
+    if isinstance(arg_type, _GenericAlias):
+        parser.add_argument(arg_name, required=False, type=_handle_generic_type_args)
+    # For choice enums we need to check a few things first
+    elif isinstance(arg_type, EnumMeta):
+        type_set = list({type(val.value) for val in arg_type})[0]
+        parser.add_argument(arg_name, required=False, type=type_set)
+    # For booleans we map to store true
+    elif arg_type == bool:
+        parser.add_argument(arg_name, required=False, action='store_true')
+    # Else we are a simple base type which we can cast to
+    else:
+        parser.add_argument(arg_name, required=False, type=arg_type)
+    return parser
+
+
+def _handle_generic_type_args(val):
+    return ast.literal_eval(val)
 
 
 def add_info(out_dict):
