@@ -5,19 +5,33 @@
 
 """Handles the building/saving of the configurations from the Spock config classes"""
 
+import sys
+from typing import Generic
 from spock.backend.dataclass._dataclasses import is_dataclass
 from spock.backend.base import BaseBuilder
 from spock.backend.dataclass.utils import cast
-import sys
 minor = sys.version_info.minor
 if minor < 7:
     from typing import GenericMeta as _GenericAlias
 else:
     from typing import _GenericAlias
-from typing import Generic
 
 
 class DataClassBuilder(BaseBuilder):
+    """Dataclass specific builder
+
+    Class that handles building for the dataclass backend
+
+    *Attributes*
+
+        input_classes: list of input classes that link to a backend
+        _configs: None or List of configs to read from
+        _create_save_path: boolean to make the path to save to
+        _desc: description for the arg parser
+        _no_cmd_line: flag to force no command line reads
+        save_path: list of path(s) to save the configs to
+
+    """
     def __init__(self, *args, configs=None, create_save_path=False, desc='', no_cmd_line=False, **kwargs):
         super().__init__(*args, configs=configs, create_save_path=create_save_path, desc=desc,
                          no_cmd_line=no_cmd_line, **kwargs)

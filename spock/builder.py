@@ -17,6 +17,23 @@ from spock.backend.attr.saver import AttrSaver
 
 
 class ConfigArgBuilder:
+    """Automatically generates dataclass instances from config file(s)
+
+    This class builds out necessary arguments from *args classes, reads
+    the arguments from specified config file(s), and subsequently (via chained
+    call to generate) generates each class instance based on the necessary
+    field values for each backend class instance
+
+    *Attributes*:
+
+        _arg_namespace: generated argument namespace
+        _builder_obj: instance of a BaseBuilder class
+        _create_save_path: boolean to make the path to save to
+        _dict_args: dictionary args from the command line
+        _payload_obj: instance of a BasePayload class
+        _saver_obj: instance of a BaseSaver class
+
+    """
     def __init__(self, *args, configs=None, create_save_path=False, desc='', no_cmd_line=False, **kwargs):
         backend = self._set_backend(args)
         self._create_save_path = create_save_path
@@ -71,11 +88,11 @@ class ConfigArgBuilder:
         # Gather if all attr backend
         type_attrs = all([attr.has(arg) for arg in args])
         if not type_attrs:
-            raise TypeError(f"*args must be of all attrs backend")
+            raise TypeError("*args must be of all attrs backend")
         elif type_attrs:
             backend = {'builder': AttrBuilder, 'payload': AttrPayload, 'saver': AttrSaver}
         else:
-            raise TypeError(f"*args must be of all attrs backend or dataclass backend")
+            raise TypeError("*args must be of all attrs backend")
         return backend
 
     def _get_config_paths(self):

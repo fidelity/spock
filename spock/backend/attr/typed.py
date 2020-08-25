@@ -5,17 +5,16 @@
 
 """Handles the definitions of arguments types for Spock (backend: attrs)"""
 
-# pylint: disable=import-not-at-top
-import attr
-from enum import EnumMeta
 import sys
+from enum import EnumMeta
+from typing import TypeVar
+from typing import Union
+import attr
 minor = sys.version_info.minor
 if minor < 7:
     from typing import GenericMeta as _GenericAlias
 else:
     from typing import _GenericAlias
-from typing import TypeVar
-from typing import Union
 
 
 class SavePath(str):

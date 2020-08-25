@@ -8,11 +8,11 @@
 import ast
 from enum import EnumMeta
 import os
+import subprocess
+import sys
 from time import localtime
 from time import strftime
 import git
-import subprocess
-import sys
 minor = sys.version_info.minor
 if minor < 7:
     from typing import GenericMeta as _GenericAlias
@@ -21,6 +21,22 @@ else:
 
 
 def make_argument(arg_name, arg_type, parser):
+    """Make argparser argument based on type
+
+    Based on the type passed in handle the creation of the argparser argument so that overrides will have the correct
+    behavior when set
+
+    *Args*:
+
+        arg_name: name for the argument
+        arg_type: type of the argument
+        parser: current parser
+
+    Returns:
+
+        parser: updated argparser
+
+    """
     # For generic alias we take the input string and use a custom type callable to convert
     if isinstance(arg_type, _GenericAlias):
         parser.add_argument(arg_name, required=False, type=_handle_generic_type_args)
@@ -58,6 +74,17 @@ def add_info(out_dict):
 
 
 def make_blank_git(out_dict):
+    """Adds blank git info
+
+    *Args*:
+
+        out_dict: current output dictionary
+
+    Returns:
+
+        out_dict: output dictionary with added git info
+
+    """
     for key in ('BRANCH', 'COMMIT SHA', 'STATUS', 'ORIGIN'):
         out_dict.update({f'# Git {key}': 'UNKNOWN'})
     return out_dict

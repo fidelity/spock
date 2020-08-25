@@ -5,36 +5,96 @@
 
 """Creates the spock config decorator that wraps dataclasses - now an adapter to attr"""
 
-import attr
 import enum
 from inspect import isfunction
-from spock.backend.attr.typed import katra
-from spock.backend.attr.typed import SavePath
-from spock.backend.dataclass._dataclasses import dataclass
 from typing import List
 from typing import Optional
 from typing import Tuple
+import attr
+from spock.backend.attr.typed import katra
+from spock.backend.attr.typed import SavePath
+from spock.backend.dataclass._dataclasses import dataclass
 
 
 def _enum_adapter(key, obj):
+    """Adapter for ChoiceSet to Enum
+
+    *Args*:
+
+        key: name of enum
+        obj: values in the ChoiceSet
+
+    Returns:
+
+        enum_obj: constructed enum object
+
+    """
     enum_set = {('option_' + str(idx)): val for idx, val in enumerate(obj.choice_set)}
     enum_obj = enum.Enum(key, enum_set)
     return enum_obj
 
 
-def _list_adapter(key, obj):
+def _list_adapter(_, obj):
+    """Adapter for List types
+
+    *Args*:
+
+        _: unused
+        obj: old list type
+
+    Returns:
+
+        List type
+
+    """
     return List[obj.__args__[0]]
 
 
-def _list_optional_adapter(key, obj):
+def _list_optional_adapter(_, obj):
+    """Adapter for Optional List types
+
+    *Args*:
+
+        _: unused
+        obj: old list type
+
+    Returns:
+
+        Optional List type
+
+    """
     return Optional[List[obj.__args__[0]]]
 
 
-def _tuple_adapter(key, obj):
+def _tuple_adapter(_, obj):
+    """Adapter for Tuple types
+
+    *Args*:
+
+        _: unused
+        obj: old tuple type
+
+    Returns:
+
+        Tuple type
+
+    """
     return Tuple[obj.__args__[0]]
 
 
-def _tuple_optional_adapter(key, obj):
+def _tuple_optional_adapter(_, obj):
+    """Adapter for Optional Tuple types
+
+    *Args*:
+
+        _: unused
+        obj: old tuple type
+
+    Returns:
+
+        Optional Tuple type
+
+    """
     return Optional[Tuple[obj.__args__[0]]]
 
 
@@ -86,6 +146,21 @@ def spock_dataclass(*args, **kwargs):
 
 
 def _adapter(cls):
+    """Takes a class an adapts the dataclass backend to the attr backend
+
+    Maps the old interface and backend of dataclasses to the new interface and backend of attrs. Based on a type map
+    dictionary and mapping functions it provides the ability to 1:1 map between inferfaces.
+
+    *Args*:
+
+        cls: input class
+
+    *Returns*:
+
+        attrs_dict: a dictionary of current attributes to make
+        bases: any base classes to inherit from
+
+    """
     # Make a blank attrs dict for new attrs
     attrs_dict = {}
     # We are mapping to the attr backend thus we need to get the parent classes for inheritance
