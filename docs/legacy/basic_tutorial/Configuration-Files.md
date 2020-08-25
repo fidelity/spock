@@ -21,22 +21,16 @@ Values in `spock` are set using external configuration files.
 Recall that we defined our `spock` class as such:
 
 ```python
-class Activation(Enum):
-    relu = 'relu'
-    gelu = 'gelu'
-    tanh = 'tanh'
-
-
-@spock
+@spock_config
 class ModelConfig:
-    n_features: int
-    dropout: List[float]
-    hidden_sizes: Tuple[int]
-    activation: Activation
+    n_features: IntArg
+    dropout: ListArg[float]
+    hidden_sizes: TupleArg[int]
+    activation: ChoiceArg(choice_set=['relu', 'gelu', 'tanh'])
 ```
 
-Note that all of the types of our parameters `int`, `List`, `Tuple`, and `Activation` are required types. This
-means that if we do not specify values for these parameters in our configuration file `spock` will throw an Exception. 
+Note that all of the types of our parameters `IntArg`, `ListArg`, `TupleArg`, and `ChoiceArg` are required types. This
+means that if we do not specify values for these parameters in our configuration file `spock` will throw an exception. 
 
 Let's create our configuration file using the YAML standard: `tutorial.yaml`
 

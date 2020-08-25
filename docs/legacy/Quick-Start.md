@@ -1,21 +1,15 @@
 # Quick Start
 
-*Updated for the new and simpler API!*
-
-*New API is 100% backwards compatible with existing code!*
-
 This is a quick and dirty guide to getting up and running with `spock`. Read the 
 [Basic Tutorial](basic_tutorial/About.md) as a simple guide and then explore more
 [Advanced Features](advanced_features/About.md) for in-depth usage.
 
 All examples can be found [here](https://github.com/fidelity/spock/blob/master/examples).
 
-Legacy documentation for the old API can be found [here](https://github.com/fidelity/spock/blob/master/docs/legacy)
-
 ### TL;DR
 1. Import the necessary components from `spock`
-2. Create a basic Python class, decorate it with `@spock`
-3. Define your parameters in the class (using the typing module if needed)
+2. Create a basic Python class, decorate it with `@spock_config`
+3. Define your parameters in the class
 4. Use the defined parameters in your code 
 5. Create a configuration file
 6. Run your code with --config /path/to/config
@@ -24,20 +18,20 @@ Legacy documentation for the old API can be found [here](https://github.com/fide
 
 A basic python script, `simple.py`.
 
-First we import the necessary functionality from `spock`. We define our class using the `@spock` 
-decorator and our parameters with supported argument types from `typing`.
+First we import the necessary functionality from `spock`. We define our class using the `@spock_config` 
+decorator and our parameters with supported argument types from `spock.args`.
 
 ```python
+from spock.args import *
 from spock.builder import ConfigArgBuilder
-from spock.config import spock
-from typing import List
+from spock.config import spock_config
 
-@spock
+@spock_config
 class BasicConfig:
-    parameter: bool
-    fancy_parameter: float
-    fancier_parameter: float
-    most_fancy_parameter: List[int]
+    parameter: BoolArg
+    fancy_parameter: FloatArg
+    fancier_parameter: FloatArg
+    most_fancy_parameter: ListArg[int]
 ```
 
 Next let's add two simple function(s) to our script. They both so the same thing but use our parameters in two different
@@ -61,9 +55,9 @@ def add_by_parameter(multiply_param, list_vals, add_param, tf_round):
     return val_sum
 ```
 
-Now, we build out the parameter objects by passing in the `spock` objects (as `*args`) to the `ConfigArgBuilder` 
-and chain call the `generate` method. The returned namespace object contains the defined classes named with the given
-`spock` class name. We then can pass the whole object to our first function or specific parameters to our
+Now, we build out the parameter objects by passing in the `spock_config` objects (as `*args`) to the `ConfigArgBuilder` 
+and chain call the `generate` method. The returned namespace object contains the dataclasses named with the 
+`spock_config` class name. We then can pass the whole dataclass to our first function or specific parameters to our
 second function.
 
 ```python

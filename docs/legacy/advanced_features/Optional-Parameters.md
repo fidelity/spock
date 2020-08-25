@@ -2,7 +2,7 @@
 
 `spock` allows for parameters to be defined as optional. This means that if the parameter value is not set from either 
 a configuration file or a default value it will be assigned the `None` value. Optional `spock` parameters are defined
-using the `Optional` type from the `typing` standard library.
+using the optional version of the base type: `FloatOptArg`, `IntOptArg`, `StrOptArg`, `ListOptArg`,`TupleOptArg`.
 
 ### Defining Optional spock Parameters
 
@@ -15,30 +15,17 @@ As an example, let's assume we want to make dropout within our basic neural netw
 definition in: `tutorial.py`
 
 ```python
-from enum import Enum
-from spock.args import SavePath
-from spock.config import spock
-from typing import List
-from typing import Optional
-from typing import Tuple
-
-class Activation(Enum):
-    relu = 'relu'
-    gelu = 'gelu'
-    tanh = 'tanh'
-
-
-@spock
+@spock_config
 class ModelConfig:
-    save_path: SavePath
-    lr: float = 0.01
-    n_features: int
-    dropout: Optional[List[float]]
-    hidden_sizes: Tuple[int] = (32, 32, 32)
-    activation: Activation = 'relu'
+    save_path: SavePathOptArg
+    lr: FloatArg = 0.01
+    n_features: IntArg
+    dropout: ListOptArg[float]
+    hidden_sizes: TupleArg[int] = TupleArg.defaults((32, 32, 32))
+    activation: ChoiceArg(choice_set=['relu', 'gelu', 'tanh'], default='relu')
 ```
 
-Notice that all we did was change the type from `List[float]` to `Optional[List[float]]`.
+Notice that all we did was change the type from `ListArg` to `ListOptAg`.
 
 Now let's edit our simple neural network code to reflect that dropout is now optional. We have to change the code a bit
 to be more modular (but still ugly for demonstration): `basic_nn.py`

@@ -1,0 +1,5 @@
+# Parameters
+parameter: true
+fancy_parameter: 8.8
+fancier_parameter: 64.64
+most_fancy_parameter: [768, 768, 512, 128]

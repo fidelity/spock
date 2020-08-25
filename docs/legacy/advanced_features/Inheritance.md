@@ -1,55 +1,90 @@
-from basic_nn import BasicNet
-from enum import Enum
-from spock.args import SavePath
-from spock.builder import ConfigArgBuilder
-from spock.config import spock
-import torch
-from typing import List
-from typing import Optional
-from typing import Tuple
+# Inheritance
+
+`spock` supports class inheritance between different defined `spock` classes. This allows you to build complex 
+configurations derived from a common base class or classes.
+
+### Defining an Inherited spock Class
+
+Back to our example. We have implemented two different optimizers to train our neural network. In its current state
+we have overlooked the fact that the two different optimizers share a set of common parameters but each also has a 
+set of specific parameters. Instead of defining redundant parameter definitions let's use `spock` inheritance.
+
+We create a new `spock` class that inherits from another `spock` class. This functions just like traditional inheritance
+where the child will inherit the parameter definitions from the parent class.
+
+Editing our definition in: `tutorial.py`
+
+```python
+from spock.args import *
+from spock.config import spock_config
 
 
-class Activation(Enum):
-    relu = 'relu'
-    gelu = 'gelu'
-    tanh = 'tanh'
-
-
-class Optimizer(Enum):
-    sgd = 'SGD'
-    adam = 'Adam'
-
-
-@spock
+@spock_config
 class ModelConfig:
-    save_path: SavePath
-    n_features: int
-    dropout: Optional[List[float]]
-    hidden_sizes: Tuple[int] = (32, 32, 32)
-    activation: Activation = 'relu'
-    optimizer: Optimizer
-    cache_path: Optional[str]
+    save_path: SavePathOptArg
+    n_features: IntArg
+    dropout: ListOptArg[float]
+    hidden_sizes: TupleArg[int] = TupleArg.defaults((32, 32, 32))
+    activation: ChoiceArg(choice_set=['relu', 'gelu', 'tanh'], default='relu')
+    optimizer = ChoiceArg(choice_set=['SGD', 'Adam'])
 
 
-@spock
+@spock_config
 class DataConfig:
-    batch_size: int = 2
-    n_samples: int = 8
-    cache_path: Optional[str]
+    batch_size: IntArg = 2
+    n_samples: IntArg = 8
 
 
-@spock
+@spock_config
 class OptimizerConfig:
-    lr: float = 0.01
-    n_epochs: int = 2
-    grad_clip: Optional[float]
+    lr: FloatArg = 0.01
+    n_epochs: IntArg = 2
+    grad_clip: FloatOptArg
+    
 
-
-@spock
+@spock_config
 class SGDConfig(OptimizerConfig):
-    weight_decay: float
-    momentum: float
-    nesterov: bool
+    weight_decay: FloatArg
+    momentum: FloatArg
+    nesterov: BoolArg
+
+```
+
+Editing our configuration file: `tutorial.yaml`
+
+```yaml
+################
+# tutorial.yaml
+################
+# Special Key
+save_path: /tmp
+# ModelConfig
+n_features: 64
+dropout: [0.2, 0.1]
+hidden_sizes: [32, 32, 16]
+activation: relu
+optimizer: SGD
+# DataConfig
+batch_size: 2
+n_samples: 8
+# OptimizerConfig
+lr: 0.01
+n_epochs: 2
+grad_clip: 5.0
+# SGD Config
+weight_decay: 1E-5
+momentum: 0.9
+nesterov: true
+```
+
+### Using an Inherited spock Class
+
+Let's use our inherited class to use the SGD optimizer with the defined parameter on our basic neural network: 
+`tutorial.py`
+
+```python
+import torch
+from .basic_nn import BasicNet
 
 
 def train(x_data, y_data, model, model_config, data_config, optimizer_config):
@@ -88,7 +123,4 @@ def main():
     y_data = torch.randint(0, 3, (config.DataConfig.n_samples,))
     # Run some training
     train(x_data, y_data, basic_nn, config.ModelConfig, config.DataConfig, config.SGDConfig)
-
-
-if __name__ == '__main__':
-    main()
+```

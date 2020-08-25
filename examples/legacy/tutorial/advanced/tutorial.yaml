@@ -1,0 +1,26 @@
+################
+# tutorial.yaml
+################
+# Global
+cache_path: /tmp/cache/
+# Special Key
+save_path: /tmp
+# ModelConfig
+n_features: 64
+dropout: [0.2, 0.1]
+hidden_sizes: [32, 32, 16]
+activation: relu
+optimizer: SGD
+# DataConfig
+batch_size: 2
+n_samples: 8
+DataConfig:
+  cache_path: /home/user/cache/
+# OptimizerConfig
+lr: 0.01
+n_epochs: 2
+grad_clip: 5.0
+# SGD Config
+weight_decay: 1E-5
+momentum: 0.9
+nesterov: true

@@ -1,14 +1,14 @@
+from spock.args import *
 from spock.builder import ConfigArgBuilder
-from spock.config import spock
-from typing import List
+from spock.config import spock_config
 
 
-@spock
+@spock_config
 class BasicConfig:
-    parameter: bool
-    fancy_parameter: float
-    fancier_parameter: float
-    most_fancy_parameter: List[int]
+    parameter: BoolArg
+    fancy_parameter: FloatArg
+    fancier_parameter: FloatArg
+    most_fancy_parameter: ListArg[int]
 
 
 def add_namespace(config):

@@ -1,64 +1,45 @@
 # Define
 
 `spock` manages complex configurations via a class based solution. All parameters are defined in a class or 
-multiple classes decorated using the `@spock` decorator. Parameters are defined with base types or those defined within
-the `typing` module and are type checked at run time. Once built, all parameters can be found within an automatically 
-generated namespace object that contains each class that can be accessed with the given `@spock` class name.
+multiple classes decorated with `@spock_config`. Parameters are defined with `spock` types that are checked at run time.
+Once built, all parameters can be found within an automatically generated namespace object that contains each class 
+that can be accessed with the `spock_config` class name.
 
 All examples can be found [here](https://github.com/fidelity/spock/blob/master/examples).
 
 ### Supported Parameter Types
 
-`spock` supports the following argument types (note `List`, `Tuple`, and `Optional` are defined in the `typing` 
-standard library while `Enum` is within the `enum` standard library):
+`spock` supports the following argument types:
 
-| Python Base or Typing Type (Required) | Optional Type | Description |
-|----------------------------|---------------|-------------|
-| bool | Optional[bool] | Basic boolean parameter (e.g. True) |
-| float | Optional[float] | Basic float type parameter (e.g. 10.2) |
-| int | Optional[int] | Basic integer type parameter (e.g. 2) |
-| str | Optional[str] | Basic string type parameter (e.g. 'foo') |
-| List[type] | Optional[List[type]] | Basic list type parameter of base types such as int, float, etc. (e.g. [10.0, 2.0]) |
-| Tuple[type] | Optional[Tuple[type]] | Basic tuple type parameter of base types such as int, float, etc. (e.g. (10, 2)) |
-| Enum | Optional[Enum] | Parameter that must be from a defined set of values of base types such as int, float, etc. |
-
-Parameters that are specified without the `Optional[]` type will be considered REQUIRED and therefore will raise an
-Exception if not value is specified. 
-
-Nested types are also supported. For instance:
-
-`List[List[int]]` which would define a list of list of integers!
+| Python Base Type | `spock` Type | Optional `spock` Type | Description |
+|------------------|--------------|-----------------------|-------------|
+| bool | BoolArg | N/A | Basic boolean parameter (e.g. True) |
+| float | FloatArg | FloatOptArg | Basic float type parameter (e.g. 10.2) |
+| int | IntArg | IntOptArg | Basic integer type parameter (e.g. 2) |
+| str | StrArg | StrOptArg | Basic string type parameter (e.g. 'foo') |
+| list | ListArg | ListOptArg | Basic list type parameter of base types such as int, float, etc. (e.g. [10.0, 2.0]) |
+| tuple | TupleArg | TupleOptArg | Basic tuple type parameter of base types such as int, float, etc. (e.g. (10, 2)) |
+| N/A | ChoiceArg | N/A | Parameter that must be from a defined set of values of base types such as int, float, etc. |
 
 ### Defining A spock Class
 
 Let's start building out an example (a simple neural net in PyTorch) that we will continue to use within the tutorial: 
 `tutorial.py`
 
-Here we import the basic units of functionality from `spock`. We define our class using the `@spock` 
-decorator and define our parameters with supported argument types. Parameters are defined within 
-the class by using the format `parameter: type`. Note that to create a parameter that is required to be within a 
-specified set one must first define an `Enum` class object with the given options. The `Enum` class is then passed to
-your `spock` class just like other types.
+Here we import the basic units of functionality from `spock`. We define our class using the `@spock_config` 
+decorator and define our parameters with supported argument types from `spock.args`. Parameters are defined within 
+the class by using the format `parameter: type`.
 
 ```python
-from enum import Enum
-from spock.config import spock
-from typing import List
-from typing import Tuple
+from spock.args import *
+from spock.config import spock_config
 
-
-class Activation(Enum):
-    relu = 'relu'
-    gelu = 'gelu'
-    tanh = 'tanh'
-
-
-@spock
+@spock_config
 class ModelConfig:
-    n_features: int
-    dropout: List[float]
-    hidden_sizes: Tuple[int]
-    activation: Activation
+    n_features: IntArg
+    dropout: ListArg[float]
+    hidden_sizes: TupleArg[int]
+    activation: ChoiceArg(choice_set=['relu', 'gelu', 'tanh'])
 ```
 
 ### Using spock Parameters: Writing More Code

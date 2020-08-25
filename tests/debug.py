@@ -18,7 +18,7 @@ class Choice(Enum):
 
 @spock
 class Test:
-    new_choice: Choice
+    new_choice: Choice = 'banana'
     # fix_me: Tuple[Tuple[int]]
     new: int
     fail: bool

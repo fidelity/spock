@@ -1,0 +1,10 @@
+################
+# tutorial.yaml
+################
+# Special Key
+save_path: /tmp
+# ModelConfig
+n_features: 64
+dropout: [0.2, 0.1]
+hidden_sizes: [32, 32, 16]
+activation: relu
