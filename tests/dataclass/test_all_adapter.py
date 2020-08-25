@@ -117,7 +117,7 @@ class TestAllTypesYAML(AllTypes):
     def arg_builder(monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
-                                    './tests/conf/yaml/test.yaml'])
+                                    './tests/conf/legacy/yaml/test.yaml'])
             config = ConfigArgBuilder(TypeConfig, TypeOptConfig, desc='Test Builder')
             return config.generate()
 
@@ -129,7 +129,7 @@ class TestAllDefaultsYAML(AllDefaults):
     def arg_builder(monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
-                                    './tests/conf/yaml/test.yaml'])
+                                    './tests/conf/legacy/yaml/test.yaml'])
             config = ConfigArgBuilder(TypeConfig, TypeOptConfig, TypeDefaultConfig, TypeDefaultOptConfig,
                                       desc='Test Builder')
             return config.generate()
@@ -142,7 +142,7 @@ class TestFrozen:
     def arg_builder(monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
-                                    './tests/conf/yaml/test.yaml'])
+                                    './tests/conf/legacy/yaml/test.yaml'])
             config = ConfigArgBuilder(TypeConfig, TypeOptConfig, desc='Test Builder')
             return config.generate()
 
@@ -165,7 +165,7 @@ class TestConfigKwarg(AllTypes):
     def arg_builder(monkeypatch):
         with monkeypatch.context() as m:
             config = ConfigArgBuilder(TypeConfig, TypeOptConfig, desc='Test Builder',
-                                      configs=['./tests/conf/yaml/test.yaml'])
+                                      configs=['./tests/conf/legacy/yaml/test.yaml'])
             return config.generate()
 
 
@@ -176,7 +176,7 @@ class TestNoCmdLineKwarg(AllTypes):
     def arg_builder(monkeypatch):
         with monkeypatch.context() as m:
             config = ConfigArgBuilder(TypeConfig, TypeOptConfig, no_cmd_line=True,
-                                      configs=['./tests/conf/yaml/test.yaml'])
+                                      configs=['./tests/conf/legacy/yaml/test.yaml'])
             return config.generate()
 
 
@@ -195,7 +195,7 @@ class TestComposition:
     def arg_builder(monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
-                                    './tests/conf/yaml/test_include.yaml'])
+                                    './tests/conf/legacy/yaml/test_include.yaml'])
             config = ConfigArgBuilder(TypeConfig, TypeOptConfig, desc='Test Builder')
             return config.generate()
 
@@ -210,7 +210,7 @@ class TestInheritance(AllInherited):
     def arg_builder(monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
-                                    './tests/conf/yaml/inherited.yaml'])
+                                    './tests/conf/legacy/yaml/inherited.yaml'])
             config = ConfigArgBuilder(TypeInherited, desc='Test Builder')
             return config.generate()
 
@@ -220,7 +220,7 @@ class TestChoiceRaises:
     def test_choice_raise(self, monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
-                                    './tests/conf/yaml/choice.yaml'])
+                                    './tests/conf/legacy/yaml/choice.yaml'])
             with pytest.raises(ValueError):
                 ConfigArgBuilder(ChoiceFail, desc='Test Builder')
 
@@ -230,7 +230,7 @@ class TestOverrideRaise:
     def test_override_raise(self, monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
-                                    './tests/conf/yaml/test.yaml'])
+                                    './tests/conf/legacy/yaml/test.yaml'])
             with pytest.raises(ValueError):
                 ConfigArgBuilder(TypeInherited, desc='Test Builder')
 
@@ -240,7 +240,7 @@ class TestConfigArgType:
     def test_type_arg_builder(self, monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
-                                    './tests/conf/test.yaml'])
+                                    './tests/conf/legacy/test.yaml'])
             with pytest.raises(TypeError):
                 ConfigArgBuilder(['Names'], desc='Test Builder')
 
@@ -249,7 +249,7 @@ class TestUnknownArg:
     def test_type_unknown(self, monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
-                                    './tests/conf/yaml/test_incorrect.yaml'])
+                                    './tests/conf/legacy/yaml/test_incorrect.yaml'])
             with pytest.raises(ValueError):
                 ConfigArgBuilder(TypeConfig, desc='Test Builder')
 
@@ -259,7 +259,7 @@ class TestDefaultWriter:
         """Test the default writer works correctly"""
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
-                                    './tests/conf/yaml/test.yaml'])
+                                    './tests/conf/legacy/yaml/test.yaml'])
             config = ConfigArgBuilder(TypeConfig, TypeOptConfig, desc='Test Builder')
             # Test the chained version
             config.save(user_specified_path=tmp_path).generate()
@@ -271,7 +271,7 @@ class TestYAMLWriter:
         """Test the YAML writer works correctly"""
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
-                                    './tests/conf/yaml/test.yaml'])
+                                    './tests/conf/legacy/yaml/test.yaml'])
             config = ConfigArgBuilder(TypeConfig, TypeOptConfig, desc='Test Builder')
             # Test the chained version
             config.save(user_specified_path=tmp_path, file_extension='.yaml').generate()
@@ -287,7 +287,7 @@ class TestWritePathRaise:
         """Test the YAML writer works correctly"""
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
-                                    './tests/conf/yaml/test.yaml'])
+                                    './tests/conf/legacy/yaml/test.yaml'])
             config = ConfigArgBuilder(TypeConfig, TypeOptConfig, desc='Test Builder')
             # Test the chained version
             with pytest.raises(FileNotFoundError):
@@ -302,7 +302,7 @@ class TestAllTypesTOML(AllTypes):
     def arg_builder(monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
-                                    './tests/conf/toml/test.toml'])
+                                    './tests/conf/legacy/toml/test.toml'])
             config = ConfigArgBuilder(TypeConfig, TypeOptConfig, desc='Test Builder')
             return config.generate()
 
@@ -314,7 +314,7 @@ class TestAllDefaultsTOML(AllDefaults):
     def arg_builder(monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
-                                    './tests/conf/toml/test.toml'])
+                                    './tests/conf/legacy/toml/test.toml'])
             config = ConfigArgBuilder(TypeConfig, TypeOptConfig, TypeDefaultConfig, TypeDefaultOptConfig,
                                       desc='Test Builder')
             return config.generate()
@@ -325,7 +325,7 @@ class TestTOMLWriter:
         """Check the TOML writer works correctly"""
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
-                                    './tests/conf/toml/test.toml'])
+                                    './tests/conf/legacy/toml/test.toml'])
             config = ConfigArgBuilder(TypeConfig, TypeOptConfig, desc='Test Builder')
             # Test the chained version
             config.save(user_specified_path=tmp_path, file_extension='.toml').generate()
@@ -344,7 +344,7 @@ class TestAllTypesJSON(AllTypes):
     def arg_builder(monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
-                                    './tests/conf/json/test.json'])
+                                    './tests/conf/legacy/json/test.json'])
             config = ConfigArgBuilder(TypeConfig, TypeOptConfig, desc='Test Builder')
             return config.generate()
 
@@ -356,7 +356,7 @@ class TestAllDefaultsJSON(AllDefaults):
     def arg_builder(monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
-                                    './tests/conf/json/test.json'])
+                                    './tests/conf/legacy/json/test.json'])
             config = ConfigArgBuilder(TypeConfig, TypeOptConfig, TypeDefaultConfig, TypeDefaultOptConfig,
                                       desc='Test Builder')
             return config.generate()
@@ -367,7 +367,7 @@ class TestJSONWriter:
         """Check JSON writer works correctly"""
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
-                                    './tests/conf/json/test.json'])
+                                    './tests/conf/legacy/json/test.json'])
             config = ConfigArgBuilder(TypeConfig, TypeOptConfig, desc='Test Builder')
             # Test the chained version
             config.save(user_specified_path=tmp_path, file_extension='.json').generate()

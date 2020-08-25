@@ -52,6 +52,8 @@ class TypeConfig:
     list_p_float: List[float]
     # Required List -- Int
     list_p_int: List[int]
+    # Required List of List -- Int
+    list_list_p_int: List[List[int]]
     # Required List -- Str
     list_p_str: List[str]
     # Required List -- Bool
