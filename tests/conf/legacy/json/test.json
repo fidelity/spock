@@ -1,0 +1,20 @@
+{
+  "bool_p_set": true,
+  "int_p": 10,
+  "float_p": 1e1,
+  "string_p": "Spock",
+  "list_p_float": [10.0, 20.0],
+  "list_p_int": [10, 20],
+  "list_p_str": ["Spock", "Package"],
+  "list_p_bool": [true, false],
+  "tuple_p_float": [10.0, 20.0],
+  "tuple_p_int": [10, 20],
+  "tuple_p_str": ["Spock", "Package"],
+  "tuple_p_bool": [true, false],
+  "choice_p_str": "option_1",
+  "choice_p_int": 10,
+  "choice_p_float": 10.0,
+  "TypeConfig": {
+    "float_p": 12.0
+  }
+}
