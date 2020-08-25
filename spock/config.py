@@ -5,20 +5,11 @@
 
 """Creates the spock config decorator that wraps dataclasses"""
 
-from spock._dataclasses import dataclass
+from spock.backend.dataclass.config import spock_dataclass
+from spock.backend.attr.config import spock_attr
 
+# Dataclasses for legacy support -- now wraps attr via an adapter
+spock_config = spock_dataclass
 
-def spock_config(*args, **kwargs):
-    """Wrapper to dataclass that forms the base of Spock configs
-
-    *Args*:
-
-        *args:
-        **kwargs:
-
-    *Returns*:
-
-        frozen dataclass: frozen version of the dataclass
-    """
-    kwargs['frozen'] = True
-    return dataclass(*args, **kwargs)
+# Simplified decorator for attrs
+spock = spock_attr

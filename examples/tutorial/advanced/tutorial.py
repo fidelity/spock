@@ -1,40 +1,55 @@
 from basic_nn import BasicNet
-from spock.args import *
+from enum import Enum
+from spock.args import SavePath
 from spock.builder import ConfigArgBuilder
-from spock.config import spock_config
+from spock.config import spock
 import torch
+from typing import List
+from typing import Optional
+from typing import Tuple
 
 
-@spock_config
+class Activation(Enum):
+    relu = 'relu'
+    gelu = 'gelu'
+    tanh = 'tanh'
+
+
+class Optimizer(Enum):
+    sgd = 'SGD'
+    adam = 'Adam'
+
+
+@spock
 class ModelConfig:
-    save_path: SavePathOptArg
-    n_features: IntArg
-    dropout: ListOptArg[float]
-    hidden_sizes: TupleArg[int] = TupleArg.defaults((32, 32, 32))
-    activation: ChoiceArg(choice_set=['relu', 'gelu', 'tanh'], default='relu')
-    optimizer: ChoiceArg(choice_set=['SGD', 'Adam'])
-    cache_path: StrOptArg
+    save_path: SavePath
+    n_features: int
+    dropout: Optional[List[float]]
+    hidden_sizes: Tuple[int] = (32, 32, 32)
+    activation: Activation = 'relu'
+    optimizer: Optimizer
+    cache_path: Optional[str]
 
 
-@spock_config
+@spock
 class DataConfig:
-    batch_size: IntArg = 2
-    n_samples: IntArg = 8
-    cache_path: StrOptArg
+    batch_size: int = 2
+    n_samples: int = 8
+    cache_path: Optional[str]
 
 
-@spock_config
+@spock
 class OptimizerConfig:
-    lr: FloatArg = 0.01
-    n_epochs: IntArg = 2
-    grad_clip: FloatOptArg
+    lr: float = 0.01
+    n_epochs: int = 2
+    grad_clip: Optional[float]
 
 
-@spock_config
+@spock
 class SGDConfig(OptimizerConfig):
-    weight_decay: FloatArg
-    momentum: FloatArg
-    nesterov: BoolArg
+    weight_decay: float
+    momentum: float
+    nesterov: bool
 
 
 def train(x_data, y_data, model, model_config, data_config, optimizer_config):

@@ -1,7 +1,7 @@
 # Parameter Groups
 
 Since `spock` manages complex configurations via a class based solution we can define and decorate multiple classes 
-with `@spock_config`. Each class gets created as a separate class object within the `spock` namespace object.
+with `@spock`. Each class gets created as a separate class object within the `spock` namespace object.
 
 ### Building spock Parameter Groups
 
@@ -13,31 +13,46 @@ functionality.
 Editing our definition in: `tutorial.py`
 
 ```python
-from spock.args import *
-from spock.config import spock_config
+from enum import Enum
+from spock.args import SavePath
+from spock.config import spock
+from typing import List
+from typing import Optional
+from typing import Tuple
+
+class Activation(Enum):
+    relu = 'relu'
+    gelu = 'gelu'
+    tanh = 'tanh'
 
 
-@spock_config
+class Optimizer(Enum):
+    sgd = 'SGD'
+    adam = 'Adam'
+
+
+@spock
 class ModelConfig:
-    save_path: SavePathOptArg
-    n_features: IntArg
-    dropout: ListOptArg[float]
-    hidden_sizes: TupleArg[int] = TupleArg.defaults((32, 32, 32))
-    activation: ChoiceArg(choice_set=['relu', 'gelu', 'tanh'], default='relu')
-    optimizer = ChoiceArg(choice_set=['SGD', 'Adam'])
+    save_path: SavePath
+    n_features: int
+    dropout: Optional[List[float]]
+    hidden_sizes: Tuple[int] = (32, 32, 32)
+    activation: Activation = 'relu'
+    optimizer: Optimizer
 
 
-@spock_config
+@spock
 class DataConfig:
-    batch_size: IntArg = 2
-    n_samples: IntArg = 8
+    batch_size: int = 2
+    n_samples: int = 8
 
 
-@spock_config
+@spock
 class OptimizerConfig:
-    lr: FloatArg = 0.01
-    n_epochs: IntArg = 2
-    grad_clip: FloatOptArg
+    lr: float = 0.01
+    n_epochs: int = 2
+    grad_clip: Optional[float]
+
 ```
 
 Now we have three separate `spock` classes that we need to generate the namespace object from. Simply add the new 

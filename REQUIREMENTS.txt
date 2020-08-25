@@ -1,3 +1,4 @@
+attr
 GitPython
 pyYAML
 toml

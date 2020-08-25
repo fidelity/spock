@@ -1,0 +1,22 @@
+################
+# changing.yaml
+################
+# Global
+cache_path: /tmp/cache/
+config: [data.yaml]
+# Special Key
+save_path: /tmp
+# ModelConfig
+n_features: 64
+dropout: [0.2, 0.1]
+hidden_sizes: [32, 32, 16]
+activation: relu
+optimizer: SGD
+# OptimizerConfig
+lr: 0.01
+n_epochs: 2
+grad_clip: 5.0
+# SGD Config
+weight_decay: 1E-5
+momentum: 0.9
+nesterov: true
