@@ -15,15 +15,21 @@ So let's continue in: `tutorial.py`
 Recall that we defined our `spock` class as such:
 
 ```python
-@spock_config
+class Activation(Enum):
+    relu = 'relu'
+    gelu = 'gelu'
+    tanh = 'tanh'
+
+
+@spock
 class ModelConfig:
-    n_features: IntArg
-    dropout: ListArg[float]
-    hidden_sizes: TupleArg[int]
-    activation: ChoiceArg(choice_set=['relu', 'gelu', 'tanh'])
+    n_features: int
+    dropout: List[float]
+    hidden_sizes: Tuple[int]
+    activation: Activation
 ```
 
-To generate the namespace object, import the `ConfigArgBuilder` class, pass in your `@spock_config` classes as `*args`, 
+To generate the namespace object, import the `ConfigArgBuilder` class, pass in your `@spock` classes as `*args`, 
 add an optional description, and then chain call the `generate()` method. Each `spock` class is defined in the 
 namespace object given by the class name.
 

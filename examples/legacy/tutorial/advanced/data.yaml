@@ -1,0 +1,8 @@
+################
+# data.yaml
+################
+# DataConfig
+batch_size: 2
+n_samples: 8
+DataConfig:
+  cache_path: /home/user/cache/

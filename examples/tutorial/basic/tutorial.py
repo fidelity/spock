@@ -1,17 +1,26 @@
 from basic_nn import BasicNet
-from spock.args import *
+from enum import Enum
+from spock.args import SavePath
 from spock.builder import ConfigArgBuilder
-from spock.config import spock_config
+from spock.config import spock
 import torch
+from typing import List
+from typing import Tuple
 
 
-@spock_config
+class Activation(Enum):
+    relu = 'relu'
+    gelu = 'gelu'
+    tanh = 'tanh'
+
+
+@spock
 class ModelConfig:
-    save_path: SavePathOptArg
-    n_features: IntArg
-    dropout: ListArg[float]
-    hidden_sizes: TupleArg[int]
-    activation: ChoiceArg(choice_set=['relu', 'gelu', 'tanh'])
+    save_path: SavePath
+    n_features: int
+    dropout: List[float]
+    hidden_sizes: Tuple[int]
+    activation: Activation
 
 
 def main():

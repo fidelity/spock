@@ -6,19 +6,25 @@ output file can be either YAML, TOML, or JSON (via the `file_extension` keyword 
 
 ### Specify spock Special Parameter Type
 
-We simply specify a `SavePathOptArg` in a spock config, which is a special argument type that is used to set the 
+We simply specify a `SavePath` in a spock config, which is a special argument type that is used to set the 
 save path from a configuration file.
 
 Adding to: `tutorial.py`
 
 ```python
-@spock_config
+class Activation(Enum):
+    relu = 'relu'
+    gelu = 'gelu'
+    tanh = 'tanh'
+
+
+@spock
 class ModelConfig:
-    save_path: SavePathOptArg
-    n_features: IntArg
-    dropout: ListArg[float]
-    hidden_sizes: TupleArg[int]
-    activation: ChoiceArg(choice_set=['relu', 'gelu', 'tanh'])
+    save_path: SavePath
+    n_features: int
+    dropout: List[float]
+    hidden_sizes: Tuple[int]
+    activation: Activation
 ```
 
 And adding in the chained `save()` call...

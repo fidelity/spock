@@ -10,6 +10,16 @@ from spock.backend.base import BasePayload
 
 
 class DataClassPayload(BasePayload):
+    """Handles building the payload for dataclass backend
+
+    This class builds out the payload from config files of multiple types. It handles various
+    file types and also composition of config files via a recursive calls
+
+    *Attributes*:
+
+        _loaders: maps of each file extension to the loader class
+
+    """
     def __init__(self):
         super().__init__()
 

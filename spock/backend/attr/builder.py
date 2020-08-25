@@ -5,15 +5,29 @@
 
 """Handles the building/saving of the configurations from the Spock config classes"""
 
+import sys
 import attr
 from spock.backend.base import BaseBuilder
-import sys
 
 
 class AttrBuilder(BaseBuilder):
+    """Attr specific builder
+
+    Class that handles building for the attr backend
+
+    *Attributes*
+
+        input_classes: list of input classes that link to a backend
+        _configs: None or List of configs to read from
+        _create_save_path: boolean to make the path to save to
+        _desc: description for the arg parser
+        _no_cmd_line: flag to force no command line reads
+        save_path: list of path(s) to save the configs to
+
+    """
     def __init__(self, *args, configs=None, create_save_path=False, desc='', no_cmd_line=False, **kwargs):
         super().__init__(*args, configs=configs, create_save_path=create_save_path, desc=desc,
-                                               no_cmd_line=no_cmd_line, **kwargs)
+                         no_cmd_line=no_cmd_line, **kwargs)
         for arg in self.input_classes:
             if not attr.has(arg):
                 raise TypeError('*arg inputs to ConfigArgBuilder must all be class instances with attrs attributes')

@@ -10,6 +10,16 @@ from spock.backend.base import BaseSaver
 
 
 class AttrSaver(BaseSaver):
+    """Base class for saving configs for the attrs backend
+
+    Contains methods to build a correct output payload and then writes to file based on the file
+    extension
+
+    *Attributes*:
+
+        _writers: maps file extension to the correct i/o handler
+
+    """
     def __init__(self):
         super().__init__()
 

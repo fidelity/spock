@@ -7,10 +7,21 @@
 
 from itertools import chain
 from spock.backend.attr.utils import convert_to_tuples
+from spock.backend.attr.utils import get_type_fields
 from spock.backend.base import BasePayload
 
 
 class AttrPayload(BasePayload):
+    """Handles building the payload for attrs backend
+
+    This class builds out the payload from config files of multiple types. It handles various
+    file types and also composition of config files via a recursive calls
+
+    *Attributes*:
+
+        _loaders: maps of each file extension to the loader class
+
+    """
     def __init__(self):
         super().__init__()
 
@@ -34,15 +45,7 @@ class AttrPayload(BasePayload):
         # Get basic args
         attr_fields = {attr.__name__: [val.name for val in attr.__attrs_attrs__] for attr in input_classes}
         # Parse out the types if generic
-        type_fields = {}
-        for attr in input_classes:
-            input_attr = {}
-            for val in attr.__attrs_attrs__:
-                if 'type' in val.metadata:
-                    input_attr.update({val.name: val.metadata['type']})
-                else:
-                    input_attr.update({val.name: None})
-            type_fields.update({attr.__name__: input_attr})
+        type_fields = get_type_fields(input_classes)
         for keys, values in base_payload.items():
             # check if the keys, value pair is expected by the attr class
             if keys != 'config':

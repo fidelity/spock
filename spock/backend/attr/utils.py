@@ -6,6 +6,31 @@
 """Attr utility functions for Spock"""
 
 
+def get_type_fields(input_classes):
+    """Creates a dictionary of names and types
+
+    *Args*:
+
+        input_classes: list of input classes
+
+    *Returns*:
+
+        type_fields: dictionary of names and types
+
+    """
+    # Parse out the types if generic
+    type_fields = {}
+    for attr in input_classes:
+        input_attr = {}
+        for val in attr.__attrs_attrs__:
+            if 'type' in val.metadata:
+                input_attr.update({val.name: val.metadata['type']})
+            else:
+                input_attr.update({val.name: None})
+        type_fields.update({attr.__name__: input_attr})
+    return type_fields
+
+
 def flatten_type_dict(type_dict):
     """Flattens a nested dictionary
 

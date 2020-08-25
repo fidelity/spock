@@ -74,20 +74,15 @@ configurations during Python development. Anyone familiar with Python and knows 
 use `spock` (or if they don't there is plenty of documentation and tutorials on classes).
 
 
-* Simple Declaration: Parameters are defined within a `@spock_config` decorated class. Supports types, 
-required/optional, and automatic defaults.
-
+* Simple Declaration: Type checked parameters are defined within a `@spock` decorated class. Supports required/optional 
+and automatic defaults.
 * Easily Managed Parameter Groups: Each class automatically generates its own object within a single namespace.
-
-* Parameter Inheritance: Classes support inheritance allowing for complex configurations derived from a common base set
- of parameters.
-
+* Parameter Inheritance: Classes support inheritance allowing for complex configurations derived from a common base 
+set of parameters.
 * Multiple Configuration File Types: Configurations are specified from YAML, TOML, or JSON files.
-
-* Hierarchical Configuration: composed from multiple configuration files via simple include statements.
-
+* Hierarchical Configuration: Composed from multiple configuration files via simple include statements.
+* Command-Line Overrides: Quickly experiment by overriding a value with automatically generated command line arguments
 * Immutable: All classes are *frozen* preventing any misuse or accidental overwrites.
-
 * Tractability and Reproducibility: Save currently running parameter configuration with a single chained command. 
 
 ### Other Libraries

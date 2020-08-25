@@ -10,16 +10,16 @@ from abc import abstractmethod
 import argparse
 import os
 from pathlib import Path
+import sys
+from uuid import uuid1
 from spock.handlers import JSONHandler
 from spock.handlers import TOMLHandler
 from spock.handlers import YAMLHandler
 from spock.utils import add_info
 from spock.utils import make_argument
-import sys
-from uuid import uuid1
 
 
-class BaseSaver(ABC):
+class BaseSaver(ABC):  # pylint: disable=too-few-public-methods
     """Base class for saving configs
 
     Contains methods to build a correct output payload and then writes to file based on the file
@@ -84,7 +84,6 @@ class BaseSaver(ABC):
             clean_dict: cleaned output payload
 
         """
-        pass
 
     @staticmethod
     def _clean_output(out_dict, extra_info):
@@ -106,7 +105,7 @@ class BaseSaver(ABC):
             clean_inner_dict = {}
             for inner_key, inner_val in val.items():
                 # Convert tuples to lists so they get written correctly
-                if type(inner_val) == tuple:
+                if isinstance(inner_val, tuple):
                     clean_inner_dict.update({inner_key: list(inner_val)})
                 elif inner_val is not None:
                     clean_inner_dict.update({inner_key: inner_val})
@@ -116,7 +115,22 @@ class BaseSaver(ABC):
         return clean_dict
 
 
-class BaseBuilder(ABC):
+class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
+    """Base class for building the backend specific builders
+
+    This class handles the interface to the backend with the generic ConfigArgBuilder so that different
+    backends can be used to handle processing
+
+    *Attributes*
+
+        input_classes: list of input classes that link to a backend
+        _configs: None or List of configs to read from
+        _create_save_path: boolean to make the path to save to
+        _desc: description for the arg parser
+        _no_cmd_line: flag to force no command line reads
+        save_path: list of path(s) to save the configs to
+
+    """
     def __init__(self, *args, configs=None, create_save_path=False, desc='', no_cmd_line=False, **kwargs):
         self.input_classes = args
         self._configs = configs
@@ -138,7 +152,6 @@ class BaseBuilder(ABC):
             None
 
         """
-        pass
 
     @abstractmethod
     def _handle_arguments(self, args, class_obj):
@@ -156,7 +169,6 @@ class BaseBuilder(ABC):
             fields: dictionary of mapped parameters
 
         """
-        pass
 
     def generate(self, dict_args):
         """Method to auto-generate the actual class instances from the generated args
@@ -221,6 +233,21 @@ class BaseBuilder(ABC):
         return args
 
     def _build_override_parsers(self, desc):
+        """Creates parsers for command-line overrides
+
+        Builds the basic command line parser for configs and help, iterates through all defined attr to make
+        a general override parser, and then iterates through each attr instance to make namespace specific override
+        parsers
+
+        *Args*:
+
+            desc: argparser description
+
+        *Returns*:
+
+            args: argument namespace
+
+        """
         parser = argparse.ArgumentParser(description=desc, add_help=False)
         parser.add_argument('-c', '--config', required=False, nargs='+', default=[])
         parser.add_argument('-h', '--help', action='store_true')
@@ -234,6 +261,20 @@ class BaseBuilder(ABC):
         return args
 
     def _make_general_override_parser(self, parser, input_classes):
+        """Makes a general level override parser
+
+        Flattens all the attrs into a single dictionary and makes a general level parser for the attr name
+
+        *Args*:
+
+            parser: argument parser
+            input_classes: list of input classes for a specific backend
+
+        *Returns*:
+
+            parser: argument parser with new general overrides
+
+        """
         # Make all names list
         all_attr = {}
         for class_obj in input_classes:
@@ -253,6 +294,21 @@ class BaseBuilder(ABC):
 
     @staticmethod
     def _make_group_override_parser(parser, class_obj):
+        """Makes a name specific override parser for a given class obj
+
+        Takes a class object of the backend and adds a new argument group with argument names given with name
+        Class.name so that individual parameters specific to a class can be overridden.
+
+        *Args*:
+
+            parser: argument parser
+            class_obj: instance of a backend class
+
+        *Returns*:
+
+            parser: argument parser with new class specific overrides
+
+        """
         attr_name = class_obj.__name__
         group_parser = parser.add_argument_group(title=str(attr_name) + " Specific Overrides")
         for val in class_obj.__attrs_attrs__:
@@ -263,6 +319,15 @@ class BaseBuilder(ABC):
 
     @staticmethod
     def _check_protected_keys(all_attr):
+        """Test for protected keys
+
+        Tests to see if an attribute has been defined at the genreral level that is within the protected list that
+        would break basic command line handling.
+
+        Args:
+            all_attr: dictionary of all attr
+
+        """
         protected_names = ['config', 'help']
         if any([val in all_attr.keys() for val in protected_names]):
             raise ValueError(f"Using a protected name from {protected_names} at general class level which prevents "
@@ -312,7 +377,7 @@ class BaseBuilder(ABC):
         return args
 
 
-class BasePayload(ABC):
+class BasePayload(ABC):  # pylint: disable=too-few-public-methods
     """Handles building the payload for config file(s)
 
     This class builds out the payload from config files of multiple types. It handles various
@@ -345,14 +410,42 @@ class BasePayload(ABC):
             payload: updated payload
 
         """
-        pass
 
     def payload(self, input_classes, path, cmd_args):
+        """Builds the payload from config files
+
+        Public exposed call to build the payload and set any command line overrides
+
+        *Args*:
+
+            input_classes: list of backend classes
+            path: path to config file(s)
+            cmd_args: command line overrides
+
+        *Returns*:
+
+            payload: dictionary of all mapped parameters
+
+        """
         payload = self._payload(input_classes, path)
         payload = self._handle_overrides(payload, cmd_args)
         return payload
 
     def _payload(self, input_classes, path):
+        """Private call to construct the payload
+
+        Main function call that builds out the payload from config files of multiple types. It handles
+        various file types and also composition of config files via a recursive calls
+
+        *Args*:
+            input_classes: list of backend classes
+            path: path to config file(s)
+
+        *Returns*:
+
+            payload: dictionary of all mapped parameters
+
+        """
         # Match to loader based on file-extension
         config_extension = Path(path).suffix.lower()
         supported_extensions = list(self._loaders.keys())
@@ -369,6 +462,24 @@ class BasePayload(ABC):
         return payload
 
     def _handle_includes(self, base_payload, config_extension, input_classes, path, payload):  # pylint: disable=too-many-arguments
+        """Handles config composition
+
+        For all of the config tags in the config file this function will recursively call the payload function
+        with the composition path to get the additional payload(s) from the composed file(s)
+
+        *Args*:
+
+            base_payload: base payload that has a config kwarg
+            config_extension: file type
+            input_classes: defined backend classes
+            path: path to base file
+            payload: payload pulled from composed files
+
+        *Returns*:
+
+            payload: payload update from composed files
+
+        """
         included_params = {}
         for inc_path in base_payload['config']:
             if not os.path.exists(inc_path):
@@ -383,6 +494,20 @@ class BasePayload(ABC):
         return payload
 
     def _handle_overrides(self, payload, args):
+        """Handle command line overrides
+
+        Iterate through the command line override values, determine at what level to set them, and set them if possible
+
+        *Args*:
+
+            payload: current payload dictionary
+            args: command line override args
+
+        *Returns*:
+
+            payload: updated payload dictionary with override values set
+
+        """
         skip_keys = ['config', 'help']
         for k, v in vars(args).items():
             # If the name has a . then we are at the class level so we need to get the dict and check
@@ -410,6 +535,22 @@ class BasePayload(ABC):
 
     @staticmethod
     def _dict_payload_override(payload, dict_key, val_name, value):
+        """Updates the payload at the dictionary level
+
+        First checks to see if there is an existing dictionary to insert into, if not creates an empty one. Then it
+        inserts the updated value at the correct dictionary level
+
+        Args:
+            payload: current payload dictionary
+            dict_key: dictionary key to check
+            val_name: value name to update
+            value: value to update
+
+        Returns:
+
+            payload: updated payload dictionary
+
+        """
         if not hasattr(payload, dict_key):
             payload.update({dict_key: {}})
         payload[dict_key].update({val_name: value})

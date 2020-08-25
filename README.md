@@ -17,7 +17,7 @@ support inheritance, read from multiple markdown formats, and allow hierarchical
 
 ## Quick Install
 
-Supports Python 3.7+
+Supports Python 3.6+
 
 ```bash
 pip install spock-config
@@ -31,11 +31,14 @@ Example `spock` usage is located [here](https://github.com/fidelity/spock/blob/m
 
 ## Key Features
 
-* Simple Declaration: Parameters are defined within a `@spock_config` decorated class. Supports types, required/optional, and automatic defaults.
+* Simple Declaration: Type checked parameters are defined within a `@spock` decorated class. Supports required/optional 
+and automatic defaults.
 * Easily Managed Parameter Groups: Each class automatically generates its own object within a single namespace.
-* Parameter Inheritance: Classes support inheritance allowing for complex configurations derived from a common base set of parameters.
+* Parameter Inheritance: Classes support inheritance allowing for complex configurations derived from a common base 
+set of parameters.
 * Multiple Configuration File Types: Configurations are specified from YAML, TOML, or JSON files.
-* Hierarchical Configuration: composed from multiple configuration files via simple include statements.
+* Hierarchical Configuration: Composed from multiple configuration files via simple include statements.
+* Command-Line Overrides: Quickly experiment by overriding a value with automatically generated command line arguments
 * Immutable: All classes are *frozen* preventing any misuse or accidental overwrites.
 * Tractability and Reproducibility: Save currently running parameter configuration with a single chained command. 
 
