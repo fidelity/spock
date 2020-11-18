@@ -13,6 +13,7 @@ import sys
 from time import localtime
 from time import strftime
 import git
+from warnings import warn
 minor = sys.version_info.minor
 if minor < 7:
     from typing import GenericMeta as _GenericAlias
@@ -142,3 +143,56 @@ def add_date_info(out_dict):
     """
     out_dict.update({'# Run Date': strftime('%Y_%m_%d_%H_%M_%S', localtime())})
     return out_dict
+
+
+def deep_payload_update(source, updates):
+    """Deeply updates a dictionary
+
+    Iterates through a dictionary recursively to update individual values within a possibly nested dictionary
+    of dictionaries -- creates a dictionary if empty and trying to recurse
+
+    *Args*:
+
+        source: source dictionary
+        updates: updates to the dictionary
+
+    *Returns*:
+
+        source: updated version of the source dictionary
+
+    """
+
+    for k, v in updates.items():
+        if isinstance(v, dict) and v:
+            source_dict = {} if source.get(k) is None else source.get(k)
+            updated_dict = deep_payload_update(source_dict, v)
+            if updated_dict:
+                source[k] = updated_dict
+        else:
+            source[k] = v
+    return source
+
+
+def check_payload_overwrite(payload, updates, configs, overwrite=''):
+    """Warns when parameters are overwritten across payloads as order will matter
+
+    *Args*:
+
+        payload: current payload
+        payload_update: update to add to payload
+        configs: config path
+        overwrite: name of parent
+
+    *Returns*:
+
+    """
+    for k, v in updates.items():
+        if isinstance(v, dict) and v:
+            overwrite += (k + ":")
+            current_payload = {} if payload.get(k) is None else payload.get(k)
+            check_payload_overwrite(current_payload, v, configs, overwrite=overwrite)
+        else:
+            if k in payload.keys():
+                warn(f'Overriding an already set parameter {overwrite + k} from {configs}\n'
+                     f'Be aware that value precedence is set by the order of the config files (last to load)...',
+                     SyntaxWarning)

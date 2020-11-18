@@ -411,7 +411,7 @@ class BasePayload(ABC):  # pylint: disable=too-few-public-methods
 
         """
 
-    def payload(self, input_classes, path, cmd_args):
+    def payload(self, input_classes, path, cmd_args, deps):
         """Builds the payload from config files
 
         Public exposed call to build the payload and set any command line overrides
@@ -421,17 +421,18 @@ class BasePayload(ABC):  # pylint: disable=too-few-public-methods
             input_classes: list of backend classes
             path: path to config file(s)
             cmd_args: command line overrides
+            deps: dictionary of config dependencies
 
         *Returns*:
 
             payload: dictionary of all mapped parameters
 
         """
-        payload = self._payload(input_classes, path)
+        payload = self._payload(input_classes, path, deps, root=True)
         payload = self._handle_overrides(payload, cmd_args)
         return payload
 
-    def _payload(self, input_classes, path):
+    def _payload(self, input_classes, path, deps, root=False):
         """Private call to construct the payload
 
         Main function call that builds out the payload from config files of multiple types. It handles
@@ -440,6 +441,7 @@ class BasePayload(ABC):  # pylint: disable=too-few-public-methods
         *Args*:
             input_classes: list of backend classes
             path: path to config file(s)
+            deps: dictionary of config dependencies
 
         *Returns*:
 
@@ -454,14 +456,48 @@ class BasePayload(ABC):  # pylint: disable=too-few-public-methods
                             f'Must be from {supported_extensions}')
         # Load from file
         base_payload = self._loaders.get(config_extension).load(path)
+        # Check and? update the dependencies
+        deps = self._handle_dependencies(deps, path, root)
         payload = {}
         if 'config' in base_payload:
             payload = self._handle_includes(
-                base_payload, config_extension, input_classes, path, payload)
+                base_payload, config_extension, input_classes, path, payload, deps)
         payload = self._update_payload(base_payload, input_classes, payload)
         return payload
 
-    def _handle_includes(self, base_payload, config_extension, input_classes, path, payload):  # pylint: disable=too-many-arguments
+    @staticmethod
+    def _handle_dependencies(deps, path, root):
+        """Handles config file dependencies
+
+        Checks to see if the config path (full or relative) has already been encountered. Essentially a DFS for graph
+        cycles
+
+        *Args*:
+
+            deps: dictionary of config dependencies
+            path: current config path
+            root: boolean if root
+
+        *Returns*:
+
+            deps: updated dependencies
+
+        """
+        if root and path in deps.get('paths'):
+            raise ValueError(f'Duplicate Read -- Config file {path} has already been encountered. '
+                             f'Please remove duplicate reads of config files.')
+        elif path in deps.get('paths') or path in deps.get('rel_paths'):
+            raise ValueError(f'Cyclical Dependency -- Config file {path} has already been encountered. '
+                             f'Please remove cyclical dependencies between config files.')
+        else:
+            # Update the dependency lists
+            deps.get('paths').append(path)
+            deps.get('rel_paths').append(os.path.basename(path))
+            if root:
+                deps.get('roots').append(path)
+        return deps
+
+    def _handle_includes(self, base_payload, config_extension, input_classes, path, payload, deps):  # pylint: disable=too-many-arguments
         """Handles config composition
 
         For all of the config tags in the config file this function will recursively call the payload function
@@ -474,6 +510,7 @@ class BasePayload(ABC):  # pylint: disable=too-few-public-methods
             input_classes: defined backend classes
             path: path to base file
             payload: payload pulled from composed files
+            deps: dictionary of config dependencies
 
         *Returns*:
 
@@ -489,7 +526,7 @@ class BasePayload(ABC):  # pylint: disable=too-few-public-methods
                 abs_inc_path = inc_path
             if not os.path.exists(abs_inc_path):
                 raise RuntimeError(f'Could not find included {config_extension} file {inc_path}!')
-            included_params.update(self._payload(input_classes, abs_inc_path))
+            included_params.update(self._payload(input_classes, abs_inc_path, deps))
         payload.update(included_params)
         return payload
 

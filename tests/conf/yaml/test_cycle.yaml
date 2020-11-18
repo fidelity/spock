@@ -1,0 +1,3 @@
+# additional conf file to test inheritance cycles
+# include another file
+config: [test_include.yaml, test.yaml]
