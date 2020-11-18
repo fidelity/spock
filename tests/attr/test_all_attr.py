@@ -280,7 +280,7 @@ class TestConfigArgType:
     def test_type_arg_builder(self, monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
-                                    './tests/conf/test.yaml'])
+                                    './tests/conf/yaml/test.yaml'])
             with pytest.raises(TypeError):
                 ConfigArgBuilder(['Names'], desc='Test Builder')
 
@@ -290,6 +290,26 @@ class TestUnknownArg:
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
                                     './tests/conf/yaml/test_incorrect.yaml'])
+            with pytest.raises(ValueError):
+                ConfigArgBuilder(TypeConfig, desc='Test Builder')
+
+
+class TestConfigCycles:
+    """Checks the raise for cyclical dependencies"""
+    def test_config_cycles(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, 'argv', ['', '--config',
+                                    './tests/conf/yaml/test_cycle.yaml'])
+            with pytest.raises(ValueError):
+                ConfigArgBuilder(TypeConfig, desc='Test Builder')
+
+
+class TestConfigDuplicate:
+    """Checks the raise for duplicate reads"""
+    def test_config_duplicate(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, 'argv', ['', '--config',
+                                    './tests/conf/yaml/test_duplicate.yaml', './tests/conf/yaml/test.yaml'])
             with pytest.raises(ValueError):
                 ConfigArgBuilder(TypeConfig, desc='Test Builder')
 
