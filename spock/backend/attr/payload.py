@@ -8,6 +8,7 @@
 from itertools import chain
 from spock.backend.attr.utils import convert_to_tuples
 from spock.backend.attr.utils import get_type_fields
+from spock.backend.attr.utils import deep_update
 from spock.backend.base import BasePayload
 
 
@@ -67,5 +68,5 @@ class AttrPayload(BasePayload):
             else:
                 payload[keys] = values
         tuple_payload = convert_to_tuples(payload, type_fields)
-        payload.update(tuple_payload)
+        payload = deep_update(payload, tuple_payload)
         return payload

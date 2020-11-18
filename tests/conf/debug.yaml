@@ -14,7 +14,7 @@
 #ccccombo_breaker: 10
 #new: 1
 #fail: 1
-test: [1, 2]
+#test: [1, 2]
 #save_path: /tmp
 #new_choice: pear
 #Test2:
@@ -22,5 +22,60 @@ test: [1, 2]
 #Test:
 #    other: 12
 #ccccombo_breaker: 10
-new: 1
+#new: 1
 #fail: 1
+
+
+### GENERAL
+features: logfbank
+dither: 1E-5
+trim_silence: true
+per_feature_norm: true
+window_ms: 20
+stride_ms: 10
+pre_emphasis: 0.97
+n_fft: 512
+n_features: 64
+window_fnc: hann
+vocab: /Users/a635179/Documents/projects/asr/data/mozilla_alphabet.txt
+root_dir: /Users/a635179/Documents/projects/asr/data/oyez/example/
+
+### TRAINING
+# DATASET PARAMETERS
+TrainingManifestConfig:
+  manifest_path: /Users/a635179/Documents/projects/asr/data/oyez/example/example_manifest.csv
+  wav_name: wav_filename
+  transcript_name: transcript
+  duration_name: wav_duration
+  sample_name: wav_num_samples
+  bitrate_name: wav_bitrate
+  min_duration: 0.2
+  max_duration: 16.0
+  sorted: true
+
+# TRAINING AUDIO CONFIG
+TrainingAudioConfig:
+  root_dir: /Users/a635179/Documents/projects/asr/data/oyez/example/foo/
+  speed_perturb: [0.9, 1.1]
+
+### VALIDATION
+ValidationManifestConfig:
+  manifest_path: /Users/a635179/Documents/projects/asr/data/oyez/example/example_manifest_duplicate.csv
+  wav_name: wav_filename
+  transcript_name: transcript
+  duration_name: wav_duration
+  sample_name: wav_num_samples
+  bitrate_name: wav_bitrate
+  min_duration: 0.2
+  max_duration: 16.0
+  sorted: true
+
+ValidationAudioConfig:
+  root_dir: /Users/a635179/Documents/projects/asr/data/oyez/example/bar/
+  speed_perturb: [0.8, 1.2]
+
+# LOADER CONFIG
+batch_size: 2
+drop_odd_batch: true
+shuffle: false
+distributed: false

@@ -84,6 +84,32 @@ def convert_to_tuples(input_dict, named_type_dict):
     return updated_dict
 
 
+def deep_update(source, updates):
+    """Deeply updates a dictionary
+
+    Iterates through a dictionary recursively to update individual values within a possibly nested dictionary
+    of dictionaries
+
+    *Args*:
+
+        source: source dictionary
+        updates: updates to the dictionary
+
+    *Returns*:
+
+        source: updated version of the source dictionary
+
+    """
+    for k, v in updates.items():
+        if isinstance(v, dict) and v:
+            updated_dict = deep_update(source.get(k), v)
+            if updated_dict:
+                source[k] = updated_dict
+        else:
+            source[k] = v
+    return source
+
+
 def _recursive_list_to_tuple(value, typed):
     """Recursively turn lists into tuples
 
