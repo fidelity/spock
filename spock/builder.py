@@ -5,8 +5,9 @@
 
 """Handles the building/saving of the configurations from the Spock config classes"""
 
-from pathlib import Path
+from argparse import Namespace
 import attr
+from pathlib import Path
 from spock.backend.attr.builder import AttrBuilder
 from spock.backend.attr.payload import AttrPayload
 from spock.backend.attr.saver import AttrSaver
@@ -51,8 +52,8 @@ class ConfigArgBuilder:
 
         *Args*:
 
-            *args:
-            **kwargs:
+            *args: non-keyword args
+            **kwargs: keyword args
 
         *Returns*:
 
@@ -60,14 +61,22 @@ class ConfigArgBuilder:
         """
         return ConfigArgBuilder(*args, **kwargs)
 
-    def generate(self):
+    def generate(self, unclass=False):
         """Generate method that returns the actual argument namespace
+
+        *Args*:
+
+            unclass: swaps the backend attr class type for dictionaries
 
         *Returns*:
 
             argument namespace consisting of all config classes
 
         """
+        if unclass:
+            self._arg_namespace = Namespace(**{k: Namespace(**{
+                val.name: getattr(v, val.name) for val in v.__attrs_attrs__})
+                                               for k, v in self._arg_namespace.__dict__.items()})
         return self._arg_namespace
 
     @staticmethod
