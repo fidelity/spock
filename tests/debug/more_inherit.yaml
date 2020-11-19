@@ -1,2 +1,2 @@
-config: [debug.yaml]
+#config: [debug.yaml]
 foo: bar

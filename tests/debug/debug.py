@@ -17,24 +17,25 @@ class Choice(Enum):
 
 @spock
 class Test:
-    new_choice: Choice = 'banana'
-    # fix_me: Tuple[Tuple[int]]
-    new: int
-    # fail: bool
-    # fail: List
-    test: List[int]
-    fail: List[List[int]]
+    new_choice: Choice
+    # # fix_me: Tuple[Tuple[int]]
+    # new: int
+    # # fail: bool
+    # # fail: List
+    # test: List[int]
+    # fail: List[List[int]]
+    borken: Optional[List[List[Choice]]] = [['pear'], ['banana']]
     # save_path: SavePath = '/tmp'
     # other: Optional[int]
     # value: Optional[List[int]] = [1, 2]
 
 
-@spock
-class Test2:
-    new: int
-    other: int
-    fail: int
-    foo: str
+# @spock
+# class Test2:
+#     new: int
+#     other: int
+#     fail: int
+#     foo: str
 
 #
 # @spock
@@ -44,8 +45,8 @@ class Test2:
 
 def main():
     # test = Test()
-
-    attrs_class = ConfigArgBuilder(Test, Test2).generate()
+    attrs_class = ConfigArgBuilder(Test).generate()
+    # attrs_class = ConfigArgBuilder(Test, Test2).generate()
     print(attrs_class)
     # dc_class = ConfigArgBuilder(OldInherit).generate()
     # print(dc_class)

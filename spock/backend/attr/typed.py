@@ -74,7 +74,12 @@ def _recursive_generic_validator(typed):
         return return_type
     else:
         # If no more __args__ then we are to the base type and need to bubble up the type
-        return_type = attr.validators.instance_of(typed)
+        # But we need to check against base types and enums
+        if isinstance(typed, EnumMeta):
+            base_type, allowed = _check_enum_props(typed)
+            return_type = attr.validators.and_(attr.validators.instance_of(base_type), attr.validators.in_(allowed))
+        else:
+            return_type = attr.validators.instance_of(typed)
     return return_type
 
 
@@ -119,6 +124,30 @@ def _generic_alias_katra(typed, default=None, optional=False):
     return x
 
 
+def _check_enum_props(typed):
+    """Handles properties of enums
+
+    Checks if all types of the enum are the same and assembles a list of allowed values
+
+    *Args*:
+
+        typed: the type of parameter (Enum)
+
+    *Returns*:
+
+        base_type: the base type of the Enum
+        allowed: List of allowed values of the Enum
+
+    """
+    # First check if the types of Enum are the same
+    type_set = {type(val.value) for val in typed}
+    if len(type_set) > 1:
+        raise TypeError(f"Enum cannot be defined with multiple types: {type_set}")
+    base_type = list(type_set)[-1]
+    allowed = [val.value for val in typed]
+    return base_type, allowed
+
+
 def _enum_katra(typed, default=None, optional=False):
     """Private interface to create a Enum typed katra
 
@@ -138,11 +167,7 @@ def _enum_katra(typed, default=None, optional=False):
 
     """
     # First check if the types of Enum are the same
-    type_set = {type(val.value) for val in typed}
-    if len(type_set) > 1:
-        raise TypeError(f"Enum cannot be defined with multiple types: {type_set}")
-    base_type = list(type_set)[-1]
-    allowed = [val.value for val in typed]
+    base_type, allowed = _check_enum_props(typed)
     if default is not None:
         x = attr.ib(
             validator=[attr.validators.instance_of(base_type), attr.validators.in_(allowed)],

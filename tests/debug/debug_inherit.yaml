@@ -1,4 +1,4 @@
-config: [more_inherit.yaml, most_inherit.yaml]
+#config: [more_inherit.yaml, most_inherit.yaml]
 test: [1, 2]
 Test2:
   other: 2

@@ -72,6 +72,14 @@ class TypeConfig:
     choice_p_int: IntChoice
     # Required choice -- Float
     choice_p_float: FloatChoice
+    # Required list of choice -- Str
+    list_choice_p_str: List[StrChoice]
+    # Required list of list of choice -- Str
+    list_list_choice_p_str: List[List[StrChoice]]
+    # Required list of choice -- Int
+    list_choice_p_int: List[IntChoice]
+    # Required list of choice -- Float
+    list_choice_p_float: List[FloatChoice]
 
 
 @spock

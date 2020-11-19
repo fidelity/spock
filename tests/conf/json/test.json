@@ -15,6 +15,10 @@
   "choice_p_str": "option_1",
   "choice_p_int": 10,
   "choice_p_float": 10.0,
+  "list_choice_p_str": ["option_1"],
+  "list_list_choice_p_str": [["option_1"], ["option_1"]],
+  "list_choice_p_int": [10],
+  "list_choice_p_float": [10.0],
   "TypeConfig": {
     "float_p": 12.0
   }
