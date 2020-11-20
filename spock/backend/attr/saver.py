@@ -29,9 +29,14 @@ class AttrSaver(BaseSaver):
     def _clean_up_values(self, payload, extra_info, file_extension):
         out_dict = {}
         for key, val in vars(payload).items():
-            # Append comment tag to the base class and convert the spock class to a dict
+            # Skip comment append in JSON as it doesn't allow comments
             if file_extension == '.json':
-                out_dict.update({key: attr.asdict(val)})
+                if isinstance(val, list):
+                    val = [attr.asdict(inner_val) for inner_val in val]
+                    out_dict.update({(key): val})
+                else:
+                    out_dict.update({key: attr.asdict(val)})
+            # Append comment tag to the base class and convert the spock class to a dict
             else:
                 if isinstance(val, list):
                     val = [attr.asdict(inner_val) for inner_val in val]

@@ -27,6 +27,18 @@ class FloatChoice(Enum):
 
 
 @spock
+class NestedStuff:
+    one: int
+    two: str
+
+
+@spock
+class NestedListStuff:
+    one: int
+    two: str
+
+
+@spock
 class ChoiceFail:
     """This creates a test config to fail on an out of set choice"""
     # Required choice -- Str
@@ -80,6 +92,10 @@ class TypeConfig:
     list_choice_p_int: List[IntChoice]
     # Required list of choice -- Float
     list_choice_p_float: List[FloatChoice]
+    # Nested configuration
+    nested: NestedStuff
+    # Nested list configutation
+    nested_list: List[NestedListStuff]
 
 
 @spock

@@ -18,6 +18,12 @@ class Choice(Enum):
 
 
 @spock
+class OtherStuff:
+    three: int
+    four: str
+
+
+@spock
 class Stuff:
     one: int
     two: str
@@ -31,9 +37,10 @@ class Test:
     # # fail: bool
     # # fail: List
     test: List[int]
-    # fail: List[List[int]]
+    fail: List[List[int]]
     # borken: Stuff
     borken: List[Stuff]
+    more_borken: OtherStuff
     # borken: int
     # borken: Optional[List[List[Choice]]] = [['pear'], ['banana']]
     # save_path: SavePath = '/tmp'
@@ -55,16 +62,16 @@ class Test:
 
 
 def main():
-    # attrs_class = ConfigArgBuilder(Test, Stuff).generate()
+    attrs_class = ConfigArgBuilder(Test, OtherStuff, Stuff).generate()
     # with open('/tmp/debug.pickle', 'wb') as fid:
     #     pickle.dump(attrs_class, file=fid)
 
-    with open('/tmp/debug.pickle', 'rb') as fid:
-        attrs_load = pickle.load(fid)
+    # with open('/tmp/debug.pickle', 'rb') as fid:
+    #     attrs_load = pickle.load(fid)
     # attrs_class = ConfigArgBuilder(Test, Test2).generate()
 
-    # print(attrs_class)
-    print(attrs_load)
+    print(attrs_class)
+    # print(attrs_load)
     # dc_class = ConfigArgBuilder(OldInherit).generate()
     # print(dc_class)
 

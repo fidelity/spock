@@ -1,7 +1,7 @@
 #other: 1
 #new_other: 1
 #config: [debug_inherit.yaml]
-#fail: [[1, 2], [2, 1]]
+fail: [[1, 2], [2, 1]]
 ##value: [1, 2]
 ##fix_me: [[1, 2], [2, 1]]
 ##Test:
@@ -15,6 +15,11 @@ Stuff:
     two: hello
   - one: 20
     two: bye
+
+more_borken: OtherStuff
+OtherStuff:
+  three: 20
+  four: ciao
 #Test2:
 ##    other: 12
 ##Test:
