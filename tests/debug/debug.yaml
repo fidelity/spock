@@ -6,7 +6,15 @@
 ##fix_me: [[1, 2], [2, 1]]
 ##Test:
 ##    fix_me: [[11, 2], [22, 1]]
-new_choice: pear
+#new_choice: pear
+borken: Stuff
+Stuff:
+#  one: 10
+#  two: hello
+  - one: 10
+    two: hello
+  - one: 20
+    two: bye
 #Test2:
 ##    other: 12
 ##Test:
@@ -19,8 +27,8 @@ new_choice: pear
 #  fail: 2
 #  other: 3
 ##fail: 1
-##test: [1, 2]
-##save_path: /tmp
+test: [1, 2]
+#save_path: /tmp
 #new_choice: pear
 #borken: [[pear], [pear, banana]]
 #Test2:

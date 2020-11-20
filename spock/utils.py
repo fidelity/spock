@@ -12,13 +12,35 @@ import subprocess
 import sys
 from time import localtime
 from time import strftime
-import git
 from warnings import warn
+import git
 minor = sys.version_info.minor
 if minor < 7:
     from typing import GenericMeta as _GenericAlias
 else:
     from typing import _GenericAlias
+
+
+def convert_save_dict(clean_inner_dict, inner_val, inner_key):
+    """Convert tuples in save dictionary
+
+    *Args*:
+
+        clean_inner_dict: inner dictionary that is clean
+        inner_val: inner value
+        inner_key:  inner key
+
+    *Returns*:
+
+        clean_inner_dict: updated with cleaned values
+
+    """
+    # Convert tuples to lists so they get written correctly
+    if isinstance(inner_val, tuple):
+        clean_inner_dict.update({inner_key: list(inner_val)})
+    elif inner_val is not None:
+        clean_inner_dict.update({inner_key: inner_val})
+    return clean_inner_dict
 
 
 def make_argument(arg_name, arg_type, parser):
@@ -108,10 +130,10 @@ def add_repo_info(out_dict):
         # Check if we are really in a detached head state as this will fail
         if minor < 7:
             head_result = subprocess.run('git rev-parse --abbrev-ref --symbolic-full-name HEAD', stdout=subprocess.PIPE,
-                                         shell=True)
+                                         shell=True, check=False)
         else:
             head_result = subprocess.run('git rev-parse --abbrev-ref --symbolic-full-name HEAD', capture_output=True,
-                                         shell=True)
+                                         shell=True, check=False)
         if head_result.stdout.decode().rstrip('\n') == 'HEAD':
             out_dict = make_blank_git(out_dict)
         else:

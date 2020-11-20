@@ -5,9 +5,9 @@
 
 """Creates the spock config interface that wraps attr"""
 
+import sys
 import attr
 from spock.backend.attr.typed import katra
-import sys
 
 
 def spock_attr(cls):
