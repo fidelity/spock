@@ -29,6 +29,12 @@ class Stuff:
     two: str
 
 
+class ClassStuff(Enum):
+    other_stuff = OtherStuff
+    stuff = Stuff
+
+
+
 @spock
 class Test:
     # new_choice: Choice
@@ -36,11 +42,12 @@ class Test:
     # new: int
     # # fail: bool
     # # fail: List
-    test: List[int]
-    fail: List[List[int]]
-    # borken: Stuff
-    borken: List[Stuff]
-    more_borken: OtherStuff
+    # test: List[int]
+    # fail: List[List[int]]
+    # # borken: Stuff
+    # borken: List[Stuff]
+    # more_borken: OtherStuff
+    most_broken: ClassStuff
     # borken: int
     # borken: Optional[List[List[Choice]]] = [['pear'], ['banana']]
     # save_path: SavePath = '/tmp'
