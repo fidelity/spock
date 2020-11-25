@@ -17,6 +17,11 @@ class Choice(Enum):
     banana = 'banana'
 
 
+class IntChoice(Enum):
+    option_1 = 10
+    option_2 = 20
+
+
 @spock
 class OtherStuff:
     three: int
@@ -29,18 +34,25 @@ class Stuff:
     two: str
 
 
+class ClassStuff(Enum):
+    other_stuff = OtherStuff
+    stuff = Stuff
+
+
+
 @spock
 class Test:
-    # new_choice: Choice
+    # new_choice: Optional[Choice]
     # # fix_me: Tuple[Tuple[int]]
-    # new: int
-    # # fail: bool
-    # # fail: List
-    test: List[int]
-    fail: List[List[int]]
-    # borken: Stuff
-    borken: List[Stuff]
-    more_borken: OtherStuff
+    # new: int = 3
+    # fail: bool
+    # fail: List
+    # test: List[int] = [1, 2]
+    # fail: List[List[int]] = [[1, 2], [1, 2]]
+    # borken: Stuff = Stuff
+    # borken: List[Stuff] = Stuff
+    # more_borken: OtherStuff
+    most_broken: ClassStuff = Stuff
     # borken: int
     # borken: Optional[List[List[Choice]]] = [['pear'], ['banana']]
     # save_path: SavePath = '/tmp'

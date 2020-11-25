@@ -45,6 +45,8 @@ NestedStuff = {one = 11, two = 'ciao'}
 # Nested List configuration
 nested_list = 'NestedListStuff'
 NestedListStuff = [{one = 10, two = 'hello'}, {one = 20, two = 'bye'}]
+# Class Enum
+class_enum = 'NestedStuff'
 # Overrride general definition
 [TypeConfig]
     float_p = 12.0

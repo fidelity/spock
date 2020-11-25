@@ -52,6 +52,8 @@ NestedListStuff:
       two: hello
     - one: 20
       two: bye
+# Class Enum
+class_enum: NestedStuff
 # Override general definition
 TypeConfig:
     float_p: 12.0

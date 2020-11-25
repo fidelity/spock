@@ -34,6 +34,7 @@
       "two": "bye"
     }
   ],
+  "class_enum": "NestedStuff",
   "TypeConfig": {
     "float_p": 12.0
   }

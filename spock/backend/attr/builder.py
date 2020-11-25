@@ -111,13 +111,14 @@ class AttrBuilder(BaseBuilder):
             if len(match_idx) > 1:
                 raise ValueError('Match error -- multiple classes with the same name definition')
             else:
+                if args.get(self.input_classes[match_idx[0]].__name__) is None:
+                    raise ValueError(f'Missing config file definition for the referenced class '
+                                     f'{self.input_classes[match_idx[0]].__name__}')
                 current_arg = args.get(self.input_classes[match_idx[0]].__name__)
                 if isinstance(current_arg, list):
                     class_value = [self.input_classes[match_idx[0]](**val) for val in current_arg]
                 else:
-                    class_value = self.input_classes[match_idx[0]](
-                        **args.get(self.input_classes[match_idx[0]].__name__)
-                    )
+                    class_value = self.input_classes[match_idx[0]](**current_arg)
             return_value = class_value
         # else return the expected value
         else:
