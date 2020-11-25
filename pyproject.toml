@@ -50,6 +50,8 @@ Motivation = "docs/Motivation.md"
     [[tool.portray.mkdocs.nav."Advanced Features"]]
     "Inheritance" = "docs/advanced_features/Inheritance.md"
     [[tool.portray.mkdocs.nav."Advanced Features"]]
+    "Advanced Types" = "docs/advanced_features/Advanced-Types.md"
+    [[tool.portray.mkdocs.nav."Advanced Features"]]
     "Local Defintions" = "docs/advanced_features/Local-Definitions.md"
     [[tool.portray.mkdocs.nav."Advanced Features"]]
     "Keyword Configs" = "docs/advanced_features/Keyword-Configs.md"

@@ -7,6 +7,7 @@
 
 import sys
 from enum import EnumMeta
+from functools import partial
 from typing import TypeVar
 from typing import Union
 import attr
@@ -74,7 +75,12 @@ def _recursive_generic_validator(typed):
         return return_type
     else:
         # If no more __args__ then we are to the base type and need to bubble up the type
-        return_type = attr.validators.instance_of(typed)
+        # But we need to check against base types and enums
+        if isinstance(typed, EnumMeta):
+            base_type, allowed = _check_enum_props(typed)
+            return_type = attr.validators.and_(attr.validators.instance_of(base_type), attr.validators.in_(allowed))
+        else:
+            return_type = attr.validators.instance_of(typed)
     return return_type
 
 
@@ -119,6 +125,30 @@ def _generic_alias_katra(typed, default=None, optional=False):
     return x
 
 
+def _check_enum_props(typed):
+    """Handles properties of enums
+
+    Checks if all types of the enum are the same and assembles a list of allowed values
+
+    *Args*:
+
+        typed: the type of parameter (Enum)
+
+    *Returns*:
+
+        base_type: the base type of the Enum
+        allowed: List of allowed values of the Enum
+
+    """
+    # First check if the types of Enum are the same
+    type_set = {type(val.value) for val in typed}
+    if len(type_set) > 1:
+        raise TypeError(f"Enum cannot be defined with multiple types: {type_set}")
+    base_type = list(type_set)[-1]
+    allowed = [val.value for val in typed]
+    return base_type, allowed
+
+
 def _enum_katra(typed, default=None, optional=False):
     """Private interface to create a Enum typed katra
 
@@ -138,11 +168,35 @@ def _enum_katra(typed, default=None, optional=False):
 
     """
     # First check if the types of Enum are the same
-    type_set = {type(val.value) for val in typed}
-    if len(type_set) > 1:
-        raise TypeError(f"Enum cannot be defined with multiple types: {type_set}")
-    base_type = list(type_set)[-1]
-    allowed = [val.value for val in typed]
+    base_type, allowed = _check_enum_props(typed)
+    if base_type.__name__ == 'type':
+        x = _enum_class_katra(typed=typed, allowed=allowed, default=default, optional=optional)
+    else:
+        x = _enum_base_katra(typed=typed, base_type=base_type, allowed=allowed, default=default, optional=optional)
+    return x
+
+
+def _enum_base_katra(typed, base_type, allowed, default=None, optional=False):
+    """Private interface to create a base Enum typed katra
+
+    Here we handle the base types of enums that allows us to force a type check on the instance
+
+    A 'katra' is the basic functional unit of `spock`. It defines a parameter using attrs as the backend, type checks
+    both simple types and subscripted GenericAlias types (e.g. lists and tuples), handles setting default parameters,
+    and deals with parameter optionality
+
+    *Args*:
+        typed: the type of the parameter to define
+        base_type: underlying base type
+        allowed: set of allowed values
+        default: the default value to assign if given
+        optional: whether to make the parameter optional or not (thus allowing None)
+
+    *Returns*:
+
+        x: Attribute from attrs
+
+    """
     if default is not None:
         x = attr.ib(
             validator=[attr.validators.instance_of(base_type), attr.validators.in_(allowed)],
@@ -154,6 +208,61 @@ def _enum_katra(typed, default=None, optional=False):
     else:
         x = attr.ib(validator=[attr.validators.instance_of(base_type), attr.validators.in_(allowed)], type=typed,
                     metadata={'base': typed.__name__})
+    return x
+
+
+def _in_type(instance, attribute, value, options):
+    """attrs validator for class type enum
+
+    Checks if the type of the class (e.g. value) is in the specified set of types provided
+
+    *Args*:
+
+        instance: current object instance
+        attribute: current attribute instance
+        value: current value trying to be set in the attrs instance
+        options: list, tuple, or enum of allowed options
+
+    *Returns*:
+
+    """
+    if type(options) not in [list, tuple, EnumMeta]:
+        raise TypeError(f'options argument must be of type List, Tuple, or Enum -- given {type(options)}')
+    if type(value) not in options:
+        raise ValueError(f'{attribute.name} must be in {options}')
+
+
+def _enum_class_katra(typed, allowed, default=None, optional=False):
+    """Private interface to create a base Enum typed katra
+
+    Here we handle the class based types of enums. Seeing as these classes are generated dynamically we cannot
+    force type checking of a specific instance however the in_ validator will catch an incorrect instance type
+
+    A 'katra' is the basic functional unit of `spock`. It defines a parameter using attrs as the backend, type checks
+    both simple types and subscripted GenericAlias types (e.g. lists and tuples), handles setting default parameters,
+    and deals with parameter optionality
+
+    *Args*:
+
+        typed: the type of the parameter to define
+        allowed: set of allowed values
+        default: the default value to assign if given
+        optional: whether to make the parameter optional or not (thus allowing None)
+
+    *Returns*:
+
+        x: Attribute from attrs
+
+    """
+    if default is not None:
+        x = attr.ib(
+            validator=[partial(_in_type, options=allowed)], default=default, metadata={'base': typed.__name__})
+    elif optional:
+        x = attr.ib(
+            validator=attr.validators.optional([partial(_in_type, options=allowed)]),
+            default=default, metadata={'base': typed.__name__})
+    else:
+        x = attr.ib(validator=[partial(_in_type, options=allowed)], metadata={'base': typed.__name__})
     return x
 
 

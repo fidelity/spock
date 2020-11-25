@@ -27,6 +27,23 @@ class FloatChoice(Enum):
 
 
 @spock
+class NestedStuff:
+    one: int
+    two: str
+
+
+@spock
+class NestedListStuff:
+    one: int
+    two: str
+
+
+class ClassChoice(Enum):
+    class_nested_stuff = NestedStuff
+    class_nested_list_stuff = NestedListStuff
+
+
+@spock
 class ChoiceFail:
     """This creates a test config to fail on an out of set choice"""
     # Required choice -- Str
@@ -72,6 +89,20 @@ class TypeConfig:
     choice_p_int: IntChoice
     # Required choice -- Float
     choice_p_float: FloatChoice
+    # Required list of choice -- Str
+    list_choice_p_str: List[StrChoice]
+    # Required list of list of choice -- Str
+    list_list_choice_p_str: List[List[StrChoice]]
+    # Required list of choice -- Int
+    list_choice_p_int: List[IntChoice]
+    # Required list of choice -- Float
+    list_choice_p_float: List[FloatChoice]
+    # Nested configuration
+    nested: NestedStuff
+    # Nested list configuration
+    nested_list: List[NestedListStuff]
+    # Class Enum
+    class_enum: ClassChoice
 
 
 @spock
@@ -100,6 +131,18 @@ class TypeOptConfig:
     tuple_p_opt_no_def_str: Optional[Tuple[str]]
     # Optional Tuple default not set
     tuple_p_opt_no_def_bool: Optional[Tuple[bool]]
+    # Required choice -- Str
+    choice_p_opt_no_def_str: Optional[StrChoice]
+    # Required list of choice -- Str
+    list_choice_p_opt_no_def_str: Optional[List[StrChoice]]
+    # Required list of list of choice -- Str
+    list_list_choice_p_opt_no_def_str: Optional[List[List[StrChoice]]]
+    # Nested configuration
+    nested_opt_no_def: Optional[NestedStuff]
+    # Nested list configuration
+    nested_list_opt_no_def: Optional[List[NestedListStuff]]
+    # Class Enum
+    class_enum_opt_no_def: Optional[ClassChoice]
     # Additional dummy argument
     int_p: Optional[int]
 
@@ -135,6 +178,16 @@ class TypeDefaultConfig:
     tuple_p_bool_def: Tuple[bool] = (True, False)
     # Required choice
     choice_p_str_def: StrChoice = 'option_2'
+    # Required list of choice -- Str
+    list_choice_p_str_def: List[StrChoice] = ['option_1']
+    # Required list of list of choice -- Str
+    list_list_choice_p_str_def: List[List[StrChoice]] = [['option_1'], ['option_1']]
+    # Nested configuration
+    nested_def: NestedStuff = NestedStuff
+    # Nested list configuration
+    nested_list_def: List[NestedListStuff] = NestedListStuff
+    # Class Enum
+    class_enum_def: ClassChoice = NestedStuff
 
 
 @spock
@@ -163,6 +216,18 @@ class TypeDefaultOptConfig:
     tuple_p_opt_def_str: Optional[Tuple[str]] = ('Spock', 'Package')
     # Optional Tuple default set
     tuple_p_opt_def_bool: Optional[Tuple[bool]] = (True, False)
+    # Optional choice
+    choice_p_str_opt_def: Optional[StrChoice] = 'option_2'
+    # Optional list of choice -- Str
+    list_choice_p_str_opt_def: Optional[List[StrChoice]] = ['option_1']
+    # Optional list of list of choice -- Str
+    list_list_choice_p_str_opt_def: Optional[List[List[StrChoice]]] = [['option_1'], ['option_1']]
+    # Nested configuration
+    nested_opt_def: Optional[NestedStuff] = NestedStuff
+    # Nested list configuration
+    nested_list_opt_def: Optional[List[NestedListStuff]] = NestedListStuff
+    # Class Enum
+    class_enum_opt_def: Optional[ClassChoice] = NestedStuff
 
 
 @spock

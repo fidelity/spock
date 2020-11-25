@@ -32,6 +32,18 @@ class AllTypes:
         assert arg_builder.TypeConfig.choice_p_int == 10
         assert arg_builder.TypeConfig.choice_p_float == 10.0
         assert arg_builder.TypeConfig.list_list_p_int == [[10, 20], [10, 20]]
+        assert arg_builder.TypeConfig.list_choice_p_str == ['option_1']
+        assert arg_builder.TypeConfig.list_list_choice_p_str == [['option_1'], ['option_1']]
+        assert arg_builder.TypeConfig.list_choice_p_int == [10]
+        assert arg_builder.TypeConfig.list_choice_p_float == [10.0]
+        assert arg_builder.TypeConfig.nested.one == 11
+        assert arg_builder.TypeConfig.nested.two == 'ciao'
+        assert arg_builder.TypeConfig.nested_list[0].one == 10
+        assert arg_builder.TypeConfig.nested_list[0].two == 'hello'
+        assert arg_builder.TypeConfig.nested_list[1].one == 20
+        assert arg_builder.TypeConfig.nested_list[1].two == 'bye'
+        assert arg_builder.TypeConfig.class_enum.one == 11
+        assert arg_builder.TypeConfig.class_enum.two == 'ciao'
         # Optional #
         assert arg_builder.TypeOptConfig.int_p_opt_no_def is None
         assert arg_builder.TypeOptConfig.float_p_opt_no_def is None
@@ -44,6 +56,12 @@ class AllTypes:
         assert arg_builder.TypeOptConfig.tuple_p_opt_no_def_int is None
         assert arg_builder.TypeOptConfig.tuple_p_opt_no_def_str is None
         assert arg_builder.TypeOptConfig.tuple_p_opt_no_def_bool is None
+        assert arg_builder.TypeOptConfig.choice_p_opt_no_def_str is None
+        assert arg_builder.TypeOptConfig.list_choice_p_opt_no_def_str is None
+        assert arg_builder.TypeOptConfig.list_list_choice_p_opt_no_def_str is None
+        assert arg_builder.TypeOptConfig.nested_opt_no_def is None
+        assert arg_builder.TypeOptConfig.nested_list_opt_no_def is None
+        assert arg_builder.TypeOptConfig.class_enum_opt_no_def is None
 
 
 class AllDefaults:
@@ -62,6 +80,16 @@ class AllDefaults:
         assert arg_builder.TypeDefaultConfig.tuple_p_str_def == ('Spock', 'Package')
         assert arg_builder.TypeDefaultConfig.tuple_p_bool_def == (True, False)
         assert arg_builder.TypeDefaultConfig.choice_p_str_def == 'option_2'
+        assert arg_builder.TypeDefaultConfig.list_choice_p_str_def == ['option_1']
+        assert arg_builder.TypeDefaultConfig.list_list_choice_p_str_def == [['option_1'], ['option_1']]
+        assert arg_builder.TypeDefaultConfig.nested_def.one == 11
+        assert arg_builder.TypeDefaultConfig.nested_def.two == 'ciao'
+        assert arg_builder.TypeDefaultConfig.nested_list_def[0].one == 10
+        assert arg_builder.TypeDefaultConfig.nested_list_def[0].two == 'hello'
+        assert arg_builder.TypeDefaultConfig.nested_list_def[1].one == 20
+        assert arg_builder.TypeDefaultConfig.nested_list_def[1].two == 'bye'
+        assert arg_builder.TypeDefaultConfig.class_enum_def.one == 11
+        assert arg_builder.TypeDefaultConfig.class_enum_def.two == 'ciao'
         # Optional w/ Defaults #
         assert arg_builder.TypeDefaultOptConfig.int_p_opt_def == 10
         assert arg_builder.TypeDefaultOptConfig.float_p_opt_def == 10.0
@@ -74,6 +102,17 @@ class AllDefaults:
         assert arg_builder.TypeDefaultOptConfig.tuple_p_opt_def_int == (10, 20)
         assert arg_builder.TypeDefaultOptConfig.tuple_p_opt_def_str == ('Spock', 'Package')
         assert arg_builder.TypeDefaultOptConfig.tuple_p_opt_def_bool == (True, False)
+        assert arg_builder.TypeDefaultOptConfig.choice_p_str_opt_def == 'option_2'
+        assert arg_builder.TypeDefaultOptConfig.list_choice_p_str_opt_def == ['option_1']
+        assert arg_builder.TypeDefaultOptConfig.list_list_choice_p_str_opt_def == [['option_1'], ['option_1']]
+        assert arg_builder.TypeDefaultOptConfig.nested_opt_def.one == 11
+        assert arg_builder.TypeDefaultOptConfig.nested_opt_def.two == 'ciao'
+        assert arg_builder.TypeDefaultOptConfig.nested_list_opt_def[0].one == 10
+        assert arg_builder.TypeDefaultOptConfig.nested_list_opt_def[0].two == 'hello'
+        assert arg_builder.TypeDefaultOptConfig.nested_list_opt_def[1].one == 20
+        assert arg_builder.TypeDefaultOptConfig.nested_list_opt_def[1].two == 'bye'
+        assert arg_builder.TypeDefaultOptConfig.class_enum_opt_def.one == 11
+        assert arg_builder.TypeDefaultOptConfig.class_enum_opt_def.two == 'ciao'
 
 
 class AllInherited:
@@ -96,6 +135,18 @@ class AllInherited:
         assert arg_builder.TypeInherited.choice_p_int == 10
         assert arg_builder.TypeInherited.choice_p_float == 10.0
         assert arg_builder.TypeInherited.list_list_p_int == [[10, 20], [10, 20]]
+        assert arg_builder.TypeInherited.list_choice_p_str == ['option_1']
+        assert arg_builder.TypeInherited.list_list_choice_p_str == [['option_1'], ['option_1']]
+        assert arg_builder.TypeInherited.list_choice_p_int == [10]
+        assert arg_builder.TypeInherited.list_choice_p_float == [10.0]
+        assert arg_builder.TypeInherited.nested.one == 11
+        assert arg_builder.TypeInherited.nested.two == 'ciao'
+        assert arg_builder.TypeInherited.nested_list[0].one == 10
+        assert arg_builder.TypeInherited.nested_list[0].two == 'hello'
+        assert arg_builder.TypeInherited.nested_list[1].one == 20
+        assert arg_builder.TypeInherited.nested_list[1].two == 'bye'
+        assert arg_builder.TypeInherited.class_enum.one == 11
+        assert arg_builder.TypeInherited.class_enum.two == 'ciao'
         # Optional w/ Defaults #
         assert arg_builder.TypeInherited.int_p_opt_def == 10
         assert arg_builder.TypeInherited.float_p_opt_def == 10.0
@@ -120,7 +171,7 @@ class TestAllTypesYAML(AllTypes):
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
                                     './tests/conf/yaml/test.yaml'])
-            config = ConfigArgBuilder(TypeConfig, TypeOptConfig, desc='Test Builder')
+            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder')
             return config.generate()
 
 
@@ -132,7 +183,8 @@ class TestAllDefaultsYAML(AllDefaults):
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
                                     './tests/conf/yaml/test.yaml'])
-            config = ConfigArgBuilder(TypeConfig, TypeOptConfig, TypeDefaultConfig, TypeDefaultOptConfig,
+            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, TypeDefaultConfig,
+                                      TypeDefaultOptConfig,
                                       desc='Test Builder')
             return config.generate()
 
@@ -145,7 +197,7 @@ class TestFrozen:
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
                                     './tests/conf/yaml/test.yaml'])
-            config = ConfigArgBuilder(TypeConfig, TypeOptConfig, desc='Test Builder')
+            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder')
             return config.generate()
 
     # Check frozen state works
@@ -174,9 +226,12 @@ class TestGeneralCmdLineOverride:
                                     '--tuple_p_float', '(11.0, 21.0)', '--tuple_p_int', '(11, 21)',
                                     '--tuple_p_str', "('Hooray', 'Working')", '--tuple_p_bool', '(False, True)',
                                     '--list_list_p_int', "[[11, 21], [11, 21]]", '--choice_p_str', 'option_2',
-                                    '--choice_p_int', '20', '--choice_p_float', '20.0'
+                                    '--choice_p_int', '20', '--choice_p_float', '20.0',
+                                    '--list_choice_p_str', "['option_2']",
+                                    '--list_list_choice_p_str', "[['option_2'], ['option_2']]",
+                                    '--list_choice_p_int', '[20]', '--list_choice_p_float', '[20.0]'
                                     ])
-            config = ConfigArgBuilder(TypeConfig, desc='Test Builder')
+            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, desc='Test Builder')
             return config.generate()
 
     def test_overrides(self, arg_builder):
@@ -196,6 +251,10 @@ class TestGeneralCmdLineOverride:
         assert arg_builder.TypeConfig.choice_p_int == 20
         assert arg_builder.TypeConfig.choice_p_float == 20.0
         assert arg_builder.TypeConfig.list_list_p_int == [[11, 21], [11, 21]]
+        assert arg_builder.TypeConfig.list_choice_p_str == ['option_2']
+        assert arg_builder.TypeConfig.list_list_choice_p_str == [['option_2'], ['option_2']]
+        assert arg_builder.TypeConfig.list_choice_p_int == [20]
+        assert arg_builder.TypeConfig.list_choice_p_float == [20.0]
 
 
 class TestConfigKwarg(AllTypes):
@@ -204,7 +263,7 @@ class TestConfigKwarg(AllTypes):
     @pytest.fixture
     def arg_builder(monkeypatch):
         with monkeypatch.context() as m:
-            config = ConfigArgBuilder(TypeConfig, TypeOptConfig, desc='Test Builder',
+            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder',
                                       configs=['./tests/conf/yaml/test.yaml'])
             return config.generate()
 
@@ -215,7 +274,7 @@ class TestNoCmdLineKwarg(AllTypes):
     @pytest.fixture
     def arg_builder(monkeypatch):
         with monkeypatch.context() as m:
-            config = ConfigArgBuilder(TypeConfig, TypeOptConfig, no_cmd_line=True,
+            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, no_cmd_line=True,
                                       configs=['./tests/conf/yaml/test.yaml'])
             return config.generate()
 
@@ -225,7 +284,7 @@ class TestNoCmdLineRaise:
     def test_choice_raise(self, monkeypatch):
         with monkeypatch.context() as m:
             with pytest.raises(ValueError):
-                ConfigArgBuilder(TypeConfig, TypeOptConfig, no_cmd_line=True)
+                ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, no_cmd_line=True)
 
 
 class TestComposition:
@@ -236,7 +295,7 @@ class TestComposition:
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
                                     './tests/conf/yaml/test_include.yaml'])
-            config = ConfigArgBuilder(TypeConfig, TypeOptConfig, desc='Test Builder')
+            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder')
             return config.generate()
 
     def test_req_int(self, arg_builder):
@@ -251,7 +310,7 @@ class TestInheritance(AllInherited):
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
                                     './tests/conf/yaml/inherited.yaml'])
-            config = ConfigArgBuilder(TypeInherited, desc='Test Builder')
+            config = ConfigArgBuilder(TypeInherited, NestedStuff, NestedListStuff, desc='Test Builder')
             return config.generate()
 
 
@@ -272,7 +331,7 @@ class TestOverrideRaise:
             m.setattr(sys, 'argv', ['', '--config',
                                     './tests/conf/yaml/test.yaml'])
             with pytest.raises(ValueError):
-                ConfigArgBuilder(TypeInherited, desc='Test Builder')
+                ConfigArgBuilder(TypeInherited, NestedStuff, NestedListStuff, desc='Test Builder')
 
 
 class TestConfigArgType:
@@ -280,7 +339,7 @@ class TestConfigArgType:
     def test_type_arg_builder(self, monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
-                                    './tests/conf/test.yaml'])
+                                    './tests/conf/yaml/test.yaml'])
             with pytest.raises(TypeError):
                 ConfigArgBuilder(['Names'], desc='Test Builder')
 
@@ -291,7 +350,27 @@ class TestUnknownArg:
             m.setattr(sys, 'argv', ['', '--config',
                                     './tests/conf/yaml/test_incorrect.yaml'])
             with pytest.raises(ValueError):
-                ConfigArgBuilder(TypeConfig, desc='Test Builder')
+                ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, desc='Test Builder')
+
+
+class TestConfigCycles:
+    """Checks the raise for cyclical dependencies"""
+    def test_config_cycles(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, 'argv', ['', '--config',
+                                    './tests/conf/yaml/test_cycle.yaml'])
+            with pytest.raises(ValueError):
+                ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, desc='Test Builder')
+
+
+class TestConfigDuplicate:
+    """Checks the raise for duplicate reads"""
+    def test_config_duplicate(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, 'argv', ['', '--config',
+                                    './tests/conf/yaml/test_duplicate.yaml', './tests/conf/yaml/test.yaml'])
+            with pytest.raises(ValueError):
+                ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, desc='Test Builder')
 
 
 class TestDefaultWriter:
@@ -300,7 +379,7 @@ class TestDefaultWriter:
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
                                     './tests/conf/yaml/test.yaml'])
-            config = ConfigArgBuilder(TypeConfig, TypeOptConfig, desc='Test Builder')
+            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder')
             # Test the chained version
             config.save(user_specified_path=tmp_path).generate()
             assert len(list(tmp_path.iterdir())) == 1
@@ -312,7 +391,7 @@ class TestYAMLWriter:
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
                                     './tests/conf/yaml/test.yaml'])
-            config = ConfigArgBuilder(TypeConfig, TypeOptConfig, desc='Test Builder')
+            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder')
             # Test the chained version
             config.save(user_specified_path=tmp_path, file_extension='.yaml').generate()
             check_path = str(tmp_path) + '/*.yaml'
@@ -328,7 +407,7 @@ class TestWritePathRaise:
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
                                     './tests/conf/yaml/test.yaml'])
-            config = ConfigArgBuilder(TypeConfig, TypeOptConfig, desc='Test Builder')
+            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder')
             # Test the chained version
             with pytest.raises(FileNotFoundError):
                 config.save(user_specified_path=str(tmp_path)+'/foo.bar/fizz.buzz/', file_extension='.yaml').generate()
@@ -343,7 +422,7 @@ class TestAllTypesTOML(AllTypes):
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
                                     './tests/conf/toml/test.toml'])
-            config = ConfigArgBuilder(TypeConfig, TypeOptConfig, desc='Test Builder')
+            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder')
             return config.generate()
 
 
@@ -355,7 +434,7 @@ class TestAllDefaultsTOML(AllDefaults):
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
                                     './tests/conf/toml/test.toml'])
-            config = ConfigArgBuilder(TypeConfig, TypeOptConfig, TypeDefaultConfig, TypeDefaultOptConfig,
+            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, TypeDefaultConfig, TypeDefaultOptConfig,
                                       desc='Test Builder')
             return config.generate()
 
@@ -366,7 +445,7 @@ class TestTOMLWriter:
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
                                     './tests/conf/toml/test.toml'])
-            config = ConfigArgBuilder(TypeConfig, TypeOptConfig, desc='Test Builder')
+            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder')
             # Test the chained version
             config.save(user_specified_path=tmp_path, file_extension='.toml').generate()
             check_path = str(tmp_path) + '/*.toml'
@@ -385,7 +464,7 @@ class TestAllTypesJSON(AllTypes):
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
                                     './tests/conf/json/test.json'])
-            config = ConfigArgBuilder(TypeConfig, TypeOptConfig, desc='Test Builder')
+            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder')
             return config.generate()
 
 
@@ -397,7 +476,7 @@ class TestAllDefaultsJSON(AllDefaults):
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
                                     './tests/conf/json/test.json'])
-            config = ConfigArgBuilder(TypeConfig, TypeOptConfig, TypeDefaultConfig, TypeDefaultOptConfig,
+            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, TypeDefaultConfig, TypeDefaultOptConfig,
                                       desc='Test Builder')
             return config.generate()
 
@@ -408,7 +487,7 @@ class TestJSONWriter:
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
                                     './tests/conf/json/test.json'])
-            config = ConfigArgBuilder(TypeConfig, TypeOptConfig, desc='Test Builder')
+            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder')
             # Test the chained version
             config.save(user_specified_path=tmp_path, file_extension='.json').generate()
             check_path = str(tmp_path) + '/*.json'

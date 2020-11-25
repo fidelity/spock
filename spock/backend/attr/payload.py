@@ -45,6 +45,8 @@ class AttrPayload(BasePayload):
     def _update_payload(base_payload, input_classes, payload):
         # Get basic args
         attr_fields = {attr.__name__: [val.name for val in attr.__attrs_attrs__] for attr in input_classes}
+        # Class names
+        class_names = [val.__name__ for val in input_classes]
         # Parse out the types if generic
         type_fields = get_type_fields(input_classes)
         for keys, values in base_payload.items():
@@ -60,13 +62,28 @@ class AttrPayload(BasePayload):
                         if i_keys not in attr_fields[keys]:
                             raise ValueError(f'Provided an unknown argument named {keys}.{i_keys}')
                 else:
+                    # Check if the key is actually a reference to another class
+                    if keys in class_names:
+                        if isinstance(values, list):
+                            # Check for incorrect specific override of global def
+                            if keys not in attr_fields:
+                                raise TypeError(f'Referring to a class space {keys} that is undefined')
+                            # We are in a repeated class def
+                            # Raise if the key set is different from the defined set (i.e. incorrect arguments)
+                            key_set = set(list(chain(*[list(val.keys()) for val in values])))
+                            for i_keys in key_set:
+                                if i_keys not in attr_fields[keys]:
+                                    raise ValueError(f'Provided an unknown argument named {keys}.{i_keys}')
+                        # Chain all the values from multiple spock classes into one list
+                        elif keys not in list(chain(*attr_fields.values())):
+                            raise ValueError(f'Provided an unknown argument named {keys}')
                     # Chain all the values from multiple spock classes into one list
-                    if keys not in list(chain(*attr_fields.values())):
+                    elif keys not in list(chain(*attr_fields.values())):
                         raise ValueError(f'Provided an unknown argument named {keys}')
             if keys in payload and isinstance(values, dict):
                 payload[keys].update(values)
             else:
                 payload[keys] = values
-        tuple_payload = convert_to_tuples(payload, type_fields)
+        tuple_payload = convert_to_tuples(payload, type_fields, class_names)
         payload = deep_update(payload, tuple_payload)
         return payload

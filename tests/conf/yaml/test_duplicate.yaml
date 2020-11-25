@@ -1,0 +1,3 @@
+# additional conf file to test duplicte configs
+# include another file
+config: [test_include.yaml]

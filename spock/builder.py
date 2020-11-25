@@ -10,10 +10,9 @@ import attr
 from spock.backend.attr.builder import AttrBuilder
 from spock.backend.attr.payload import AttrPayload
 from spock.backend.attr.saver import AttrSaver
-# from spock.backend.dataclass.builder import DataClassBuilder
-# from spock.backend.dataclass.payload import DataClassPayload
-# from spock.backend.dataclass.saver import DataClassSaver
-# from spock.backend.dataclass._dataclasses import is_dataclass
+from spock.backend.base import Spockspace
+from spock.utils import check_payload_overwrite
+from spock.utils import deep_payload_update
 
 
 class ConfigArgBuilder:
@@ -53,8 +52,8 @@ class ConfigArgBuilder:
 
         *Args*:
 
-            *args:
-            **kwargs:
+            *args: non-keyword args
+            **kwargs: keyword args
 
         *Returns*:
 
@@ -62,14 +61,22 @@ class ConfigArgBuilder:
         """
         return ConfigArgBuilder(*args, **kwargs)
 
-    def generate(self):
+    def generate(self, unclass=False):
         """Generate method that returns the actual argument namespace
+
+        *Args*:
+
+            unclass: swaps the backend attr class type for dictionaries
 
         *Returns*:
 
             argument namespace consisting of all config classes
 
         """
+        if unclass:
+            self._arg_namespace = Spockspace(**{k: Spockspace(**{
+                val.name: getattr(v, val.name) for val in v.__attrs_attrs__})
+                                                for k, v in self._arg_namespace.__dict__.items()})
         return self._arg_namespace
 
     @staticmethod
@@ -113,7 +120,8 @@ class ConfigArgBuilder:
     def _get_payload(self):
         """Get the parameter payload from the config file(s)
 
-        Calls the various ways to get configs and then parses to retrieve the parameter payload
+        Calls the various ways to get configs and then parses to retrieve the parameter payload - make sure to call
+        deep update so as to not lose some parameters when only partially updating the payload
 
         *Returns*:
 
@@ -124,8 +132,11 @@ class ConfigArgBuilder:
         if args.help:
             self._builder_obj.print_usage_and_exit()
         payload = {}
+        dependencies = {'paths': [], 'rel_paths': [], 'roots': []}
         for configs in args.config:
-            payload.update(self._payload_obj().payload(self._builder_obj.input_classes, configs, args))
+            payload_update = self._payload_obj().payload(self._builder_obj.input_classes, configs, args, dependencies)
+            check_payload_overwrite(payload, payload_update, configs)
+            deep_payload_update(payload, payload_update)
         return payload
 
     def save(self, user_specified_path=None, extra_info=True, file_extension='.yaml'):

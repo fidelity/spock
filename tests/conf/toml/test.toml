@@ -31,6 +31,22 @@ choice_p_str = 'option_1'
 choice_p_int = 10
 # Required Choice -- Str
 choice_p_float = 10.0
+# Required List of Choice -- Str
+list_choice_p_str = ['option_1']
+# Required List of List of Choice -- Str
+list_list_choice_p_str = [['option_1'], ['option_1']]
+# Required List of Choice -- Int
+list_choice_p_int = [10]
+# Required List of Choice -- Float
+list_choice_p_float = [10.0]
+# Nested Configuration
+nested = 'NestedStuff'
+NestedStuff = {one = 11, two = 'ciao'}
+# Nested List configuration
+nested_list = 'NestedListStuff'
+NestedListStuff = [{one = 10, two = 'hello'}, {one = 20, two = 'bye'}]
+# Class Enum
+class_enum = 'NestedStuff'
 # Overrride general definition
 [TypeConfig]
     float_p = 12.0

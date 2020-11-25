@@ -12,12 +12,35 @@ import subprocess
 import sys
 from time import localtime
 from time import strftime
+from warnings import warn
 import git
 minor = sys.version_info.minor
 if minor < 7:
     from typing import GenericMeta as _GenericAlias
 else:
     from typing import _GenericAlias
+
+
+def convert_save_dict(clean_inner_dict, inner_val, inner_key):
+    """Convert tuples in save dictionary
+
+    *Args*:
+
+        clean_inner_dict: inner dictionary that is clean
+        inner_val: inner value
+        inner_key:  inner key
+
+    *Returns*:
+
+        clean_inner_dict: updated with cleaned values
+
+    """
+    # Convert tuples to lists so they get written correctly
+    if isinstance(inner_val, tuple):
+        clean_inner_dict.update({inner_key: list(inner_val)})
+    elif inner_val is not None:
+        clean_inner_dict.update({inner_key: inner_val})
+    return clean_inner_dict
 
 
 def make_argument(arg_name, arg_type, parser):
@@ -107,10 +130,10 @@ def add_repo_info(out_dict):
         # Check if we are really in a detached head state as this will fail
         if minor < 7:
             head_result = subprocess.run('git rev-parse --abbrev-ref --symbolic-full-name HEAD', stdout=subprocess.PIPE,
-                                         shell=True)
+                                         shell=True, check=False)
         else:
             head_result = subprocess.run('git rev-parse --abbrev-ref --symbolic-full-name HEAD', capture_output=True,
-                                         shell=True)
+                                         shell=True, check=False)
         if head_result.stdout.decode().rstrip('\n') == 'HEAD':
             out_dict = make_blank_git(out_dict)
         else:
@@ -142,3 +165,56 @@ def add_date_info(out_dict):
     """
     out_dict.update({'# Run Date': strftime('%Y_%m_%d_%H_%M_%S', localtime())})
     return out_dict
+
+
+def deep_payload_update(source, updates):
+    """Deeply updates a dictionary
+
+    Iterates through a dictionary recursively to update individual values within a possibly nested dictionary
+    of dictionaries -- creates a dictionary if empty and trying to recurse
+
+    *Args*:
+
+        source: source dictionary
+        updates: updates to the dictionary
+
+    *Returns*:
+
+        source: updated version of the source dictionary
+
+    """
+
+    for k, v in updates.items():
+        if isinstance(v, dict) and v:
+            source_dict = {} if source.get(k) is None else source.get(k)
+            updated_dict = deep_payload_update(source_dict, v)
+            if updated_dict:
+                source[k] = updated_dict
+        else:
+            source[k] = v
+    return source
+
+
+def check_payload_overwrite(payload, updates, configs, overwrite=''):
+    """Warns when parameters are overwritten across payloads as order will matter
+
+    *Args*:
+
+        payload: current payload
+        payload_update: update to add to payload
+        configs: config path
+        overwrite: name of parent
+
+    *Returns*:
+
+    """
+    for k, v in updates.items():
+        if isinstance(v, dict) and v:
+            overwrite += (k + ":")
+            current_payload = {} if payload.get(k) is None else payload.get(k)
+            check_payload_overwrite(current_payload, v, configs, overwrite=overwrite)
+        else:
+            if k in payload.keys():
+                warn(f'Overriding an already set parameter {overwrite + k} from {configs}\n'
+                     f'Be aware that value precedence is set by the order of the config files (last to load)...',
+                     SyntaxWarning)

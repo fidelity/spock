@@ -12,11 +12,26 @@ import os
 from pathlib import Path
 import sys
 from uuid import uuid1
+import yaml
 from spock.handlers import JSONHandler
 from spock.handlers import TOMLHandler
 from spock.handlers import YAMLHandler
 from spock.utils import add_info
+from spock.utils import convert_save_dict
 from spock.utils import make_argument
+
+
+class Spockspace(argparse.Namespace):
+    """Inherits from Namespace to implement a pretty print on the obj
+
+    Overwrites the __repr__ method with a pretty version of printing
+
+    """
+    def __init__(self, **kwargs):
+        super(Spockspace, self).__init__(**kwargs)
+
+    def __repr__(self):
+        return yaml.dump(self.__dict__, default_flow_style=False)
 
 
 class BaseSaver(ABC):  # pylint: disable=too-few-public-methods
@@ -103,16 +118,29 @@ class BaseSaver(ABC):  # pylint: disable=too-few-public-methods
         clean_dict = {}
         for key, val in out_dict.items():
             clean_inner_dict = {}
-            for inner_key, inner_val in val.items():
-                # Convert tuples to lists so they get written correctly
-                if isinstance(inner_val, tuple):
-                    clean_inner_dict.update({inner_key: list(inner_val)})
-                elif inner_val is not None:
-                    clean_inner_dict.update({inner_key: inner_val})
+            if isinstance(val, list):
+                for idx, list_val in enumerate(val):
+                    tmp_dict = {}
+                    for inner_key, inner_val in list_val.items():
+                        tmp_dict = convert_save_dict(tmp_dict, inner_val, inner_key)
+                    val[idx] = tmp_dict
+                clean_inner_dict = val
+            else:
+                for inner_key, inner_val in val.items():
+                    clean_inner_dict = convert_save_dict(clean_inner_dict, inner_val, inner_key)
             clean_dict.update({key: clean_inner_dict})
         if extra_info:
             clean_dict = add_info(clean_dict)
         return clean_dict
+
+    @staticmethod
+    def _convert(clean_inner_dict, inner_val, inner_key):
+        # Convert tuples to lists so they get written correctly
+        if isinstance(inner_val, tuple):
+            clean_inner_dict.update({inner_key: list(inner_val)})
+        elif inner_val is not None:
+            clean_inner_dict.update({inner_key: inner_val})
+        return clean_inner_dict
 
 
 class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
@@ -187,8 +215,15 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         auto_dict = {}
         for attr_classes in self.input_classes:
             attr_build = self._auto_generate(dict_args, attr_classes)
-            auto_dict.update({type(attr_build).__name__: attr_build})
-        return argparse.Namespace(**auto_dict)
+            if isinstance(attr_build, list):
+                class_name = list({type(val).__name__ for val in attr_build})
+                if len(class_name) > 1:
+                    raise ValueError('Repeated class has more than one unique name')
+                auto_dict.update({class_name[0]: attr_build})
+            else:
+                auto_dict.update({type(attr_build).__name__: attr_build})
+        return Spockspace(**auto_dict)
+        # return argparse.Namespace(**auto_dict)
 
     def _auto_generate(self, args, input_class):
         """Builds an instance of a DataClass
@@ -207,7 +242,52 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         """
         # Handle the basic data types
         fields = self._handle_arguments(args, input_class)
-        return input_class(**fields)
+        if isinstance(fields, list):
+            return_value = fields
+        else:
+            self._handle_late_defaults(args, fields, input_class)
+            return_value = input_class(**fields)
+        return return_value
+
+    def _handle_late_defaults(self, args, fields, input_class):
+        """Handles late defaults when the type is non-standard
+
+        If the default type is not a base python type then we need to catch those defaults here and build the correct
+        values from the input classes while maintaining the optional nature. The trick is to exclude all 'base' types
+        as these defaults are covered by the attr default value
+
+        *Args*:
+
+            args: dictionary of arguments read from the config file(s)
+            fields: current fields returned from _handle_arguments
+            input_class: which input class being checked for late defaults
+
+        *Returns*:
+
+            fields: updated field dictionary with late defaults set
+
+        """
+        names = [val.name for val in input_class.__attrs_attrs__]
+        class_names = [val.__name__ for val in self.input_classes]
+        field_list = list(fields.keys())
+        arg_list = list(args.keys())
+        # Exclude all the base types that are supported -- these can be set by attrs
+        exclude_list = ['_Nothing', 'NoneType', 'bool', 'int', 'float', 'str', 'list', 'tuple']
+        for val in names:
+            if val not in field_list:
+                default_type_name = type(getattr(input_class.__attrs_attrs__, val).default).__name__
+                if default_type_name not in exclude_list:
+                    default_name = getattr(input_class.__attrs_attrs__, val).default.__name__
+                else:
+                    default_name = None
+                if default_name is not None and default_name in arg_list:
+                    if isinstance(args.get(default_name), list):
+                        default_value = [self.input_classes[class_names.index(default_name)](**arg_val)
+                                         for arg_val in args.get(default_name)]
+                    else:
+                        default_value = self.input_classes[class_names.index(default_name)](**args.get(default_name))
+                    fields.update({val: default_value})
+        return fields
 
     def get_config_paths(self):
         """Get config paths from all methods
@@ -411,7 +491,7 @@ class BasePayload(ABC):  # pylint: disable=too-few-public-methods
 
         """
 
-    def payload(self, input_classes, path, cmd_args):
+    def payload(self, input_classes, path, cmd_args, deps):
         """Builds the payload from config files
 
         Public exposed call to build the payload and set any command line overrides
@@ -421,17 +501,18 @@ class BasePayload(ABC):  # pylint: disable=too-few-public-methods
             input_classes: list of backend classes
             path: path to config file(s)
             cmd_args: command line overrides
+            deps: dictionary of config dependencies
 
         *Returns*:
 
             payload: dictionary of all mapped parameters
 
         """
-        payload = self._payload(input_classes, path)
+        payload = self._payload(input_classes, path, deps, root=True)
         payload = self._handle_overrides(payload, cmd_args)
         return payload
 
-    def _payload(self, input_classes, path):
+    def _payload(self, input_classes, path, deps, root=False):
         """Private call to construct the payload
 
         Main function call that builds out the payload from config files of multiple types. It handles
@@ -440,6 +521,7 @@ class BasePayload(ABC):  # pylint: disable=too-few-public-methods
         *Args*:
             input_classes: list of backend classes
             path: path to config file(s)
+            deps: dictionary of config dependencies
 
         *Returns*:
 
@@ -454,14 +536,48 @@ class BasePayload(ABC):  # pylint: disable=too-few-public-methods
                             f'Must be from {supported_extensions}')
         # Load from file
         base_payload = self._loaders.get(config_extension).load(path)
+        # Check and? update the dependencies
+        deps = self._handle_dependencies(deps, path, root)
         payload = {}
         if 'config' in base_payload:
             payload = self._handle_includes(
-                base_payload, config_extension, input_classes, path, payload)
+                base_payload, config_extension, input_classes, path, payload, deps)
         payload = self._update_payload(base_payload, input_classes, payload)
         return payload
 
-    def _handle_includes(self, base_payload, config_extension, input_classes, path, payload):  # pylint: disable=too-many-arguments
+    @staticmethod
+    def _handle_dependencies(deps, path, root):
+        """Handles config file dependencies
+
+        Checks to see if the config path (full or relative) has already been encountered. Essentially a DFS for graph
+        cycles
+
+        *Args*:
+
+            deps: dictionary of config dependencies
+            path: current config path
+            root: boolean if root
+
+        *Returns*:
+
+            deps: updated dependencies
+
+        """
+        if root and path in deps.get('paths'):
+            raise ValueError(f'Duplicate Read -- Config file {path} has already been encountered. '
+                             f'Please remove duplicate reads of config files.')
+        elif path in deps.get('paths') or path in deps.get('rel_paths'):
+            raise ValueError(f'Cyclical Dependency -- Config file {path} has already been encountered. '
+                             f'Please remove cyclical dependencies between config files.')
+        else:
+            # Update the dependency lists
+            deps.get('paths').append(path)
+            deps.get('rel_paths').append(os.path.basename(path))
+            if root:
+                deps.get('roots').append(path)
+        return deps
+
+    def _handle_includes(self, base_payload, config_extension, input_classes, path, payload, deps):  # pylint: disable=too-many-arguments
         """Handles config composition
 
         For all of the config tags in the config file this function will recursively call the payload function
@@ -474,6 +590,7 @@ class BasePayload(ABC):  # pylint: disable=too-few-public-methods
             input_classes: defined backend classes
             path: path to base file
             payload: payload pulled from composed files
+            deps: dictionary of config dependencies
 
         *Returns*:
 
@@ -489,7 +606,7 @@ class BasePayload(ABC):  # pylint: disable=too-few-public-methods
                 abs_inc_path = inc_path
             if not os.path.exists(abs_inc_path):
                 raise RuntimeError(f'Could not find included {config_extension} file {inc_path}!')
-            included_params.update(self._payload(input_classes, abs_inc_path))
+            included_params.update(self._payload(input_classes, abs_inc_path, deps))
         payload.update(included_params)
         return payload
 
@@ -540,13 +657,14 @@ class BasePayload(ABC):  # pylint: disable=too-few-public-methods
         First checks to see if there is an existing dictionary to insert into, if not creates an empty one. Then it
         inserts the updated value at the correct dictionary level
 
-        Args:
+        *Args*:
+
             payload: current payload dictionary
             dict_key: dictionary key to check
             val_name: value name to update
             value: value to update
 
-        Returns:
+        *Returns*:
 
             payload: updated payload dictionary
 
