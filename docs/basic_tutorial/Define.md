@@ -28,7 +28,7 @@ Exception if not value is specified.
 
 #### Advanced Types
 `spock` supports more than just basic types. More information can be found in 
-the [Advanced Types](advanced_features/Advanced-Types.md) section.
+the [Advanced Types](../advanced_features/Advanced-Types.md) section.
 
 ### Defining A spock Class
 
