@@ -29,7 +29,7 @@ See [Releases](https://github.com/fidelity/spock/releases) for more information.
 
 #### November 25th, 2020
 
-* Addition of [Advanced Types](advanced_features/Advanced-Types.md)
+* Addition of [Advanced Types](docs/advanced_features/Advanced-Types.md)
 * Bumped support to include Python 3.9
 * Checks for circular dependencies in composed config files
 * Pickle support for dynamically created `spock` class
