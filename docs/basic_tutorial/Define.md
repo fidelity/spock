@@ -9,7 +9,8 @@ All examples can be found [here](https://github.com/fidelity/spock/blob/master/e
 
 ### Supported Parameter Types
 
-`spock` supports the following argument types (note `List`, `Tuple`, and `Optional` are defined in the `typing` 
+#### Basic Types
+`spock` supports the following basic argument types (note `List`, `Tuple`, and `Optional` are defined in the `typing` 
 standard library while `Enum` is within the `enum` standard library):
 
 | Python Base or Typing Type (Required) | Optional Type | Description |
@@ -22,12 +23,12 @@ standard library while `Enum` is within the `enum` standard library):
 | Tuple[type] | Optional[Tuple[type]] | Basic tuple type parameter of base types such as int, float, etc. (e.g. (10, 2)) |
 | Enum | Optional[Enum] | Parameter that must be from a defined set of values of base types such as int, float, etc. |
 
-Parameters that are specified without the `Optional[]` type will be considered REQUIRED and therefore will raise an
+Parameters that are specified without the `Optional[]` type will be considered **REQUIRED** and therefore will raise an
 Exception if not value is specified. 
 
-Nested types are also supported. For instance:
-
-`List[List[int]]` which would define a list of list of integers!
+#### Advanced Types
+`spock` supports more than just basic types. More information can be found in 
+the [Advanced Types](advanced_features/Advanced-Types.md) section.
 
 ### Defining A spock Class
 
