@@ -51,18 +51,76 @@ class AttrBuilder(BaseBuilder):
 
     def _handle_arguments(self, args, class_obj):
         attr_name = class_obj.__name__
-        fields = {}
-        for val in class_obj.__attrs_attrs__:
-            # Check if namespace is named and then check for key -- checking for local class def
-            if attr_name in args and val.name in args[attr_name]:
-                fields[val.name] = args[attr_name][val.name]
-            # If not named then just check for keys -- checking for global def
-            elif val.name in args:
-                fields[val.name] = args[val.name]
-            # Check for special keys to set
-            if 'special_key' in val.metadata and val.metadata['special_key'] is not None:
-                if val.name in args:
-                    self.save_path = args[val.name]
-                elif val.default is not None:
-                    self.save_path = val.default
+        class_names = [val.__name__ for val in self.input_classes]
+        # Handle repeated classes
+        if attr_name in class_names and attr_name in args and isinstance(args[attr_name], list):
+            fields = self._handle_repeated(args[attr_name], attr_name, class_names)
+        # Handle non-repeated classes
+        else:
+            fields = {}
+            for val in class_obj.__attrs_attrs__:
+                # Check if namespace is named and then check for key -- checking for local class def
+                if attr_name in args and val.name in args[attr_name]:
+                    fields[val.name] = self._handle_nested_class(args, args[attr_name][val.name], class_names)
+                # If not named then just check for keys -- checking for global def
+                elif val.name in args:
+                    fields[val.name] = self._handle_nested_class(args, args[val.name], class_names)
+                # Check for special keys to set
+                if 'special_key' in val.metadata and val.metadata['special_key'] is not None:
+                    if val.name in args:
+                        self.save_path = args[val.name]
+                    elif val.default is not None:
+                        self.save_path = val.default
         return fields
+
+    def _handle_repeated(self, args, check_value, class_names):
+        """Handles repeated classes as lists
+
+        *Args*:
+
+            args: dictionary of arguments from the configs
+            check_value: value to check classes against
+            class_names: current class names
+
+        *Returns*:
+
+            list of input_class[match)idx[0]] types filled with repeated values
+
+        """
+        # Check to see if the value trying to be set is actually an input class
+        match_idx = [idx for idx, val in enumerate(class_names) if val == check_value]
+        return [self.input_classes[match_idx[0]](**val) for val in args]
+
+    def _handle_nested_class(self, args, check_value, class_names):
+        """Handles passing another class to the field dictionary
+
+        *Args*:
+            args: dictionary of arguments from the configs
+            check_value: value to check classes against
+            class_names: current class names
+
+        *Returns*:
+
+            either the check_value or the necessary class
+
+        """
+        # Check to see if the value trying to be set is actually an input class
+        match_idx = [idx for idx, val in enumerate(class_names) if val == check_value]
+        # If so then create the needed class object by unrolling the args to **kwargs and return it
+        if len(match_idx) > 0:
+            if len(match_idx) > 1:
+                raise ValueError('Match error -- multiple classes with the same name definition')
+            else:
+                if args.get(self.input_classes[match_idx[0]].__name__) is None:
+                    raise ValueError(f'Missing config file definition for the referenced class '
+                                     f'{self.input_classes[match_idx[0]].__name__}')
+                current_arg = args.get(self.input_classes[match_idx[0]].__name__)
+                if isinstance(current_arg, list):
+                    class_value = [self.input_classes[match_idx[0]](**val) for val in current_arg]
+                else:
+                    class_value = self.input_classes[match_idx[0]](**current_arg)
+            return_value = class_value
+        # else return the expected value
+        else:
+            return_value = check_value
+        return return_value

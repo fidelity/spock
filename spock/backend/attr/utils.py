@@ -53,7 +53,7 @@ def flatten_type_dict(type_dict):
     return flat_dict
 
 
-def convert_to_tuples(input_dict, named_type_dict):
+def convert_to_tuples(input_dict, named_type_dict, class_names):
     """Convert lists to tuples
 
     Payloads from markup come in as Lists and not Tuples. This function turns lists in to tuples for the payloads
@@ -75,11 +75,16 @@ def convert_to_tuples(input_dict, named_type_dict):
     for k, v in input_dict.items():
         if k != 'config':
             if isinstance(v, dict):
-                updated = convert_to_tuples(v, named_type_dict.get(k))
+                updated = convert_to_tuples(v, named_type_dict.get(k), class_names)
                 if updated:
                     updated_dict.update({k: updated})
+            elif isinstance(v, list) and k in class_names:
+                for val in v:
+                    updated = convert_to_tuples(val, named_type_dict.get(k), class_names)
+                    if updated:
+                        updated_dict.update({k: updated})
             elif all_typed_dict[k] is not None:
-                updated = _recursive_list_to_tuple(v, all_typed_dict[k])
+                updated = _recursive_list_to_tuple(v, all_typed_dict[k], class_names)
                 updated_dict.update({k: updated})
     return updated_dict
 
@@ -110,7 +115,7 @@ def deep_update(source, updates):
     return source
 
 
-def _recursive_list_to_tuple(value, typed):
+def _recursive_list_to_tuple(value, typed, class_names):
     """Recursively turn lists into tuples
 
     Recursively looks through a pair of value and type and sets any of the possibly nested type of value to tuple
@@ -128,11 +133,12 @@ def _recursive_list_to_tuple(value, typed):
     """
     # Check for __args__ as it signifies a generic and make sure it's not already been cast as a tuple
     # from a composed payload
-    if hasattr(typed, '__args__') and not isinstance(value, tuple):
+    if hasattr(typed, '__args__') and not isinstance(value, tuple) and not (isinstance(value, str)
+                                                                            and value in class_names):
         # need to recurse before casting as we can't set values in a tuple with idx
         # Since it's generic it should be iterable to recurse and check it's children
         for idx, val in enumerate(value):
-            value[idx] = _recursive_list_to_tuple(val, typed.__args__[0])
+            value[idx] = _recursive_list_to_tuple(val, typed.__args__[0], class_names)
         # First check if list and then swap to tuple if the origin is tuple
         if isinstance(value, list) and typed.__origin__.__name__.lower() == 'tuple':
             value = tuple(value)

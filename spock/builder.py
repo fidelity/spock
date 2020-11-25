@@ -5,12 +5,12 @@
 
 """Handles the building/saving of the configurations from the Spock config classes"""
 
-from argparse import Namespace
-import attr
 from pathlib import Path
+import attr
 from spock.backend.attr.builder import AttrBuilder
 from spock.backend.attr.payload import AttrPayload
 from spock.backend.attr.saver import AttrSaver
+from spock.backend.base import Spockspace
 from spock.utils import check_payload_overwrite
 from spock.utils import deep_payload_update
 
@@ -74,9 +74,9 @@ class ConfigArgBuilder:
 
         """
         if unclass:
-            self._arg_namespace = Namespace(**{k: Namespace(**{
+            self._arg_namespace = Spockspace(**{k: Spockspace(**{
                 val.name: getattr(v, val.name) for val in v.__attrs_attrs__})
-                                               for k, v in self._arg_namespace.__dict__.items()})
+                                                for k, v in self._arg_namespace.__dict__.items()})
         return self._arg_namespace
 
     @staticmethod

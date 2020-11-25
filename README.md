@@ -23,6 +23,17 @@ Supports Python 3.6+
 pip install spock-config
 ```
 
+## What's New
+
+See [Releases](https://github.com/fidelity/spock/releases) for more information.
+
+#### November 25th, 2020
+
+* Addition of [Advanced Types](advanced_features/Advanced-Types.md)
+* Bumped support to include Python 3.9
+* Checks for circular dependencies in composed config files
+* Pickle support for dynamically created `spock` class
+
 ## Documentation
 
 Current documentation and more information can be found [here](https://fidelity.github.io/spock/).
@@ -38,7 +49,7 @@ and automatic defaults.
 set of parameters.
 * Multiple Configuration File Types: Configurations are specified from YAML, TOML, or JSON files.
 * Hierarchical Configuration: Composed from multiple configuration files via simple include statements.
-* Command-Line Overrides: Quickly experiment by overriding a value with automatically generated command line arguments
+* Command-Line Overrides: Quickly experiment by overriding a value with automatically generated command line arguments.
 * Immutable: All classes are *frozen* preventing any misuse or accidental overwrites.
 * Tractability and Reproducibility: Save currently running parameter configuration with a single chained command. 
 

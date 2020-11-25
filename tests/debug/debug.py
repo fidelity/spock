@@ -17,16 +17,44 @@ class Choice(Enum):
     banana = 'banana'
 
 
+class IntChoice(Enum):
+    option_1 = 10
+    option_2 = 20
+
+
+@spock
+class OtherStuff:
+    three: int
+    four: str
+
+
+@spock
+class Stuff:
+    one: int
+    two: str
+
+
+class ClassStuff(Enum):
+    other_stuff = OtherStuff
+    stuff = Stuff
+
+
+
 @spock
 class Test:
-    new_choice: Choice
+    # new_choice: Optional[Choice]
     # # fix_me: Tuple[Tuple[int]]
-    # new: int
-    # # fail: bool
-    # # fail: List
-    # test: List[int]
-    # fail: List[List[int]]
-    borken: Optional[List[List[Choice]]] = [['pear'], ['banana']]
+    # new: int = 3
+    # fail: bool
+    # fail: List
+    # test: List[int] = [1, 2]
+    # fail: List[List[int]] = [[1, 2], [1, 2]]
+    # borken: Stuff = Stuff
+    # borken: List[Stuff] = Stuff
+    # more_borken: OtherStuff
+    most_broken: ClassStuff = Stuff
+    # borken: int
+    # borken: Optional[List[List[Choice]]] = [['pear'], ['banana']]
     # save_path: SavePath = '/tmp'
     # other: Optional[int]
     # value: Optional[List[int]] = [1, 2]
@@ -46,16 +74,16 @@ class Test:
 
 
 def main():
-    attrs_class = ConfigArgBuilder(Test).generate()
-    with open('/tmp/debug.pickle', 'wb') as fid:
-        pickle.dump(attrs_class, file=fid)
+    attrs_class = ConfigArgBuilder(Test, OtherStuff, Stuff).generate()
+    # with open('/tmp/debug.pickle', 'wb') as fid:
+    #     pickle.dump(attrs_class, file=fid)
 
-    with open('/tmp/debug.pickle', 'rb') as fid:
-        attrs_load = pickle.load(fid)
+    # with open('/tmp/debug.pickle', 'rb') as fid:
+    #     attrs_load = pickle.load(fid)
     # attrs_class = ConfigArgBuilder(Test, Test2).generate()
 
-    # print(attrs_class)
-    print(attrs_load)
+    print(attrs_class)
+    # print(attrs_load)
     # dc_class = ConfigArgBuilder(OldInherit).generate()
     # print(dc_class)
 
