@@ -15,18 +15,18 @@ Stuff:
 #    two: hello
 #  - one: 20
 #    two: bye
-#
+
 #more_borken: OtherStuff
 OtherStuff:
   three: 20
   four: ciao
-##Test2:
+###Test2:
 ###    other: 12
 ###Test:
 ###    new: 12
 ###fail: false
 ###ccccombo_breaker: 10
-##new: 1
+#new: 10
 ##other: 1
 ##Test2:
 ##  fail: 2
@@ -34,7 +34,7 @@ OtherStuff:
 ###fail: 1
 #test: [1, 2]
 
-most_broken: OtherStuff
+#most_broken: OtherStuff
 
 #save_path: /tmp
 #new_choice: pear
@@ -45,4 +45,4 @@ most_broken: OtherStuff
 #    other: 12
 #ccccombo_breaker: 10
 #new: 1
-#fail: 1
+#fail: true

@@ -6,7 +6,6 @@
 """Handles the definitions of arguments types for Spock (backend: attrs)"""
 
 import sys
-from enum import Enum
 from enum import EnumMeta
 from functools import partial
 from typing import TypeVar
@@ -170,7 +169,7 @@ def _enum_katra(typed, default=None, optional=False):
     """
     # First check if the types of Enum are the same
     base_type, allowed = _check_enum_props(typed)
-    if isinstance(base_type, type):
+    if base_type.__name__ == 'type':
         x = _enum_class_katra(typed=typed, allowed=allowed, default=default, optional=optional)
     else:
         x = _enum_base_katra(typed=typed, base_type=base_type, allowed=allowed, default=default, optional=optional)
@@ -227,7 +226,7 @@ def _in_type(instance, attribute, value, options):
     *Returns*:
 
     """
-    if type(options) not in [list, tuple, Enum]:
+    if type(options) not in [list, tuple, EnumMeta]:
         raise TypeError(f'options argument must be of type List, Tuple, or Enum -- given {type(options)}')
     if type(value) not in options:
         raise ValueError(f'{attribute.name} must be in {options}')

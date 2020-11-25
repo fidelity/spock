@@ -42,6 +42,8 @@ class AllTypes:
         assert arg_builder.TypeConfig.nested_list[0].two == 'hello'
         assert arg_builder.TypeConfig.nested_list[1].one == 20
         assert arg_builder.TypeConfig.nested_list[1].two == 'bye'
+        assert arg_builder.TypeConfig.class_enum.one == 11
+        assert arg_builder.TypeConfig.class_enum.two == 'ciao'
         # Optional #
         assert arg_builder.TypeOptConfig.int_p_opt_no_def is None
         assert arg_builder.TypeOptConfig.float_p_opt_no_def is None
@@ -54,6 +56,12 @@ class AllTypes:
         assert arg_builder.TypeOptConfig.tuple_p_opt_no_def_int is None
         assert arg_builder.TypeOptConfig.tuple_p_opt_no_def_str is None
         assert arg_builder.TypeOptConfig.tuple_p_opt_no_def_bool is None
+        assert arg_builder.TypeOptConfig.choice_p_opt_no_def_str is None
+        assert arg_builder.TypeOptConfig.list_choice_p_opt_no_def_str is None
+        assert arg_builder.TypeOptConfig.list_list_choice_p_opt_no_def_str is None
+        assert arg_builder.TypeOptConfig.nested_opt_no_def is None
+        assert arg_builder.TypeOptConfig.nested_list_opt_no_def is None
+        assert arg_builder.TypeOptConfig.class_enum_opt_no_def is None
 
 
 class AllDefaults:
@@ -72,6 +80,16 @@ class AllDefaults:
         assert arg_builder.TypeDefaultConfig.tuple_p_str_def == ('Spock', 'Package')
         assert arg_builder.TypeDefaultConfig.tuple_p_bool_def == (True, False)
         assert arg_builder.TypeDefaultConfig.choice_p_str_def == 'option_2'
+        assert arg_builder.TypeDefaultConfig.list_choice_p_str_def == ['option_1']
+        assert arg_builder.TypeDefaultConfig.list_list_choice_p_str_def == [['option_1'], ['option_1']]
+        assert arg_builder.TypeDefaultConfig.nested_def.one == 11
+        assert arg_builder.TypeDefaultConfig.nested_def.two == 'ciao'
+        assert arg_builder.TypeDefaultConfig.nested_list_def[0].one == 10
+        assert arg_builder.TypeDefaultConfig.nested_list_def[0].two == 'hello'
+        assert arg_builder.TypeDefaultConfig.nested_list_def[1].one == 20
+        assert arg_builder.TypeDefaultConfig.nested_list_def[1].two == 'bye'
+        assert arg_builder.TypeDefaultConfig.class_enum_def.one == 11
+        assert arg_builder.TypeDefaultConfig.class_enum_def.two == 'ciao'
         # Optional w/ Defaults #
         assert arg_builder.TypeDefaultOptConfig.int_p_opt_def == 10
         assert arg_builder.TypeDefaultOptConfig.float_p_opt_def == 10.0
@@ -84,6 +102,17 @@ class AllDefaults:
         assert arg_builder.TypeDefaultOptConfig.tuple_p_opt_def_int == (10, 20)
         assert arg_builder.TypeDefaultOptConfig.tuple_p_opt_def_str == ('Spock', 'Package')
         assert arg_builder.TypeDefaultOptConfig.tuple_p_opt_def_bool == (True, False)
+        assert arg_builder.TypeDefaultOptConfig.choice_p_str_opt_def == 'option_2'
+        assert arg_builder.TypeDefaultOptConfig.list_choice_p_str_opt_def == ['option_1']
+        assert arg_builder.TypeDefaultOptConfig.list_list_choice_p_str_opt_def == [['option_1'], ['option_1']]
+        assert arg_builder.TypeDefaultOptConfig.nested_opt_def.one == 11
+        assert arg_builder.TypeDefaultOptConfig.nested_opt_def.two == 'ciao'
+        assert arg_builder.TypeDefaultOptConfig.nested_list_opt_def[0].one == 10
+        assert arg_builder.TypeDefaultOptConfig.nested_list_opt_def[0].two == 'hello'
+        assert arg_builder.TypeDefaultOptConfig.nested_list_opt_def[1].one == 20
+        assert arg_builder.TypeDefaultOptConfig.nested_list_opt_def[1].two == 'bye'
+        assert arg_builder.TypeDefaultOptConfig.class_enum_opt_def.one == 11
+        assert arg_builder.TypeDefaultOptConfig.class_enum_opt_def.two == 'ciao'
 
 
 class AllInherited:
@@ -110,6 +139,14 @@ class AllInherited:
         assert arg_builder.TypeInherited.list_list_choice_p_str == [['option_1'], ['option_1']]
         assert arg_builder.TypeInherited.list_choice_p_int == [10]
         assert arg_builder.TypeInherited.list_choice_p_float == [10.0]
+        assert arg_builder.TypeInherited.nested.one == 11
+        assert arg_builder.TypeInherited.nested.two == 'ciao'
+        assert arg_builder.TypeInherited.nested_list[0].one == 10
+        assert arg_builder.TypeInherited.nested_list[0].two == 'hello'
+        assert arg_builder.TypeInherited.nested_list[1].one == 20
+        assert arg_builder.TypeInherited.nested_list[1].two == 'bye'
+        assert arg_builder.TypeInherited.class_enum.one == 11
+        assert arg_builder.TypeInherited.class_enum.two == 'ciao'
         # Optional w/ Defaults #
         assert arg_builder.TypeInherited.int_p_opt_def == 10
         assert arg_builder.TypeInherited.float_p_opt_def == 10.0

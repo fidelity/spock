@@ -245,8 +245,49 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         if isinstance(fields, list):
             return_value = fields
         else:
+            self._handle_late_defaults(args, fields, input_class)
             return_value = input_class(**fields)
         return return_value
+
+    def _handle_late_defaults(self, args, fields, input_class):
+        """Handles late defaults when the type is non-standard
+
+        If the default type is not a base python type then we need to catch those defaults here and build the correct
+        values from the input classes while maintaining the optional nature. The trick is to exclude all 'base' types
+        as these defaults are covered by the attr default value
+
+        *Args*:
+
+            args: dictionary of arguments read from the config file(s)
+            fields: current fields returned from _handle_arguments
+            input_class: which input class being checked for late defaults
+
+        *Returns*:
+
+            fields: updated field dictionary with late defaults set
+
+        """
+        names = [val.name for val in input_class.__attrs_attrs__]
+        class_names = [val.__name__ for val in self.input_classes]
+        field_list = list(fields.keys())
+        arg_list = list(args.keys())
+        # Exclude all the base types that are supported -- these can be set by attrs
+        exclude_list = ['_Nothing', 'NoneType', 'bool', 'int', 'float', 'str', 'list', 'tuple']
+        for val in names:
+            if val not in field_list:
+                default_type_name = type(getattr(input_class.__attrs_attrs__, val).default).__name__
+                if default_type_name not in exclude_list:
+                    default_name = getattr(input_class.__attrs_attrs__, val).default.__name__
+                else:
+                    default_name = None
+                if default_name is not None and default_name in arg_list:
+                    if isinstance(args.get(default_name), list):
+                        default_value = [self.input_classes[class_names.index(default_name)](**arg_val)
+                                         for arg_val in args.get(default_name)]
+                    else:
+                        default_value = self.input_classes[class_names.index(default_name)](**args.get(default_name))
+                    fields.update({val: default_value})
+        return fields
 
     def get_config_paths(self):
         """Get config paths from all methods

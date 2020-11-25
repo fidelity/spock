@@ -52,3 +52,5 @@ NestedListStuff:
       two: hello
     - one: 20
       two: bye
+# Class Enum
+class_enum: NestedStuff
