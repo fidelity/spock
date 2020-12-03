@@ -31,6 +31,8 @@ class Spockspace(argparse.Namespace):
         super(Spockspace, self).__init__(**kwargs)
 
     def __repr__(self):
+        # Remove aliases in YAML dump
+        yaml.Dumper.ignore_aliases = lambda *args: True
         return yaml.dump(self.__dict__, default_flow_style=False)
 
 
