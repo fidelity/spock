@@ -97,6 +97,8 @@ class YAMLHandler(Handler):
         *Returns*:
 
         """
+        # Remove aliases in YAML dump
+        yaml.Dumper.ignore_aliases = lambda *args: True
         yaml.dump(out_dict, path, default_flow_style=False)
 
 
