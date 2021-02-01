@@ -214,7 +214,7 @@ def check_payload_overwrite(payload, updates, configs, overwrite=''):
             current_payload = {} if payload.get(k) is None else payload.get(k)
             check_payload_overwrite(current_payload, v, configs, overwrite=overwrite)
         else:
-            if k in payload.keys():
+            if k in payload:
                 warn(f'Overriding an already set parameter {overwrite + k} from {configs}\n'
                      f'Be aware that value precedence is set by the order of the config files (last to load)...',
                      SyntaxWarning)

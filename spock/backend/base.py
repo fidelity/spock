@@ -70,7 +70,7 @@ class BaseSaver(ABC):  # pylint: disable=too-few-public-methods
 
         """
         supported_extensions = list(self._writers.keys())
-        if file_extension not in list(self._writers.keys()):
+        if file_extension not in self._writers:
             raise ValueError(f'Invalid fileout extension. Expected a fileout from {supported_extensions}')
         # Make the filename
         name = str(uuid1()) + '.spock.cfg' + file_extension
@@ -411,7 +411,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
 
         """
         protected_names = ['config', 'help']
-        if any([val in all_attr.keys() for val in protected_names]):
+        if any([val in all_attr for val in protected_names]):
             raise ValueError(f"Using a protected name from {protected_names} at general class level which prevents "
                              f"command line overrides")
 
