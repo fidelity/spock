@@ -76,13 +76,13 @@ class TypeConfig:
     # Required List -- Bool
     list_p_bool: List[bool]
     # Required Tuple -- Float
-    tuple_p_float: Tuple[float]
+    tuple_p_float: Tuple[float, float]
     # Required Tuple -- Int
-    tuple_p_int: Tuple[int]
+    tuple_p_int: Tuple[int, int]
     # Required Tuple -- Str
-    tuple_p_str: Tuple[str]
+    tuple_p_str: Tuple[str, str]
     # Required Tuple -- Bool
-    tuple_p_bool: Tuple[bool]
+    tuple_p_bool: Tuple[bool, bool]
     # Required choice -- Str
     choice_p_str: StrChoice
     # Required choice -- Int
@@ -124,13 +124,13 @@ class TypeOptConfig:
     # Optional List default not set
     list_p_opt_no_def_bool: Optional[List[bool]]
     # Optional Tuple default not set
-    tuple_p_opt_no_def_float: Optional[Tuple[float]]
+    tuple_p_opt_no_def_float: Optional[Tuple[float, float]]
     # Optional Tuple default not set
-    tuple_p_opt_no_def_int: Optional[Tuple[int]]
+    tuple_p_opt_no_def_int: Optional[Tuple[int, int]]
     # Optional Tuple default not set
-    tuple_p_opt_no_def_str: Optional[Tuple[str]]
+    tuple_p_opt_no_def_str: Optional[Tuple[str, str]]
     # Optional Tuple default not set
-    tuple_p_opt_no_def_bool: Optional[Tuple[bool]]
+    tuple_p_opt_no_def_bool: Optional[Tuple[bool, bool]]
     # Required choice -- Str
     choice_p_opt_no_def_str: Optional[StrChoice]
     # Required list of choice -- Str

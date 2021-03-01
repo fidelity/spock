@@ -46,7 +46,7 @@ class Test:
     # # fix_me: Tuple[Tuple[int]]
     # new: int = 3
     # fail: bool
-    # fail: List
+    fail: Tuple[Tuple[int, int], Tuple[int, int]]
     # test: List[int] = [1, 2]
     # fail: List[List[int]] = [[1, 2], [1, 2]]
     # borken: Stuff = Stuff

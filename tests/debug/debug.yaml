@@ -24,8 +24,8 @@ OtherStuff:
 ###    other: 12
 ###Test:
 ###    new: 12
-###fail: false
-###ccccombo_breaker: 10
+fail: [[1, 2], [3, 4, 5]]
+##ccccombo_breaker: 10
 #new: 10
 ##other: 1
 ##Test2:
