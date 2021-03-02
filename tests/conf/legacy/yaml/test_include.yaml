@@ -1,5 +1,0 @@
-# additional conf file to test inheritance 
-# include another file 
-config: [test.yaml]
-# override a paramter 
-int_p: 9

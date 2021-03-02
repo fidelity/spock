@@ -9,6 +9,7 @@ from abc import ABC
 from abc import abstractmethod
 import json
 import re
+from spock import __version__
 import toml
 import yaml
 
@@ -34,18 +35,41 @@ class Handler(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def save(self, out_dict, path):
+    def save(self, out_dict, info_dict, path):
         """Write function for file type
 
         *Args*:
 
             out_dict: payload to write
+            info_dict: info payload to write
             path: path to write out
 
         *Returns*:
 
         """
         raise NotImplementedError
+
+    @staticmethod
+    def write_extra_info(path, info_dict):
+        """Writes extra info to commented newlines
+
+        *Args*:
+
+            path: path to write out
+            info_dict: info payload to write
+
+        *Returns*:
+
+        """
+        # Write the commented info as new lines
+        with open(path.name, 'w+') as fid:
+            # Write a spock header
+            fid.write(f'# Spock Version: {__version__}\n')
+            # Write info dict if not None
+            if info_dict is not None:
+                for k, v in info_dict.items():
+                    fid.write(f'{k}: {v}\n')
+            fid.write('---\n')
 
 
 class YAMLHandler(Handler):
@@ -86,20 +110,24 @@ class YAMLHandler(Handler):
         base_payload = yaml.safe_load(file_contents)
         return base_payload
 
-    def save(self, out_dict, path):
+    def save(self, out_dict, info_dict, path):
         """Write function for YAML type
 
         *Args*:
 
             out_dict: payload to write
+            info_dict: info payload to write
             path: path to write out
 
         *Returns*:
 
         """
+        # First write the commented info
+        self.write_extra_info(path=path, info_dict=info_dict)
         # Remove aliases in YAML dump
         yaml.Dumper.ignore_aliases = lambda *args: True
-        yaml.dump(out_dict, path, default_flow_style=False)
+        with open(path.name, 'a') as yaml_fid:
+            yaml.safe_dump(out_dict, yaml_fid, default_flow_style=False)
 
 
 class TOMLHandler(Handler):
@@ -123,18 +151,20 @@ class TOMLHandler(Handler):
         base_payload = toml.load(path)
         return base_payload
 
-    def save(self, out_dict, path):
+    def save(self, out_dict, info_dict, path):
         """Write function for TOML type
 
         *Args*:
 
             out_dict: payload to write
+            info_dict: info payload to write
             path: path to write out
 
         *Returns*:
 
         """
-        toml.dump(out_dict, path)
+        with open(path.name, 'a') as toml_fid:
+            toml.dump(out_dict, toml_fid)
 
 
 class JSONHandler(Handler):
@@ -159,16 +189,17 @@ class JSONHandler(Handler):
             base_payload = json.load(json_fid)
         return base_payload
 
-    def save(self, out_dict, path):
+    def save(self, out_dict, info_dict, path):
         """Write function for JSON type
 
         *Args*:
 
             out_dict: payload to write
+            info_dict: info payload to write
             path: path to write out
 
         *Returns*:
 
         """
-        with open(path.name, 'w') as json_fid:
+        with open(path.name, 'a') as json_fid:
             json.dump(out_dict, json_fid, indent=4, separators=(',', ': '))

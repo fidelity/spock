@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-from spock.backend.dataclass.args import IntArg, ListArg, IntOptArg, ChoiceArg, SavePathOptArg
 from spock.config import spock
-from spock.config import spock_config
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -39,6 +37,11 @@ class ClassStuff(Enum):
     stuff = Stuff
 
 
+@spock
+class RepeatStuff:
+    hi: int
+    bye: float
+
 
 @spock
 class Test:
@@ -47,12 +50,12 @@ class Test:
     # new: int = 3
     # fail: bool
     fail: Tuple[Tuple[int, int], Tuple[int, int]]
-    # test: List[int] = [1, 2]
+    test: List[int] = [1, 2]
     # fail: List[List[int]] = [[1, 2], [1, 2]]
     # borken: Stuff = Stuff
-    # borken: List[Stuff] = Stuff
+    borken: List[RepeatStuff]
     # more_borken: OtherStuff
-    most_broken: ClassStuff = Stuff
+    most_broken: ClassStuff
     # borken: int
     # borken: Optional[List[List[Choice]]] = [['pear'], ['banana']]
     # save_path: SavePath = '/tmp'
@@ -74,7 +77,7 @@ class Test:
 
 
 def main():
-    attrs_class = ConfigArgBuilder(Test, OtherStuff, Stuff).generate()
+    attrs_class = ConfigArgBuilder(Test, OtherStuff, Stuff, RepeatStuff).save('/tmp').generate()
     # with open('/tmp/debug.pickle', 'wb') as fid:
     #     pickle.dump(attrs_class, file=fid)
 

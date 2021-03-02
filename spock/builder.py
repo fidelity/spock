@@ -39,7 +39,7 @@ class ConfigArgBuilder:
         self._builder_obj = backend.get('builder')(
             *args, configs=configs, create_save_path=create_save_path, desc=desc, no_cmd_line=no_cmd_line, **kwargs)
         self._payload_obj = backend.get('payload')
-        self._saver_obj = backend.get('saver')
+        self._saver_obj = backend.get('saver')()
         try:
             self._dict_args = self._get_payload()
             self._arg_namespace = self._builder_obj.generate(self._dict_args)
@@ -160,5 +160,5 @@ class ConfigArgBuilder:
             raise ValueError('Save did not receive a valid path from: (1) markup file(s) or (2) '
                              'the keyword arg user_specified_path')
         # Call the saver class and save function
-        self._saver_obj().save(self._arg_namespace, save_path, self._create_save_path, extra_info, file_extension)
+        self._saver_obj.save(self._arg_namespace, save_path, self._create_save_path, extra_info, file_extension)
         return self

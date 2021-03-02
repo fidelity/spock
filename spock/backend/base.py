@@ -17,7 +17,7 @@ from spock.handlers import JSONHandler
 from spock.handlers import TOMLHandler
 from spock.handlers import YAMLHandler
 from spock.utils import add_info
-from spock.utils import convert_save_dict
+# from spock.utils import convert_save_dict
 from spock.utils import make_argument
 
 
@@ -75,19 +75,21 @@ class BaseSaver(ABC):  # pylint: disable=too-few-public-methods
         # Make the filename
         name = str(uuid1()) + '.spock.cfg' + file_extension
         fid = path / name
-        # Fix up values
-        out_dict = self._clean_up_values(payload, extra_info, file_extension)
+        # Fix up values -- parameters
+        out_dict = self._clean_up_values(payload, file_extension)
+        # Get extra info
+        extra_dict = add_info() if extra_info else None
         try:
             if not os.path.exists(path) and create_save_path:
                 os.makedirs(path)
             with open(fid, 'w') as file_out:
-                self._writers.get(file_extension)().save(out_dict, file_out)
+                self._writers.get(file_extension)().save(out_dict, extra_dict, file_out)
         except OSError as e:
             print(f'Not a valid file path to write to: {fid}')
             raise e
 
     @abstractmethod
-    def _clean_up_values(self, payload, extra_info, file_extension):
+    def _clean_up_values(self, payload, file_extension):
         """Clean up the config payload so it can be written to file
 
         *Args*:
@@ -102,8 +104,7 @@ class BaseSaver(ABC):  # pylint: disable=too-few-public-methods
 
         """
 
-    @staticmethod
-    def _clean_output(out_dict, extra_info):
+    def _clean_output(self, out_dict):
         """Clean up the dictionary so it can be written to file
 
         *Args*:
@@ -124,25 +125,48 @@ class BaseSaver(ABC):  # pylint: disable=too-few-public-methods
                 for idx, list_val in enumerate(val):
                     tmp_dict = {}
                     for inner_key, inner_val in list_val.items():
-                        tmp_dict = convert_save_dict(tmp_dict, inner_val, inner_key)
+                        tmp_dict = self._convert(tmp_dict, inner_val, inner_key)
                     val[idx] = tmp_dict
                 clean_inner_dict = val
             else:
                 for inner_key, inner_val in val.items():
-                    clean_inner_dict = convert_save_dict(clean_inner_dict, inner_val, inner_key)
+                    clean_inner_dict = self._convert(clean_inner_dict, inner_val, inner_key)
             clean_dict.update({key: clean_inner_dict})
-        if extra_info:
-            clean_dict = add_info(clean_dict)
         return clean_dict
 
-    @staticmethod
-    def _convert(clean_inner_dict, inner_val, inner_key):
+    def _convert(self, clean_inner_dict, inner_val, inner_key):
         # Convert tuples to lists so they get written correctly
         if isinstance(inner_val, tuple):
-            clean_inner_dict.update({inner_key: list(inner_val)})
+            clean_inner_dict.update({inner_key: self._recursive_tuple_to_list(inner_val)})
         elif inner_val is not None:
             clean_inner_dict.update({inner_key: inner_val})
         return clean_inner_dict
+
+    def _recursive_tuple_to_list(self, value):
+        """Recursively turn tuples into lists
+
+        Recursively looks through tuple(s) and convert to lists
+
+        *Args*:
+
+            value: value to check and set typ if necessary
+            typed: type of the generic alias to check against
+
+        *Returns*:
+
+            value: updated value with correct type casts
+
+        """
+        # Check for __args__ as it signifies a generic and make sure it's not already been cast as a tuple
+        # from a composed payload
+        list_v = []
+        for v in value:
+            if isinstance(v, tuple):
+                v = self._recursive_tuple_to_list(v)
+                list_v.append(v)
+            else:
+                list_v.append(v)
+        return list_v
 
 
 class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
@@ -230,7 +254,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
     def _auto_generate(self, args, input_class):
         """Builds an instance of a DataClass
 
-        Builds an instance of a dataclass with the necessary field values from the argument
+        Builds an instance with the necessary field values from the argument
         dictionary read from the config file(s)
 
         *Args*:
