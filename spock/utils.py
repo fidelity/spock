@@ -105,8 +105,8 @@ def add_repo_info(out_dict):
     """
     try:
         # Assume we are working out of a repo
-        repo = git.Repo(os.getcwd())
-        # Check if we are really in a detached head state as this will fail
+        repo = git.Repo(os.getcwd(), search_parent_directories=True)
+        # Check if we are really in a detached head state as later info will fail if we are
         if minor < 7:
             head_result = subprocess.run('git rev-parse --abbrev-ref --symbolic-full-name HEAD', stdout=subprocess.PIPE,
                                          shell=True, check=False)
@@ -116,14 +116,15 @@ def add_repo_info(out_dict):
         if head_result.stdout.decode().rstrip('\n') == 'HEAD':
             out_dict = make_blank_git(out_dict)
         else:
-            out_dict.update({'# Git BRANCH': repo.active_branch.name})
-            out_dict.update({'# Git COMMIT SHA': repo.head.object.hexsha})
-            if len(repo.untracked_files) > 0 or len(repo.head.commit.diff(None)) > 0:
+            out_dict.update({'# Git Branch': repo.active_branch.name})
+            out_dict.update({'# Git Commit': repo.active_branch.commit.hexsha})
+            out_dict.update({'# Git Date': repo.active_branch.commit.committed_datetime})
+            if len(repo.untracked_files) > 0 or len(repo.active_branch.commit.diff(None)) > 0:
                 git_status = 'DIRTY'
             else:
                 git_status = 'CLEAN'
-            out_dict.update({'# Git STATUS': git_status})
-            out_dict.update({'# Git ORIGIN': repo.remotes.origin.url})
+            out_dict.update({'# Git Status': git_status})
+            out_dict.update({'# Git Origin': repo.active_branch.commit.repo.remotes.origin.url})
     except git.InvalidGitRepositoryError:
         # But it's okay if we are not
         out_dict = make_blank_git(out_dict)
@@ -144,6 +145,7 @@ def add_generic_info(out_dict):
     out_dict.update({'# Machine FQDN': socket.getfqdn()})
     out_dict.update({'# Run Date': strftime('%Y-%m-%d', localtime())})
     out_dict.update({'# Run Time': strftime('%H:%M:%S', localtime())})
+    out_dict.update({'# Python Executable': sys.executable})
     out_dict.update({'# Python Version': f'{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}'})
     out_dict.update({'# Python Script': os.path.realpath(sys.argv[0])})
     return out_dict
