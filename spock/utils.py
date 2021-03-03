@@ -143,12 +143,59 @@ def add_generic_info(out_dict):
         out_dict: output dictionary
     """
     out_dict.update({'# Machine FQDN': socket.getfqdn()})
-    out_dict.update({'# Run Date': strftime('%Y-%m-%d', localtime())})
-    out_dict.update({'# Run Time': strftime('%H:%M:%S', localtime())})
     out_dict.update({'# Python Executable': sys.executable})
     out_dict.update({'# Python Version': f'{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}'})
     out_dict.update({'# Python Script': os.path.realpath(sys.argv[0])})
+    out_dict.update({'# Run Date': strftime('%Y-%m-%d', localtime())})
+    out_dict.update({'# Run Time': strftime('%H:%M:%S', localtime())})
+    # Make a best effort to determine if run in a container
+    out_dict.update({'# Run w/ Docker': str(_maybe_docker())})
+    # Make a best effort to determine if run in a container via k8s
+    out_dict.update({'# Run w/ Kubernetes': str(_maybe_k8s())})
+
     return out_dict
+
+
+def _maybe_docker(cgroup_path="/proc/self/cgroup"):
+    """Make a best effort to determine if run in a docker container
+
+    *Args*:
+
+        cgroup_path: path to cgroup file
+
+    Returns:
+
+        boolean of best effort docker determination
+
+    """
+    # A few options seem to be at play here:
+    # 1. Check for /.dockerenv -- docker should create this is any container
+    bool_env = os.path.exists('/.dockerenv')
+    # 2. Check /proc/self/cgroup for "docker"
+    # https://stackoverflow.com/a/48710609
+    bool_cgroup = os.path.isfile(cgroup_path) and any("docker" in line for line in open(cgroup_path))
+    return bool_env or bool_cgroup
+
+
+def _maybe_k8s(cgroup_path="/proc/self/cgroup"):
+    """Make a best effort to determine if run in a container via k8s
+
+    *Args*:
+
+        cgroup_path: path to cgroup file
+
+    Returns:
+
+        boolean of best effort k8s determination
+
+    """
+    # A few options seem to be at play here:
+    # 1. Check for KUBERNETES_SERVICE_HOST -- kublet should add this to every running pod
+    bool_env = os.environ.get("KUBERNETES_SERVICE_HOST") is not None
+    # 2. Similar to docker check /proc/self/cgroup for "kubepods"
+    # https://stackoverflow.com/a/48710609
+    bool_cgroup = os.path.isfile(cgroup_path) and any("kubepods" in line for line in open(cgroup_path))
+    return bool_env or bool_cgroup
 
 
 def deep_payload_update(source, updates):
