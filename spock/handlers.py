@@ -69,7 +69,7 @@ class Handler(ABC):
             if info_dict is not None:
                 for k, v in info_dict.items():
                     fid.write(f'{k}: {v}\n')
-            fid.write('---\n')
+            fid.write('\n')
 
 
 class YAMLHandler(Handler):

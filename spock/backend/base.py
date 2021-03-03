@@ -17,7 +17,6 @@ from spock.handlers import JSONHandler
 from spock.handlers import TOMLHandler
 from spock.handlers import YAMLHandler
 from spock.utils import add_info
-# from spock.utils import convert_save_dict
 from spock.utils import make_argument
 
 
@@ -31,7 +30,7 @@ class Spockspace(argparse.Namespace):
         super(Spockspace, self).__init__(**kwargs)
 
     def __repr__(self):
-        # Remove aliases in YAML dump
+        # Remove aliases in YAML print
         yaml.Dumper.ignore_aliases = lambda *args: True
         return yaml.dump(self.__dict__, default_flow_style=False)
 
