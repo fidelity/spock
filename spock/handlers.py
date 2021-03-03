@@ -11,6 +11,7 @@ import json
 import re
 from spock import __version__
 import toml
+from warnings import warn
 import yaml
 
 
@@ -163,6 +164,8 @@ class TOMLHandler(Handler):
         *Returns*:
 
         """
+        # First write the commented info
+        self.write_extra_info(path=path, info_dict=info_dict)
         with open(path.name, 'a') as toml_fid:
             toml.dump(out_dict, toml_fid)
 
@@ -201,5 +204,8 @@ class JSONHandler(Handler):
         *Returns*:
 
         """
+        if info_dict is not None:
+            warn('JSON does not support comments and thus cannot save extra info to file... removing extra info')
+            info_dict = None
         with open(path.name, 'a') as json_fid:
             json.dump(out_dict, json_fid, indent=4, separators=(',', ': '))

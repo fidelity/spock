@@ -77,7 +77,10 @@ class Test:
 
 
 def main():
-    attrs_class = ConfigArgBuilder(Test, OtherStuff, Stuff, RepeatStuff).save('/tmp').generate()
+    attrs_class = ConfigArgBuilder(Test, OtherStuff, Stuff, RepeatStuff).save(
+        '/tmp',
+        file_extension='.json'
+    ).generate()
     # with open('/tmp/debug.pickle', 'wb') as fid:
     #     pickle.dump(attrs_class, file=fid)
 
