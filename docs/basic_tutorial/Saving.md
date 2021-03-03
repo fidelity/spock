@@ -2,7 +2,8 @@
 
 The current configuration of running python code can be saved to file by chaining the `save()` method before 
 the `generate()` call to the `ConfigArgBuilder` class. `spock` supports two ways to specify the path to write and the
-output file can be either YAML, TOML, or JSON (via the `file_extension` keyword argument).
+output file can be either YAML, TOML, or JSON (via the `file_extension` keyword argument). The saved markdown file can 
+be used as the configuration input to reproduce prior runtime configurations.
 
 ### Specify spock Special Parameter Type
 

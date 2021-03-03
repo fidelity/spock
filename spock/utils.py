@@ -8,6 +8,7 @@
 import ast
 from enum import EnumMeta
 import os
+import socket
 import subprocess
 import sys
 from time import localtime
@@ -19,28 +20,6 @@ if minor < 7:
     from typing import GenericMeta as _GenericAlias
 else:
     from typing import _GenericAlias
-
-
-def convert_save_dict(clean_inner_dict, inner_val, inner_key):
-    """Convert tuples in save dictionary
-
-    *Args*:
-
-        clean_inner_dict: inner dictionary that is clean
-        inner_val: inner value
-        inner_key:  inner key
-
-    *Returns*:
-
-        clean_inner_dict: updated with cleaned values
-
-    """
-    # Convert tuples to lists so they get written correctly
-    if isinstance(inner_val, tuple):
-        clean_inner_dict.update({inner_key: list(inner_val)})
-    elif inner_val is not None:
-        clean_inner_dict.update({inner_key: inner_val})
-    return clean_inner_dict
 
 
 def make_argument(arg_name, arg_type, parser):
@@ -80,18 +59,18 @@ def _handle_generic_type_args(val):
     return ast.literal_eval(val)
 
 
-def add_info(out_dict):
+def add_info():
     """Adds extra information to the output dictionary
 
     *Args*:
 
-        out_dict: output dictionary
 
     *Returns*:
 
         out_dict: output dictionary
     """
-    out_dict = add_date_info(out_dict)
+    out_dict = {}
+    out_dict = add_generic_info(out_dict)
     out_dict = add_repo_info(out_dict)
     return out_dict
 
@@ -126,8 +105,8 @@ def add_repo_info(out_dict):
     """
     try:
         # Assume we are working out of a repo
-        repo = git.Repo(os.getcwd())
-        # Check if we are really in a detached head state as this will fail
+        repo = git.Repo(os.getcwd(), search_parent_directories=True)
+        # Check if we are really in a detached head state as later info will fail if we are
         if minor < 7:
             head_result = subprocess.run('git rev-parse --abbrev-ref --symbolic-full-name HEAD', stdout=subprocess.PIPE,
                                          shell=True, check=False)
@@ -137,23 +116,23 @@ def add_repo_info(out_dict):
         if head_result.stdout.decode().rstrip('\n') == 'HEAD':
             out_dict = make_blank_git(out_dict)
         else:
-            out_dict.update({'# Git BRANCH': repo.active_branch.name})
-            out_dict.update({'# Git COMMIT SHA': repo.head.object.hexsha})
-            if len(repo.untracked_files) > 0 or len(repo.head.commit.diff(None)) > 0:
+            out_dict.update({'# Git Branch': repo.active_branch.name})
+            out_dict.update({'# Git Commit': repo.active_branch.commit.hexsha})
+            out_dict.update({'# Git Date': repo.active_branch.commit.committed_datetime})
+            if len(repo.untracked_files) > 0 or len(repo.active_branch.commit.diff(None)) > 0:
                 git_status = 'DIRTY'
             else:
                 git_status = 'CLEAN'
-            out_dict.update({'# Git STATUS': git_status})
-            out_dict.update({'# Git ORIGIN': repo.remotes.origin.url})
+            out_dict.update({'# Git Status': git_status})
+            out_dict.update({'# Git Origin': repo.active_branch.commit.repo.remotes.origin.url})
     except git.InvalidGitRepositoryError:
         # But it's okay if we are not
         out_dict = make_blank_git(out_dict)
-
     return out_dict
 
 
-def add_date_info(out_dict):
-    """Adds date information to the output dictionary
+def add_generic_info(out_dict):
+    """Adds date, fqdn information to the output dictionary
 
     *Args*:
 
@@ -163,8 +142,60 @@ def add_date_info(out_dict):
 
         out_dict: output dictionary
     """
-    out_dict.update({'# Run Date': strftime('%Y_%m_%d_%H_%M_%S', localtime())})
+    out_dict.update({'# Machine FQDN': socket.getfqdn()})
+    out_dict.update({'# Python Executable': sys.executable})
+    out_dict.update({'# Python Version': f'{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}'})
+    out_dict.update({'# Python Script': os.path.realpath(sys.argv[0])})
+    out_dict.update({'# Run Date': strftime('%Y-%m-%d', localtime())})
+    out_dict.update({'# Run Time': strftime('%H:%M:%S', localtime())})
+    # Make a best effort to determine if run in a container
+    out_dict.update({'# Run w/ Docker': str(_maybe_docker())})
+    # Make a best effort to determine if run in a container via k8s
+    out_dict.update({'# Run w/ Kubernetes': str(_maybe_k8s())})
+
     return out_dict
+
+
+def _maybe_docker(cgroup_path="/proc/self/cgroup"):
+    """Make a best effort to determine if run in a docker container
+
+    *Args*:
+
+        cgroup_path: path to cgroup file
+
+    Returns:
+
+        boolean of best effort docker determination
+
+    """
+    # A few options seem to be at play here:
+    # 1. Check for /.dockerenv -- docker should create this is any container
+    bool_env = os.path.exists('/.dockerenv')
+    # 2. Check /proc/self/cgroup for "docker"
+    # https://stackoverflow.com/a/48710609
+    bool_cgroup = os.path.isfile(cgroup_path) and any("docker" in line for line in open(cgroup_path))
+    return bool_env or bool_cgroup
+
+
+def _maybe_k8s(cgroup_path="/proc/self/cgroup"):
+    """Make a best effort to determine if run in a container via k8s
+
+    *Args*:
+
+        cgroup_path: path to cgroup file
+
+    Returns:
+
+        boolean of best effort k8s determination
+
+    """
+    # A few options seem to be at play here:
+    # 1. Check for KUBERNETES_SERVICE_HOST -- kublet should add this to every running pod
+    bool_env = os.environ.get("KUBERNETES_SERVICE_HOST") is not None
+    # 2. Similar to docker check /proc/self/cgroup for "kubepods"
+    # https://stackoverflow.com/a/48710609
+    bool_cgroup = os.path.isfile(cgroup_path) and any("kubepods" in line for line in open(cgroup_path))
+    return bool_env or bool_cgroup
 
 
 def deep_payload_update(source, updates):
@@ -214,7 +245,7 @@ def check_payload_overwrite(payload, updates, configs, overwrite=''):
             current_payload = {} if payload.get(k) is None else payload.get(k)
             check_payload_overwrite(current_payload, v, configs, overwrite=overwrite)
         else:
-            if k in payload.keys():
+            if k in payload:
                 warn(f'Overriding an already set parameter {overwrite + k} from {configs}\n'
                      f'Be aware that value precedence is set by the order of the config files (last to load)...',
                      SyntaxWarning)

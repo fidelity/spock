@@ -324,6 +324,16 @@ class TestChoiceRaises:
                 ConfigArgBuilder(ChoiceFail, desc='Test Builder')
 
 
+class TestTupleRaises:
+    """Check that Tuple lengths are being enforced correctly"""
+    def test_tuple_raise(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, 'argv', ['', '--config',
+                                    './tests/conf/yaml/tuple.yaml'])
+            with pytest.raises(ValueError):
+                ConfigArgBuilder(TypeConfig, desc='Test Builder')
+
+
 class TestOverrideRaise:
     """Checks that override of a specific class variable is failing gracefully"""
     def test_override_raise(self, monkeypatch):

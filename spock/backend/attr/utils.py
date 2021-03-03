@@ -135,6 +135,10 @@ def _recursive_list_to_tuple(value, typed, class_names):
     # from a composed payload
     if hasattr(typed, '__args__') and not isinstance(value, tuple) and not (isinstance(value, str)
                                                                             and value in class_names):
+        # Force those with origin tuple types to be of the defined length
+        if (typed.__origin__.__name__.lower() == 'tuple') and len(value) != len(typed.__args__):
+            raise ValueError(f'Tuple(s) use a fixed/defined length -- Length of the provided argument ({len(value)}) '
+                             f'does not match the length of the defined argument ({len(typed.__args__)})')
         # need to recurse before casting as we can't set values in a tuple with idx
         # Since it's generic it should be iterable to recurse and check it's children
         for idx, val in enumerate(value):

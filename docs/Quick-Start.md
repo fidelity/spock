@@ -10,7 +10,8 @@ This is a quick and dirty guide to getting up and running with `spock`. Read the
 
 All examples can be found [here](https://github.com/fidelity/spock/blob/master/examples).
 
-Legacy documentation for the old API can be found [here](https://github.com/fidelity/spock/blob/master/docs/legacy)
+Legacy documentation for the old API (pre v2.0) can be 
+found [here](https://github.com/fidelity/spock/blob/master/docs/legacy)
 
 ### TL;DR
 1. Import the necessary components from `spock`

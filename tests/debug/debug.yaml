@@ -24,8 +24,19 @@ OtherStuff:
 ###    other: 12
 ###Test:
 ###    new: 12
-###fail: false
-###ccccombo_breaker: 10
+
+RepeatStuff:
+  - hi: 10
+    bye: 30.0
+  - hi: 20
+    bye: 45.0
+
+Test:
+  fail: [[1, 2], [3, 4]]
+  most_broken: Stuff
+  borken: RepeatStuff
+
+##ccccombo_breaker: 10
 #new: 10
 ##other: 1
 ##Test2:
