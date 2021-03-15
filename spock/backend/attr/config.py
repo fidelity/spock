@@ -43,7 +43,10 @@ def spock_attr(cls):
             else:
                 default = None
             attrs_dict.update({k: katra(typed=v, default=default)})
-    # For each class we dynamically create we need to register it within the system modules for pickle to work
+    # Dynamically make an attr class
     obj = attr.make_class(name=cls.__name__, bases=bases, attrs=attrs_dict, kw_only=True, frozen=True)
+    # For each class we dynamically create we need to register it within the system modules for pickle to work
     setattr(sys.modules['spock'].backend.attr.config, obj.__name__, obj)
+    # Swap the __doc__ string from cls to obj
+    obj.__doc__ = cls.__doc__
     return obj

@@ -10,41 +10,70 @@ import pickle
 from argparse import Namespace
 
 
-class Choice(Enum):
-    pear = 'pear'
-    banana = 'banana'
-
-
-class IntChoice(Enum):
-    option_1 = 10
-    option_2 = 20
-
-
+# class Choice(Enum):
+#     pear = 'pear'
+#     banana = 'banana'
+#
+#
+# class IntChoice(Enum):
+#     option_1 = 10
+#     option_2 = 20
+#
+#
 @spock
 class OtherStuff:
+    """Other stuff class
+
+    three: heahadsf
+    four: asdfjhasdlkf
+
+    """
     three: int
     four: str
 
 
 @spock
 class Stuff:
+    """Stuff class
+
+    one: help
+    two: teadsfa
+
+    """
     one: int
     two: str
 
 
 class ClassStuff(Enum):
+    """Class enum
+
+    other_stuff: OtherStuff class
+    stuff: Stuff class
+
+    """
     other_stuff = OtherStuff
     stuff = Stuff
 
-
-@spock
-class RepeatStuff:
-    hi: int
-    bye: float
+#
+# @spock
+# class RepeatStuff:
+#     hi: int
+#     bye: float
 
 
 @spock
 class Test:
+    """High level docstring that just so happens to be multiline adfjads;lfja;sdlkjfklasjflkasjlkfjal;sdfjlkajsdfl;kja
+    adfasfdsafklasdjfkladsjklfasdjlkf
+
+    Mid-level docstring
+
+    Attributes:
+        fail: help me obi wan
+        test: you are my only hopes
+        most_broken: class stuff enum
+
+    """
     # new_choice: Optional[Choice]
     # # fix_me: Tuple[Tuple[int]]
     # new: int = 3
@@ -53,7 +82,7 @@ class Test:
     test: List[int] = [1, 2]
     # fail: List[List[int]] = [[1, 2], [1, 2]]
     # borken: Stuff = Stuff
-    borken: List[RepeatStuff]
+    # borken: List[RepeatStuff]
     # more_borken: OtherStuff
     most_broken: ClassStuff
     # borken: int
@@ -77,10 +106,7 @@ class Test:
 
 
 def main():
-    attrs_class = ConfigArgBuilder(Test, OtherStuff, Stuff, RepeatStuff).save(
-        '/tmp',
-        file_extension='.json'
-    ).generate()
+    attrs_class = ConfigArgBuilder(Test, Stuff, OtherStuff, desc='I am a description').generate()
     # with open('/tmp/debug.pickle', 'wb') as fid:
     #     pickle.dump(attrs_class, file=fid)
 

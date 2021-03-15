@@ -5,8 +5,10 @@
 
 """Handles the building/saving of the configurations from the Spock config classes"""
 
-import sys
 import attr
+import re
+import sys
+from warnings import warn
 from spock.backend.base import BaseBuilder
 
 
@@ -32,22 +34,72 @@ class AttrBuilder(BaseBuilder):
             if not attr.has(arg):
                 raise TypeError('*arg inputs to ConfigArgBuilder must all be class instances with attrs attributes')
 
-    def print_usage_and_exit(self, msg=None, sys_exit=True):
-        print('USAGE:')
-        print(f'  {sys.argv[0]} -c [--config] config1 [config2, config3, ...]')
-        print('CONFIG:')
+    def print_usage_and_exit(self, msg=None, sys_exit=True, exit_code=1):
+        print(f'usage: {sys.argv[0]} -c [--config] config1 [config2, config3, ...]')
+        print(f'\n{self._desc if self._desc != "" else ""}\n')
+        print('configuration(s):\n')
+        self._handle_help_info()
+        if msg is not None:
+            print(msg)
+        if sys_exit:
+            sys.exit(exit_code)
+
+    def _handle_help_info(self):
         for attrs_class in self.input_classes:
-            print('  ' + attrs_class.__name__ + ':')
+            if attrs_class.__doc__ is not None:
+                # Split by new line
+                newline_split_docs = attrs_class.__doc__.split('\n')
+                # Cleanup l/t whitespace
+                newline_split_docs = [val.strip() for val in newline_split_docs]
+            else:
+                newline_split_docs = []
+            # Find the break between the class docs and the Attribute section -- if this returns -1 then there is no
+            # Attributes section
+            attr_idx = self._find_attribute_idx(newline_split_docs)
+            head_docs = newline_split_docs[:attr_idx] if attr_idx != -1 else newline_split_docs
+            attr_docs = newline_split_docs[attr_idx:] if attr_idx != -1 else []
+            # Grab only the first contiguous line as everything else will probably be too verbose (e.g. the
+            # mid-level docstring that has detailed descriptions
+            class_doc = ''
+            for idx, val in enumerate(head_docs):
+                class_doc += f' {val}'
+                if idx+1 != len(head_docs) and head_docs[idx+1] == '':
+                    break
+            # Clean up any l/t whitespace
+            class_doc = class_doc.strip()
+            # class_doc = if class_doc != "" else class_doc
+            print('  ' + attrs_class.__name__ + f' ({class_doc})')
+            info_dict = {}
             for val in attrs_class.__attrs_attrs__:
                 type_string = val.metadata['base']
                 # Construct the type with the metadata
                 if 'optional' in val.metadata:
                     type_string = "Optional[{0}]".format(type_string)
-                print(f'    {val.name}: {type_string}')
-        if msg is not None:
-            print(msg)
-        if sys_exit:
-            sys.exit(1)
+                # Regex match each value
+                a_str = None
+                for a_doc in attr_docs:
+                    match_re = re.search(r'(?i)^' + val.name + '?:', a_doc)
+                    # Find only the first match -- if more than one than ignore
+                    if match_re:
+                        a_str = a_doc[match_re.end():].strip()
+
+                info_dict.update({val.name: {
+                    'type': type_string,
+                    'desc': a_str if a_str is not None else "",
+                    'default': "(default: " + repr(val.default) + ")" if type(val.default).__name__ != '_Nothing'
+                    else "",
+                    'len': {'name': len(val.name), 'type': len(type_string)}
+                }})
+            # Figure out indents
+            max_param_length = max([len(k) for k in info_dict.keys()])
+            max_type_length = max([v['len']['type'] for v in info_dict.values()])
+            # Print akin to the argparser
+            for k, v in info_dict.items():
+                print(f'    {k}' + (' ' * (max_param_length-v["len"]["name"]+self._max_indent)) +
+                      f'{v["type"]}' + (' ' * (max_type_length-v["len"]["type"]+self._max_indent)) +
+                      f'{v["desc"]} {v["default"]}')
+            # Blank for spacing :-/
+            print('')
 
     def _handle_arguments(self, args, class_obj):
         attr_name = class_obj.__name__

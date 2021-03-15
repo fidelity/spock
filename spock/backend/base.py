@@ -10,6 +10,7 @@ from abc import abstractmethod
 import argparse
 import os
 from pathlib import Path
+import re
 import sys
 from uuid import uuid1
 import yaml
@@ -181,15 +182,18 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         _create_save_path: boolean to make the path to save to
         _desc: description for the arg parser
         _no_cmd_line: flag to force no command line reads
+        _max_indent: maximum to indent between help prints
         save_path: list of path(s) to save the configs to
 
     """
-    def __init__(self, *args, configs=None, create_save_path=False, desc='', no_cmd_line=False, **kwargs):
+    def __init__(self, *args, configs=None, create_save_path=False, desc='', no_cmd_line=False,
+                 max_indent=4, **kwargs):
         self.input_classes = args
         self._configs = configs
         self._create_save_path = create_save_path
         self._desc = desc
         self._no_cmd_line = no_cmd_line
+        self._max_indent = max_indent
         self.save_path = None
 
     @abstractmethod
@@ -199,6 +203,19 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         *Args*:
 
             msg: message to print pre exit
+
+        *Returns*:
+
+            None
+
+        """
+
+    @abstractmethod
+    def _handle_help_info(self):
+        """Handles walking through classes to get help info
+
+        For each class this function will search __doc__ and attempt to pull out help information for both the class
+        itself and each attribute within the class
 
         *Returns*:
 
@@ -480,6 +497,25 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         else:
             raise TypeError('configs kwarg must be of type list')
         return args
+
+    @staticmethod
+    def _find_attribute_idx(newline_split_docs):
+        """Finds the possible split between the header and Attribute annotations
+
+        *Args*:
+
+            newline_split_docs:
+
+        Returns:
+
+            idx: -1 if none or the idx of Attributes
+
+        """
+        for idx, val in enumerate(newline_split_docs):
+            re_check = re.search(r'(?i)Attribute?s?:', val)
+            if re_check is not None:
+                return idx
+        return -1
 
 
 class BasePayload(ABC):  # pylint: disable=too-few-public-methods
