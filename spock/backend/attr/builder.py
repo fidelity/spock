@@ -58,7 +58,10 @@ class AttrBuilder(BaseBuilder):
                 # If the type is an enum we need to handle it outside of this attr loop
                 if isinstance(val.type, EnumMeta):
                     enum_list.append(val.type)
-                type_string = val.metadata['base']
+                # Grab the base or typ info depending on what is provided
+                type_string = repr(val.metadata['type']) if 'type' in val.metadata else val.metadata['base']
+                # Regex out the typing info if present
+                type_string = re.sub(r'typing.', '', type_string)
                 # Regex the string to see if it matches any Enums in the __main__ module space
                 # for val in sys.modules
                 # Construct the type with the metadata
