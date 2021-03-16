@@ -6,6 +6,7 @@
 """Handles the building/saving of the configurations from the Spock config classes"""
 
 import attr
+from enum import EnumMeta
 import re
 import sys
 from warnings import warn
@@ -45,61 +46,39 @@ class AttrBuilder(BaseBuilder):
             sys.exit(exit_code)
 
     def _handle_help_info(self):
+        # List to catch Enum classes and handle post spock wrapped attr classes
+        enum_list = []
         for attrs_class in self.input_classes:
-            if attrs_class.__doc__ is not None:
-                # Split by new line
-                newline_split_docs = attrs_class.__doc__.split('\n')
-                # Cleanup l/t whitespace
-                newline_split_docs = [val.strip() for val in newline_split_docs]
-            else:
-                newline_split_docs = []
-            # Find the break between the class docs and the Attribute section -- if this returns -1 then there is no
-            # Attributes section
-            attr_idx = self._find_attribute_idx(newline_split_docs)
-            head_docs = newline_split_docs[:attr_idx] if attr_idx != -1 else newline_split_docs
-            attr_docs = newline_split_docs[attr_idx:] if attr_idx != -1 else []
-            # Grab only the first contiguous line as everything else will probably be too verbose (e.g. the
-            # mid-level docstring that has detailed descriptions
-            class_doc = ''
-            for idx, val in enumerate(head_docs):
-                class_doc += f' {val}'
-                if idx+1 != len(head_docs) and head_docs[idx+1] == '':
-                    break
-            # Clean up any l/t whitespace
-            class_doc = class_doc.strip()
-            # class_doc = if class_doc != "" else class_doc
+            # Split the docs into class docs and any attribute docs
+            class_doc, attr_docs = self._split_docs(attrs_class)
             print('  ' + attrs_class.__name__ + f' ({class_doc})')
+            # Keep a running info_dict of all the attribute level info
             info_dict = {}
             for val in attrs_class.__attrs_attrs__:
+                # If the type is an enum we need to handle it outside of this attr loop
+                if isinstance(val.type, EnumMeta):
+                    enum_list.append(val.type)
                 type_string = val.metadata['base']
+                # Regex the string to see if it matches any Enums in the __main__ module space
+                # for val in sys.modules
                 # Construct the type with the metadata
                 if 'optional' in val.metadata:
-                    type_string = "Optional[{0}]".format(type_string)
-                # Regex match each value
-                a_str = None
-                for a_doc in attr_docs:
-                    match_re = re.search(r'(?i)^' + val.name + '?:', a_doc)
-                    # Find only the first match -- if more than one than ignore
-                    if match_re:
-                        a_str = a_doc[match_re.end():].strip()
-
-                info_dict.update({val.name: {
-                    'type': type_string,
-                    'desc': a_str if a_str is not None else "",
-                    'default': "(default: " + repr(val.default) + ")" if type(val.default).__name__ != '_Nothing'
-                    else "",
-                    'len': {'name': len(val.name), 'type': len(type_string)}
-                }})
-            # Figure out indents
-            max_param_length = max([len(k) for k in info_dict.keys()])
-            max_type_length = max([v['len']['type'] for v in info_dict.values()])
-            # Print akin to the argparser
-            for k, v in info_dict.items():
-                print(f'    {k}' + (' ' * (max_param_length-v["len"]["name"]+self._max_indent)) +
-                      f'{v["type"]}' + (' ' * (max_type_length-v["len"]["type"]+self._max_indent)) +
-                      f'{v["desc"]} {v["default"]}')
-            # Blank for spacing :-/
-            print('')
+                    type_string = f"Optional[{type_string}]"
+                info_dict.update(self._match_attribute_docs(val.name, attr_docs, type_string, val.default))
+            self._handle_attributes_print(info_dict=info_dict)
+        # Iterate any Enum type classes
+        for enum in enum_list:
+            # Split the docs into class docs and any attribute docs
+            class_doc, attr_docs = self._split_docs(enum)
+            print('  ' + enum.__name__ + f' ({class_doc})')
+            info_dict = {}
+            for val in enum:
+                info_dict.update(self._match_attribute_docs(
+                    attr_name=val.name,
+                    attr_docs=attr_docs,
+                    attr_type_str=type(val.value).__name__
+                ))
+            self._handle_attributes_print(info_dict=info_dict)
 
     def _handle_arguments(self, args, class_obj):
         attr_name = class_obj.__name__

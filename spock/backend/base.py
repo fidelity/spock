@@ -8,6 +8,8 @@
 from abc import ABC
 from abc import abstractmethod
 import argparse
+from attr import NOTHING
+from enum import EnumMeta
 import os
 from pathlib import Path
 import re
@@ -516,6 +518,95 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
             if re_check is not None:
                 return idx
         return -1
+
+    def _split_docs(self, obj):
+        """Possibly splits head class doc string from attribute docstrings
+
+        Attempts to find the first contiguous line within the Google style docstring to use as the class docstring.
+        Splits the docs base on the Attributes tag if present.
+
+        *Args*:
+
+            obj: class object to rip info from
+
+        *Returns*:
+
+            class_doc: class docstring if present or blank str
+            attr_doc: list of attribute doc strings
+
+        """
+        if obj.__doc__ is not None:
+            # Split by new line
+            newline_split_docs = obj.__doc__.split('\n')
+            # Cleanup l/t whitespace
+            newline_split_docs = [val.strip() for val in newline_split_docs]
+        else:
+            newline_split_docs = []
+        # Find the break between the class docs and the Attribute section -- if this returns -1 then there is no
+        # Attributes section
+        attr_idx = self._find_attribute_idx(newline_split_docs)
+        head_docs = newline_split_docs[:attr_idx] if attr_idx != -1 else newline_split_docs
+        attr_docs = newline_split_docs[attr_idx:] if attr_idx != -1 else []
+        # Grab only the first contiguous line as everything else will probably be too verbose (e.g. the
+        # mid-level docstring that has detailed descriptions
+        class_doc = ''
+        for idx, val in enumerate(head_docs):
+            class_doc += f' {val}'
+            if idx + 1 != len(head_docs) and head_docs[idx + 1] == '':
+                break
+        # Clean up any l/t whitespace
+        class_doc = class_doc.strip()
+        return class_doc, attr_docs
+
+    @staticmethod
+    def _match_attribute_docs(attr_name, attr_docs, attr_type_str, attr_default=NOTHING):
+        """Matches class attributes with attribute docstrings via regex
+
+        *Args*:
+
+            attr_name: attribute name
+            attr_docs: list of attribute docstrings
+            attr_type_str: str representation of the attribute type
+            attr_default: str representation of a possible default value
+
+        *Returns*:
+
+            dictionary of packed attribute information
+
+        """
+        # Regex match each value
+        a_str = None
+        for a_doc in attr_docs:
+            match_re = re.search(r'(?i)^' + attr_name + '?:', a_doc)
+            # Find only the first match -- if more than one than ignore
+            if match_re:
+                a_str = a_doc[match_re.end():].strip()
+        return {attr_name: {
+            'type': attr_type_str,
+            'desc': a_str if a_str is not None else "",
+            'default': "(default: " + repr(attr_default) + ")" if type(attr_default).__name__ != '_Nothing'
+            else "",
+            'len': {'name': len(attr_name), 'type': len(attr_type_str)}
+        }}
+
+    def _handle_attributes_print(self, info_dict):
+        """Prints attribute information in an argparser style format
+
+        *Args*:
+
+            info_dict: packed attribute info dictionary to print
+
+        """
+        # Figure out indents
+        max_param_length = max([len(k) for k in info_dict.keys()])
+        max_type_length = max([v['len']['type'] for v in info_dict.values()])
+        # Print akin to the argparser
+        for k, v in info_dict.items():
+            print(f'    {k}' + (' ' * (max_param_length - v["len"]["name"] + self._max_indent)) +
+                  f'{v["type"]}' + (' ' * (max_type_length - v["len"]["type"] + self._max_indent)) +
+                  f'{v["desc"]} {v["default"]}')
+        # Blank for spacing :-/
+        print('')
 
 
 class BasePayload(ABC):  # pylint: disable=too-few-public-methods
