@@ -608,6 +608,56 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         # Blank for spacing :-/
         print('')
 
+    def _extract_enum_types(self, typed):
+        """Takes a high level type and recursively extracts any enum types
+
+        *Args*:
+
+            typed: highest level type
+
+        *Returns*:
+
+            return_list: list of nums (dot notation of module_path.enum_name)
+
+        """
+        return_list = []
+        if hasattr(typed, '__args__'):
+            for val in typed.__args__:
+                recurse_return = self._extract_enum_types(val)
+                if isinstance(recurse_return, list):
+                    return_list.extend(recurse_return)
+                else:
+                    return_list.append(self._extract_enum_types(val))
+        elif isinstance(typed, EnumMeta):
+            return f'{typed.__module__}.{typed.__name__}'
+        return return_list
+
+    @staticmethod
+    def _get_enum_from_sys_modules(enum_name):
+        """Gets the enum class from a dot notation name
+
+        *Args*:
+
+            enum_name: dot notation enum name
+
+        *Returns*:
+
+            module: enum class
+
+        """
+        # Split on dot notation
+        split_string = enum_name.split('.')
+        module = None
+        for idx, val in enumerate(split_string):
+            # idx = 0 will always be a call to the sys.modules dict
+            if idx == 0:
+                module = sys.modules[val]
+            # all other idx are paths along the module that need to be traversed
+            # idx = -1 will always be the final Enum object name we want to grab (final getattr call)
+            else:
+                module = getattr(module, val)
+        return module
+
 
 class BasePayload(ABC):  # pylint: disable=too-few-public-methods
     """Handles building the payload for config file(s)

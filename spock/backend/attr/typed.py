@@ -31,6 +31,9 @@ class SavePath(str):
 def _extract_base_type(typed):
     """Extracts the name of the type from a _GenericAlias
 
+    Assumes that the derived types are only of length 1 as the __args__ are [0] recursed... this is not true for
+    tuples
+
     *Args*:
 
         typed: the type of the parameter

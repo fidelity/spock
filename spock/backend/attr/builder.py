@@ -56,12 +56,21 @@ class AttrBuilder(BaseBuilder):
             info_dict = {}
             for val in attrs_class.__attrs_attrs__:
                 # If the type is an enum we need to handle it outside of this attr loop
+                # Match the style of nested enums and return a string of module.name notation
                 if isinstance(val.type, EnumMeta):
-                    enum_list.append(val.type)
-                # Grab the base or typ info depending on what is provided
+                    enum_list.append(f'{val.type.__module__}.{val.type.__name__}')
+                # if there is a type (implied Iterable) -- check it for nested Enums
+                nested_enums = self._extract_enum_types(val.metadata['type']) if 'type' in val.metadata else []
+                if len(nested_enums) > 0:
+                    enum_list.extend(nested_enums)
+                # Grab the base or type info depending on what is provided
                 type_string = repr(val.metadata['type']) if 'type' in val.metadata else val.metadata['base']
                 # Regex out the typing info if present
                 type_string = re.sub(r'typing.', '', type_string)
+                # Regex out any nested_enums that have module path information
+                for enum_val in nested_enums:
+                    split_enum = f"{'.'.join(enum_val.split('.')[:-1])}."
+                    type_string = re.sub(split_enum, '', type_string)
                 # Regex the string to see if it matches any Enums in the __main__ module space
                 # for val in sys.modules
                 # Construct the type with the metadata
@@ -69,8 +78,11 @@ class AttrBuilder(BaseBuilder):
                     type_string = f"Optional[{type_string}]"
                 info_dict.update(self._match_attribute_docs(val.name, attr_docs, type_string, val.default))
             self._handle_attributes_print(info_dict=info_dict)
+        # Convert the enum list to a set to remove dupes and then back to a list so it is iterable
+        enum_list = list(set(enum_list))
         # Iterate any Enum type classes
         for enum in enum_list:
+            enum = self._get_enum_from_sys_modules(enum)
             # Split the docs into class docs and any attribute docs
             class_doc, attr_docs = self._split_docs(enum)
             print('  ' + enum.__name__ + f' ({class_doc})')
