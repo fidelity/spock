@@ -6,6 +6,7 @@ from typing import Tuple
 from enum import Enum
 from spock.builder import ConfigArgBuilder
 from params.first import Test
+from params.first import Stuff, OtherStuff
 from spock.backend.attr.typed import SavePath
 import pickle
 from argparse import Namespace
@@ -99,7 +100,7 @@ from argparse import Namespace
 
 
 def main():
-    attrs_class = ConfigArgBuilder(Test, desc='I am a description').generate()
+    attrs_class = ConfigArgBuilder(Test, Stuff, OtherStuff, desc='I am a description').generate()
     # with open('/tmp/debug.pickle', 'wb') as fid:
     #     pickle.dump(attrs_class, file=fid)
 

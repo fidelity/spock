@@ -203,11 +203,11 @@ def _enum_base_katra(typed, base_type, allowed, default=None, optional=False):
     if default is not None:
         x = attr.ib(
             validator=[attr.validators.instance_of(base_type), attr.validators.in_(allowed)],
-            default=default, type=base_type, metadata={'base': typed.__name__})
+            default=default, type=typed, metadata={'base': typed.__name__})
     elif optional:
         x = attr.ib(
             validator=attr.validators.optional([attr.validators.instance_of(base_type), attr.validators.in_(allowed)]),
-            default=default, type=base_type, metadata={'base': typed.__name__})
+            default=default, type=typed, metadata={'base': typed.__name__})
     else:
         x = attr.ib(validator=[attr.validators.instance_of(base_type), attr.validators.in_(allowed)], type=typed,
                     metadata={'base': typed.__name__})
@@ -259,13 +259,14 @@ def _enum_class_katra(typed, allowed, default=None, optional=False):
     """
     if default is not None:
         x = attr.ib(
-            validator=[partial(_in_type, options=allowed)], default=default, metadata={'base': typed.__name__})
+            validator=[partial(_in_type, options=allowed)], default=default, type=typed,
+            metadata={'base': typed.__name__})
     elif optional:
         x = attr.ib(
             validator=attr.validators.optional([partial(_in_type, options=allowed)]),
-            default=default, metadata={'base': typed.__name__})
+            default=default, type=typed, metadata={'base': typed.__name__})
     else:
-        x = attr.ib(validator=[partial(_in_type, options=allowed)], metadata={'base': typed.__name__})
+        x = attr.ib(validator=[partial(_in_type, options=allowed)], type=typed, metadata={'base': typed.__name__})
     return x
 
 
