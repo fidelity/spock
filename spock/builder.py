@@ -130,7 +130,8 @@ class ConfigArgBuilder:
         """
         args = self._get_config_paths()
         if args.help:
-            self._builder_obj.print_usage_and_exit()
+            # Call sys exit with a clean code as this is the help call which is not unexpected behavior
+            self._builder_obj.print_usage_and_exit(sys_exit=True, exit_code=0)
         payload = {}
         dependencies = {'paths': [], 'rel_paths': [], 'roots': []}
         for configs in args.config:

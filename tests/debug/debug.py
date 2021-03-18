@@ -5,59 +5,82 @@ from typing import Optional
 from typing import Tuple
 from enum import Enum
 from spock.builder import ConfigArgBuilder
+from params.first import Test
+from params.first import Stuff, OtherStuff
 from spock.backend.attr.typed import SavePath
 import pickle
 from argparse import Namespace
 
 
-class Choice(Enum):
-    pear = 'pear'
-    banana = 'banana'
+# class Choice(Enum):
+#     pear = 'pear'
+#     banana = 'banana'
+#
+#
+# class IntChoice(Enum):
+#     option_1 = 10
+#     option_2 = 20
+#
+#
+# @spock
+# class OtherStuff:
+#     """Other stuff class
+#
+#     Attributes:
+#         three: heahadsf
+#         four: asdfjhasdlkf
+#
+#     """
+#     three: int
+#     four: str
+#
+#
+# @spock
+# class Stuff:
+#     """Stuff class
+#
+#     Attributes:
+#         one: help
+#         two: teadsfa
+#
+#     """
+#     one: int
+#     two: str
+#
+#
+# class ClassStuff(Enum):
+#     """Class enum
+#
+#     Attributes:
+#         other_stuff: OtherStuff class
+#         stuff: Stuff class
+#
+#     """
+#     other_stuff = OtherStuff
+#     stuff = Stuff
+
+#
+# @spock
+# class RepeatStuff:
+#     hi: int
+#     bye: float
 
 
-class IntChoice(Enum):
-    option_1 = 10
-    option_2 = 20
-
-
-@spock
-class OtherStuff:
-    three: int
-    four: str
-
-
-@spock
-class Stuff:
-    one: int
-    two: str
-
-
-class ClassStuff(Enum):
-    other_stuff = OtherStuff
-    stuff = Stuff
-
-
-@spock
-class RepeatStuff:
-    hi: int
-    bye: float
-
-
-@spock
-class Test:
-    # new_choice: Optional[Choice]
+# @spock
+# class Test:
+    # new_choice: Choice
     # # fix_me: Tuple[Tuple[int]]
     # new: int = 3
     # fail: bool
-    fail: Tuple[Tuple[int, int], Tuple[int, int]]
-    test: List[int] = [1, 2]
+    # fail: Tuple[Tuple[int, int], Tuple[int, int]]
+    # test: List[int] = [1, 2]
     # fail: List[List[int]] = [[1, 2], [1, 2]]
     # borken: Stuff = Stuff
-    borken: List[RepeatStuff]
+    # borken: List[RepeatStuff]
     # more_borken: OtherStuff
-    most_broken: ClassStuff
+    # most_broken: ClassStuff
     # borken: int
-    # borken: Optional[List[List[Choice]]] = [['pear'], ['banana']]
+    # borken: List[List[Choice]] = [['pear'], ['banana']]
     # save_path: SavePath = '/tmp'
     # other: Optional[int]
     # value: Optional[List[int]] = [1, 2]
@@ -77,10 +100,7 @@ class Test:
 
 
 def main():
-    attrs_class = ConfigArgBuilder(Test, OtherStuff, Stuff, RepeatStuff).save(
-        '/tmp',
-        file_extension='.json'
-    ).generate()
+    attrs_class = ConfigArgBuilder(Test, Stuff, OtherStuff, desc='I am a description').generate()
     # with open('/tmp/debug.pickle', 'wb') as fid:
     #     pickle.dump(attrs_class, file=fid)
 

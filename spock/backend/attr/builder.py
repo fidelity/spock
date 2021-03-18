@@ -5,8 +5,11 @@
 
 """Handles the building/saving of the configurations from the Spock config classes"""
 
-import sys
 import attr
+from enum import EnumMeta
+import re
+import sys
+from warnings import warn
 from spock.backend.base import BaseBuilder
 
 
@@ -32,22 +35,65 @@ class AttrBuilder(BaseBuilder):
             if not attr.has(arg):
                 raise TypeError('*arg inputs to ConfigArgBuilder must all be class instances with attrs attributes')
 
-    def print_usage_and_exit(self, msg=None, sys_exit=True):
-        print('USAGE:')
-        print(f'  {sys.argv[0]} -c [--config] config1 [config2, config3, ...]')
-        print('CONFIG:')
-        for attrs_class in self.input_classes:
-            print('  ' + attrs_class.__name__ + ':')
-            for val in attrs_class.__attrs_attrs__:
-                type_string = val.metadata['base']
-                # Construct the type with the metadata
-                if 'optional' in val.metadata:
-                    type_string = "Optional[{0}]".format(type_string)
-                print(f'    {val.name}: {type_string}')
+    def print_usage_and_exit(self, msg=None, sys_exit=True, exit_code=1):
+        print(f'usage: {sys.argv[0]} -c [--config] config1 [config2, config3, ...]')
+        print(f'\n{self._desc if self._desc != "" else ""}\n')
+        print('configuration(s):\n')
+        self._handle_help_info()
         if msg is not None:
             print(msg)
         if sys_exit:
-            sys.exit(1)
+            sys.exit(exit_code)
+
+    def _handle_help_info(self):
+        # List to catch Enum classes and handle post spock wrapped attr classes
+        enum_list = []
+        for attrs_class in self.input_classes:
+            # Split the docs into class docs and any attribute docs
+            class_doc, attr_docs = self._split_docs(attrs_class)
+            print('  ' + attrs_class.__name__ + f' ({class_doc})')
+            # Keep a running info_dict of all the attribute level info
+            info_dict = {}
+            for val in attrs_class.__attrs_attrs__:
+                # If the type is an enum we need to handle it outside of this attr loop
+                # Match the style of nested enums and return a string of module.name notation
+                if isinstance(val.type, EnumMeta):
+                    enum_list.append(f'{val.type.__module__}.{val.type.__name__}')
+                # if there is a type (implied Iterable) -- check it for nested Enums
+                nested_enums = self._extract_enum_types(val.metadata['type']) if 'type' in val.metadata else []
+                if len(nested_enums) > 0:
+                    enum_list.extend(nested_enums)
+                # Grab the base or type info depending on what is provided
+                type_string = repr(val.metadata['type']) if 'type' in val.metadata else val.metadata['base']
+                # Regex out the typing info if present
+                type_string = re.sub(r'typing.', '', type_string)
+                # Regex out any nested_enums that have module path information
+                for enum_val in nested_enums:
+                    split_enum = f"{'.'.join(enum_val.split('.')[:-1])}."
+                    type_string = re.sub(split_enum, '', type_string)
+                # Regex the string to see if it matches any Enums in the __main__ module space
+                # for val in sys.modules
+                # Construct the type with the metadata
+                if 'optional' in val.metadata:
+                    type_string = f"Optional[{type_string}]"
+                info_dict.update(self._match_attribute_docs(val.name, attr_docs, type_string, val.default))
+            self._handle_attributes_print(info_dict=info_dict)
+        # Convert the enum list to a set to remove dupes and then back to a list so it is iterable
+        enum_list = list(set(enum_list))
+        # Iterate any Enum type classes
+        for enum in enum_list:
+            enum = self._get_enum_from_sys_modules(enum)
+            # Split the docs into class docs and any attribute docs
+            class_doc, attr_docs = self._split_docs(enum)
+            print('  ' + enum.__name__ + f' ({class_doc})')
+            info_dict = {}
+            for val in enum:
+                info_dict.update(self._match_attribute_docs(
+                    attr_name=val.name,
+                    attr_docs=attr_docs,
+                    attr_type_str=type(val.value).__name__
+                ))
+            self._handle_attributes_print(info_dict=info_dict)
 
     def _handle_arguments(self, args, class_obj):
         attr_name = class_obj.__name__

@@ -31,6 +31,9 @@ class SavePath(str):
 def _extract_base_type(typed):
     """Extracts the name of the type from a _GenericAlias
 
+    Assumes that the derived types are only of length 1 as the __args__ are [0] recursed... this is not true for
+    tuples
+
     *Args*:
 
         typed: the type of the parameter
@@ -200,11 +203,11 @@ def _enum_base_katra(typed, base_type, allowed, default=None, optional=False):
     if default is not None:
         x = attr.ib(
             validator=[attr.validators.instance_of(base_type), attr.validators.in_(allowed)],
-            default=default, type=base_type, metadata={'base': typed.__name__})
+            default=default, type=typed, metadata={'base': typed.__name__})
     elif optional:
         x = attr.ib(
             validator=attr.validators.optional([attr.validators.instance_of(base_type), attr.validators.in_(allowed)]),
-            default=default, type=base_type, metadata={'base': typed.__name__})
+            default=default, type=typed, metadata={'base': typed.__name__, 'optional': True})
     else:
         x = attr.ib(validator=[attr.validators.instance_of(base_type), attr.validators.in_(allowed)], type=typed,
                     metadata={'base': typed.__name__})
@@ -256,13 +259,14 @@ def _enum_class_katra(typed, allowed, default=None, optional=False):
     """
     if default is not None:
         x = attr.ib(
-            validator=[partial(_in_type, options=allowed)], default=default, metadata={'base': typed.__name__})
+            validator=[partial(_in_type, options=allowed)], default=default, type=typed,
+            metadata={'base': typed.__name__})
     elif optional:
         x = attr.ib(
             validator=attr.validators.optional([partial(_in_type, options=allowed)]),
-            default=default, metadata={'base': typed.__name__})
+            default=default, type=typed, metadata={'base': typed.__name__, 'optional': True})
     else:
-        x = attr.ib(validator=[partial(_in_type, options=allowed)], metadata={'base': typed.__name__})
+        x = attr.ib(validator=[partial(_in_type, options=allowed)], type=typed, metadata={'base': typed.__name__})
     return x
 
 

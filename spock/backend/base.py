@@ -8,8 +8,11 @@
 from abc import ABC
 from abc import abstractmethod
 import argparse
+from attr import NOTHING
+from enum import EnumMeta
 import os
 from pathlib import Path
+import re
 import sys
 from uuid import uuid1
 import yaml
@@ -181,15 +184,18 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         _create_save_path: boolean to make the path to save to
         _desc: description for the arg parser
         _no_cmd_line: flag to force no command line reads
+        _max_indent: maximum to indent between help prints
         save_path: list of path(s) to save the configs to
 
     """
-    def __init__(self, *args, configs=None, create_save_path=False, desc='', no_cmd_line=False, **kwargs):
+    def __init__(self, *args, configs=None, create_save_path=False, desc='', no_cmd_line=False,
+                 max_indent=4, **kwargs):
         self.input_classes = args
         self._configs = configs
         self._create_save_path = create_save_path
         self._desc = desc
         self._no_cmd_line = no_cmd_line
+        self._max_indent = max_indent
         self.save_path = None
 
     @abstractmethod
@@ -199,6 +205,19 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         *Args*:
 
             msg: message to print pre exit
+
+        *Returns*:
+
+            None
+
+        """
+
+    @abstractmethod
+    def _handle_help_info(self):
+        """Handles walking through classes to get help info
+
+        For each class this function will search __doc__ and attempt to pull out help information for both the class
+        itself and each attribute within the class
 
         *Returns*:
 
@@ -480,6 +499,164 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         else:
             raise TypeError('configs kwarg must be of type list')
         return args
+
+    @staticmethod
+    def _find_attribute_idx(newline_split_docs):
+        """Finds the possible split between the header and Attribute annotations
+
+        *Args*:
+
+            newline_split_docs:
+
+        Returns:
+
+            idx: -1 if none or the idx of Attributes
+
+        """
+        for idx, val in enumerate(newline_split_docs):
+            re_check = re.search(r'(?i)Attribute?s?:', val)
+            if re_check is not None:
+                return idx
+        return -1
+
+    def _split_docs(self, obj):
+        """Possibly splits head class doc string from attribute docstrings
+
+        Attempts to find the first contiguous line within the Google style docstring to use as the class docstring.
+        Splits the docs base on the Attributes tag if present.
+
+        *Args*:
+
+            obj: class object to rip info from
+
+        *Returns*:
+
+            class_doc: class docstring if present or blank str
+            attr_doc: list of attribute doc strings
+
+        """
+        if obj.__doc__ is not None:
+            # Split by new line
+            newline_split_docs = obj.__doc__.split('\n')
+            # Cleanup l/t whitespace
+            newline_split_docs = [val.strip() for val in newline_split_docs]
+        else:
+            newline_split_docs = []
+        # Find the break between the class docs and the Attribute section -- if this returns -1 then there is no
+        # Attributes section
+        attr_idx = self._find_attribute_idx(newline_split_docs)
+        head_docs = newline_split_docs[:attr_idx] if attr_idx != -1 else newline_split_docs
+        attr_docs = newline_split_docs[attr_idx:] if attr_idx != -1 else []
+        # Grab only the first contiguous line as everything else will probably be too verbose (e.g. the
+        # mid-level docstring that has detailed descriptions
+        class_doc = ''
+        for idx, val in enumerate(head_docs):
+            class_doc += f' {val}'
+            if idx + 1 != len(head_docs) and head_docs[idx + 1] == '':
+                break
+        # Clean up any l/t whitespace
+        class_doc = class_doc.strip()
+        return class_doc, attr_docs
+
+    @staticmethod
+    def _match_attribute_docs(attr_name, attr_docs, attr_type_str, attr_default=NOTHING):
+        """Matches class attributes with attribute docstrings via regex
+
+        *Args*:
+
+            attr_name: attribute name
+            attr_docs: list of attribute docstrings
+            attr_type_str: str representation of the attribute type
+            attr_default: str representation of a possible default value
+
+        *Returns*:
+
+            dictionary of packed attribute information
+
+        """
+        # Regex match each value
+        a_str = None
+        for a_doc in attr_docs:
+            match_re = re.search(r'(?i)^' + attr_name + '?:', a_doc)
+            # Find only the first match -- if more than one than ignore
+            if match_re:
+                a_str = a_doc[match_re.end():].strip()
+        return {attr_name: {
+            'type': attr_type_str,
+            'desc': a_str if a_str is not None else "",
+            'default': "(default: " + repr(attr_default) + ")" if type(attr_default).__name__ != '_Nothing'
+            else "",
+            'len': {'name': len(attr_name), 'type': len(attr_type_str)}
+        }}
+
+    def _handle_attributes_print(self, info_dict):
+        """Prints attribute information in an argparser style format
+
+        *Args*:
+
+            info_dict: packed attribute info dictionary to print
+
+        """
+        # Figure out indents
+        max_param_length = max([len(k) for k in info_dict.keys()])
+        max_type_length = max([v['len']['type'] for v in info_dict.values()])
+        # Print akin to the argparser
+        for k, v in info_dict.items():
+            print(f'    {k}' + (' ' * (max_param_length - v["len"]["name"] + self._max_indent)) +
+                  f'{v["type"]}' + (' ' * (max_type_length - v["len"]["type"] + self._max_indent)) +
+                  f'{v["desc"]} {v["default"]}')
+        # Blank for spacing :-/
+        print('')
+
+    def _extract_enum_types(self, typed):
+        """Takes a high level type and recursively extracts any enum types
+
+        *Args*:
+
+            typed: highest level type
+
+        *Returns*:
+
+            return_list: list of nums (dot notation of module_path.enum_name)
+
+        """
+        return_list = []
+        if hasattr(typed, '__args__'):
+            for val in typed.__args__:
+                recurse_return = self._extract_enum_types(val)
+                if isinstance(recurse_return, list):
+                    return_list.extend(recurse_return)
+                else:
+                    return_list.append(self._extract_enum_types(val))
+        elif isinstance(typed, EnumMeta):
+            return f'{typed.__module__}.{typed.__name__}'
+        return return_list
+
+    @staticmethod
+    def _get_enum_from_sys_modules(enum_name):
+        """Gets the enum class from a dot notation name
+
+        *Args*:
+
+            enum_name: dot notation enum name
+
+        *Returns*:
+
+            module: enum class
+
+        """
+        # Split on dot notation
+        split_string = enum_name.split('.')
+        module = None
+        for idx, val in enumerate(split_string):
+            # idx = 0 will always be a call to the sys.modules dict
+            if idx == 0:
+                module = sys.modules[val]
+            # all other idx are paths along the module that need to be traversed
+            # idx = -1 will always be the final Enum object name we want to grab (final getattr call)
+            else:
+                module = getattr(module, val)
+        return module
 
 
 class BasePayload(ABC):  # pylint: disable=too-few-public-methods

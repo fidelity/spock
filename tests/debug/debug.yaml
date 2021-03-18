@@ -7,34 +7,35 @@
 ###Test:
 ###    fix_me: [[11, 2], [22, 1]]
 ##new_choice: pear
-#borken: Stuff
+##borken: Stuff
 Stuff:
   one: 10
   two: hello
-#  - one: 10
-#    two: hello
-#  - one: 20
-#    two: bye
-
-#more_borken: OtherStuff
+##  - one: 10
+##    two: hello
+##  - one: 20
+##    two: bye
+#
+##more_borken: OtherStuff
 OtherStuff:
   three: 20
   four: ciao
-###Test2:
-###    other: 12
-###Test:
-###    new: 12
-
-RepeatStuff:
-  - hi: 10
-    bye: 30.0
-  - hi: 20
-    bye: 45.0
+####Test2:
+####    other: 12
+####Test:
+####    new: 12
+#
+#RepeatStuff:
+#  - hi: 10
+#    bye: 30.0
+#  - hi: 20
+#    bye: 45.0
 
 Test:
+  test: [1, 2]
   fail: [[1, 2], [3, 4]]
   most_broken: Stuff
-  borken: RepeatStuff
+#  borken: RepeatStuff
 
 ##ccccombo_breaker: 10
 #new: 10
