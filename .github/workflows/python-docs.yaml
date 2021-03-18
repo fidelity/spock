@@ -26,4 +26,4 @@ jobs:
       env:
         PYTHONPATH: .
       run: |
-        portray on_github_pages
+        portray on_github_pages --force
