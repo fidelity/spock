@@ -2,9 +2,9 @@
 
 name: Upload Docs to GitHub Pages
 
-on:
-  release:
-    types: [released]
+on: workflow_dispatch
+#  release:
+#    types: [released]
 
 jobs:
   deploy:
