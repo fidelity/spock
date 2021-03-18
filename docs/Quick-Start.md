@@ -25,8 +25,9 @@ found [here](https://github.com/fidelity/spock/blob/master/docs/legacy)
 
 A basic python script, `simple.py`.
 
-First we import the necessary functionality from `spock`. We define our class using the `@spock` 
-decorator and our parameters with supported argument types from `typing`.
+First we import the necessary functionality from `spock`. We define our class using the `@spock` decorator and our 
+parameters with supported argument types from the `typing` library. Lastly, we write simple Google style 
+docstrings to provide command line `--help` information.
 
 ```python
 from spock.builder import ConfigArgBuilder
@@ -35,6 +36,15 @@ from typing import List
 
 @spock
 class BasicConfig:
+    """Basic spock configuration for example purposes
+
+    Attributes:
+        parameter: simple boolean that flags rounding
+        fancy_parameter: parameter that multiplies a value
+        fancier_parameter: parameter that gets added to product of val and fancy_parameter
+        most_fancy_parameter: values to apply basic algebra to
+
+    """
     parameter: bool
     fancy_parameter: float
     fancier_parameter: float
@@ -70,7 +80,7 @@ second function.
 ```python
 def main():
     # Chain the generate function to the class call
-    config = ConfigArgBuilder(BasicConfig).generate()
+    config = ConfigArgBuilder(BasicConfig, desc='Quick start example').generate()
     # One can now access the Spock config object by class name with the returned namespace
     print(config.BasicConfig.parameter)
     # And pass the namespace to our first function
@@ -97,8 +107,28 @@ fancier_parameter: 64.64
 most_fancy_parameter: [768, 768, 512, 128]
 ```
 
-Finally, we would then pass the path to the configuration file to the command line (-c or --config):
+Finally, we would run our script and pass the path to the configuration file to the command line (-c or --config):
 
 ```bash
 $ python simple.py -c simple.yaml
+```
+
+To get help for our `spock` class and defined parameters:
+
+```bash
+$ python simple.py --help
+```
+
+```
+usage: /Users/a635179/Documents/git_repos/open_source/spock/examples/quick-start/simple.py -c [--config] config1 [config2, config3, ...]
+
+Quick start example
+
+configuration(s):
+
+  BasicConfig (Basic spock configuration for example purposes)
+    parameter               bool         simple boolean that flags rounding (default: False)
+    fancy_parameter         float        parameter that multiplies a value 
+    fancier_parameter       float        parameter that gets added to product of val and fancy_parameter 
+    most_fancy_parameter    List[int]    values to apply basic algebra to 
 ```

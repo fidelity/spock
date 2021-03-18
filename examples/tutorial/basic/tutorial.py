@@ -9,6 +9,13 @@ from typing import Tuple
 
 
 class Activation(Enum):
+    """Options for activation functions
+
+    Attributes:
+        relu: relu activation
+        gelu: gelu activation
+        tanh: tanh activation
+    """
     relu = 'relu'
     gelu = 'gelu'
     tanh = 'tanh'
@@ -16,6 +23,15 @@ class Activation(Enum):
 
 @spock
 class ModelConfig:
+    """Main model configuration for a basic neural net
+
+    Attributes:
+        save_path: spock special keyword -- path to write out spock config state
+        n_features: number of data features
+        dropout: dropout rate for each layer
+        hidden_sizes: hidden size for each layer
+        activation: choice from the Activation enum of the activation function to use
+    """
     save_path: SavePath
     n_features: int
     dropout: List[float]
@@ -25,7 +41,7 @@ class ModelConfig:
 
 def main():
     # A simple description
-    description = 'spock Tutorial'
+    description = 'spock Basic Tutorial'
     # Build out the parser by passing in Spock config objects as *args after description
     config = ConfigArgBuilder(
         ModelConfig, desc=description, create_save_path=True).save(file_extension='.toml').generate()
