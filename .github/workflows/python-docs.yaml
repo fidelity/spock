@@ -21,7 +21,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -e .
-        if [ -f DEV_REQUIREMENTS.txt]; then pip install -r DEV_REQUIREMENTS.txt; fi
+        pip install -r DEV_REQUIREMENTS.txt
     - name: Build docs with Portray
       env:
         PYTHONPATH: .
