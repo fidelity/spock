@@ -1,0 +1,30 @@
+# This workflow will build and deploy documentation when
+
+name: Upload Python Package
+
+on:
+  release:
+    types: [released]
+
+jobs:
+  deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+    - name: Install dependencies and dev dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e .
+        if [ -f REQUIREMENTS.txt ]; then pip install -r REQUIREMENTS.txt; fi
+        if [ -f DEV_REQUIREMENTS.txt]; then pip install -r DEV_REQUIREMENTS.txt; fi
+    - name: Build docs with Portray
+      env:
+        PYTHONPATH: .
+      run: |
+        portray on_github_pages
