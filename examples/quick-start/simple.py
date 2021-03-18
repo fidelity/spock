@@ -5,6 +5,15 @@ from typing import List
 
 @spock
 class BasicConfig:
+    """Basic spock configuration for example purposes
+
+    Attributes:
+        parameter: simple boolean that flags rounding
+        fancy_parameter: parameter that multiplies a value
+        fancier_parameter: parameter that gets added to product of val and fancy_parameter
+        most_fancy_parameter: values to apply basic algebra to
+
+    """
     parameter: bool
     fancy_parameter: float
     fancier_parameter: float
@@ -31,7 +40,7 @@ def add_by_parameter(multiply_param, list_vals, add_param, tf_round):
 
 def main():
     # Chain the generate function to the class call
-    config = ConfigArgBuilder(BasicConfig).generate()
+    config = ConfigArgBuilder(BasicConfig, desc='Quick start example').generate()
     # One can now access the Spock config object by class name with the returned namespace
     print(config.BasicConfig.parameter)
     # And pass the namespace to our first function

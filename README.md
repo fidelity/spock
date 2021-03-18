@@ -37,19 +37,17 @@ recent features, bugfixes, and hotfixes.
 
 See [Releases](https://github.com/fidelity/spock/releases) for more information.
 
+### March  18th, 2021
+
+* Support for Google docstring style annotation of `spock` class (and Enums) and attributes
+* Added in ability to print docstring annotated help information to command line with `--help` argument
+
 #### March 1st, 2021
 
 * Removed legacy backend and API (dataclasses and custom typed interface)
 * Updated markdown save call to support advanced types so that saved configurations are now valid `spock` config 
   input files
 * Changed tuples to support length restrictions
-
-#### November 25th, 2020
-
-* Addition of [Advanced Types](docs/advanced_features/Advanced-Types.md)
-* Bumped support to include Python 3.9
-* Checks for circular dependencies in composed config files
-* Pickle support for dynamically created `spock` class
 
 ## Documentation
 
