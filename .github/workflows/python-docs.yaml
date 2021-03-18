@@ -1,6 +1,6 @@
-# This workflow will build and deploy documentation when
+# This workflow will build and deploy documentation when a release is released
 
-name: Upload Python Package
+name: Upload Docs to GitHub Pages
 
 on:
   release:
