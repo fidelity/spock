@@ -3,9 +3,10 @@
 
 name: pypi
 
-on: workflow_dispatch
-#  release:
-#    types: [released]
+#on: workflow_dispatch
+on:
+ release:
+   types: [released]
 
 jobs:
   deploy:
@@ -29,4 +30,5 @@ jobs:
         TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
       run: |
-        python setup.py version
+        python setup.py sdist bdist_wheel
+        twine upload dist/*
