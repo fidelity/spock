@@ -1,6 +1,6 @@
 # This workflow will build and deploy documentation when a release is released
 
-name: Upload Docs to GitHub Pages
+name: docs
 
 # on: workflow_dispatch
 on:

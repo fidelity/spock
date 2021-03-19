@@ -37,7 +37,7 @@ recent features, bugfixes, and hotfixes.
 
 See [Releases](https://github.com/fidelity/spock/releases) for more information.
 
-### March  18th, 2021
+#### March  18th, 2021
 
 * Support for Google docstring style annotation of `spock` class (and Enums) and attributes
 * Added in ability to print docstring annotated help information to command line with `--help` argument
