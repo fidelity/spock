@@ -5,6 +5,7 @@
 [![Python](https://img.shields.io/badge/python-3.6+-informational.svg)]()
 [![PyPI version](https://badge.fury.io/py/spock-config.svg)](https://badge.fury.io/py/spock-config)
 ![Tests](https://github.com/fidelity/spock/workflows/pytest/badge.svg)
+![Docs](https://github.com/fidelity/spock/workflows/docs/badge.svg)
 
 ## About
 
