@@ -52,7 +52,7 @@ class BaseSaver(ABC):  # pylint: disable=too-few-public-methods
     def __init__(self):
         self._writers = {'.yaml': YAMLHandler, '.toml': TOMLHandler, '.json': JSONHandler}
 
-    def save(self, payload, path, create_save_path=False, extra_info=True, file_extension='.yaml'):  #pylint: disable=too-many-arguments
+    def save(self, payload, path, file_name=None, create_save_path=False, extra_info=True, file_extension='.yaml'):  #pylint: disable=too-many-arguments
         """Writes Spock config to file
 
         Cleans and builds an output payload and then correctly writes it to file based on the
@@ -62,6 +62,7 @@ class BaseSaver(ABC):  # pylint: disable=too-few-public-methods
 
             payload: current config payload
             path: path to save
+            file_name: name of file (will be appended with .spock.cfg.file_extension) -- falls back to uuid if None
             create_save_path: boolean to create the path if non-existent
             extra_info: boolean to write extra info
             file_extension: what type of file to write
@@ -75,7 +76,8 @@ class BaseSaver(ABC):  # pylint: disable=too-few-public-methods
         if file_extension not in self._writers:
             raise ValueError(f'Invalid fileout extension. Expected a fileout from {supported_extensions}')
         # Make the filename
-        name = str(uuid1()) + '.spock.cfg' + file_extension
+        fname = str(uuid1()) if file_name is None else file_name
+        name = f'{fname}.spock.cfg{file_extension}'
         fid = path / name
         # Fix up values -- parameters
         out_dict = self._clean_up_values(payload, file_extension)

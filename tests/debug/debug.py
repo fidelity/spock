@@ -100,7 +100,7 @@ from argparse import Namespace
 
 
 def main():
-    attrs_class = ConfigArgBuilder(Test, Stuff, OtherStuff, desc='I am a description').generate()
+    attrs_class = ConfigArgBuilder(Test, Stuff, OtherStuff, desc='I am a description').save(user_specified_path='/tmp').generate()
     # with open('/tmp/debug.pickle', 'wb') as fid:
     #     pickle.dump(attrs_class, file=fid)
 
