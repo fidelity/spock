@@ -140,11 +140,12 @@ class ConfigArgBuilder:
             deep_payload_update(payload, payload_update)
         return payload
 
-    def save(self, user_specified_path=None, extra_info=True, file_extension='.yaml'):
+    def save(self, file_name=None, user_specified_path=None, extra_info=True, file_extension='.yaml'):
         """Saves the current config setup to file with a UUID
 
         *Args*:
 
+            file_name: name of file (will be appended with .spock.cfg.file_extension) -- falls back to uuid if None
             user_specified_path: if user provides a path it will be used as the path to write
             extra_info: additional info to write to saved config (run date and git info)
             file_extension: file type to write (default: yaml)
@@ -161,5 +162,7 @@ class ConfigArgBuilder:
             raise ValueError('Save did not receive a valid path from: (1) markup file(s) or (2) '
                              'the keyword arg user_specified_path')
         # Call the saver class and save function
-        self._saver_obj.save(self._arg_namespace, save_path, self._create_save_path, extra_info, file_extension)
+        self._saver_obj.save(
+            self._arg_namespace, save_path, file_name, self._create_save_path, extra_info, file_extension
+        )
         return self
