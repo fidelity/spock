@@ -220,16 +220,23 @@ class TestGeneralCmdLineOverride:
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
                                     './tests/conf/yaml/test.yaml',
-                                    '--bool_p', '--int_p', '11', '--TypeConfig.float_p', '11.0', '--string_p', 'Hooray',
-                                    '--list_p_float', '[11.0, 21.0]', '--list_p_int', '[11, 21]',
-                                    '--list_p_str', "['Hooray', 'Working']", '--list_p_bool', '[False, True]',
-                                    '--tuple_p_float', '(11.0, 21.0)', '--tuple_p_int', '(11, 21)',
-                                    '--tuple_p_str', "('Hooray', 'Working')", '--tuple_p_bool', '(False, True)',
-                                    '--list_list_p_int', "[[11, 21], [11, 21]]", '--choice_p_str', 'option_2',
-                                    '--choice_p_int', '20', '--choice_p_float', '20.0',
-                                    '--list_choice_p_str', "['option_2']",
-                                    '--list_list_choice_p_str', "[['option_2'], ['option_2']]",
-                                    '--list_choice_p_int', '[20]', '--list_choice_p_float', '[20.0]'
+                                    '--TypeConfig.bool_p', '--TypeConfig.int_p', '11', '--TypeConfig.float_p', '11.0',
+                                    '--TypeConfig.string_p', 'Hooray',
+                                    '--TypeConfig.list_p_float', '[11.0, 21.0]', '--TypeConfig.list_p_int', '[11, 21]',
+                                    '--TypeConfig.list_p_str', "['Hooray', 'Working']",
+                                    '--TypeConfig.list_p_bool', '[False, True]',
+                                    '--TypeConfig.tuple_p_float', '(11.0, 21.0)', '--TypeConfig.tuple_p_int', '(11, 21)',
+                                    '--TypeConfig.tuple_p_str', "('Hooray', 'Working')",
+                                    '--TypeConfig.tuple_p_bool', '(False, True)',
+                                    '--TypeConfig.list_list_p_int', "[[11, 21], [11, 21]]",
+                                    '--TypeConfig.choice_p_str', 'option_2',
+                                    '--TypeConfig.choice_p_int', '20', '--TypeConfig.choice_p_float', '20.0',
+                                    '--TypeConfig.list_choice_p_str', "['option_2']",
+                                    '--TypeConfig.list_list_choice_p_str', "[['option_2'], ['option_2']]",
+                                    '--TypeConfig.list_choice_p_int', '[20]',
+                                    '--TypeConfig.list_choice_p_float', '[20.0]',
+                                    '--NestedStuff.one', '12', '--NestedStuff.two', 'ancora',
+
                                     ])
             config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, desc='Test Builder')
             return config.generate()
@@ -255,6 +262,8 @@ class TestGeneralCmdLineOverride:
         assert arg_builder.TypeConfig.list_list_choice_p_str == [['option_2'], ['option_2']]
         assert arg_builder.TypeConfig.list_choice_p_int == [20]
         assert arg_builder.TypeConfig.list_choice_p_float == [20.0]
+        assert arg_builder.NestedStuff.one == 12
+        assert arg_builder.NestedStuff.two == 'ancora'
 
 
 class TestConfigKwarg(AllTypes):
@@ -263,6 +272,7 @@ class TestConfigKwarg(AllTypes):
     @pytest.fixture
     def arg_builder(monkeypatch):
         with monkeypatch.context() as m:
+            m.setattr(sys, 'argv', [''])
             config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder',
                                       configs=['./tests/conf/yaml/test.yaml'])
             return config.generate()

@@ -58,6 +58,19 @@ class ClassStuff(Enum):
 
 
 @spock
+class NestedListStuff:
+    """Class enum
+
+    Attributes:
+        maybe: some val
+        more: some other value
+
+    """
+    maybe: int
+    more: str
+
+
+@spock
 class Test:
     """High level docstring that just so happens to be multiline adfjads;lfja;sdlkjfklasjflkasjlkfjal;sdfjlkajsdfl;kja
     adfasfdsafklasdjfkladsjklfasdjlkf
@@ -69,10 +82,13 @@ class Test:
         test: you are my only hopes
         most_broken: class stuff enum
         new_choice: choice type optionality
-
+        one: just a basic parameter
+        nested_list: Repeated list of a class type
     """
-    new_choice: Optional[Choice]
+    # new_choice: Optional[Choice]
     fail: Tuple[Tuple[int, int], Tuple[int, int]]
-    test: Optional[List[int]]
+    # test: Optional[List[int]]
     most_broken: ClassStuff
+    # one: int
+    nested_list: List[NestedListStuff]
 

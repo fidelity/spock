@@ -35,6 +35,7 @@ Test:
   test: [1, 2]
   fail: [[1, 2], [3, 4]]
   most_broken: Stuff
+  one: 18
 #  borken: RepeatStuff
 
 ##ccccombo_breaker: 10
