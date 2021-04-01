@@ -7,6 +7,7 @@ from attr.exceptions import FrozenInstanceError
 import glob
 import pytest
 from spock.builder import ConfigArgBuilder
+from spock.config import isinstance_spock
 from tests.attr.attr_configs_test import *
 import sys
 
@@ -431,6 +432,14 @@ class TestWritePathRaise:
             # Test the chained version
             with pytest.raises(FileNotFoundError):
                 config.save(user_specified_path=str(tmp_path)+'/foo.bar/fizz.buzz/', file_extension='.yaml').generate()
+
+
+class TestIsInstance:
+    def test_isinstance(self):
+        """Test that isinstance is behaving correctly"""
+        assert isinstance_spock(TypeConfig) is True
+        assert isinstance_spock(object) is False
+        assert isinstance_spock(StrChoice) is False
 
 
 # TOML TESTS

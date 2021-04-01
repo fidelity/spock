@@ -34,7 +34,7 @@ class ModelConfig:
     lr: float = 0.01
     n_features: int
     dropout: Optional[List[float]]
-    hidden_sizes: Tuple[int] = (32, 32, 32)
+    hidden_sizes: Tuple[int, int, int] = (32, 32, 32)
     activation: Activation = 'relu'
 ```
 

@@ -33,9 +33,16 @@ OtherStuff:
 
 Test:
   test: [1, 2]
-  fail: [[1, 2], [3, 4]]
-  most_broken: Stuff
-  one: 18
+#  fail: [[1, 2], [3, 4]]
+#  most_broken: Stuff
+#  one: 18
+  nested_list: NestedListStuff
+
+NestedListStuff:
+    - maybe: 10
+      more: hello
+    - maybe: 20
+      more: bye
 #  borken: RepeatStuff
 
 ##ccccombo_breaker: 10

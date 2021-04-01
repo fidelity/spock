@@ -6,6 +6,7 @@
 """Utility functions for Spock"""
 
 import ast
+import attr
 from enum import EnumMeta
 import os
 import socket
@@ -20,6 +21,24 @@ if minor < 7:
     from typing import GenericMeta as _GenericAlias
 else:
     from typing import _GenericAlias
+
+
+def _is_spock_instance(__obj: object):
+    """Checks if the object is a @spock decorated class
+
+    Private interface that checks to see if the object passed in is registered within the spock module and also
+    is a class with attrs attributes (__attrs_attrs__)
+
+    *Args*:
+
+        __obj: class to inspect
+
+    Returns:
+
+        bool
+
+    """
+    return (__obj.__module__ == 'spock.backend.attr.config') and attr.has(__obj)
 
 
 def make_argument(arg_name, arg_type, parser):

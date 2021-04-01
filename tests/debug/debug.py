@@ -5,8 +5,9 @@ from typing import Optional
 from typing import Tuple
 from enum import Enum
 from spock.builder import ConfigArgBuilder
+from spock.config import isinstance_spock
 from params.first import Test
-from params.first import Stuff, OtherStuff
+from params.first import Stuff, OtherStuff, NestedListStuff, ClassStuff
 from spock.backend.attr.typed import SavePath
 import pickle
 from argparse import Namespace
@@ -100,14 +101,19 @@ from argparse import Namespace
 
 
 def main():
-    attrs_class = ConfigArgBuilder(Test, Stuff, OtherStuff, desc='I am a description').save(user_specified_path='/tmp').generate()
+    attrs_class = ConfigArgBuilder(
+        Test, Stuff, OtherStuff, NestedListStuff,
+        desc='I am a description'
+    ).save(user_specified_path='/tmp').generate()
     # with open('/tmp/debug.pickle', 'wb') as fid:
     #     pickle.dump(attrs_class, file=fid)
 
     # with open('/tmp/debug.pickle', 'rb') as fid:
     #     attrs_load = pickle.load(fid)
     # attrs_class = ConfigArgBuilder(Test, Test2).generate()
-
+    print(isinstance_spock(Test))
+    print(isinstance_spock(ClassStuff))
+    print(isinstance_spock(object))
     print(attrs_class)
     # print(attrs_load)
     # dc_class = ConfigArgBuilder(OldInherit).generate()

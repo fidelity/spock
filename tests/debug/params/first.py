@@ -85,10 +85,10 @@ class Test:
         one: just a basic parameter
         nested_list: Repeated list of a class type
     """
-    # new_choice: Optional[Choice]
-    fail: Tuple[Tuple[int, int], Tuple[int, int]]
-    # test: Optional[List[int]]
-    most_broken: ClassStuff
+    # # new_choice: Optional[Choice]
+    # fail: Tuple[Tuple[int, int], Tuple[int, int]]
+    test: List[int]
+    # most_broken: ClassStuff
     # one: int
     nested_list: List[NestedListStuff]
 
