@@ -33,7 +33,7 @@ def _is_spock_instance(__obj: object):
 
         __obj: class to inspect
 
-    Returns:
+    *Returns*:
 
         bool
 
@@ -53,7 +53,7 @@ def make_argument(arg_name, arg_type, parser):
         arg_type: type of the argument
         parser: current parser
 
-    Returns:
+    *Returns*:
 
         parser: updated argparser
 
@@ -64,6 +64,8 @@ def make_argument(arg_name, arg_type, parser):
     # For choice enums we need to check a few things first
     elif isinstance(arg_type, EnumMeta):
         type_set = list({type(val.value) for val in arg_type})[0]
+        # if this is an enum of a class switch the type to str as this is how it gets matched
+        type_set = str if type_set.__name__ == 'type' else type_set
         parser.add_argument(arg_name, required=False, type=type_set)
     # For booleans we map to store true
     elif arg_type == bool:
@@ -75,6 +77,19 @@ def make_argument(arg_name, arg_type, parser):
 
 
 def _handle_generic_type_args(val):
+    """Evaluates a string containing a Python literal
+
+    Seeing a list types will come in as string literal format, use ast to get the actual type
+
+    *Args*:
+
+        val: string literal
+
+    *Returns*:
+
+        the underlying string literal type
+
+    """
     return ast.literal_eval(val)
 
 
@@ -101,7 +116,7 @@ def make_blank_git(out_dict):
 
         out_dict: current output dictionary
 
-    Returns:
+    *Returns*:
 
         out_dict: output dictionary with added git info
 
@@ -182,7 +197,7 @@ def _maybe_docker(cgroup_path="/proc/self/cgroup"):
 
         cgroup_path: path to cgroup file
 
-    Returns:
+    *Returns*:
 
         boolean of best effort docker determination
 
@@ -203,7 +218,7 @@ def _maybe_k8s(cgroup_path="/proc/self/cgroup"):
 
         cgroup_path: path to cgroup file
 
-    Returns:
+    *Returns*:
 
         boolean of best effort k8s determination
 

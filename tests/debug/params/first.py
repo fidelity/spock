@@ -6,17 +6,17 @@ from typing import Tuple
 from typing import Optional
 from .second import Choice
 
+#
+class Choice(Enum):
+    """Blah
 
-# class Choice(Enum):
-#     """Blah
-#
-#     Attributes:
-#         pear: help pears
-#         banana: help bananas
-#
-#     """
-#     pear = 'pear'
-#     banana = 'banana'
+    Attributes:
+        pear: help pears
+        banana: help bananas
+
+    """
+    pear = 'pear'
+    banana = 'banana'
 
 
 @spock
@@ -85,9 +85,10 @@ class Test:
         one: just a basic parameter
         nested_list: Repeated list of a class type
     """
-    # # new_choice: Optional[Choice]
+    # new_choice: Choice
     # fail: Tuple[Tuple[int, int], Tuple[int, int]]
-    test: List[int]
+    # test: List[int]
+    # fail: List[List[int]]
     # most_broken: ClassStuff
     # one: int
     nested_list: List[NestedListStuff]

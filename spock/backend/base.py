@@ -8,6 +8,7 @@
 from abc import ABC
 from abc import abstractmethod
 import argparse
+import attr
 from attr import NOTHING
 from enum import EnumMeta
 import os
@@ -21,6 +22,7 @@ from spock.handlers import TOMLHandler
 from spock.handlers import YAMLHandler
 from spock.utils import add_info
 from spock.utils import make_argument
+from typing import List
 
 
 class Spockspace(argparse.Namespace):
@@ -382,8 +384,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         args = parser.parse_args()
         return args
 
-    @staticmethod
-    def _make_group_override_parser(parser, class_obj):
+    def _make_group_override_parser(self, parser, class_obj):
         """Makes a name specific override parser for a given class obj
 
         Takes a class object of the backend and adds a new argument group with argument names given with name
@@ -403,8 +404,16 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         group_parser = parser.add_argument_group(title=str(attr_name) + " Specific Overrides")
         for val in class_obj.__attrs_attrs__:
             val_type = val.metadata['type'] if 'type' in val.metadata else val.type
-            arg_name = '--' + str(attr_name) + '.' + val.name
-            group_parser = make_argument(arg_name, val_type, group_parser)
+            # Check if the val type has __args__
+            # TODO (ncilfone): Fix up this super super ugly logic
+            if hasattr(val_type, '__args__') and ((list(set(val_type.__args__))[0]).__module__ == 'spock.backend.attr.config') and attr.has((list(set(val_type.__args__))[0])):
+                args = (list(set(val_type.__args__))[0])
+                for inner_val in args.__attrs_attrs__:
+                    arg_name = f"--{str(attr_name)}.{val.name}.{args.__name__}.{inner_val.name}"
+                    group_parser = make_argument(arg_name, List[inner_val.type], group_parser)
+            else:
+                arg_name = f"--{str(attr_name)}.{val.name}"
+                group_parser = make_argument(arg_name, val_type, group_parser)
         return parser
 
     @staticmethod
@@ -616,6 +625,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         """
         # List to catch Enums and classes and handle post spock wrapped attr classes
         other_list = []
+        covered_set = set()
         for attrs_class in input_classes:
             # Split the docs into class docs and any attribute docs
             class_doc, attr_docs = self._split_docs(attrs_class)
@@ -645,19 +655,22 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
                 if 'optional' in val.metadata:
                     type_string = f"Optional[{type_string}]"
                 info_dict.update(self._match_attribute_docs(val.name, attr_docs, type_string, val.default))
+            # Add to covered so we don't print help twice in the case of some recursive nesting
+            covered_set.add(f'{attrs_class.__module__}.{attrs_class.__name__}')
             self._handle_attributes_print(info_dict=info_dict)
-        # Convert the enum list to a set to remove dupes and then back to a list so it is iterable
-        other_list = list(set(other_list))
+        # Convert the enum list to a set to remove dupes and then back to a list so it is iterable -- set diff to not
+        # repeat
+        other_list = list(set(other_list) - covered_set)
         # Iterate any Enum type classes
         for other in other_list:
             # if it's longer than 2 then it's an embedded Spock class
             if '.'.join(other.split('.')[:-1]) == 'spock.backend.attr.config':
-                class_type = self._get_enum_from_sys_modules(other)
+                class_type = self._get_from_sys_modules(other)
                 # Invoke recursive call for the class
                 self._attrs_help([class_type])
             # Fall back to enum style
             else:
-                enum = self._get_enum_from_sys_modules(other)
+                enum = self._get_from_sys_modules(other)
                 # Split the docs into class docs and any attribute docs
                 class_doc, attr_docs = self._split_docs(enum)
                 print('  ' + enum.__name__ + f' ({class_doc})')
@@ -671,12 +684,12 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
                 self._handle_attributes_print(info_dict=info_dict)
 
     @staticmethod
-    def _get_enum_from_sys_modules(enum_name):
-        """Gets the enum class from a dot notation name
+    def _get_from_sys_modules(cls_name):
+        """Gets the class from a dot notation name
 
         *Args*:
 
-            enum_name: dot notation enum name
+            cls_name: dot notation enum name
 
         *Returns*:
 
@@ -684,7 +697,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
 
         """
         # Split on dot notation
-        split_string = enum_name.split('.')
+        split_string = cls_name.split('.')
         module = None
         for idx, val in enumerate(split_string):
             # idx = 0 will always be a call to the sys.modules dict
