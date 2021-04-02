@@ -89,7 +89,8 @@ class Test:
     # fail: Tuple[Tuple[int, int], Tuple[int, int]]
     # test: List[int]
     # fail: List[List[int]]
+    flipper: bool
     # most_broken: ClassStuff
-    # one: int
+    one: int
     nested_list: List[NestedListStuff]
 

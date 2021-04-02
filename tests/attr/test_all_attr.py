@@ -223,7 +223,7 @@ class TestGeneralCmdLineOverride:
                                     './tests/conf/yaml/test.yaml',
                                     '--TypeConfig.bool_p', '--TypeConfig.int_p', '11', '--TypeConfig.float_p', '11.0',
                                     '--TypeConfig.string_p', 'Hooray',
-                                    '--TypeConfig.list_p_float', '[11.0, 21.0]', '--TypeConfig.list_p_int', '[11, 21]',
+                                    '--TypeConfig.list_p_float', '[11.0,21.0]', '--TypeConfig.list_p_int', '[11, 21]',
                                     '--TypeConfig.list_p_str', "['Hooray', 'Working']",
                                     '--TypeConfig.list_p_bool', '[False, True]',
                                     '--TypeConfig.tuple_p_float', '(11.0, 21.0)', '--TypeConfig.tuple_p_int', '(11, 21)',
@@ -237,7 +237,8 @@ class TestGeneralCmdLineOverride:
                                     '--TypeConfig.list_choice_p_int', '[20]',
                                     '--TypeConfig.list_choice_p_float', '[20.0]',
                                     '--NestedStuff.one', '12', '--NestedStuff.two', 'ancora',
-
+                                    # '--TypeConfig.nested_list.NestedListStuff.one', '[11, 21]',
+                                    # '--TypeConfig.nested_list.NestedListStuff.two', "['Hooray', 'Working']",
                                     ])
             config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, desc='Test Builder')
             return config.generate()
@@ -263,8 +264,12 @@ class TestGeneralCmdLineOverride:
         assert arg_builder.TypeConfig.list_list_choice_p_str == [['option_2'], ['option_2']]
         assert arg_builder.TypeConfig.list_choice_p_int == [20]
         assert arg_builder.TypeConfig.list_choice_p_float == [20.0]
-        assert arg_builder.NestedStuff.one == 12
-        assert arg_builder.NestedStuff.two == 'ancora'
+        assert arg_builder.TypeConfig.class_enum.one == 12
+        assert arg_builder.TypeConfig.class_enum.two == 'ancora'
+        assert arg_builder.NestedListStuff[0].one == 10
+        assert arg_builder.NestedListStuff[0].two == 'hello'
+        assert arg_builder.NestedListStuff[1].one == 20
+        assert arg_builder.NestedListStuff[1].two == 'bye'
 
 
 class TestConfigKwarg(AllTypes):

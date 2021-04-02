@@ -31,11 +31,16 @@
 #  - hi: 20
 #    bye: 45.0
 
+one: 18
+#fail: [[1, 2], [3, 4]]
+#flipper: True
+
 Test:
 #  test: [1, 2]
 #  fail: [[1, 2], [3, 4]]
 #  most_broken: Stuff
 #  one: 18
+  flipper: false
   nested_list: NestedListStuff
 #  new_choice: pear
 

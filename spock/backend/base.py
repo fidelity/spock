@@ -880,17 +880,50 @@ class BasePayload(ABC):  # pylint: disable=too-few-public-methods
         """
         skip_keys = ['config', 'help']
         for k, v in vars(args).items():
-            # If the name has a . then we are at the class level so we need to get the dict and check
-            if len(k.split('.')) > 1:
-                dict_key = k.split('.')[0]
-                val_name = k.split('.')[1]
-                if k not in skip_keys and v is not None:
-                    # Handle bool types slightly differently as they are store_true
-                    if isinstance(vars(args)[k], bool):
-                        if vars(args)[k] is not False:
-                            payload = self._dict_payload_override(payload, dict_key, val_name, v)
-                    else:
-                        payload = self._dict_payload_override(payload, dict_key, val_name, v)
+            if k not in skip_keys and v is not None:
+                payload = self._handle_payload_override(payload, k, v)
+        return payload
+
+    @staticmethod
+    def _handle_payload_override(payload, key, value):
+        key_split = key.split('.')
+        curr_ref = payload
+        for idx, split in enumerate(key_split):
+            # If the root isn't in the payload then it needs to be added but only for the first key split
+            if idx == 0 and (split not in payload):
+                payload.update({split: {}})
+            # If it's in the keys of the payload and we are at a dead end for the current reference switch over
+            if idx != 0 and (split in payload) and isinstance(curr_ref, str):
+                curr_ref = payload[split]
+            # elif check if it's the last value and figure out the override
+            elif idx == (len(key_split)-1):
+                # Handle bool(s) a bit differently as they are store_true
+                if isinstance(curr_ref, dict) and isinstance(value, bool):
+                    if value is not False:
+                        curr_ref[split] = value
+                # If we are at the dictionary level we should be able to just payload override
+                elif isinstance(curr_ref, dict) and not isinstance(value, bool):
+                    curr_ref[split] = value
+                # If we are at a list level it must be some form of repeated class since this is the end of the class
+                # tree -- check the instance type but also make sure the cmd-line override is the correct len
+                elif isinstance(curr_ref, list) and len(value) == len(curr_ref):
+                    # Walk the list and check for the key
+                    for ref_idx, val in enumerate(curr_ref):
+                        if split in val:
+                            val[split] = value[ref_idx]
+                        else:
+                            raise ValueError(f'cmd-line override failed for {key} -- '
+                                             f'Failed to find key {split} within lowest level List[Dict]')
+                elif isinstance(curr_ref, list) and len(value) != len(curr_ref):
+                    raise ValueError(f'cmd-line override failed for {key} -- '
+                                     f'Specified key {split} with len {len(value)} does not match len {len(curr_ref)} '
+                                     f'of List[Dict]')
+                else:
+                    raise ValueError(f'cmd-line override failed for {key} -- '
+                                     f'Failed to find key {split} within lowest level Dict')
+            # If it's not keep walking the current payload
+            else:
+                curr_ref = curr_ref[split]
         return payload
 
     @staticmethod
