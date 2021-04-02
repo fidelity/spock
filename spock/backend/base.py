@@ -893,8 +893,18 @@ class BasePayload(ABC):  # pylint: disable=too-few-public-methods
             if idx == 0 and (split not in payload):
                 payload.update({split: {}})
             # If it's in the keys of the payload and we are at a dead end for the current reference switch over
-            if idx != 0 and (split in payload) and isinstance(curr_ref, str):
+            bool_val = idx != 0 and (split in payload)
+            bool_val = bool_val and (isinstance(curr_ref, str) or isinstance(payload[split], str))
+            # bool_val = bool_val and (isinstance(curr_ref, str) or len(curr_ref) == 0 or split not in curr_ref)
+            # hasattr(sys.modules['spock'].backend.attr.config, split)
+
+            if idx != 0 and (split in payload) and (isinstance(curr_ref, str)) and (hasattr(sys.modules['spock'].backend.attr.config, split)):
                 curr_ref = payload[split]
+            elif idx != 0 and (split in payload) and (isinstance(payload[split], str)) and (hasattr(sys.modules['spock'].backend.attr.config, payload[split])):
+                curr_ref = payload[split]
+
+                # If it's a string -- verify it's a ref to a class and that ref to a class is of type list
+                # curr_ref = payload[split]
             # elif check if it's the last value and figure out the override
             elif idx == (len(key_split)-1):
                 # Handle bool(s) a bit differently as they are store_true
