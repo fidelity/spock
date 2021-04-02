@@ -886,25 +886,33 @@ class BasePayload(ABC):  # pylint: disable=too-few-public-methods
 
     @staticmethod
     def _handle_payload_override(payload, key, value):
+        """Handles the complex logic needed for List[spock class] overrides
+
+        Messy logic that sets overrides for the various different types. The hardest being List[spock class] since str
+        names have to be mapped backed to sys.modules and can be set at either the general or class level.
+
+        *Args*:
+
+            payload:
+            key:
+            value:
+
+        *Returns*:
+
+            payload: modified payload with overrides
+
+        """
         key_split = key.split('.')
         curr_ref = payload
         for idx, split in enumerate(key_split):
             # If the root isn't in the payload then it needs to be added but only for the first key split
             if idx == 0 and (split not in payload):
                 payload.update({split: {}})
-            # If it's in the keys of the payload and we are at a dead end for the current reference switch over
-            bool_val = idx != 0 and (split in payload)
-            bool_val = bool_val and (isinstance(curr_ref, str) or isinstance(payload[split], str))
-            # bool_val = bool_val and (isinstance(curr_ref, str) or len(curr_ref) == 0 or split not in curr_ref)
-            # hasattr(sys.modules['spock'].backend.attr.config, split)
-
+            # Check for curr_ref switch over -- verify by checking the sys modules names
             if idx != 0 and (split in payload) and (isinstance(curr_ref, str)) and (hasattr(sys.modules['spock'].backend.attr.config, split)):
                 curr_ref = payload[split]
             elif idx != 0 and (split in payload) and (isinstance(payload[split], str)) and (hasattr(sys.modules['spock'].backend.attr.config, payload[split])):
                 curr_ref = payload[split]
-
-                # If it's a string -- verify it's a ref to a class and that ref to a class is of type list
-                # curr_ref = payload[split]
             # elif check if it's the last value and figure out the override
             elif idx == (len(key_split)-1):
                 # Handle bool(s) a bit differently as they are store_true
