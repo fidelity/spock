@@ -3,7 +3,11 @@
 
 name: coverage
 
-on: workflow_dispatch
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
 
 jobs:
   build:
