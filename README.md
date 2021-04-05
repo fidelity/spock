@@ -5,7 +5,7 @@
 [![Python](https://img.shields.io/badge/python-3.6+-informational.svg)]()
 [![PyPI version](https://badge.fury.io/py/spock-config.svg)](https://badge.fury.io/py/spock-config)
 [![Coverage Status](https://coveralls.io/repos/github/fidelity/spock/badge.svg?branch=master)](https://coveralls.io/github/fidelity/spock?branch=master)
-![Tests](https://github.com/fidelity/spock/workflows/pytest/badge.svg)
+![Tests](https://github.com/fidelity/spock/workflows/pytest/badge.svg?branch=master)
 ![Docs](https://github.com/fidelity/spock/workflows/docs/badge.svg)
 
 ## About
