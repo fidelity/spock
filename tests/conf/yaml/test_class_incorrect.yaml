@@ -1,0 +1,4 @@
+# include another file
+config: [test.yaml]
+TypeConfig:
+  not_real: 10
