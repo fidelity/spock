@@ -25,7 +25,7 @@ jobs:
 
     - name: Test with pytest
       run: |
-        coverage run -m pytest --cov=./spock --cov-config=./tests/.coveragerc
+        coverage run -m pytest --cov-config=.coveragerc
         
     - name: Debug coverage
       run: coverage report -m
