@@ -35,7 +35,7 @@ class ModelConfig:
     save_path: SavePath
     n_features: int
     dropout: List[float]
-    hidden_sizes: Tuple[int]
+    hidden_sizes: Tuple[int, int, int]
     activation: Activation
 
 

@@ -38,7 +38,7 @@ class ModelConfig:
     save_path: SavePath
     n_features: int
     dropout: Optional[List[float]]
-    hidden_sizes: Tuple[int] = (32, 32, 32)
+    hidden_sizes: Tuple[int, int, int] = (32, 32, 32)
     activation: Activation = 'relu'
     optimizer: Optimizer
 

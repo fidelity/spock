@@ -20,8 +20,10 @@ standard library while `Enum` is within the `enum` standard library):
 | int | Optional[int] | Basic integer type parameter (e.g. 2) |
 | str | Optional[str] | Basic string type parameter (e.g. 'foo') |
 | List[type] | Optional[List[type]] | Basic list type parameter of base types such as int, float, etc. (e.g. [10.0, 2.0]) |
-| Tuple[type] | Optional[Tuple[type]] | Basic tuple type parameter of base types such as int, float, etc. (e.g. (10, 2)) |
+| Tuple[type] | Optional[Tuple[type]] | Basic tuple type parameter of base types such as int, float, etc. Length enforced unlike List. (e.g. (10, 2)) |
 | Enum | Optional[Enum] | Parameter that must be from a defined set of values of base types such as int, float, etc. |
+
+Use `List` types when the length of the `Iterable` is not fixed and `Tuple` when length needs to be strictly enforced.
 
 Parameters that are specified without the `Optional[]` type will be considered **REQUIRED** and therefore will raise an
 Exception if not value is specified. 
@@ -58,7 +60,7 @@ class Activation(Enum):
 class ModelConfig:
     n_features: int
     dropout: List[float]
-    hidden_sizes: Tuple[int]
+    hidden_sizes: Tuple[int, int, int]
     activation: Activation
 ```
 
@@ -103,7 +105,7 @@ class ModelConfig:
     save_path: SavePath
     n_features: int
     dropout: List[float]
-    hidden_sizes: Tuple[int]
+    hidden_sizes: Tuple[int, int, int]
     activation: Activation
 ```
 
@@ -123,11 +125,11 @@ spock Basic Tutorial
 configuration(s):
 
   ModelConfig (Main model configuration for a basic neural net)
-    save_path       Optional[SavePath]    spock special keyword -- path to write out spock config state (default: None)
-    n_features      int                   number of data features 
-    dropout         List[float]           dropout rate for each layer 
-    hidden_sizes    Tuple[int]            hidden size for each layer 
-    activation      Activation            choice from the Activation enum of the activation function to use 
+    save_path       Optional[SavePath]      spock special keyword -- path to write out spock config state (default: None)
+    n_features      int                     number of data features 
+    dropout         List[float]             dropout rate for each layer 
+    hidden_sizes    Tuple[int, int, int]    hidden size for each layer 
+    activation      Activation              choice from the Activation enum of the activation function to use 
 
   Activation (Options for activation functions)
     relu    str    relu activation 
@@ -141,8 +143,9 @@ In another file let's write our simple neural network code: `basic_nn.py`
 
 Notice that even before we've built and linked all of the related `spock` components together we are referencing the 
 parameters we have defined in our `spock` class. Below we are passing in the `ModelConfig` class as a parameter 
-`model_config` to the `__init__` function where we can then access the parameters with `.` notation. We could have 
-also passed in individual parameters instead if that is the preferred syntax.
+`model_config` to the `__init__` function where we can then access the parameters with `.` notation (if we import 
+the `ModelConfig` class here and add it as a type hint to `model_config` most IDE auto-complete will work out of the 
+box). We could have also passed in individual parameters instead if that is the preferred syntax.
 
 ```python
 import torch.nn as nn

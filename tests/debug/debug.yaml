@@ -8,18 +8,18 @@
 ###    fix_me: [[11, 2], [22, 1]]
 ##new_choice: pear
 ##borken: Stuff
-Stuff:
-  one: 10
-  two: hello
+#Stuff:
+#  one: 10
+#  two: hello
 ##  - one: 10
 ##    two: hello
 ##  - one: 20
 ##    two: bye
 #
 ##more_borken: OtherStuff
-OtherStuff:
-  three: 20
-  four: ciao
+#OtherStuff:
+#  three: 20
+#  four: ciao
 ####Test2:
 ####    other: 12
 ####Test:
@@ -31,10 +31,26 @@ OtherStuff:
 #  - hi: 20
 #    bye: 45.0
 
+#one: 18
+#fail: [[1, 2], [3, 4]]
+#flipper: True
+#nested_list: NestedListStuff
+test: [ 1, 2 ]
+
 Test:
-  test: [1, 2]
-  fail: [[1, 2], [3, 4]]
-  most_broken: Stuff
+#  test: [ 1, 2 ]
+#  fail: [ [ 1, 2 ], [ 3, 4 ] ]
+#  most_broken: Stuff
+#  one: 18
+#  flipper: false
+  nested_list: NestedListStuff
+#  new_choice: pear
+
+NestedListStuff:
+    - maybe: 10
+      more: hello
+    - maybe: 20
+      more: bye
 #  borken: RepeatStuff
 
 ##ccccombo_breaker: 10

@@ -24,7 +24,7 @@ class ModelConfig:
     save_path: SavePath
     n_features: int
     dropout: List[float]
-    hidden_sizes: Tuple[int]
+    hidden_sizes: Tuple[int, int, int]
     activation: Activation
 ```
 
@@ -83,7 +83,26 @@ def main():
     # A simple description
     description = 'spock Tutorial'
     # Build out the parser by passing in Spock config objects as *args after description
-    config = ConfigArgBuilder(ModelConfig, desc=description, create_save_path=True).save().generate()
+    config = ConfigArgBuilder(ModelConfig, desc=description).save(create_save_path=True).generate()
+    # One can now access the Spock config object by class name with the returned namespace
+    # For instance...
+    print(config.ModelConfig)
+```
+
+### Override UUID Filename
+
+By default `spock` uses an automatically generated UUID as the filename when saving. This can be overridden with the
+`file_name` keyword argument. The specified filename will be appended with .spock.cfg.file_extension (e.g. .yaml, 
+.toml or. json).
+
+In: `tutorial.py`
+
+```python
+def main():
+    # A simple description
+    description = 'spock Tutorial'
+    # Build out the parser by passing in Spock config objects as *args after description
+    config = ConfigArgBuilder(ModelConfig, desc=description).save(file_name='cool_name_here').generate()
     # One can now access the Spock config object by class name with the returned namespace
     # For instance...
     print(config.ModelConfig)

@@ -8,6 +8,7 @@
 from abc import ABC
 from abc import abstractmethod
 import argparse
+import attr
 from attr import NOTHING
 from enum import EnumMeta
 import os
@@ -21,6 +22,7 @@ from spock.handlers import TOMLHandler
 from spock.handlers import YAMLHandler
 from spock.utils import add_info
 from spock.utils import make_argument
+from typing import List
 
 
 class Spockspace(argparse.Namespace):
@@ -361,9 +363,8 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
     def _build_override_parsers(self, desc):
         """Creates parsers for command-line overrides
 
-        Builds the basic command line parser for configs and help, iterates through all defined attr to make
-        a general override parser, and then iterates through each attr instance to make namespace specific override
-        parsers
+        Builds the basic command line parser for configs and help then iterates through each attr instance to make
+        namespace specific cmd line override parsers
 
         *Args*:
 
@@ -377,49 +378,13 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         parser = argparse.ArgumentParser(description=desc, add_help=False)
         parser.add_argument('-c', '--config', required=False, nargs='+', default=[])
         parser.add_argument('-h', '--help', action='store_true')
-        # Build out a general parser for parent level attr
-        parser = self._make_general_override_parser(parser=parser, input_classes=self.input_classes)
-        # Build out each class specific parser
+        # Build out each class override specific parser
         for val in self.input_classes:
             parser = self._make_group_override_parser(parser=parser, class_obj=val)
-        # args = parser.parse_args()
-        args, _ = parser.parse_known_args(sys.argv)
+        args = parser.parse_args()
         return args
 
-    def _make_general_override_parser(self, parser, input_classes):
-        """Makes a general level override parser
-
-        Flattens all the attrs into a single dictionary and makes a general level parser for the attr name
-
-        *Args*:
-
-            parser: argument parser
-            input_classes: list of input classes for a specific backend
-
-        *Returns*:
-
-            parser: argument parser with new general overrides
-
-        """
-        # Make all names list
-        all_attr = {}
-        for class_obj in input_classes:
-            for val in class_obj.__attrs_attrs__:
-                val_type = val.metadata['type'] if 'type' in val.metadata else val.type
-                if hasattr(all_attr, val.name):
-                    if all_attr[val.name] is not val_type:
-                        print(f"Warning: Ignoring general override for {val.name} as the class specific types differ")
-                else:
-                    all_attr.update({val.name: val_type})
-        self._check_protected_keys(all_attr)
-        group_parser = parser.add_argument_group(title="General Overrides")
-        for k, v in all_attr.items():
-            arg_name = '--' + k
-            group_parser = make_argument(arg_name, v, group_parser)
-        return parser
-
-    @staticmethod
-    def _make_group_override_parser(parser, class_obj):
+    def _make_group_override_parser(self, parser, class_obj):
         """Makes a name specific override parser for a given class obj
 
         Takes a class object of the backend and adds a new argument group with argument names given with name
@@ -439,8 +404,16 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         group_parser = parser.add_argument_group(title=str(attr_name) + " Specific Overrides")
         for val in class_obj.__attrs_attrs__:
             val_type = val.metadata['type'] if 'type' in val.metadata else val.type
-            arg_name = '--' + str(attr_name) + '.' + val.name
-            group_parser = make_argument(arg_name, val_type, group_parser)
+            # Check if the val type has __args__
+            # TODO (ncilfone): Fix up this super super ugly logic
+            if hasattr(val_type, '__args__') and ((list(set(val_type.__args__))[0]).__module__ == 'spock.backend.attr.config') and attr.has((list(set(val_type.__args__))[0])):
+                args = (list(set(val_type.__args__))[0])
+                for inner_val in args.__attrs_attrs__:
+                    arg_name = f"--{str(attr_name)}.{val.name}.{args.__name__}.{inner_val.name}"
+                    group_parser = make_argument(arg_name, List[inner_val.type], group_parser)
+            else:
+                arg_name = f"--{str(attr_name)}.{val.name}"
+                group_parser = make_argument(arg_name, val_type, group_parser)
         return parser
 
     @staticmethod
@@ -610,8 +583,8 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         # Blank for spacing :-/
         print('')
 
-    def _extract_enum_types(self, typed):
-        """Takes a high level type and recursively extracts any enum types
+    def _extract_other_types(self, typed):
+        """Takes a high level type and recursively extracts any enum or class types
 
         *Args*:
 
@@ -619,28 +592,104 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
 
         *Returns*:
 
-            return_list: list of nums (dot notation of module_path.enum_name)
+            return_list: list of nums (dot notation of module_path.enum_name or module_path.class_name)
 
         """
         return_list = []
         if hasattr(typed, '__args__'):
             for val in typed.__args__:
-                recurse_return = self._extract_enum_types(val)
+                recurse_return = self._extract_other_types(val)
                 if isinstance(recurse_return, list):
                     return_list.extend(recurse_return)
                 else:
-                    return_list.append(self._extract_enum_types(val))
-        elif isinstance(typed, EnumMeta):
+                    return_list.append(self._extract_other_types(val))
+        elif isinstance(typed, EnumMeta) or (typed.__module__ == 'spock.backend.attr.config'):
             return f'{typed.__module__}.{typed.__name__}'
         return return_list
 
-    @staticmethod
-    def _get_enum_from_sys_modules(enum_name):
-        """Gets the enum class from a dot notation name
+    def _attrs_help(self, input_classes):
+        """Handles walking through a list classes to get help info
+
+        For each class this function will search __doc__ and attempt to pull out help information for both the class
+        itself and each attribute within the class. If it finds a repeated class in a iterable object it will
+        recursively call self to handle information
 
         *Args*:
 
-            enum_name: dot notation enum name
+            input_classes: list of attr classes
+
+        *Returns*:
+
+            None
+
+        """
+        # List to catch Enums and classes and handle post spock wrapped attr classes
+        other_list = []
+        covered_set = set()
+        for attrs_class in input_classes:
+            # Split the docs into class docs and any attribute docs
+            class_doc, attr_docs = self._split_docs(attrs_class)
+            print('  ' + attrs_class.__name__ + f' ({class_doc})')
+            # Keep a running info_dict of all the attribute level info
+            info_dict = {}
+            for val in attrs_class.__attrs_attrs__:
+                # If the type is an enum we need to handle it outside of this attr loop
+                # Match the style of nested enums and return a string of module.name notation
+                if isinstance(val.type, EnumMeta):
+                    other_list.append(f'{val.type.__module__}.{val.type.__name__}')
+                # if there is a type (implied Iterable) -- check it for nested Enums or classes
+                nested_others = self._extract_other_types(val.metadata['type']) if 'type' in val.metadata else []
+                if len(nested_others) > 0:
+                    other_list.extend(nested_others)
+                # Grab the base or type info depending on what is provided
+                type_string = repr(val.metadata['type']) if 'type' in val.metadata else val.metadata['base']
+                # Regex out the typing info if present
+                type_string = re.sub(r'typing.', '', type_string)
+                # Regex out any nested_others that have module path information
+                for other_val in nested_others:
+                    split_other = f"{'.'.join(other_val.split('.')[:-1])}."
+                    type_string = re.sub(split_other, '', type_string)
+                # Regex the string to see if it matches any Enums in the __main__ module space
+                # for val in sys.modules
+                # Construct the type with the metadata
+                if 'optional' in val.metadata:
+                    type_string = f"Optional[{type_string}]"
+                info_dict.update(self._match_attribute_docs(val.name, attr_docs, type_string, val.default))
+            # Add to covered so we don't print help twice in the case of some recursive nesting
+            covered_set.add(f'{attrs_class.__module__}.{attrs_class.__name__}')
+            self._handle_attributes_print(info_dict=info_dict)
+        # Convert the enum list to a set to remove dupes and then back to a list so it is iterable -- set diff to not
+        # repeat
+        other_list = list(set(other_list) - covered_set)
+        # Iterate any Enum type classes
+        for other in other_list:
+            # if it's longer than 2 then it's an embedded Spock class
+            if '.'.join(other.split('.')[:-1]) == 'spock.backend.attr.config':
+                class_type = self._get_from_sys_modules(other)
+                # Invoke recursive call for the class
+                self._attrs_help([class_type])
+            # Fall back to enum style
+            else:
+                enum = self._get_from_sys_modules(other)
+                # Split the docs into class docs and any attribute docs
+                class_doc, attr_docs = self._split_docs(enum)
+                print('  ' + enum.__name__ + f' ({class_doc})')
+                info_dict = {}
+                for val in enum:
+                    info_dict.update(self._match_attribute_docs(
+                        attr_name=val.name,
+                        attr_docs=attr_docs,
+                        attr_type_str=type(val.value).__name__
+                    ))
+                self._handle_attributes_print(info_dict=info_dict)
+
+    @staticmethod
+    def _get_from_sys_modules(cls_name):
+        """Gets the class from a dot notation name
+
+        *Args*:
+
+            cls_name: dot notation enum name
 
         *Returns*:
 
@@ -648,7 +697,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
 
         """
         # Split on dot notation
-        split_string = enum_name.split('.')
+        split_string = cls_name.split('.')
         module = None
         for idx, val in enumerate(split_string):
             # idx = 0 will always be a call to the sys.modules dict
@@ -831,27 +880,68 @@ class BasePayload(ABC):  # pylint: disable=too-few-public-methods
         """
         skip_keys = ['config', 'help']
         for k, v in vars(args).items():
-            # If the name has a . then we are at the class level so we need to get the dict and check
-            if len(k.split('.')) > 1:
-                dict_key = k.split('.')[0]
-                val_name = k.split('.')[1]
-                if k not in skip_keys and v is not None:
-                    # Handle bool types slightly differently as they are store_true
-                    if isinstance(vars(args)[k], bool):
-                        if vars(args)[k] is not False:
-                            payload = self._dict_payload_override(payload, dict_key, val_name, v)
-                    else:
-                        payload = self._dict_payload_override(payload, dict_key, val_name, v)
-            # else search the first level
+            if k not in skip_keys and v is not None:
+                payload = self._handle_payload_override(payload, k, v)
+        return payload
+
+    @staticmethod
+    def _handle_payload_override(payload, key, value):
+        """Handles the complex logic needed for List[spock class] overrides
+
+        Messy logic that sets overrides for the various different types. The hardest being List[spock class] since str
+        names have to be mapped backed to sys.modules and can be set at either the general or class level.
+
+        *Args*:
+
+            payload: current payload dictionary
+            key: current arg key
+            value: value at current arg key
+
+        *Returns*:
+
+            payload: modified payload with overrides
+
+        """
+        key_split = key.split('.')
+        curr_ref = payload
+        for idx, split in enumerate(key_split):
+            # If the root isn't in the payload then it needs to be added but only for the first key split
+            if idx == 0 and (split not in payload):
+                payload.update({split: {}})
+            # Check for curr_ref switch over -- verify by checking the sys modules names
+            if idx != 0 and (split in payload) and (isinstance(curr_ref, str)) and (hasattr(sys.modules['spock'].backend.attr.config, split)):
+                curr_ref = payload[split]
+            elif idx != 0 and (split in payload) and (isinstance(payload[split], str)) and (hasattr(sys.modules['spock'].backend.attr.config, payload[split])):
+                curr_ref = payload[split]
+            # elif check if it's the last value and figure out the override
+            elif idx == (len(key_split)-1):
+                # Handle bool(s) a bit differently as they are store_true
+                if isinstance(curr_ref, dict) and isinstance(value, bool):
+                    if value is not False:
+                        curr_ref[split] = value
+                # If we are at the dictionary level we should be able to just payload override
+                elif isinstance(curr_ref, dict) and not isinstance(value, bool):
+                    curr_ref[split] = value
+                # If we are at a list level it must be some form of repeated class since this is the end of the class
+                # tree -- check the instance type but also make sure the cmd-line override is the correct len
+                elif isinstance(curr_ref, list) and len(value) == len(curr_ref):
+                    # Walk the list and check for the key
+                    for ref_idx, val in enumerate(curr_ref):
+                        if split in val:
+                            val[split] = value[ref_idx]
+                        else:
+                            raise ValueError(f'cmd-line override failed for {key} -- '
+                                             f'Failed to find key {split} within lowest level List[Dict]')
+                elif isinstance(curr_ref, list) and len(value) != len(curr_ref):
+                    raise ValueError(f'cmd-line override failed for {key} -- '
+                                     f'Specified key {split} with len {len(value)} does not match len {len(curr_ref)} '
+                                     f'of List[Dict]')
+                else:
+                    raise ValueError(f'cmd-line override failed for {key} -- '
+                                     f'Failed to find key {split} within lowest level Dict')
+            # If it's not keep walking the current payload
             else:
-                # Override the value in the payload if present
-                if k not in skip_keys and v is not None:
-                    # Handle bool types slightly differently as they are store_true
-                    if isinstance(vars(args)[k], bool):
-                        if vars(args)[k] is not False:
-                            payload.update({k: v})
-                    else:
-                        payload.update({k: v})
+                curr_ref = curr_ref[split]
         return payload
 
     @staticmethod
@@ -873,7 +963,7 @@ class BasePayload(ABC):  # pylint: disable=too-few-public-methods
             payload: updated payload dictionary
 
         """
-        if not hasattr(payload, dict_key):
+        if dict_key not in payload:
             payload.update({dict_key: {}})
-        payload[dict_key].update({val_name: value})
+        payload[dict_key][val_name] = value
         return payload
