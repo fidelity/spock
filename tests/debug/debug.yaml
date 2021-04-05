@@ -44,7 +44,11 @@ Test:
 #  one: 18
 #  flipper: false
   nested_list: NestedListStuff
+#  does_not_exist: 10
 #  new_choice: pear
+
+Gorf:
+  funny: 12
 
 NestedListStuff:
     - maybe: 10

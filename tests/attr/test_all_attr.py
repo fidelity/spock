@@ -438,6 +438,24 @@ class TestUnknownArg:
                 ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, desc='Test Builder')
 
 
+class TestUnknownClassParameterArg:
+    def test_class_parameter_unknown(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, 'argv', ['', '--config',
+                                    './tests/conf/yaml/test_class_incorrect.yaml'])
+            with pytest.raises(ValueError):
+                ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, desc='Test Builder')
+
+
+class TestUnknownClassArg:
+    def test_class_unknown(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, 'argv', ['', '--config',
+                                    './tests/conf/yaml/test_missing_class.yaml'])
+            with pytest.raises(ValueError):
+                ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, desc='Test Builder')
+
+
 class TestConfigCycles:
     """Checks the raise for cyclical dependencies"""
     def test_config_cycles(self, monkeypatch):
