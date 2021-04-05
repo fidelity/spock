@@ -893,9 +893,9 @@ class BasePayload(ABC):  # pylint: disable=too-few-public-methods
 
         *Args*:
 
-            payload:
-            key:
-            value:
+            payload: current payload dictionary
+            key: current arg key
+            value: value at current arg key
 
         *Returns*:
 
