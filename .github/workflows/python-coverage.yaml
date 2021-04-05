@@ -1,7 +1,9 @@
 # This workflow will install Python dependencies, run tests and report coverage to coveralls
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
- on: workflow_dispatch
+name: coverage
+
+on: workflow_dispatch
 
 jobs:
   build:
