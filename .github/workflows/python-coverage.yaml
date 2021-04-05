@@ -27,6 +27,9 @@ jobs:
     - name: Test with pytest
       run: |
         coverage run -m pytest --cov=spock --cov-config=./tests/.coveragerc
+        
+    - name: Debug coveralls
+      run: coveralls debug
 
     - name: Upload coverage data to coveralls.io
       run: coveralls --service=github --rcfile=./tests/.coveragerc
