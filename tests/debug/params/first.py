@@ -7,67 +7,67 @@ from typing import Optional
 from .second import Choice
 
 #
-class Choice(Enum):
-    """Blah
-
-    Attributes:
-        pear: help pears
-        banana: help bananas
-
-    """
-    pear = 'pear'
-    banana = 'banana'
-
-
-@spock
-class OtherStuff:
-    """Other stuff class
-
-    Attributes:
-        three: heahadsf
-        four: asdfjhasdlkf
-
-    """
-    three: int
-    four: str
-
-
-@spock
-class Stuff:
-    """Stuff class
-
-    Attributes:
-        one: help
-        two: teadsfa
-
-    """
-    one: int
-    two: str
-
-
-class ClassStuff(Enum):
-    """Class enum
-
-    Attributes:
-        other_stuff: OtherStuff class
-        stuff: Stuff class
-
-    """
-    other_stuff = OtherStuff
-    stuff = Stuff
-
-
-@spock
-class NestedListStuff:
-    """Class enum
-
-    Attributes:
-        maybe: some val
-        more: some other value
-
-    """
-    maybe: int
-    more: str
+# class Choice(Enum):
+#     """Blah
+#
+#     Attributes:
+#         pear: help pears
+#         banana: help bananas
+#
+#     """
+#     pear = 'pear'
+#     banana = 'banana'
+#
+#
+# @spock
+# class OtherStuff:
+#     """Other stuff class
+#
+#     Attributes:
+#         three: heahadsf
+#         four: asdfjhasdlkf
+#
+#     """
+#     three: int
+#     four: str
+#
+#
+# @spock
+# class Stuff:
+#     """Stuff class
+#
+#     Attributes:
+#         one: help
+#         two: teadsfa
+#
+#     """
+#     one: int
+#     two: str
+#
+#
+# class ClassStuff(Enum):
+#     """Class enum
+#
+#     Attributes:
+#         other_stuff: OtherStuff class
+#         stuff: Stuff class
+#
+#     """
+#     other_stuff = OtherStuff
+#     stuff = Stuff
+#
+#
+# @spock
+# class NestedListStuff:
+#     """Class enum
+#
+#     Attributes:
+#         maybe: some val
+#         more: some other value
+#
+#     """
+#     maybe: int
+#     more: str
 
 
 @spock
@@ -86,11 +86,11 @@ class Test:
         nested_list: Repeated list of a class type
     """
     # new_choice: Choice
-    # fail: Tuple[Tuple[int, int], Tuple[int, int]]
-    test: List[int]
+    # fail: Tuple[List[int], List[str]]
+    test: Optional[List[int]]
     # fail: List[List[int]]
     # flipper: bool
     # most_broken: ClassStuff
     # one: int
-    nested_list: List[NestedListStuff]
+    # nested_list: List[NestedListStuff]
 

@@ -16,6 +16,11 @@ class StrChoice(Enum):
     option_2 = 'option_2'
 
 
+class FailedEnum(Enum):
+    str_type = 'hello'
+    float_type = 10.0
+
+
 class IntChoice(Enum):
     option_1 = 10
     option_2 = 20

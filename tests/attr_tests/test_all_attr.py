@@ -8,7 +8,7 @@ import glob
 import pytest
 from spock.builder import ConfigArgBuilder
 from spock.config import isinstance_spock
-from tests.attr.attr_configs_test import *
+from tests.attr_tests.attr_configs_test import *
 import sys
 
 
@@ -455,6 +455,50 @@ class TestUnknownClassArg:
             with pytest.raises(ValueError):
                 ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, desc='Test Builder')
 
+
+class TestWrongRepeatedClass:
+    def test_class_unknown(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, 'argv', ['', '--config',
+                                    './tests/conf/yaml/test_incorrect_repeated_class.yaml'])
+            with pytest.raises(ValueError):
+                ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, desc='Test Builder')
+
+
+class TestEnumMixedFail:
+    def test_enum_mixed_fail(self, monkeypatch):
+        with monkeypatch.context() as m:
+            with pytest.raises(TypeError):
+                @spock
+                class EnumFail:
+                    choice_mixed: FailedEnum
+
+
+class TestIncorrectType:
+    def test_incorrect_type(self, monkeypatch):
+        with monkeypatch.context() as m:
+            with pytest.raises(TypeError):
+                @spock
+                class TypeFail:
+                    weird_type: lambda x: x
+
+
+class TestEnumClassMissing:
+    def test_enum_class_missing(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, 'argv', ['', '--config',
+                                    './tests/conf/yaml/test_wrong_class_enum.yaml'])
+            with pytest.raises(ValueError):
+                ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, desc='Test Builder')
+
+
+class TestMixedGeneric:
+    def test_mixed_generic(self, monkeypatch):
+        with monkeypatch.context() as m:
+            with pytest.raises(TypeError):
+                @spock
+                class GenericFail:
+                    generic_fail: Tuple[List[int], List[int], int]
 
 class TestConfigCycles:
     """Checks the raise for cyclical dependencies"""

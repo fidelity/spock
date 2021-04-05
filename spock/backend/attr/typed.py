@@ -28,6 +28,21 @@ class SavePath(str):
         return super().__new__(cls, x)
 
 
+def _get_name_py_version(typed):
+    """Gets the name of the type depending on the python version
+
+    *Args*:
+
+        typed: the type of the parameter
+
+    *Returns*:
+
+        name of the type
+
+    """
+    return typed._name if hasattr(typed, '_name') else typed.__name__
+
+
 def _extract_base_type(typed):
     """Extracts the name of the type from a _GenericAlias
 
@@ -43,10 +58,7 @@ def _extract_base_type(typed):
         name of type
     """
     if hasattr(typed, '__args__'):
-        if minor < 7:
-            name = typed.__name__
-        else:
-            name = typed._name
+        name = _get_name_py_version(typed=typed)
         bracket_val = f"{name}[{_extract_base_type(typed.__args__[0])}]"
         return bracket_val
     else:
@@ -229,8 +241,6 @@ def _in_type(instance, attribute, value, options):
     *Returns*:
 
     """
-    if type(options) not in [list, tuple, EnumMeta]:
-        raise TypeError(f'options argument must be of type List, Tuple, or Enum -- given {type(options)}')
     if type(value) not in options:
         raise ValueError(f'{attribute.name} must be in {options}')
 
@@ -348,16 +358,30 @@ def _handle_optional_typing(typed):
         type_args = typed.__args__
         # Optional[X] has type_args = (X, None) and is equal to Union[X, None]
         if (len(type_args) == 2) and (typed == Union[type_args[0], None]):
-            # Since this is true we need to strip out the OG type
-            # Grab all the types that are not NoneType and collapse to a list
-            type_list = [val for val in type_args if val is not type(None)]
-            if len(type_list) > 1:
-                raise TypeError(f"Passing multiple subscript types to GenericAlias is not supported: {type_list}")
-            else:
-                typed = type_list[0]
+            typed = type_args[0]
             # Set the optional flag to true
             optional = True
     return typed, optional
+
+
+def _check_generic_recursive_single_type(typed):
+    """Checks generics for the single types -- mixed types of generics are not allowed
+
+    *Args*:
+
+        typed: type
+
+    *Returns*:
+
+    """
+    # Check if it has __args__ to look for optionality as it is a GenericAlias
+    if hasattr(typed, '__args__'):
+        if len(set(typed.__args__)) > 1:
+            type_list = [str(val) for val in typed.__args__]
+            raise TypeError(f"Passing multiple different subscript types to GenericAlias is not supported: {type_list}")
+        else:
+            for val in typed.__args__:
+                _check_generic_recursive_single_type(typed=val)
 
 
 def katra(typed, default=None):
@@ -380,6 +404,8 @@ def katra(typed, default=None):
     """
     # Handle optionals
     typed, optional = _handle_optional_typing(typed)
+    # Check generic types for consistent types
+    _check_generic_recursive_single_type(typed)
     # We need to check if the type is a _GenericAlias so that we can handle subscripted general types
     # If it is subscript typed it will not be T which python uses as a generic type name
     if isinstance(typed, _GenericAlias) and (not isinstance(typed.__args__[0], TypeVar)):
