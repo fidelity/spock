@@ -1,5 +1,5 @@
 [run]
+relative_files = True
 omit =
     spock/__init__.py
-    spock/_dataclasses.py
     spock/_version.py
