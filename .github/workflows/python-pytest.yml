@@ -31,7 +31,7 @@ jobs:
         if [ -f REQUIREMENTS.txt ]; then pip install -r REQUIREMENTS.txt; fi
     - name: Test with pytest
       run: |
-        pytest --cov=spock --cov-config=./tests/.coveragerc --junitxml=junit/test-results-${{ matrix.python-version }}.xml --cov-report=xml --cov-report=html
+        pytest --cov=spock --cov-config=.coveragerc --junitxml=junit/test-results-${{ matrix.python-version }}.xml --cov-report=xml --cov-report=html
     - name: Upload pytest test results
       uses: actions/upload-artifact@v2
       with:
