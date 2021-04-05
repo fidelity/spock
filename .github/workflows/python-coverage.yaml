@@ -29,6 +29,6 @@ jobs:
         coverage run -m pytest --cov=spock --cov-config=./tests/.coveragerc
 
     - name: Upload coverage data to coveralls.io
-      run: coveralls
+      run: coveralls --service=github
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
