@@ -1,4 +1,5 @@
 [run]
+source = spock
 omit =
     spock/__init__.py
     spock/_version.py
