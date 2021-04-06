@@ -106,7 +106,7 @@ def main():
     attrs_class = ConfigArgBuilder(
         Test, NestedListStuff,
         desc='I am a description'
-    ).save(user_specified_path='/tmp').generate()
+    ).save(user_specified_path='/tmp', file_extension='.foo').generate()
     # with open('/tmp/debug.pickle', 'wb') as fid:
     #     pickle.dump(attrs_class, file=fid)
 

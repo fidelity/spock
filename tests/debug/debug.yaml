@@ -37,6 +37,8 @@
 #nested_list: NestedListStuff
 #test: [ 1, 2 ]
 
+config: [foo.yaml]
+
 help: hello
 
 

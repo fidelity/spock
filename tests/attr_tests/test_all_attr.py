@@ -532,6 +532,16 @@ class TestConfigCycles:
                 ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, desc='Test Builder')
 
 
+class TestConfigIncludeRaise:
+    """Checks the raise for cyclical dependencies"""
+    def test_config_cycles(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, 'argv', ['', '--config',
+                                    './tests/conf/yaml/test_include_fail.yaml'])
+            with pytest.raises(ValueError):
+                ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, desc='Test Builder')
+
+
 class TestConfigDuplicate:
     """Checks the raise for duplicate reads"""
     def test_config_duplicate(self, monkeypatch):

@@ -417,28 +417,6 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         return parser
 
     @staticmethod
-    def _get_from_arg_parser(desc):
-        """Get configs from command line
-
-        Gets the config file(s) from the command line arg parser
-
-        *Args*:
-
-            desc: description text for the cmd line argparser
-
-        *Returns*:
-
-            args: namespace of command line args
-
-        """
-        # Pull in args via the arg parser pointing to the config file
-        parser = argparse.ArgumentParser(description=desc, add_help=False)
-        parser.add_argument('-c', '--config', required=False, nargs='+', default=[])
-        parser.add_argument('-h', '--help', action='store_true')
-        args, _ = parser.parse_known_args(sys.argv)
-        return args
-
-    @staticmethod
     def _get_from_kwargs(args, configs):
         """Get configs from the configs kwarg
 
