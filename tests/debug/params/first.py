@@ -93,4 +93,5 @@ class Test:
     # most_broken: ClassStuff
     one: int
     nested_list: List[NestedListStuff]
+    help: str
 

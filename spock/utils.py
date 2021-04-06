@@ -159,7 +159,7 @@ def add_repo_info(out_dict):
                 git_status = 'CLEAN'
             out_dict.update({'# Git Status': git_status})
             out_dict.update({'# Git Origin': repo.active_branch.commit.repo.remotes.origin.url})
-    except git.InvalidGitRepositoryError: # pragma: no cover
+    except git.InvalidGitRepositoryError:  # pragma: no cover
         # But it's okay if we are not
         out_dict = make_blank_git(out_dict)
     return out_dict

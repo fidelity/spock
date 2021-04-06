@@ -417,22 +417,6 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         return parser
 
     @staticmethod
-    def _check_protected_keys(all_attr):
-        """Test for protected keys
-
-        Tests to see if an attribute has been defined at the genreral level that is within the protected list that
-        would break basic command line handling.
-
-        Args:
-            all_attr: dictionary of all attr
-
-        """
-        protected_names = ['config', 'help']
-        if any([val in all_attr for val in protected_names]):
-            raise ValueError(f"Using a protected name from {protected_names} at general class level which prevents "
-                             f"command line overrides")
-
-    @staticmethod
     def _get_from_arg_parser(desc):
         """Get configs from command line
 
@@ -472,7 +456,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         if type(configs).__name__ == 'list':
             args.config.extend(configs)
         else:
-            raise TypeError('configs kwarg must be of type list')
+            raise TypeError(f'configs kwarg must be of type list -- given {type(configs)}')
         return args
 
     @staticmethod
@@ -481,7 +465,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
 
         *Args*:
 
-            newline_split_docs:
+            newline_split_docs: new line split text
 
         Returns:
 
@@ -942,28 +926,4 @@ class BasePayload(ABC):  # pylint: disable=too-few-public-methods
             # If it's not keep walking the current payload
             else:
                 curr_ref = curr_ref[split]
-        return payload
-
-    @staticmethod
-    def _dict_payload_override(payload, dict_key, val_name, value):
-        """Updates the payload at the dictionary level
-
-        First checks to see if there is an existing dictionary to insert into, if not creates an empty one. Then it
-        inserts the updated value at the correct dictionary level
-
-        *Args*:
-
-            payload: current payload dictionary
-            dict_key: dictionary key to check
-            val_name: value name to update
-            value: value to update
-
-        *Returns*:
-
-            payload: updated payload dictionary
-
-        """
-        if dict_key not in payload:
-            payload.update({dict_key: {}})
-        payload[dict_key][val_name] = value
         return payload

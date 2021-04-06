@@ -100,15 +100,13 @@ from argparse import Namespace
 #     ccccombo_breaker: int
 
 
-class Hello:
-    new: int
 
 
 def main():
     attrs_class = ConfigArgBuilder(
-        Test, NestedListStuff, ["names"],
+        Test, NestedListStuff,
         desc='I am a description'
-    ).save(user_specified_path='/tmp').generate(unclass=True)
+    ).save(user_specified_path='/tmp').generate()
     # with open('/tmp/debug.pickle', 'wb') as fid:
     #     pickle.dump(attrs_class, file=fid)
 
