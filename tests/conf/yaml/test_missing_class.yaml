@@ -1,0 +1,4 @@
+# include another file
+config: [test.yaml]
+MissingClass:
+  not_real: 10

@@ -7,56 +7,56 @@ from typing import Optional
 from .second import Choice
 
 #
-class Choice(Enum):
-    """Blah
-
-    Attributes:
-        pear: help pears
-        banana: help bananas
-
-    """
-    pear = 'pear'
-    banana = 'banana'
-
-
-@spock
-class OtherStuff:
-    """Other stuff class
-
-    Attributes:
-        three: heahadsf
-        four: asdfjhasdlkf
-
-    """
-    three: int
-    four: str
-
-
-@spock
-class Stuff:
-    """Stuff class
-
-    Attributes:
-        one: help
-        two: teadsfa
-
-    """
-    one: int
-    two: str
-
-
-class ClassStuff(Enum):
-    """Class enum
-
-    Attributes:
-        other_stuff: OtherStuff class
-        stuff: Stuff class
-
-    """
-    other_stuff = OtherStuff
-    stuff = Stuff
-
-
+# class Choice(Enum):
+#     """Blah
+#
+#     Attributes:
+#         pear: help pears
+#         banana: help bananas
+#
+#     """
+#     pear = 'pear'
+#     banana = 'banana'
+#
+#
+# @spock
+# class OtherStuff:
+#     """Other stuff class
+#
+#     Attributes:
+#         three: heahadsf
+#         four: asdfjhasdlkf
+#
+#     """
+#     three: int
+#     four: str
+#
+#
+# @spock
+# class Stuff:
+#     """Stuff class
+#
+#     Attributes:
+#         one: help
+#         two: teadsfa
+#
+#     """
+#     one: int
+#     two: str
+#
+#
+# class ClassStuff(Enum):
+#     """Class enum
+#
+#     Attributes:
+#         other_stuff: OtherStuff class
+#         stuff: Stuff class
+#
+#     """
+#     other_stuff = OtherStuff
+#     stuff = Stuff
+#
+#
 @spock
 class NestedListStuff:
     """Class enum
@@ -86,11 +86,12 @@ class Test:
         nested_list: Repeated list of a class type
     """
     # new_choice: Choice
-    # fail: Tuple[Tuple[int, int], Tuple[int, int]]
-    test: List[int]
-    # fail: List[List[int]]
+    # fail: Tuple[List[int], List[int]]
+    test: Optional[List[int]]
+    fail: List[List[int]]
     # flipper: bool
     # most_broken: ClassStuff
-    # one: int
+    one: int
     nested_list: List[NestedListStuff]
+    help: str
 

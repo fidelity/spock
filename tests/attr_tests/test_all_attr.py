@@ -5,10 +5,11 @@
 
 from attr.exceptions import FrozenInstanceError
 import glob
+import os
 import pytest
 from spock.builder import ConfigArgBuilder
 from spock.config import isinstance_spock
-from tests.attr.attr_configs_test import *
+from tests.attr_tests.attr_configs_test import *
 import sys
 
 
@@ -176,6 +177,17 @@ class TestAllTypesYAML(AllTypes):
             return config.generate()
 
 
+class TestRaiseWrongInputType:
+    """Check all required types work as expected """
+    def test_wrong_input_raise(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, 'argv', ['', '--config',
+                                    './tests/conf/yaml/test.foo'])
+            with pytest.raises(ValueError):
+                config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder')
+                return config.generate()
+
+
 class TestAllDefaultsYAML(AllDefaults):
     """Check all required types falling back to default work as expected """
     @staticmethod
@@ -188,6 +200,27 @@ class TestAllDefaultsYAML(AllDefaults):
                                       TypeDefaultOptConfig,
                                       desc='Test Builder')
             return config.generate()
+
+
+class TestHelp:
+    def test_help(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, 'argv', ['', '--config',
+                                    './tests/conf/yaml/test.yaml', '--help'])
+            with pytest.raises(SystemExit):
+                config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder')
+                return config.generate()
+
+
+class TestSpockspaceRepr:
+    def test_repr(self, monkeypatch, capsys):
+        with monkeypatch.context() as m:
+            m.setattr(sys, 'argv', ['', '--config',
+                                    './tests/conf/yaml/test.yaml'])
+            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder')
+            print(config.generate())
+            out, _ = capsys.readouterr()
+            assert ('NestedListStuff' in out) and 'TypeConfig' in out
 
 
 class TestFrozen:
@@ -213,63 +246,30 @@ class TestFrozen:
             arg_builder.TypeOptConfig.tuple_p_opt_no_def_float = (1.0, 2.0)
 
 
-class TestGeneralCmdLineOverride:
+class TestRaiseCmdLineNoKey:
     """Testing command line overrides"""
-    @staticmethod
-    @pytest.fixture
-    def arg_builder(monkeypatch):
+    def test_cmd_line_no_key(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, 'argv', ['', '--config',
+                                    './tests/conf/yaml/test.yaml', '--TypeConfig.foo_bar_stuff', '11'
+                                    ])
+            with pytest.raises(SystemExit):
+                config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, desc='Test Builder')
+                return config.generate()
+
+
+class TestRaiseCmdLineListLen:
+    """Testing command line overrides"""
+    def test_cmd_line_list_len(self, monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
                                     './tests/conf/yaml/test.yaml',
-                                    '--TypeConfig.bool_p', '--TypeConfig.int_p', '11', '--TypeConfig.float_p', '11.0',
-                                    '--TypeConfig.string_p', 'Hooray',
-                                    '--TypeConfig.list_p_float', '[11.0,21.0]', '--TypeConfig.list_p_int', '[11, 21]',
-                                    '--TypeConfig.list_p_str', "['Hooray', 'Working']",
-                                    '--TypeConfig.list_p_bool', '[False, True]',
-                                    '--TypeConfig.tuple_p_float', '(11.0, 21.0)', '--TypeConfig.tuple_p_int', '(11, 21)',
-                                    '--TypeConfig.tuple_p_str', "('Hooray', 'Working')",
-                                    '--TypeConfig.tuple_p_bool', '(False, True)',
-                                    '--TypeConfig.list_list_p_int', "[[11, 21], [11, 21]]",
-                                    '--TypeConfig.choice_p_str', 'option_2',
-                                    '--TypeConfig.choice_p_int', '20', '--TypeConfig.choice_p_float', '20.0',
-                                    '--TypeConfig.list_choice_p_str', "['option_2']",
-                                    '--TypeConfig.list_list_choice_p_str', "[['option_2'], ['option_2']]",
-                                    '--TypeConfig.list_choice_p_int', '[20]',
-                                    '--TypeConfig.list_choice_p_float', '[20.0]',
-                                    '--NestedStuff.one', '12', '--NestedStuff.two', 'ancora',
-                                    '--TypeConfig.nested_list.NestedListStuff.one', '[11, 21]',
-                                    '--TypeConfig.nested_list.NestedListStuff.two', "['Hooray', 'Working']",
+                                    '--TypeConfig.nested_list.NestedListStuff.one', '[11]'
                                     ])
-            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, desc='Test Builder')
-            return config.generate()
+            with pytest.raises(ValueError):
+                config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, desc='Test Builder')
+                return config.generate()
 
-    def test_overrides(self, arg_builder):
-        assert arg_builder.TypeConfig.bool_p is True
-        assert arg_builder.TypeConfig.int_p == 11
-        assert arg_builder.TypeConfig.float_p == 11.0
-        assert arg_builder.TypeConfig.string_p == 'Hooray'
-        assert arg_builder.TypeConfig.list_p_float == [11.0, 21.0]
-        assert arg_builder.TypeConfig.list_p_int == [11, 21]
-        assert arg_builder.TypeConfig.list_p_str == ['Hooray', 'Working']
-        assert arg_builder.TypeConfig.list_p_bool == [False, True]
-        assert arg_builder.TypeConfig.tuple_p_float == (11.0, 21.0)
-        assert arg_builder.TypeConfig.tuple_p_int == (11, 21)
-        assert arg_builder.TypeConfig.tuple_p_str == ('Hooray', 'Working')
-        assert arg_builder.TypeConfig.tuple_p_bool == (False, True)
-        assert arg_builder.TypeConfig.choice_p_str == 'option_2'
-        assert arg_builder.TypeConfig.choice_p_int == 20
-        assert arg_builder.TypeConfig.choice_p_float == 20.0
-        assert arg_builder.TypeConfig.list_list_p_int == [[11, 21], [11, 21]]
-        assert arg_builder.TypeConfig.list_choice_p_str == ['option_2']
-        assert arg_builder.TypeConfig.list_list_choice_p_str == [['option_2'], ['option_2']]
-        assert arg_builder.TypeConfig.list_choice_p_int == [20]
-        assert arg_builder.TypeConfig.list_choice_p_float == [20.0]
-        assert arg_builder.TypeConfig.class_enum.one == 12
-        assert arg_builder.TypeConfig.class_enum.two == 'ancora'
-        assert arg_builder.NestedListStuff[0].one == 11
-        assert arg_builder.NestedListStuff[0].two == 'Hooray'
-        assert arg_builder.NestedListStuff[1].one == 21
-        assert arg_builder.NestedListStuff[1].two == 'Working'
 
 
 class TestClassCmdLineOverride:
@@ -354,6 +354,16 @@ class TestNoCmdLineKwarg(AllTypes):
             return config.generate()
 
 
+class TestNoCmdLineKwargRaise:
+    """Testing to see that the kwarg no cmd line works"""
+    def test_cmd_line_kwarg_raise(self, monkeypatch):
+        with monkeypatch.context() as m:
+            with pytest.raises(ValueError):
+                config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, no_cmd_line=True,
+                                          configs='./tests/conf/yaml/test.yaml')
+                return config.generate()
+
+
 class TestNoCmdLineRaise:
     """Check raise when no cmd line and no configs works as expected """
     def test_choice_raise(self, monkeypatch):
@@ -387,6 +397,17 @@ class TestInheritance(AllInherited):
                                     './tests/conf/yaml/inherited.yaml'])
             config = ConfigArgBuilder(TypeInherited, NestedStuff, NestedListStuff, desc='Test Builder')
             return config.generate()
+
+
+class TestNonAttrs:
+    def test_non_attrs_fail(self, monkeypatch):
+        with monkeypatch.context() as m:
+            with pytest.raises(TypeError):
+                class AttrFail:
+                    failed_attr: int
+                config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, AttrFail,
+                                          configs=['./tests/conf/yaml/test.yaml'])
+                return config.generate()
 
 
 class TestChoiceRaises:
@@ -438,12 +459,85 @@ class TestUnknownArg:
                 ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, desc='Test Builder')
 
 
+class TestUnknownClassParameterArg:
+    def test_class_parameter_unknown(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, 'argv', ['', '--config',
+                                    './tests/conf/yaml/test_class_incorrect.yaml'])
+            with pytest.raises(ValueError):
+                ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, desc='Test Builder')
+
+
+class TestUnknownClassArg:
+    def test_class_unknown(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, 'argv', ['', '--config',
+                                    './tests/conf/yaml/test_missing_class.yaml'])
+            with pytest.raises(ValueError):
+                ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, desc='Test Builder')
+
+
+class TestWrongRepeatedClass:
+    def test_class_unknown(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, 'argv', ['', '--config',
+                                    './tests/conf/yaml/test_incorrect_repeated_class.yaml'])
+            with pytest.raises(ValueError):
+                ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, desc='Test Builder')
+
+
+class TestEnumMixedFail:
+    def test_enum_mixed_fail(self, monkeypatch):
+        with monkeypatch.context() as m:
+            with pytest.raises(TypeError):
+                @spock
+                class EnumFail:
+                    choice_mixed: FailedEnum
+
+
+class TestIncorrectType:
+    def test_incorrect_type(self, monkeypatch):
+        with monkeypatch.context() as m:
+            with pytest.raises(TypeError):
+                @spock
+                class TypeFail:
+                    weird_type: lambda x: x
+
+
+class TestEnumClassMissing:
+    def test_enum_class_missing(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, 'argv', ['', '--config',
+                                    './tests/conf/yaml/test_wrong_class_enum.yaml'])
+            with pytest.raises(ValueError):
+                ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, desc='Test Builder')
+
+
+class TestMixedGeneric:
+    def test_mixed_generic(self, monkeypatch):
+        with monkeypatch.context() as m:
+            with pytest.raises(TypeError):
+                @spock
+                class GenericFail:
+                    generic_fail: Tuple[List[int], List[int], int]
+
+
 class TestConfigCycles:
     """Checks the raise for cyclical dependencies"""
     def test_config_cycles(self, monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
                                     './tests/conf/yaml/test_cycle.yaml'])
+            with pytest.raises(ValueError):
+                ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, desc='Test Builder')
+
+
+class TestConfigIncludeRaise:
+    """Checks the raise for cyclical dependencies"""
+    def test_config_cycles(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, 'argv', ['', '--config',
+                                    './tests/conf/yaml/test_include_fail.yaml'])
             with pytest.raises(ValueError):
                 ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, desc='Test Builder')
 
@@ -479,23 +573,83 @@ class TestYAMLWriter:
             config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder')
             # Test the chained version
             config.save(user_specified_path=tmp_path, file_extension='.yaml').generate()
-            check_path = str(tmp_path) + '/*.yaml'
+            check_path = f'{str(tmp_path)}/*.yaml'
             fname = glob.glob(check_path)[0]
             with open(fname, 'r') as fin:
                 print(fin.read())
             assert len(list(tmp_path.iterdir())) == 1
 
 
+class TestYAMLWriterCreate:
+    def test_yaml_file_writer_create(self, monkeypatch, tmp_path):
+        """Test the YAML writer works correctly"""
+        with monkeypatch.context() as m:
+            m.setattr(sys, 'argv', ['', '--config',
+                                    './tests/conf/yaml/test.yaml'])
+            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder',
+                                      create_save_path=True)
+            # Test the chained version
+            config.save(user_specified_path=f'{tmp_path}/tmp', file_extension='.yaml').generate()
+            check_path = f'{str(tmp_path)}/tmp/*.yaml'
+            fname = glob.glob(check_path)[0]
+            with open(fname, 'r') as fin:
+                print(fin.read())
+            assert len(list(tmp_path.iterdir())) == 1
+
+
+class TestYAMLWriterSavePath:
+    def test_yaml_file_writer_save_path(self, monkeypatch):
+        """Test the YAML writer works correctly"""
+        with monkeypatch.context() as m:
+            m.setattr(sys, 'argv', ['', '--config',
+                                    './tests/conf/yaml/test_save_path.yaml'])
+            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder')
+            # Test the chained version
+            config_values = config.save(file_extension='.yaml', file_name='pytest').generate()
+            check_path = f'{str(config_values.TypeConfig.save_path)}/pytest.spock.cfg.yaml'
+            fname = glob.glob(check_path)[0]
+            with open(fname, 'r') as fin:
+                print(fin.read())
+            assert os.path.exists(check_path)
+            # Clean up if assert is good
+            if os.path.exists(check_path):
+                os.remove(check_path)
+
+
+class TestYAMLWriterNoPath:
+    def test_yaml_file_writer_no_path(self, monkeypatch):
+        """Test the YAML writer works correctly"""
+        with monkeypatch.context() as m:
+            m.setattr(sys, 'argv', ['', '--config',
+                                    './tests/conf/yaml/test.yaml'])
+            with pytest.raises(ValueError):
+                config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder')
+                # Test the chained version
+                config.save(file_extension='.yaml', file_name='pytest').generate()
+
+
 class TestWritePathRaise:
     def test_yaml_file_writer(self, monkeypatch, tmp_path):
-        """Test the YAML writer works correctly"""
+        """Test the YAML writer fails correctly when create path isn't set"""
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
                                     './tests/conf/yaml/test.yaml'])
             config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder')
             # Test the chained version
             with pytest.raises(FileNotFoundError):
-                config.save(user_specified_path=str(tmp_path)+'/foo.bar/fizz.buzz/', file_extension='.yaml').generate()
+                config.save(user_specified_path=f'{str(tmp_path)}/foo.bar/fizz.buzz/', file_extension='.yaml').generate()
+
+
+class TestInvalidExtensionTypeRaise:
+    def test_yaml_invalid_extension(self, monkeypatch, tmp_path):
+        """Test the YAML writer fails correctly when create path isn't set"""
+        with monkeypatch.context() as m:
+            m.setattr(sys, 'argv', ['', '--config',
+                                    './tests/conf/yaml/test.yaml'])
+            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder')
+            # Test the chained version
+            with pytest.raises(ValueError):
+                config.save(user_specified_path=f'{str(tmp_path)}/foo.bar/fizz.buzz/', file_extension='.foo').generate()
 
 
 class TestIsInstance:
@@ -541,7 +695,7 @@ class TestTOMLWriter:
             config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder')
             # Test the chained version
             config.save(user_specified_path=tmp_path, file_extension='.toml').generate()
-            check_path = str(tmp_path) + '/*.toml'
+            check_path = f'{str(tmp_path)}/*.toml'
             fname = glob.glob(check_path)[0]
             with open(fname, 'r') as fin:
                 print(fin.read())
@@ -583,7 +737,7 @@ class TestJSONWriter:
             config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder')
             # Test the chained version
             config.save(user_specified_path=tmp_path, file_extension='.json').generate()
-            check_path = str(tmp_path) + '/*.json'
+            check_path = f'{str(tmp_path)}/*.json'
             fname = glob.glob(check_path)[0]
             with open(fname, 'r') as fin:
                 print(fin.read())

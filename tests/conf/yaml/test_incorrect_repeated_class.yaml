@@ -1,0 +1,7 @@
+# include another file
+config: [test.yaml]
+NestedListStuff:
+    - foo: 10
+      two: hello
+    - foo: 20
+      two: bye

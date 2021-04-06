@@ -67,7 +67,7 @@ class AttrPayload(BasePayload):
                         if isinstance(values, list):
                             # Check for incorrect specific override of global def
                             if keys not in attr_fields:
-                                raise TypeError(f'Referring to a class space {keys} that is undefined')
+                                raise ValueError(f'Referring to a class space {keys} that is undefined')
                             # We are in a repeated class def
                             # Raise if the key set is different from the defined set (i.e. incorrect arguments)
                             key_set = set(list(chain(*[list(val.keys()) for val in values])))

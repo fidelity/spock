@@ -10,7 +10,6 @@ import attr
 from spock.backend.attr.builder import AttrBuilder
 from spock.backend.attr.payload import AttrPayload
 from spock.backend.attr.saver import AttrSaver
-from spock.backend.base import Spockspace
 from spock.utils import check_payload_overwrite
 from spock.utils import deep_payload_update
 
@@ -61,22 +60,17 @@ class ConfigArgBuilder:
         """
         return ConfigArgBuilder(*args, **kwargs)
 
-    def generate(self, unclass=False):
+    def generate(self):
         """Generate method that returns the actual argument namespace
 
         *Args*:
 
-            unclass: swaps the backend attr class type for dictionaries
 
         *Returns*:
 
             argument namespace consisting of all config classes
 
         """
-        if unclass:
-            self._arg_namespace = Spockspace(**{k: Spockspace(**{
-                val.name: getattr(v, val.name) for val in v.__attrs_attrs__})
-                                                for k, v in self._arg_namespace.__dict__.items()})
         return self._arg_namespace
 
     @staticmethod
@@ -95,11 +89,15 @@ class ConfigArgBuilder:
         # Gather if all attr backend
         type_attrs = all([attr.has(arg) for arg in args])
         if not type_attrs:
-            raise TypeError("*args must be of all attrs backend")
-        elif type_attrs:
-            backend = {'builder': AttrBuilder, 'payload': AttrPayload, 'saver': AttrSaver}
+            which_idx = [attr.has(arg) for arg in args].index(False)
+            if hasattr(args[which_idx], '__name__'):
+                raise TypeError(f"*args must be of all attrs backend -- missing a @spock decorator on class "
+                                f"{args[which_idx].__name__}")
+            else:
+                raise TypeError(f"*args must be of all attrs backend -- invalid type "
+                                f"{type(args[which_idx])}")
         else:
-            raise TypeError("*args must be of all attrs backend")
+            backend = {'builder': AttrBuilder, 'payload': AttrPayload, 'saver': AttrSaver}
         return backend
 
     def _get_config_paths(self):
