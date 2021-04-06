@@ -137,7 +137,7 @@ def add_repo_info(out_dict):
 
         out_dict: output dictionary
     """
-    try:
+    try:  # pragma: no cover
         # Assume we are working out of a repo
         repo = git.Repo(os.getcwd(), search_parent_directories=True)
         # Check if we are really in a detached head state as later info will fail if we are
@@ -159,7 +159,7 @@ def add_repo_info(out_dict):
                 git_status = 'CLEAN'
             out_dict.update({'# Git Status': git_status})
             out_dict.update({'# Git Origin': repo.active_branch.commit.repo.remotes.origin.url})
-    except git.InvalidGitRepositoryError:
+    except git.InvalidGitRepositoryError: # pragma: no cover
         # But it's okay if we are not
         out_dict = make_blank_git(out_dict)
     return out_dict
