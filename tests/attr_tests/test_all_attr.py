@@ -5,6 +5,7 @@
 
 from attr.exceptions import FrozenInstanceError
 import glob
+import os
 import pytest
 from spock.builder import ConfigArgBuilder
 from spock.config import isinstance_spock
@@ -188,6 +189,16 @@ class TestAllDefaultsYAML(AllDefaults):
                                       TypeDefaultOptConfig,
                                       desc='Test Builder')
             return config.generate()
+
+
+class TestHelp:
+    def test_help(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, 'argv', ['', '--config',
+                                    './tests/conf/yaml/test.yaml', '--help'])
+            with pytest.raises(SystemExit):
+                config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder')
+                return config.generate()
 
 
 class TestFrozen:
@@ -389,6 +400,17 @@ class TestInheritance(AllInherited):
             return config.generate()
 
 
+class TestNonAttrs:
+    def test_non_attrs_fail(self, monkeypatch):
+        with monkeypatch.context() as m:
+            with pytest.raises(TypeError):
+                class AttrFail:
+                    failed_attr: int
+                config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, AttrFail,
+                                          configs=['./tests/conf/yaml/test.yaml'])
+                return config.generate()
+
+
 class TestChoiceRaises:
     """Check all inherited types work as expected """
     def test_choice_raise(self, monkeypatch):
@@ -548,9 +570,40 @@ class TestYAMLWriter:
             assert len(list(tmp_path.iterdir())) == 1
 
 
+class TestYAMLWriterSavePath:
+    def test_yaml_file_writer_save_path(self, monkeypatch):
+        """Test the YAML writer works correctly"""
+        with monkeypatch.context() as m:
+            m.setattr(sys, 'argv', ['', '--config',
+                                    './tests/conf/yaml/test_save_path.yaml'])
+            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder')
+            # Test the chained version
+            config_values = config.save(file_extension='.yaml', file_name='pytest').generate()
+            check_path = str(config_values.TypeConfig.save_path) + '/pytest.spock.cfg.yaml'
+            fname = glob.glob(check_path)[0]
+            with open(fname, 'r') as fin:
+                print(fin.read())
+            assert os.path.exists(check_path)
+            # Clean up if assert is good
+            if os.path.exists(check_path):
+                os.remove(check_path)
+
+
+class TestYAMLWriterNoPath:
+    def test_yaml_file_writer_no_path(self, monkeypatch):
+        """Test the YAML writer works correctly"""
+        with monkeypatch.context() as m:
+            m.setattr(sys, 'argv', ['', '--config',
+                                    './tests/conf/yaml/test.yaml'])
+            with pytest.raises(ValueError):
+                config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder')
+                # Test the chained version
+                config.save(file_extension='.yaml', file_name='pytest').generate()
+
+
 class TestWritePathRaise:
     def test_yaml_file_writer(self, monkeypatch, tmp_path):
-        """Test the YAML writer works correctly"""
+        """Test the YAML writer fails correctly when create path isn't set"""
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
                                     './tests/conf/yaml/test.yaml'])

@@ -57,17 +57,17 @@ from .second import Choice
 #     stuff = Stuff
 #
 #
-# @spock
-# class NestedListStuff:
-#     """Class enum
-#
-#     Attributes:
-#         maybe: some val
-#         more: some other value
-#
-#     """
-#     maybe: int
-#     more: str
+@spock
+class NestedListStuff:
+    """Class enum
+
+    Attributes:
+        maybe: some val
+        more: some other value
+
+    """
+    maybe: int
+    more: str
 
 
 @spock
@@ -86,11 +86,11 @@ class Test:
         nested_list: Repeated list of a class type
     """
     # new_choice: Choice
-    # fail: Tuple[List[int], List[str]]
+    # fail: Tuple[List[int], List[int]]
     test: Optional[List[int]]
-    # fail: List[List[int]]
+    fail: List[List[int]]
     # flipper: bool
     # most_broken: ClassStuff
-    # one: int
-    # nested_list: List[NestedListStuff]
+    one: int
+    nested_list: List[NestedListStuff]
 

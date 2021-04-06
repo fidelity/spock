@@ -38,21 +38,21 @@
 #test: [ 1, 2 ]
 
 Test:
-#  test: [ 1, 2 ]
-  fail: [ [ 1, 2 ], [ 3, 4 ], 10]
+  test: [ 1, 2 ]
+  fail: [ [ 1, 2 ], [ 3, 4 ] ]
 #  most_broken: Stuff
-#  one: 18
+  one: 18
 #  flipper: false
-#  nested_list: NestedListStuff
+  nested_list: NestedListStuff
 #  ummm: 10
 #  does_not_exist: 10
 #  new_choice: pear
 
-#NestedListStuff:
-#    - maybe: 10
-#      more: hello
-#    - maybe: 20
-#      more: bye
+NestedListStuff:
+    - maybe: 10
+      more: hello
+    - maybe: 20
+      more: bye
 #  borken: RepeatStuff
 
 ##ccccombo_breaker: 10

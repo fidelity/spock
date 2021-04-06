@@ -1,0 +1,3 @@
+# include another file
+config: [test.yaml]
+save_path: /tmp

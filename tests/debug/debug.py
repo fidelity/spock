@@ -7,7 +7,7 @@ from enum import Enum
 from spock.builder import ConfigArgBuilder
 from spock.config import isinstance_spock
 from params.first import Test
-# from params.first import NestedListStuff, Stuff, OtherStuff
+from params.first import NestedListStuff
 from spock.backend.attr.typed import SavePath
 import pickle
 from argparse import Namespace
@@ -100,11 +100,15 @@ from argparse import Namespace
 #     ccccombo_breaker: int
 
 
+class Hello:
+    new: int
+
+
 def main():
     attrs_class = ConfigArgBuilder(
-        Test,
+        Test, NestedListStuff, ["names"],
         desc='I am a description'
-    ).save(user_specified_path='/tmp').generate()
+    ).save(user_specified_path='/tmp').generate(unclass=True)
     # with open('/tmp/debug.pickle', 'wb') as fid:
     #     pickle.dump(attrs_class, file=fid)
 

@@ -304,10 +304,7 @@ def _type_katra(typed, default=None, optional=False):
     if isinstance(typed, type):
         name = typed.__name__
     elif isinstance(typed, _GenericAlias):
-        if minor < 7:
-            name = typed.__name__
-        else:
-            name = typed._name
+        name = _get_name_py_version(typed=typed)
     else:
         raise TypeError('Encountered an uxpected type in _type_katra')
     special_key = None
