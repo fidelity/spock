@@ -1,0 +1,1653 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      <link rel="icon" href="../../../resources/images/logo_small.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.0">
+    
+    
+      
+        <title>Builder - spock</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.33e2939f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ef6f36e2.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#546d78">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="blue-grey" data-md-color-accent="pink">
+  
+    
+    <script>function __prefix(e){return new URL("../../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#module-spockbuilder" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="spock" class="md-header__button md-logo" aria-label="spock" data-md-component="logo">
+      
+  <img src="../../../resources/images/logo_small.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            spock
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Builder
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/fidelity/spock/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    spock
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="spock" class="md-nav__button md-logo" aria-label="spock" data-md-component="logo">
+      
+  <img src="../../../resources/images/logo_small.png" alt="logo">
+
+    </a>
+    spock
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/fidelity/spock/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    spock
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/Installation/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/Motivation/" class="md-nav__link">
+        Motivation
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/Quick-Start/" class="md-nav__link">
+        Quick Start
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      <label class="md-nav__link" for="__nav_5">
+        Basic Tutorial
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Basic Tutorial" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Basic Tutorial
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/basic_tutorial/About/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/basic_tutorial/Define/" class="md-nav__link">
+        Define
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/basic_tutorial/Building/" class="md-nav__link">
+        Building
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/basic_tutorial/Configuration-Files/" class="md-nav__link">
+        Configuration Files
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/basic_tutorial/Saving/" class="md-nav__link">
+        Saving
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/basic_tutorial/Run/" class="md-nav__link">
+        Running
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      <label class="md-nav__link" for="__nav_6">
+        Advanced Features
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Advanced Features" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          Advanced Features
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/About/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Defaults/" class="md-nav__link">
+        Default Values
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Optional-Parameters/" class="md-nav__link">
+        Optional Parameters
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Parameter-Groups/" class="md-nav__link">
+        Parameter Groups
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Inheritance/" class="md-nav__link">
+        Inheritance
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Advanced-Types/" class="md-nav__link">
+        Advanced Types
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Local-Definitions/" class="md-nav__link">
+        Local Defintions
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Keyword-Configs/" class="md-nav__link">
+        Keyword Configs
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Composition/" class="md-nav__link">
+        Composition
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Command-Line-Overrides/" class="md-nav__link">
+        Command Line Overrides
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../CONTRIBUTING/" class="md-nav__link">
+        Contributing
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" checked>
+      
+      <label class="md-nav__link" for="__nav_8">
+        Reference
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Reference" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          Reference
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_1" type="checkbox" id="__nav_8_1" checked>
+      
+      <label class="md-nav__link" for="__nav_8_1">
+        Spock
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Spock" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_1">
+          <span class="md-nav__icon md-icon"></span>
+          Spock
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../args/" class="md-nav__link">
+        Args
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Builder
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Builder
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#classes" class="md-nav__link">
+    Classes
+  </a>
+  
+    <nav class="md-nav" aria-label="Classes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configargbuilder" class="md-nav__link">
+    ConfigArgBuilder
+  </a>
+  
+    <nav class="md-nav" aria-label="ConfigArgBuilder">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    Methods
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generate" class="md-nav__link">
+    generate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#save" class="md-nav__link">
+    save
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../config/" class="md-nav__link">
+        Config
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../handlers/" class="md-nav__link">
+        Handlers
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        Index
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utils/" class="md-nav__link">
+        Utils
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_1_7" type="checkbox" id="__nav_8_1_7" >
+      
+      <label class="md-nav__link" for="__nav_8_1_7">
+        Backend
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Backend" data-md-level="3">
+        <label class="md-nav__title" for="__nav_8_1_7">
+          <span class="md-nav__icon md-icon"></span>
+          Backend
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/base/" class="md-nav__link">
+        Base
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/" class="md-nav__link">
+        Index
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_1_7_3" type="checkbox" id="__nav_8_1_7_3" >
+      
+      <label class="md-nav__link" for="__nav_8_1_7_3">
+        Attr
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Attr" data-md-level="4">
+        <label class="md-nav__title" for="__nav_8_1_7_3">
+          <span class="md-nav__icon md-icon"></span>
+          Attr
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/attr/builder/" class="md-nav__link">
+        Builder
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/attr/config/" class="md-nav__link">
+        Config
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/attr/" class="md-nav__link">
+        Index
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/attr/payload/" class="md-nav__link">
+        Payload
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/attr/saver/" class="md-nav__link">
+        Saver
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/attr/typed/" class="md-nav__link">
+        Typed
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/attr/utils/" class="md-nav__link">
+        Utils
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#classes" class="md-nav__link">
+    Classes
+  </a>
+  
+    <nav class="md-nav" aria-label="Classes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configargbuilder" class="md-nav__link">
+    ConfigArgBuilder
+  </a>
+  
+    <nav class="md-nav" aria-label="ConfigArgBuilder">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    Methods
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generate" class="md-nav__link">
+    generate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#save" class="md-nav__link">
+    save
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/fidelity/spock/edit/main/reference/spock/builder.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                <h1 id="module-spockbuilder">Module spock.builder</h1>
+<p>Handles the building/saving of the configurations from the Spock config classes</p>
+<p>None</p>
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="c1"># Copyright 2019 FMR LLC &lt;opensource@fidelity.com&gt;</span>
+
+<span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
+
+<span class="sd">&quot;&quot;&quot;Handles the building/saving of the configurations from the Spock config classes&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span> <span class="nn">attr</span>
+
+<span class="kn">from</span> <span class="nn">spock.backend.attr.builder</span> <span class="kn">import</span> <span class="n">AttrBuilder</span>
+
+<span class="kn">from</span> <span class="nn">spock.backend.attr.payload</span> <span class="kn">import</span> <span class="n">AttrPayload</span>
+
+<span class="kn">from</span> <span class="nn">spock.backend.attr.saver</span> <span class="kn">import</span> <span class="n">AttrSaver</span>
+
+<span class="kn">from</span> <span class="nn">spock.utils</span> <span class="kn">import</span> <span class="n">check_payload_overwrite</span>
+
+<span class="kn">from</span> <span class="nn">spock.utils</span> <span class="kn">import</span> <span class="n">deep_payload_update</span>
+
+<span class="k">class</span> <span class="nc">ConfigArgBuilder</span><span class="p">:</span>
+
+    <span class="sd">&quot;&quot;&quot;Automatically generates dataclass instances from config file(s)</span>
+
+<span class="sd">    This class builds out necessary arguments from *args classes, reads</span>
+
+<span class="sd">    the arguments from specified config file(s), and subsequently (via chained</span>
+
+<span class="sd">    call to generate) generates each class instance based on the necessary</span>
+
+<span class="sd">    field values for each backend class instance</span>
+
+<span class="sd">    *Attributes*:</span>
+
+<span class="sd">        _arg_namespace: generated argument namespace</span>
+
+<span class="sd">        _builder_obj: instance of a BaseBuilder class</span>
+
+<span class="sd">        _create_save_path: boolean to make the path to save to</span>
+
+<span class="sd">        _dict_args: dictionary args from the command line</span>
+
+<span class="sd">        _payload_obj: instance of a BasePayload class</span>
+
+<span class="sd">        _saver_obj: instance of a BaseSaver class</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">configs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">create_save_path</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">no_cmd_line</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="n">backend</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_backend</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create_save_path</span> <span class="o">=</span> <span class="n">create_save_path</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_builder_obj</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;builder&#39;</span><span class="p">)(</span>
+
+            <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">configs</span><span class="o">=</span><span class="n">configs</span><span class="p">,</span> <span class="n">create_save_path</span><span class="o">=</span><span class="n">create_save_path</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="n">desc</span><span class="p">,</span> <span class="n">no_cmd_line</span><span class="o">=</span><span class="n">no_cmd_line</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_payload_obj</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;payload&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_saver_obj</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;saver&#39;</span><span class="p">)()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dict_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_payload</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_arg_namespace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_builder_obj</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dict_args</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_builder_obj</span><span class="o">.</span><span class="n">print_usage_and_exit</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">sys_exit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Call to self to allow chaining</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">            *args: non-keyword args</span>
+
+<span class="sd">            **kwargs: keyword args</span>
+
+<span class="sd">        *Returns*:</span>
+
+<span class="sd">            ConfigArgBuilder: self instance</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">ConfigArgBuilder</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">generate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Generate method that returns the actual argument namespace</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">        *Returns*:</span>
+
+<span class="sd">            argument namespace consisting of all config classes</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arg_namespace</span>
+
+    <span class="nd">@staticmethod</span>
+
+    <span class="k">def</span> <span class="nf">_set_backend</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Determines which backend class to use</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">            args: list of classes passed to the builder</span>
+
+<span class="sd">        *Returns*:</span>
+
+<span class="sd">            backend: class of backend</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Gather if all attr backend</span>
+
+        <span class="n">type_attrs</span> <span class="o">=</span> <span class="nb">all</span><span class="p">([</span><span class="n">attr</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">type_attrs</span><span class="p">:</span>
+
+            <span class="n">which_idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">attr</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">which_idx</span><span class="p">],</span> <span class="s1">&#39;__name__&#39;</span><span class="p">):</span>
+
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;*args must be of all attrs backend -- missing a @spock decorator on class &quot;</span>
+
+                                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">args</span><span class="p">[</span><span class="n">which_idx</span><span class="p">]</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;*args must be of all attrs backend -- invalid type &quot;</span>
+
+                                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">which_idx</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">backend</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;builder&#39;</span><span class="p">:</span> <span class="n">AttrBuilder</span><span class="p">,</span> <span class="s1">&#39;payload&#39;</span><span class="p">:</span> <span class="n">AttrPayload</span><span class="p">,</span> <span class="s1">&#39;saver&#39;</span><span class="p">:</span> <span class="n">AttrSaver</span><span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">backend</span>
+
+    <span class="k">def</span> <span class="nf">_get_config_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Get config paths from all methods</span>
+
+<span class="sd">        Config paths can enter from either the command line or be added in the class init call</span>
+
+<span class="sd">        as a kwarg (configs=[])</span>
+
+<span class="sd">        *Returns*:</span>
+
+<span class="sd">            args: namespace of args</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Call the objects get_config_paths function</span>
+
+        <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_builder_obj</span><span class="o">.</span><span class="n">get_config_paths</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">args</span>
+
+    <span class="k">def</span> <span class="nf">_get_payload</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Get the parameter payload from the config file(s)</span>
+
+<span class="sd">        Calls the various ways to get configs and then parses to retrieve the parameter payload - make sure to call</span>
+
+<span class="sd">        deep update so as to not lose some parameters when only partially updating the payload</span>
+
+<span class="sd">        *Returns*:</span>
+
+<span class="sd">            payload: dictionary of parameter values</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_config_paths</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">help</span><span class="p">:</span>
+
+            <span class="c1"># Call sys exit with a clean code as this is the help call which is not unexpected behavior</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_builder_obj</span><span class="o">.</span><span class="n">print_usage_and_exit</span><span class="p">(</span><span class="n">sys_exit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exit_code</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">payload</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">dependencies</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;paths&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;rel_paths&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;roots&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+
+        <span class="k">for</span> <span class="n">configs</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">config</span><span class="p">:</span>
+
+            <span class="n">payload_update</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_payload_obj</span><span class="p">()</span><span class="o">.</span><span class="n">payload</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_builder_obj</span><span class="o">.</span><span class="n">input_classes</span><span class="p">,</span> <span class="n">configs</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">dependencies</span><span class="p">)</span>
+
+            <span class="n">check_payload_overwrite</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">payload_update</span><span class="p">,</span> <span class="n">configs</span><span class="p">)</span>
+
+            <span class="n">deep_payload_update</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">payload_update</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">payload</span>
+
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">user_specified_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">extra_info</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">file_extension</span><span class="o">=</span><span class="s1">&#39;.yaml&#39;</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Saves the current config setup to file with a UUID</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">            file_name: name of file (will be appended with .spock.cfg.file_extension) -- falls back to uuid if None</span>
+
+<span class="sd">            user_specified_path: if user provides a path it will be used as the path to write</span>
+
+<span class="sd">            extra_info: additional info to write to saved config (run date and git info)</span>
+
+<span class="sd">            file_extension: file type to write (default: yaml)</span>
+
+<span class="sd">        *Returns*:</span>
+
+<span class="sd">            self so that functions can be chained</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">user_specified_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="n">save_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">user_specified_path</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_builder_obj</span><span class="o">.</span><span class="n">save_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="n">save_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_builder_obj</span><span class="o">.</span><span class="n">save_path</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Save did not receive a valid path from: (1) markup file(s) or (2) &#39;</span>
+
+                             <span class="s1">&#39;the keyword arg user_specified_path&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Call the saver class and save function</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_saver_obj</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_arg_namespace</span><span class="p">,</span> <span class="n">save_path</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_save_path</span><span class="p">,</span> <span class="n">extra_info</span><span class="p">,</span> <span class="n">file_extension</span>
+
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span>
+</code></pre></div>
+
+</details>
+<h2 id="classes">Classes</h2>
+<h3 id="configargbuilder">ConfigArgBuilder</h3>
+<div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">ConfigArgBuilder</span><span class="p">(</span>
+    <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+    <span class="n">configs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">create_save_path</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+    <span class="n">no_cmd_line</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="n">ConfigArgBuilder</span><span class="p">:</span>
+
+    <span class="sd">&quot;&quot;&quot;Automatically generates dataclass instances from config file(s)</span>
+
+<span class="sd">    This class builds out necessary arguments from *args classes, reads</span>
+
+<span class="sd">    the arguments from specified config file(s), and subsequently (via chained</span>
+
+<span class="sd">    call to generate) generates each class instance based on the necessary</span>
+
+<span class="sd">    field values for each backend class instance</span>
+
+<span class="sd">    *Attributes*:</span>
+
+<span class="sd">        _arg_namespace: generated argument namespace</span>
+
+<span class="sd">        _builder_obj: instance of a BaseBuilder class</span>
+
+<span class="sd">        _create_save_path: boolean to make the path to save to</span>
+
+<span class="sd">        _dict_args: dictionary args from the command line</span>
+
+<span class="sd">        _payload_obj: instance of a BasePayload class</span>
+
+<span class="sd">        _saver_obj: instance of a BaseSaver class</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">def</span> <span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">configs</span><span class="o">=</span><span class="n">None</span><span class="p">,</span> <span class="n">create_save_path</span><span class="o">=</span><span class="n">False</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">no_cmd_line</span><span class="o">=</span><span class="n">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="n">backend</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_backend</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create_save_path</span> <span class="o">=</span> <span class="n">create_save_path</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_builder_obj</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;builder&#39;</span><span class="p">)(</span>
+
+            <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">configs</span><span class="o">=</span><span class="n">configs</span><span class="p">,</span> <span class="n">create_save_path</span><span class="o">=</span><span class="n">create_save_path</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="n">desc</span><span class="p">,</span> <span class="n">no_cmd_line</span><span class="o">=</span><span class="n">no_cmd_line</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_payload_obj</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;payload&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_saver_obj</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;saver&#39;</span><span class="p">)()</span>
+
+        <span class="n">try</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dict_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_payload</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_arg_namespace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_builder_obj</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dict_args</span><span class="p">)</span>
+
+        <span class="n">except</span> <span class="n">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_builder_obj</span><span class="o">.</span><span class="n">print_usage_and_exit</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">sys_exit</span><span class="o">=</span><span class="n">False</span><span class="p">)</span>
+
+            <span class="n">raise</span> <span class="n">ValueError</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+    <span class="n">def</span> <span class="n">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Call to self to allow chaining</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">            *args: non-keyword args</span>
+
+<span class="sd">            **kwargs: keyword args</span>
+
+<span class="sd">        *Returns*:</span>
+
+<span class="sd">            ConfigArgBuilder: self instance</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">ConfigArgBuilder</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="n">def</span> <span class="n">generate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Generate method that returns the actual argument namespace</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">        *Returns*:</span>
+
+<span class="sd">            argument namespace consisting of all config classes</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arg_namespace</span>
+
+    <span class="err">@</span><span class="n">staticmethod</span>
+
+    <span class="n">def</span> <span class="n">_set_backend</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Determines which backend class to use</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">            args: list of classes passed to the builder</span>
+
+<span class="sd">        *Returns*:</span>
+
+<span class="sd">            backend: class of backend</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Gather if all attr backend</span>
+
+        <span class="n">type_attrs</span> <span class="o">=</span> <span class="n">all</span><span class="p">([</span><span class="n">attr</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">type_attrs</span><span class="p">:</span>
+
+            <span class="n">which_idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">attr</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">False</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">hasattr</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">which_idx</span><span class="p">],</span> <span class="s1">&#39;__name__&#39;</span><span class="p">):</span>
+
+                <span class="n">raise</span> <span class="n">TypeError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;*args must be of all attrs backend -- missing a @spock decorator on class &quot;</span>
+
+                                <span class="n">f</span><span class="s2">&quot;{args[which_idx].__name__}&quot;</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+
+                <span class="n">raise</span> <span class="n">TypeError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;*args must be of all attrs backend -- invalid type &quot;</span>
+
+                                <span class="n">f</span><span class="s2">&quot;{type(args[which_idx])}&quot;</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">backend</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;builder&#39;</span><span class="p">:</span> <span class="n">AttrBuilder</span><span class="p">,</span> <span class="s1">&#39;payload&#39;</span><span class="p">:</span> <span class="n">AttrPayload</span><span class="p">,</span> <span class="s1">&#39;saver&#39;</span><span class="p">:</span> <span class="n">AttrSaver</span><span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">backend</span>
+
+    <span class="n">def</span> <span class="n">_get_config_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Get config paths from all methods</span>
+
+<span class="sd">        Config paths can enter from either the command line or be added in the class init call</span>
+
+<span class="sd">        as a kwarg (configs=[])</span>
+
+<span class="sd">        *Returns*:</span>
+
+<span class="sd">            args: namespace of args</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Call the objects get_config_paths function</span>
+
+        <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_builder_obj</span><span class="o">.</span><span class="n">get_config_paths</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">args</span>
+
+    <span class="n">def</span> <span class="n">_get_payload</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Get the parameter payload from the config file(s)</span>
+
+<span class="sd">        Calls the various ways to get configs and then parses to retrieve the parameter payload - make sure to call</span>
+
+<span class="sd">        deep update so as to not lose some parameters when only partially updating the payload</span>
+
+<span class="sd">        *Returns*:</span>
+
+<span class="sd">            payload: dictionary of parameter values</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_config_paths</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">help</span><span class="p">:</span>
+
+            <span class="c1"># Call sys exit with a clean code as this is the help call which is not unexpected behavior</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_builder_obj</span><span class="o">.</span><span class="n">print_usage_and_exit</span><span class="p">(</span><span class="n">sys_exit</span><span class="o">=</span><span class="n">True</span><span class="p">,</span> <span class="n">exit_code</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">payload</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">dependencies</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;paths&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;rel_paths&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;roots&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+
+        <span class="k">for</span> <span class="n">configs</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">config</span><span class="p">:</span>
+
+            <span class="n">payload_update</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_payload_obj</span><span class="p">()</span><span class="o">.</span><span class="n">payload</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_builder_obj</span><span class="o">.</span><span class="n">input_classes</span><span class="p">,</span> <span class="n">configs</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">dependencies</span><span class="p">)</span>
+
+            <span class="n">check_payload_overwrite</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">payload_update</span><span class="p">,</span> <span class="n">configs</span><span class="p">)</span>
+
+            <span class="n">deep_payload_update</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">payload_update</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">payload</span>
+
+    <span class="n">def</span> <span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="o">=</span><span class="n">None</span><span class="p">,</span> <span class="n">user_specified_path</span><span class="o">=</span><span class="n">None</span><span class="p">,</span> <span class="n">extra_info</span><span class="o">=</span><span class="n">True</span><span class="p">,</span> <span class="n">file_extension</span><span class="o">=</span><span class="s1">&#39;.yaml&#39;</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Saves the current config setup to file with a UUID</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">            file_name: name of file (will be appended with .spock.cfg.file_extension) -- falls back to uuid if None</span>
+
+<span class="sd">            user_specified_path: if user provides a path it will be used as the path to write</span>
+
+<span class="sd">            extra_info: additional info to write to saved config (run date and git info)</span>
+
+<span class="sd">            file_extension: file type to write (default: yaml)</span>
+
+<span class="sd">        *Returns*:</span>
+
+<span class="sd">            self so that functions can be chained</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">user_specified_path</span> <span class="k">is</span> <span class="ow">not</span> <span class="n">None</span><span class="p">:</span>
+
+            <span class="n">save_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">user_specified_path</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_builder_obj</span><span class="o">.</span><span class="n">save_path</span> <span class="k">is</span> <span class="ow">not</span> <span class="n">None</span><span class="p">:</span>
+
+            <span class="n">save_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_builder_obj</span><span class="o">.</span><span class="n">save_path</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">raise</span> <span class="n">ValueError</span><span class="p">(</span><span class="s1">&#39;Save did not receive a valid path from: (1) markup file(s) or (2) &#39;</span>
+
+                             <span class="s1">&#39;the keyword arg user_specified_path&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Call the saver class and save function</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_saver_obj</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_arg_namespace</span><span class="p">,</span> <span class="n">save_path</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_save_path</span><span class="p">,</span> <span class="n">extra_info</span><span class="p">,</span> <span class="n">file_extension</span>
+
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span>
+</code></pre></div>
+
+</details>
+<hr />
+<h4 id="methods">Methods</h4>
+<h4 id="generate">generate</h4>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">generate</span><span class="p">(</span>
+    <span class="bp">self</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Generate method that returns the actual argument namespace</p>
+<p><em>Args</em>:</p>
+<p><em>Returns</em>:</p>
+<div class="codehilite"><pre><span></span><code>argument namespace consisting of all config classes
+</code></pre></div>
+
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code>    <span class="nv">def</span> <span class="nv">generate</span><span class="ss">(</span><span class="nv">self</span><span class="ss">)</span>:
+
+        <span class="s2">&quot;&quot;&quot;</span><span class="s">Generate method that returns the actual argument namespace</span>
+
+        <span class="o">*</span><span class="nv">Args</span><span class="o">*</span>:
+
+        <span class="o">*</span><span class="nv">Returns</span><span class="o">*</span>:
+
+            <span class="nv">argument</span> <span class="nv">namespace</span> <span class="nv">consisting</span> <span class="nv">of</span> <span class="nv">all</span> <span class="nv">config</span> <span class="nv">classes</span>
+
+        <span class="s2">&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="nv">self</span>.<span class="nv">_arg_namespace</span>
+</code></pre></div>
+
+</details>
+<h4 id="save">save</h4>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">save</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">file_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">user_specified_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">extra_info</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">file_extension</span><span class="o">=</span><span class="s1">&#39;.yaml&#39;</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Saves the current config setup to file with a UUID</p>
+<p><em>Args</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">file_name</span><span class="o">:</span> <span class="n">name</span> <span class="n">of</span> <span class="n">file</span> <span class="o">(</span><span class="n">will</span> <span class="n">be</span> <span class="n">appended</span> <span class="k">with</span> <span class="o">.</span><span class="na">spock</span><span class="o">.</span><span class="na">cfg</span><span class="o">.</span><span class="na">file_extension</span><span class="o">)</span> <span class="o">--</span> <span class="n">falls</span> <span class="n">back</span> <span class="n">to</span> <span class="n">uuid</span> <span class="k">if</span> <span class="n">None</span>
+<span class="n">user_specified_path</span><span class="o">:</span> <span class="k">if</span> <span class="n">user</span> <span class="n">provides</span> <span class="n">a</span> <span class="n">path</span> <span class="n">it</span> <span class="n">will</span> <span class="n">be</span> <span class="n">used</span> <span class="k">as</span> <span class="n">the</span> <span class="n">path</span> <span class="n">to</span> <span class="n">write</span>
+<span class="n">extra_info</span><span class="o">:</span> <span class="n">additional</span> <span class="n">info</span> <span class="n">to</span> <span class="n">write</span> <span class="n">to</span> <span class="n">saved</span> <span class="n">config</span> <span class="o">(</span><span class="n">run</span> <span class="n">date</span> <span class="n">and</span> <span class="n">git</span> <span class="n">info</span><span class="o">)</span>
+<span class="n">file_extension</span><span class="o">:</span> <span class="n">file</span> <span class="n">type</span> <span class="n">to</span> <span class="n">write</span> <span class="o">(</span><span class="k">default</span><span class="o">:</span> <span class="n">yaml</span><span class="o">)</span>
+</code></pre></div>
+
+<p><em>Returns</em>:</p>
+<div class="codehilite"><pre><span></span><code>self so that functions can be chained
+</code></pre></div>
+
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code>    <span class="nv">def</span> <span class="nv">save</span><span class="ss">(</span><span class="nv">self</span>, <span class="nv">file_name</span><span class="o">=</span><span class="nv">None</span>, <span class="nv">user_specified_path</span><span class="o">=</span><span class="nv">None</span>, <span class="nv">extra_info</span><span class="o">=</span><span class="nv">True</span>, <span class="nv">file_extension</span><span class="o">=</span><span class="s1">&#39;</span><span class="s">.yaml</span><span class="s1">&#39;</span><span class="ss">)</span>:
+
+        <span class="s2">&quot;&quot;&quot;</span><span class="s">Saves the current config setup to file with a UUID</span>
+
+        <span class="o">*</span><span class="nv">Args</span><span class="o">*</span>:
+
+            <span class="nv">file_name</span>: <span class="nv">name</span> <span class="nv">of</span> <span class="nv">file</span> <span class="ss">(</span><span class="nv">will</span> <span class="nv">be</span> <span class="nv">appended</span> <span class="nv">with</span> .<span class="nv">spock</span>.<span class="nv">cfg</span>.<span class="nv">file_extension</span><span class="ss">)</span> <span class="o">--</span> <span class="nv">falls</span> <span class="nv">back</span> <span class="nv">to</span> <span class="nv">uuid</span> <span class="k">if</span> <span class="nv">None</span>
+
+            <span class="nv">user_specified_path</span>: <span class="k">if</span> <span class="nv">user</span> <span class="nv">provides</span> <span class="nv">a</span> <span class="nv">path</span> <span class="nv">it</span> <span class="nv">will</span> <span class="nv">be</span> <span class="nv">used</span> <span class="nv">as</span> <span class="nv">the</span> <span class="nv">path</span> <span class="nv">to</span> <span class="nv">write</span>
+
+            <span class="nv">extra_info</span>: <span class="nv">additional</span> <span class="nv">info</span> <span class="nv">to</span> <span class="nv">write</span> <span class="nv">to</span> <span class="nv">saved</span> <span class="nv">config</span> <span class="ss">(</span><span class="nv">run</span> <span class="nv">date</span> <span class="nv">and</span> <span class="nv">git</span> <span class="nv">info</span><span class="ss">)</span>
+
+            <span class="nv">file_extension</span>: <span class="nv">file</span> <span class="nv">type</span> <span class="nv">to</span> <span class="nv">write</span> <span class="ss">(</span><span class="nv">default</span>: <span class="nv">yaml</span><span class="ss">)</span>
+
+        <span class="o">*</span><span class="nv">Returns</span><span class="o">*</span>:
+
+            <span class="nv">self</span> <span class="nv">so</span> <span class="nv">that</span> <span class="nv">functions</span> <span class="nv">can</span> <span class="nv">be</span> <span class="nv">chained</span>
+
+        <span class="s2">&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nv">user_specified_path</span> <span class="nv">is</span> <span class="nv">not</span> <span class="nv">None</span>:
+
+            <span class="nv">save_path</span> <span class="o">=</span> <span class="nv">Path</span><span class="ss">(</span><span class="nv">user_specified_path</span><span class="ss">)</span>
+
+        <span class="nv">elif</span> <span class="nv">self</span>.<span class="nv">_builder_obj</span>.<span class="nv">save_path</span> <span class="nv">is</span> <span class="nv">not</span> <span class="nv">None</span>:
+
+            <span class="nv">save_path</span> <span class="o">=</span> <span class="nv">Path</span><span class="ss">(</span><span class="nv">self</span>.<span class="nv">_builder_obj</span>.<span class="nv">save_path</span><span class="ss">)</span>
+
+        <span class="k">else</span>:
+
+            <span class="nv">raise</span> <span class="nv">ValueError</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">Save did not receive a valid path from: (1) markup file(s) or (2) </span><span class="s1">&#39;</span>
+
+                             <span class="s1">&#39;</span><span class="s">the keyword arg user_specified_path</span><span class="s1">&#39;</span><span class="ss">)</span>
+
+        # <span class="k">Call</span> <span class="nl">the</span> <span class="nv">saver</span> <span class="nv">class</span> <span class="nv">and</span> <span class="nv">save</span> <span class="nv">function</span>
+
+        <span class="nv">self</span>.<span class="nv">_saver_obj</span>.<span class="nv">save</span><span class="ss">(</span>
+
+            <span class="nv">self</span>.<span class="nv">_arg_namespace</span>, <span class="nv">save_path</span>, <span class="nv">file_name</span>, <span class="nv">self</span>.<span class="nv">_create_save_path</span>, <span class="nv">extra_info</span>, <span class="nv">file_extension</span>
+
+        <span class="ss">)</span>
+
+        <span class="k">return</span> <span class="nv">self</span>
+</code></pre></div>
+
+</details>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../args/" title="Args" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Args
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../config/" title="Config" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Config
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Powered by
+        <a href="http://timothycrosley.github.io/portray">portray.</a>
+        You too can
+        <a href="http://timothycrosley.github.io/portray">
+          portray</a>
+        your Python project well using automatic documentation.
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../../assets/javascripts/workers/search.fe42c31b.min.js", "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.d892486b.min.js"></script>
+      
+    
+  </body>
+</html>

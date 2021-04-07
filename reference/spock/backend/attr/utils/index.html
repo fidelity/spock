@@ -1,0 +1,1500 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      <link rel="icon" href="../../../../../resources/images/logo_small.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.0">
+    
+    
+      
+        <title>Utils - spock</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../assets/stylesheets/main.33e2939f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../../assets/stylesheets/palette.ef6f36e2.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#546d78">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="blue-grey" data-md-color-accent="pink">
+  
+    
+    <script>function __prefix(e){return new URL("../../../../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#module-spockbackendattrutils" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../../.." title="spock" class="md-header__button md-logo" aria-label="spock" data-md-component="logo">
+      
+  <img src="../../../../../resources/images/logo_small.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            spock
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Utils
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/fidelity/spock/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    spock
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../../.." title="spock" class="md-nav__button md-logo" aria-label="spock" data-md-component="logo">
+      
+  <img src="../../../../../resources/images/logo_small.png" alt="logo">
+
+    </a>
+    spock
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/fidelity/spock/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    spock
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/Installation/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/Motivation/" class="md-nav__link">
+        Motivation
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/Quick-Start/" class="md-nav__link">
+        Quick Start
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      <label class="md-nav__link" for="__nav_5">
+        Basic Tutorial
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Basic Tutorial" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Basic Tutorial
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/basic_tutorial/About/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/basic_tutorial/Define/" class="md-nav__link">
+        Define
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/basic_tutorial/Building/" class="md-nav__link">
+        Building
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/basic_tutorial/Configuration-Files/" class="md-nav__link">
+        Configuration Files
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/basic_tutorial/Saving/" class="md-nav__link">
+        Saving
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/basic_tutorial/Run/" class="md-nav__link">
+        Running
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      <label class="md-nav__link" for="__nav_6">
+        Advanced Features
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Advanced Features" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          Advanced Features
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/advanced_features/About/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/advanced_features/Defaults/" class="md-nav__link">
+        Default Values
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/advanced_features/Optional-Parameters/" class="md-nav__link">
+        Optional Parameters
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/advanced_features/Parameter-Groups/" class="md-nav__link">
+        Parameter Groups
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/advanced_features/Inheritance/" class="md-nav__link">
+        Inheritance
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/advanced_features/Advanced-Types/" class="md-nav__link">
+        Advanced Types
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/advanced_features/Local-Definitions/" class="md-nav__link">
+        Local Defintions
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/advanced_features/Keyword-Configs/" class="md-nav__link">
+        Keyword Configs
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/advanced_features/Composition/" class="md-nav__link">
+        Composition
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/advanced_features/Command-Line-Overrides/" class="md-nav__link">
+        Command Line Overrides
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../CONTRIBUTING/" class="md-nav__link">
+        Contributing
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" checked>
+      
+      <label class="md-nav__link" for="__nav_8">
+        Reference
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Reference" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          Reference
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_1" type="checkbox" id="__nav_8_1" checked>
+      
+      <label class="md-nav__link" for="__nav_8_1">
+        Spock
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Spock" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_1">
+          <span class="md-nav__icon md-icon"></span>
+          Spock
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../args/" class="md-nav__link">
+        Args
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../builder/" class="md-nav__link">
+        Builder
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../config/" class="md-nav__link">
+        Config
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../handlers/" class="md-nav__link">
+        Handlers
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        Index
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../utils/" class="md-nav__link">
+        Utils
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_1_7" type="checkbox" id="__nav_8_1_7" checked>
+      
+      <label class="md-nav__link" for="__nav_8_1_7">
+        Backend
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Backend" data-md-level="3">
+        <label class="md-nav__title" for="__nav_8_1_7">
+          <span class="md-nav__icon md-icon"></span>
+          Backend
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../base/" class="md-nav__link">
+        Base
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        Index
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_1_7_3" type="checkbox" id="__nav_8_1_7_3" checked>
+      
+      <label class="md-nav__link" for="__nav_8_1_7_3">
+        Attr
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Attr" data-md-level="4">
+        <label class="md-nav__title" for="__nav_8_1_7_3">
+          <span class="md-nav__icon md-icon"></span>
+          Attr
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../builder/" class="md-nav__link">
+        Builder
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../config/" class="md-nav__link">
+        Config
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        Index
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../payload/" class="md-nav__link">
+        Payload
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../saver/" class="md-nav__link">
+        Saver
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../typed/" class="md-nav__link">
+        Typed
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Utils
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Utils
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#functions" class="md-nav__link">
+    Functions
+  </a>
+  
+    <nav class="md-nav" aria-label="Functions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#convert_to_tuples" class="md-nav__link">
+    convert_to_tuples
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deep_update" class="md-nav__link">
+    deep_update
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flatten_type_dict" class="md-nav__link">
+    flatten_type_dict
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_type_fields" class="md-nav__link">
+    get_type_fields
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#functions" class="md-nav__link">
+    Functions
+  </a>
+  
+    <nav class="md-nav" aria-label="Functions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#convert_to_tuples" class="md-nav__link">
+    convert_to_tuples
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deep_update" class="md-nav__link">
+    deep_update
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flatten_type_dict" class="md-nav__link">
+    flatten_type_dict
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_type_fields" class="md-nav__link">
+    get_type_fields
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/fidelity/spock/edit/main/reference/spock/backend/attr/utils.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                <h1 id="module-spockbackendattrutils">Module spock.backend.attr.utils</h1>
+<p>Attr utility functions for Spock</p>
+<p>None</p>
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="c1"># Copyright 2019 FMR LLC &lt;opensource@fidelity.com&gt;</span>
+
+<span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
+
+<span class="sd">&quot;&quot;&quot;Attr utility functions for Spock&quot;&quot;&quot;</span>
+
+<span class="n">def</span> <span class="n">get_type_fields</span><span class="p">(</span><span class="n">input_classes</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;Creates a dictionary of names and types</span>
+
+<span class="sd">    *Args*:</span>
+
+<span class="sd">        input_classes: list of input classes</span>
+
+<span class="sd">    *Returns*:</span>
+
+<span class="sd">        type_fields: dictionary of names and types</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Parse out the types if generic</span>
+
+    <span class="n">type_fields</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">input_classes</span><span class="p">:</span>
+
+        <span class="n">input_attr</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">attr</span><span class="o">.</span><span class="n">__attrs_attrs__</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="s1">&#39;type&#39;</span> <span class="ow">in</span> <span class="n">val</span><span class="o">.</span><span class="n">metadata</span><span class="p">:</span>
+
+                <span class="n">input_attr</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">val</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">val</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]})</span>
+
+            <span class="k">else</span><span class="p">:</span>
+
+                <span class="n">input_attr</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">val</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">None</span><span class="p">})</span>
+
+        <span class="n">type_fields</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">attr</span><span class="o">.</span><span class="n">__name__</span><span class="p">:</span> <span class="n">input_attr</span><span class="p">})</span>
+
+    <span class="k">return</span> <span class="n">type_fields</span>
+
+<span class="n">def</span> <span class="n">flatten_type_dict</span><span class="p">(</span><span class="n">type_dict</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;Flattens a nested dictionary</span>
+
+<span class="sd">    *Args*:</span>
+
+<span class="sd">        type_dict: dictionary of types that are generic</span>
+
+<span class="sd">    *Returns*:</span>
+
+<span class="sd">        flat_dict: flatten dictionary to a single level</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">flat_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">type_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+        <span class="k">if</span> <span class="n">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">dict</span><span class="p">):</span>
+
+            <span class="n">return_dict</span> <span class="o">=</span> <span class="n">flatten_type_dict</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+            <span class="n">flat_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">return_dict</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">flat_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+    <span class="k">return</span> <span class="n">flat_dict</span>
+
+<span class="n">def</span> <span class="n">convert_to_tuples</span><span class="p">(</span><span class="n">input_dict</span><span class="p">,</span> <span class="n">named_type_dict</span><span class="p">,</span> <span class="n">class_names</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;Convert lists to tuples</span>
+
+<span class="sd">    Payloads from markup come in as Lists and not Tuples. This function turns lists in to tuples for the payloads</span>
+
+<span class="sd">    so the attr values are set correctly. Will call itself recursively if a dictionary is present for class specific</span>
+
+<span class="sd">    values</span>
+
+<span class="sd">    *Args*:</span>
+
+<span class="sd">        input_dict: input dictionary</span>
+
+<span class="sd">        named_type_dict: dictionary of names with generic types</span>
+
+<span class="sd">    *Returns*:</span>
+
+<span class="sd">        updated_dict: a dictionary with lists converted to tuples</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">updated_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">all_typed_dict</span> <span class="o">=</span> <span class="n">flatten_type_dict</span><span class="p">(</span><span class="n">named_type_dict</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">input_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+        <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s1">&#39;config&#39;</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="n">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">dict</span><span class="p">):</span>
+
+                <span class="n">updated</span> <span class="o">=</span> <span class="n">convert_to_tuples</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">named_type_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="n">class_names</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">updated</span><span class="p">:</span>
+
+                    <span class="n">updated_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">k</span><span class="p">:</span> <span class="n">updated</span><span class="p">})</span>
+
+            <span class="k">elif</span> <span class="n">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">list</span><span class="p">)</span> <span class="ow">and</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">class_names</span><span class="p">:</span>
+
+                <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
+
+                    <span class="n">updated</span> <span class="o">=</span> <span class="n">convert_to_tuples</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">named_type_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="n">class_names</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="n">updated</span><span class="p">:</span>
+
+                        <span class="n">updated_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">k</span><span class="p">:</span> <span class="n">updated</span><span class="p">})</span>
+
+            <span class="k">elif</span> <span class="n">all_typed_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">is</span> <span class="ow">not</span> <span class="n">None</span><span class="p">:</span>
+
+                <span class="n">updated</span> <span class="o">=</span> <span class="n">_recursive_list_to_tuple</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">all_typed_dict</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">class_names</span><span class="p">)</span>
+
+                <span class="n">updated_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">k</span><span class="p">:</span> <span class="n">updated</span><span class="p">})</span>
+
+    <span class="k">return</span> <span class="n">updated_dict</span>
+
+<span class="n">def</span> <span class="n">deep_update</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">updates</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;Deeply updates a dictionary</span>
+
+<span class="sd">    Iterates through a dictionary recursively to update individual values within a possibly nested dictionary</span>
+
+<span class="sd">    of dictionaries</span>
+
+<span class="sd">    *Args*:</span>
+
+<span class="sd">        source: source dictionary</span>
+
+<span class="sd">        updates: updates to the dictionary</span>
+
+<span class="sd">    *Returns*:</span>
+
+<span class="sd">        source: updated version of the source dictionary</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">updates</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+        <span class="k">if</span> <span class="n">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="n">v</span><span class="p">:</span>
+
+            <span class="n">updated_dict</span> <span class="o">=</span> <span class="n">deep_update</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="n">v</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">updated_dict</span><span class="p">:</span>
+
+                <span class="n">source</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">updated_dict</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">source</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+    <span class="k">return</span> <span class="n">source</span>
+
+<span class="n">def</span> <span class="n">_recursive_list_to_tuple</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">typed</span><span class="p">,</span> <span class="n">class_names</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;Recursively turn lists into tuples</span>
+
+<span class="sd">    Recursively looks through a pair of value and type and sets any of the possibly nested type of value to tuple</span>
+
+<span class="sd">    if tuple is the specified type</span>
+
+<span class="sd">    *Args*:</span>
+
+<span class="sd">        value: value to check and set typ if necessary</span>
+
+<span class="sd">        typed: type of the generic alias to check against</span>
+
+<span class="sd">    *Returns*:</span>
+
+<span class="sd">        value: updated value with correct type casts</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Check for __args__ as it signifies a generic and make sure it&#39;s not already been cast as a tuple</span>
+
+    <span class="c1"># from a composed payload</span>
+
+    <span class="k">if</span> <span class="n">hasattr</span><span class="p">(</span><span class="n">typed</span><span class="p">,</span> <span class="s1">&#39;__args__&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="n">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+
+                                                                            <span class="ow">and</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">class_names</span><span class="p">):</span>
+
+        <span class="c1"># Force those with origin tuple types to be of the defined length</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">typed</span><span class="o">.</span><span class="n">__origin__</span><span class="o">.</span><span class="n">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;tuple&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">!=</span> <span class="n">len</span><span class="p">(</span><span class="n">typed</span><span class="o">.</span><span class="n">__args__</span><span class="p">):</span>
+
+            <span class="n">raise</span> <span class="n">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Tuple(s) use a fixed/defined length -- Length of the provided argument ({len(value)}) &#39;</span>
+
+                             <span class="n">f</span><span class="s1">&#39;does not match the length of the defined argument ({len(typed.__args__)})&#39;</span><span class="p">)</span>
+
+        <span class="c1"># need to recurse before casting as we can&#39;t set values in a tuple with idx</span>
+
+        <span class="c1"># Since it&#39;s generic it should be iterable to recurse and check it&#39;s children</span>
+
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">enumerate</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+
+            <span class="n">value</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">_recursive_list_to_tuple</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">typed</span><span class="o">.</span><span class="n">__args__</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">class_names</span><span class="p">)</span>
+
+        <span class="c1"># First check if list and then swap to tuple if the origin is tuple</span>
+
+        <span class="k">if</span> <span class="n">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">list</span><span class="p">)</span> <span class="ow">and</span> <span class="n">typed</span><span class="o">.</span><span class="n">__origin__</span><span class="o">.</span><span class="n">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;tuple&#39;</span><span class="p">:</span>
+
+            <span class="n">value</span> <span class="o">=</span> <span class="n">tuple</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">return</span> <span class="n">value</span>
+</code></pre></div>
+
+</details>
+<h2 id="functions">Functions</h2>
+<h3 id="convert_to_tuples">convert_to_tuples</h3>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">convert_to_tuples</span><span class="p">(</span>
+    <span class="n">input_dict</span><span class="p">,</span>
+    <span class="n">named_type_dict</span><span class="p">,</span>
+    <span class="n">class_names</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Convert lists to tuples</p>
+<p>Payloads from markup come in as Lists and not Tuples. This function turns lists in to tuples for the payloads
+so the attr values are set correctly. Will call itself recursively if a dictionary is present for class specific
+values</p>
+<p><em>Args</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">input_dict</span><span class="o">:</span> <span class="n">input</span> <span class="n">dictionary</span>
+<span class="n">named_type_dict</span><span class="o">:</span> <span class="n">dictionary</span> <span class="n">of</span> <span class="n">names</span> <span class="k">with</span> <span class="n">generic</span> <span class="n">types</span>
+</code></pre></div>
+
+<p><em>Returns</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">updated_dict</span><span class="o">:</span> <span class="n">a</span> <span class="n">dictionary</span> <span class="k">with</span> <span class="n">lists</span> <span class="n">converted</span> <span class="n">to</span> <span class="n">tuples</span>
+</code></pre></div>
+
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code><span class="n">def</span><span class="w"> </span><span class="n">convert_to_tuples</span><span class="p">(</span><span class="n">input_dict</span><span class="p">,</span><span class="w"> </span><span class="n">named_type_dict</span><span class="p">,</span><span class="w"> </span><span class="n">class_names</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">    </span><span class="ss">&quot;&quot;&quot;Convert lists to tuples</span>
+
+<span class="ss">    Payloads from markup come in as Lists and not Tuples. This function turns lists in to tuples for the payloads</span>
+
+<span class="ss">    so the attr values are set correctly. Will call itself recursively if a dictionary is present for class specific</span>
+
+<span class="ss">    values</span>
+
+<span class="ss">    *Args*:</span>
+
+<span class="ss">        input_dict: input dictionary</span>
+
+<span class="ss">        named_type_dict: dictionary of names with generic types</span>
+
+<span class="ss">    *Returns*:</span>
+
+<span class="ss">        updated_dict: a dictionary with lists converted to tuples</span>
+
+<span class="ss">    &quot;&quot;&quot;</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">updated_dict</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">{}</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">all_typed_dict</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">flatten_type_dict</span><span class="p">(</span><span class="n">named_type_dict</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">input_dict</span><span class="p">.</span><span class="n">items</span><span class="p">()</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s1">&#39;config&#39;</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="n">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">dict</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">                </span><span class="n">updated</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">convert_to_tuples</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">named_type_dict</span><span class="p">.</span><span class="k">get</span><span class="p">(</span><span class="n">k</span><span class="p">),</span><span class="w"> </span><span class="n">class_names</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="nl">updated</span><span class="p">:</span><span class="w"></span>
+
+<span class="w">                    </span><span class="n">updated_dict</span><span class="p">.</span><span class="k">update</span><span class="p">(</span><span class="err">{</span><span class="nl">k</span><span class="p">:</span><span class="w"> </span><span class="n">updated</span><span class="err">}</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">            </span><span class="n">elif</span><span class="w"> </span><span class="n">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">list</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nl">class_names</span><span class="p">:</span><span class="w"></span>
+
+<span class="w">                </span><span class="k">for</span><span class="w"> </span><span class="n">val</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nl">v</span><span class="p">:</span><span class="w"></span>
+
+<span class="w">                    </span><span class="n">updated</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">convert_to_tuples</span><span class="p">(</span><span class="n">val</span><span class="p">,</span><span class="w"> </span><span class="n">named_type_dict</span><span class="p">.</span><span class="k">get</span><span class="p">(</span><span class="n">k</span><span class="p">),</span><span class="w"> </span><span class="n">class_names</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">                    </span><span class="k">if</span><span class="w"> </span><span class="nl">updated</span><span class="p">:</span><span class="w"></span>
+
+<span class="w">                        </span><span class="n">updated_dict</span><span class="p">.</span><span class="k">update</span><span class="p">(</span><span class="err">{</span><span class="nl">k</span><span class="p">:</span><span class="w"> </span><span class="n">updated</span><span class="err">}</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">            </span><span class="n">elif</span><span class="w"> </span><span class="n">all_typed_dict</span><span class="o">[</span><span class="n">k</span><span class="o">]</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="k">None</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">                </span><span class="n">updated</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_recursive_list_to_tuple</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">all_typed_dict</span><span class="o">[</span><span class="n">k</span><span class="o">]</span><span class="p">,</span><span class="w"> </span><span class="n">class_names</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">                </span><span class="n">updated_dict</span><span class="p">.</span><span class="k">update</span><span class="p">(</span><span class="err">{</span><span class="nl">k</span><span class="p">:</span><span class="w"> </span><span class="n">updated</span><span class="err">}</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">updated_dict</span><span class="w"></span>
+</code></pre></div>
+
+</details>
+<h3 id="deep_update">deep_update</h3>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">deep_update</span><span class="p">(</span>
+    <span class="n">source</span><span class="p">,</span>
+    <span class="n">updates</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Deeply updates a dictionary</p>
+<p>Iterates through a dictionary recursively to update individual values within a possibly nested dictionary
+of dictionaries</p>
+<p><em>Args</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">source</span><span class="o">:</span> <span class="n">source</span> <span class="n">dictionary</span>
+<span class="n">updates</span><span class="o">:</span> <span class="n">updates</span> <span class="n">to</span> <span class="n">the</span> <span class="n">dictionary</span>
+</code></pre></div>
+
+<p><em>Returns</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">source</span><span class="o">:</span> <span class="n">updated</span> <span class="n">version</span> <span class="n">of</span> <span class="n">the</span> <span class="n">source</span> <span class="n">dictionary</span>
+</code></pre></div>
+
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code><span class="n">def</span><span class="w"> </span><span class="n">deep_update</span><span class="p">(</span><span class="n">source</span><span class="p">,</span><span class="w"> </span><span class="n">updates</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">    </span><span class="ss">&quot;&quot;&quot;Deeply updates a dictionary</span>
+
+<span class="ss">    Iterates through a dictionary recursively to update individual values within a possibly nested dictionary</span>
+
+<span class="ss">    of dictionaries</span>
+
+<span class="ss">    *Args*:</span>
+
+<span class="ss">        source: source dictionary</span>
+
+<span class="ss">        updates: updates to the dictionary</span>
+
+<span class="ss">    *Returns*:</span>
+
+<span class="ss">        source: updated version of the source dictionary</span>
+
+<span class="ss">    &quot;&quot;&quot;</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">updates</span><span class="p">.</span><span class="n">items</span><span class="p">()</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">dict</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="nl">v</span><span class="p">:</span><span class="w"></span>
+
+<span class="w">            </span><span class="n">updated_dict</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">deep_update</span><span class="p">(</span><span class="n">source</span><span class="p">.</span><span class="k">get</span><span class="p">(</span><span class="n">k</span><span class="p">),</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="nl">updated_dict</span><span class="p">:</span><span class="w"></span>
+
+<span class="w">                </span><span class="n">source</span><span class="o">[</span><span class="n">k</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">updated_dict</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">else</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">            </span><span class="n">source</span><span class="o">[</span><span class="n">k</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">source</span><span class="w"></span>
+</code></pre></div>
+
+</details>
+<h3 id="flatten_type_dict">flatten_type_dict</h3>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">flatten_type_dict</span><span class="p">(</span>
+    <span class="n">type_dict</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Flattens a nested dictionary</p>
+<p><em>Args</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">type_dict</span><span class="o">:</span> <span class="n">dictionary</span> <span class="n">of</span> <span class="n">types</span> <span class="n">that</span> <span class="n">are</span> <span class="n">generic</span>
+</code></pre></div>
+
+<p><em>Returns</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">flat_dict</span><span class="o">:</span> <span class="n">flatten</span> <span class="n">dictionary</span> <span class="n">to</span> <span class="n">a</span> <span class="n">single</span> <span class="n">level</span>
+</code></pre></div>
+
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code><span class="n">def</span><span class="w"> </span><span class="n">flatten_type_dict</span><span class="p">(</span><span class="n">type_dict</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">    </span><span class="ss">&quot;&quot;&quot;Flattens a nested dictionary</span>
+
+<span class="ss">    *Args*:</span>
+
+<span class="ss">        type_dict: dictionary of types that are generic</span>
+
+<span class="ss">    *Returns*:</span>
+
+<span class="ss">        flat_dict: flatten dictionary to a single level</span>
+
+<span class="ss">    &quot;&quot;&quot;</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">flat_dict</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">{}</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">type_dict</span><span class="p">.</span><span class="n">items</span><span class="p">()</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">dict</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">            </span><span class="n">return_dict</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">flatten_type_dict</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">            </span><span class="n">flat_dict</span><span class="p">.</span><span class="k">update</span><span class="p">(</span><span class="n">return_dict</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">else</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">            </span><span class="n">flat_dict</span><span class="o">[</span><span class="n">k</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">flat_dict</span><span class="w"></span>
+</code></pre></div>
+
+</details>
+<h3 id="get_type_fields">get_type_fields</h3>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">get_type_fields</span><span class="p">(</span>
+    <span class="n">input_classes</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Creates a dictionary of names and types</p>
+<p><em>Args</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">input_classes</span><span class="o">:</span> <span class="n">list</span> <span class="n">of</span> <span class="n">input</span> <span class="n">classes</span>
+</code></pre></div>
+
+<p><em>Returns</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">type_fields</span><span class="o">:</span> <span class="n">dictionary</span> <span class="n">of</span> <span class="n">names</span> <span class="n">and</span> <span class="n">types</span>
+</code></pre></div>
+
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code><span class="nv">def</span> <span class="nv">get_type_fields</span><span class="ss">(</span><span class="nv">input_classes</span><span class="ss">)</span>:
+
+    <span class="s2">&quot;&quot;&quot;</span><span class="s">Creates a dictionary of names and types</span>
+
+    <span class="o">*</span><span class="nv">Args</span><span class="o">*</span>:
+
+        <span class="nv">input_classes</span>: <span class="nv">list</span> <span class="nv">of</span> <span class="nv">input</span> <span class="nv">classes</span>
+
+    <span class="o">*</span><span class="nv">Returns</span><span class="o">*</span>:
+
+        <span class="nv">type_fields</span>: <span class="nv">dictionary</span> <span class="nv">of</span> <span class="nv">names</span> <span class="nv">and</span> <span class="nv">types</span>
+
+    <span class="s2">&quot;&quot;&quot;</span>
+
+    # <span class="nv">Parse</span> <span class="nv">out</span> <span class="nv">the</span> <span class="nv">types</span> <span class="k">if</span> <span class="nv">generic</span>
+
+    <span class="nv">type_fields</span> <span class="o">=</span> {}
+
+    <span class="k">for</span> <span class="nv">attr</span> <span class="nv">in</span> <span class="nv">input_classes</span>:
+
+        <span class="nv">input_attr</span> <span class="o">=</span> {}
+
+        <span class="k">for</span> <span class="nv">val</span> <span class="nv">in</span> <span class="nv">attr</span>.<span class="nv">__attrs_attrs__</span>:
+
+            <span class="k">if</span> <span class="s1">&#39;</span><span class="s">type</span><span class="s1">&#39;</span> <span class="nv">in</span> <span class="nv">val</span>.<span class="nv">metadata</span>:
+
+                <span class="nv">input_attr</span>.<span class="nv">update</span><span class="ss">(</span>{<span class="nv">val</span>.<span class="nv">name</span>: <span class="nv">val</span>.<span class="nv">metadata</span>[<span class="s1">&#39;</span><span class="s">type</span><span class="s1">&#39;</span>]}<span class="ss">)</span>
+
+            <span class="k">else</span>:
+
+                <span class="nv">input_attr</span>.<span class="nv">update</span><span class="ss">(</span>{<span class="nv">val</span>.<span class="nv">name</span>: <span class="nv">None</span>}<span class="ss">)</span>
+
+        <span class="nv">type_fields</span>.<span class="nv">update</span><span class="ss">(</span>{<span class="nv">attr</span>.<span class="nv">__name__</span>: <span class="nv">input_attr</span>}<span class="ss">)</span>
+
+    <span class="k">return</span> <span class="nv">type_fields</span>
+</code></pre></div>
+
+</details>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../typed/" title="Typed" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Typed
+              </span>
+            </div>
+          </a>
+        
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Powered by
+        <a href="http://timothycrosley.github.io/portray">portray.</a>
+        You too can
+        <a href="http://timothycrosley.github.io/portray">
+          portray</a>
+        your Python project well using automatic documentation.
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../../../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../../../../assets/javascripts/workers/search.fe42c31b.min.js", "version": null}</script>
+    
+    
+      <script src="../../../../../assets/javascripts/bundle.d892486b.min.js"></script>
+      
+    
+  </body>
+</html>

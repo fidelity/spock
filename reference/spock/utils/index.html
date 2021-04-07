@@ -1,0 +1,1919 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      <link rel="icon" href="../../../resources/images/logo_small.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.0">
+    
+    
+      
+        <title>Utils - spock</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.33e2939f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ef6f36e2.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#546d78">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="blue-grey" data-md-color-accent="pink">
+  
+    
+    <script>function __prefix(e){return new URL("../../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#module-spockutils" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="spock" class="md-header__button md-logo" aria-label="spock" data-md-component="logo">
+      
+  <img src="../../../resources/images/logo_small.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            spock
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Utils
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/fidelity/spock/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    spock
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="spock" class="md-nav__button md-logo" aria-label="spock" data-md-component="logo">
+      
+  <img src="../../../resources/images/logo_small.png" alt="logo">
+
+    </a>
+    spock
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/fidelity/spock/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    spock
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/Installation/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/Motivation/" class="md-nav__link">
+        Motivation
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/Quick-Start/" class="md-nav__link">
+        Quick Start
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      <label class="md-nav__link" for="__nav_5">
+        Basic Tutorial
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Basic Tutorial" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Basic Tutorial
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/basic_tutorial/About/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/basic_tutorial/Define/" class="md-nav__link">
+        Define
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/basic_tutorial/Building/" class="md-nav__link">
+        Building
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/basic_tutorial/Configuration-Files/" class="md-nav__link">
+        Configuration Files
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/basic_tutorial/Saving/" class="md-nav__link">
+        Saving
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/basic_tutorial/Run/" class="md-nav__link">
+        Running
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      <label class="md-nav__link" for="__nav_6">
+        Advanced Features
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Advanced Features" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          Advanced Features
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/About/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Defaults/" class="md-nav__link">
+        Default Values
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Optional-Parameters/" class="md-nav__link">
+        Optional Parameters
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Parameter-Groups/" class="md-nav__link">
+        Parameter Groups
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Inheritance/" class="md-nav__link">
+        Inheritance
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Advanced-Types/" class="md-nav__link">
+        Advanced Types
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Local-Definitions/" class="md-nav__link">
+        Local Defintions
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Keyword-Configs/" class="md-nav__link">
+        Keyword Configs
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Composition/" class="md-nav__link">
+        Composition
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Command-Line-Overrides/" class="md-nav__link">
+        Command Line Overrides
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../CONTRIBUTING/" class="md-nav__link">
+        Contributing
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" checked>
+      
+      <label class="md-nav__link" for="__nav_8">
+        Reference
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Reference" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          Reference
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_1" type="checkbox" id="__nav_8_1" checked>
+      
+      <label class="md-nav__link" for="__nav_8_1">
+        Spock
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Spock" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_1">
+          <span class="md-nav__icon md-icon"></span>
+          Spock
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../args/" class="md-nav__link">
+        Args
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../builder/" class="md-nav__link">
+        Builder
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../config/" class="md-nav__link">
+        Config
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../handlers/" class="md-nav__link">
+        Handlers
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        Index
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Utils
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Utils
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#variables" class="md-nav__link">
+    Variables
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#functions" class="md-nav__link">
+    Functions
+  </a>
+  
+    <nav class="md-nav" aria-label="Functions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#add_generic_info" class="md-nav__link">
+    add_generic_info
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_info" class="md-nav__link">
+    add_info
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_repo_info" class="md-nav__link">
+    add_repo_info
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check_payload_overwrite" class="md-nav__link">
+    check_payload_overwrite
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deep_payload_update" class="md-nav__link">
+    deep_payload_update
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#make_argument" class="md-nav__link">
+    make_argument
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#make_blank_git" class="md-nav__link">
+    make_blank_git
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_1_7" type="checkbox" id="__nav_8_1_7" >
+      
+      <label class="md-nav__link" for="__nav_8_1_7">
+        Backend
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Backend" data-md-level="3">
+        <label class="md-nav__title" for="__nav_8_1_7">
+          <span class="md-nav__icon md-icon"></span>
+          Backend
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/base/" class="md-nav__link">
+        Base
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/" class="md-nav__link">
+        Index
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_1_7_3" type="checkbox" id="__nav_8_1_7_3" >
+      
+      <label class="md-nav__link" for="__nav_8_1_7_3">
+        Attr
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Attr" data-md-level="4">
+        <label class="md-nav__title" for="__nav_8_1_7_3">
+          <span class="md-nav__icon md-icon"></span>
+          Attr
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/attr/builder/" class="md-nav__link">
+        Builder
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/attr/config/" class="md-nav__link">
+        Config
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/attr/" class="md-nav__link">
+        Index
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/attr/payload/" class="md-nav__link">
+        Payload
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/attr/saver/" class="md-nav__link">
+        Saver
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/attr/typed/" class="md-nav__link">
+        Typed
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/attr/utils/" class="md-nav__link">
+        Utils
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#variables" class="md-nav__link">
+    Variables
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#functions" class="md-nav__link">
+    Functions
+  </a>
+  
+    <nav class="md-nav" aria-label="Functions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#add_generic_info" class="md-nav__link">
+    add_generic_info
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_info" class="md-nav__link">
+    add_info
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_repo_info" class="md-nav__link">
+    add_repo_info
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check_payload_overwrite" class="md-nav__link">
+    check_payload_overwrite
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deep_payload_update" class="md-nav__link">
+    deep_payload_update
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#make_argument" class="md-nav__link">
+    make_argument
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#make_blank_git" class="md-nav__link">
+    make_blank_git
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/fidelity/spock/edit/main/reference/spock/utils.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                <h1 id="module-spockutils">Module spock.utils</h1>
+<p>Utility functions for Spock</p>
+<p>None</p>
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="c1"># Copyright 2019 FMR LLC &lt;opensource@fidelity.com&gt;</span>
+
+<span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
+
+<span class="sd">&quot;&quot;&quot;Utility functions for Spock&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">ast</span>
+
+<span class="kn">import</span> <span class="nn">attr</span>
+
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">EnumMeta</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">socket</span>
+
+<span class="kn">import</span> <span class="nn">subprocess</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">localtime</span>
+
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">strftime</span>
+
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+
+<span class="kn">import</span> <span class="nn">git</span>
+
+<span class="n">minor</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">.</span><span class="n">minor</span>
+
+<span class="k">if</span> <span class="n">minor</span> <span class="o">&lt;</span> <span class="mi">7</span><span class="p">:</span>
+
+    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">GenericMeta</span> <span class="k">as</span> <span class="n">_GenericAlias</span>
+
+<span class="k">else</span><span class="p">:</span>
+
+    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">_GenericAlias</span>
+
+<span class="k">def</span> <span class="nf">_is_spock_instance</span><span class="p">(</span><span class="n">__obj</span><span class="p">:</span> <span class="nb">object</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;Checks if the object is a @spock decorated class</span>
+
+<span class="sd">    Private interface that checks to see if the object passed in is registered within the spock module and also</span>
+
+<span class="sd">    is a class with attrs attributes (__attrs_attrs__)</span>
+
+<span class="sd">    *Args*:</span>
+
+<span class="sd">        __obj: class to inspect</span>
+
+<span class="sd">    *Returns*:</span>
+
+<span class="sd">        bool</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">__obj</span><span class="o">.</span><span class="vm">__module__</span> <span class="o">==</span> <span class="s1">&#39;spock.backend.attr.config&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">attr</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="n">__obj</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">make_argument</span><span class="p">(</span><span class="n">arg_name</span><span class="p">,</span> <span class="n">arg_type</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;Make argparser argument based on type</span>
+
+<span class="sd">    Based on the type passed in handle the creation of the argparser argument so that overrides will have the correct</span>
+
+<span class="sd">    behavior when set</span>
+
+<span class="sd">    *Args*:</span>
+
+<span class="sd">        arg_name: name for the argument</span>
+
+<span class="sd">        arg_type: type of the argument</span>
+
+<span class="sd">        parser: current parser</span>
+
+<span class="sd">    *Returns*:</span>
+
+<span class="sd">        parser: updated argparser</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># For generic alias we take the input string and use a custom type callable to convert</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg_type</span><span class="p">,</span> <span class="n">_GenericAlias</span><span class="p">):</span>
+
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="n">arg_name</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">_handle_generic_type_args</span><span class="p">)</span>
+
+    <span class="c1"># For choice enums we need to check a few things first</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg_type</span><span class="p">,</span> <span class="n">EnumMeta</span><span class="p">):</span>
+
+        <span class="n">type_set</span> <span class="o">=</span> <span class="nb">list</span><span class="p">({</span><span class="nb">type</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">arg_type</span><span class="p">})[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># if this is an enum of a class switch the type to str as this is how it gets matched</span>
+
+        <span class="n">type_set</span> <span class="o">=</span> <span class="nb">str</span> <span class="k">if</span> <span class="n">type_set</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;type&#39;</span> <span class="k">else</span> <span class="n">type_set</span>
+
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="n">arg_name</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">type_set</span><span class="p">)</span>
+
+    <span class="c1"># For booleans we map to store true</span>
+
+    <span class="k">elif</span> <span class="n">arg_type</span> <span class="o">==</span> <span class="nb">bool</span><span class="p">:</span>
+
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="n">arg_name</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Else we are a simple base type which we can cast to</span>
+
+    <span class="k">else</span><span class="p">:</span>
+
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="n">arg_name</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">arg_type</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">parser</span>
+
+<span class="k">def</span> <span class="nf">_handle_generic_type_args</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;Evaluates a string containing a Python literal</span>
+
+<span class="sd">    Seeing a list types will come in as string literal format, use ast to get the actual type</span>
+
+<span class="sd">    *Args*:</span>
+
+<span class="sd">        val: string literal</span>
+
+<span class="sd">    *Returns*:</span>
+
+<span class="sd">        the underlying string literal type</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">add_info</span><span class="p">():</span>
+
+    <span class="sd">&quot;&quot;&quot;Adds extra information to the output dictionary</span>
+
+<span class="sd">    *Args*:</span>
+
+<span class="sd">    *Returns*:</span>
+
+<span class="sd">        out_dict: output dictionary</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">out_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">out_dict</span> <span class="o">=</span> <span class="n">add_generic_info</span><span class="p">(</span><span class="n">out_dict</span><span class="p">)</span>
+
+    <span class="n">out_dict</span> <span class="o">=</span> <span class="n">add_repo_info</span><span class="p">(</span><span class="n">out_dict</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">out_dict</span>
+
+<span class="k">def</span> <span class="nf">make_blank_git</span><span class="p">(</span><span class="n">out_dict</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;Adds blank git info</span>
+
+<span class="sd">    *Args*:</span>
+
+<span class="sd">        out_dict: current output dictionary</span>
+
+<span class="sd">    *Returns*:</span>
+
+<span class="sd">        out_dict: output dictionary with added git info</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;BRANCH&#39;</span><span class="p">,</span> <span class="s1">&#39;COMMIT SHA&#39;</span><span class="p">,</span> <span class="s1">&#39;STATUS&#39;</span><span class="p">,</span> <span class="s1">&#39;ORIGIN&#39;</span><span class="p">):</span>
+
+        <span class="n">out_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="sa">f</span><span class="s1">&#39;# Git </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="s1">&#39;UNKNOWN&#39;</span><span class="p">})</span>
+
+    <span class="k">return</span> <span class="n">out_dict</span>
+
+<span class="k">def</span> <span class="nf">add_repo_info</span><span class="p">(</span><span class="n">out_dict</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;Adds GIT information to the output dictionary</span>
+
+<span class="sd">    *Args*:</span>
+
+<span class="sd">        out_dict: output dictionary</span>
+
+<span class="sd">    *Returns*:</span>
+
+<span class="sd">        out_dict: output dictionary</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+
+        <span class="c1"># Assume we are working out of a repo</span>
+
+        <span class="n">repo</span> <span class="o">=</span> <span class="n">git</span><span class="o">.</span><span class="n">Repo</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">search_parent_directories</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Check if we are really in a detached head state as later info will fail if we are</span>
+
+        <span class="k">if</span> <span class="n">minor</span> <span class="o">&lt;</span> <span class="mi">7</span><span class="p">:</span>
+
+            <span class="n">head_result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s1">&#39;git rev-parse --abbrev-ref --symbolic-full-name HEAD&#39;</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+
+                                         <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">head_result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s1">&#39;git rev-parse --abbrev-ref --symbolic-full-name HEAD&#39;</span><span class="p">,</span> <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+
+                                         <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">head_result</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;HEAD&#39;</span><span class="p">:</span>
+
+            <span class="n">out_dict</span> <span class="o">=</span> <span class="n">make_blank_git</span><span class="p">(</span><span class="n">out_dict</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">out_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;# Git Branch&#39;</span><span class="p">:</span> <span class="n">repo</span><span class="o">.</span><span class="n">active_branch</span><span class="o">.</span><span class="n">name</span><span class="p">})</span>
+
+            <span class="n">out_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;# Git Commit&#39;</span><span class="p">:</span> <span class="n">repo</span><span class="o">.</span><span class="n">active_branch</span><span class="o">.</span><span class="n">commit</span><span class="o">.</span><span class="n">hexsha</span><span class="p">})</span>
+
+            <span class="n">out_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;# Git Date&#39;</span><span class="p">:</span> <span class="n">repo</span><span class="o">.</span><span class="n">active_branch</span><span class="o">.</span><span class="n">commit</span><span class="o">.</span><span class="n">committed_datetime</span><span class="p">})</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">repo</span><span class="o">.</span><span class="n">untracked_files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">repo</span><span class="o">.</span><span class="n">active_branch</span><span class="o">.</span><span class="n">commit</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+
+                <span class="n">git_status</span> <span class="o">=</span> <span class="s1">&#39;DIRTY&#39;</span>
+
+            <span class="k">else</span><span class="p">:</span>
+
+                <span class="n">git_status</span> <span class="o">=</span> <span class="s1">&#39;CLEAN&#39;</span>
+
+            <span class="n">out_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;# Git Status&#39;</span><span class="p">:</span> <span class="n">git_status</span><span class="p">})</span>
+
+            <span class="n">out_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;# Git Origin&#39;</span><span class="p">:</span> <span class="n">repo</span><span class="o">.</span><span class="n">active_branch</span><span class="o">.</span><span class="n">commit</span><span class="o">.</span><span class="n">repo</span><span class="o">.</span><span class="n">remotes</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">url</span><span class="p">})</span>
+
+    <span class="k">except</span> <span class="n">git</span><span class="o">.</span><span class="n">InvalidGitRepositoryError</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+
+        <span class="c1"># But it&#39;s okay if we are not</span>
+
+        <span class="n">out_dict</span> <span class="o">=</span> <span class="n">make_blank_git</span><span class="p">(</span><span class="n">out_dict</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">out_dict</span>
+
+<span class="k">def</span> <span class="nf">add_generic_info</span><span class="p">(</span><span class="n">out_dict</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;Adds date, fqdn information to the output dictionary</span>
+
+<span class="sd">    *Args*:</span>
+
+<span class="sd">        out_dict: output dictionary</span>
+
+<span class="sd">    *Returns*:</span>
+
+<span class="sd">        out_dict: output dictionary</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">out_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;# Machine FQDN&#39;</span><span class="p">:</span> <span class="n">socket</span><span class="o">.</span><span class="n">getfqdn</span><span class="p">()})</span>
+
+    <span class="n">out_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;# Python Executable&#39;</span><span class="p">:</span> <span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">})</span>
+
+    <span class="n">out_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;# Python Version&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">.</span><span class="n">major</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">.</span><span class="n">minor</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">.</span><span class="n">micro</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">})</span>
+
+    <span class="n">out_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;# Python Script&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">])})</span>
+
+    <span class="n">out_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;# Run Date&#39;</span><span class="p">:</span> <span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">localtime</span><span class="p">())})</span>
+
+    <span class="n">out_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;# Run Time&#39;</span><span class="p">:</span> <span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%H:%M:%S&#39;</span><span class="p">,</span> <span class="n">localtime</span><span class="p">())})</span>
+
+    <span class="c1"># Make a best effort to determine if run in a container</span>
+
+    <span class="n">out_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;# Run w/ Docker&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">_maybe_docker</span><span class="p">())})</span>
+
+    <span class="c1"># Make a best effort to determine if run in a container via k8s</span>
+
+    <span class="n">out_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;# Run w/ Kubernetes&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">_maybe_k8s</span><span class="p">())})</span>
+
+    <span class="k">return</span> <span class="n">out_dict</span>
+
+<span class="k">def</span> <span class="nf">_maybe_docker</span><span class="p">(</span><span class="n">cgroup_path</span><span class="o">=</span><span class="s2">&quot;/proc/self/cgroup&quot;</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;Make a best effort to determine if run in a docker container</span>
+
+<span class="sd">    *Args*:</span>
+
+<span class="sd">        cgroup_path: path to cgroup file</span>
+
+<span class="sd">    *Returns*:</span>
+
+<span class="sd">        boolean of best effort docker determination</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># A few options seem to be at play here:</span>
+
+    <span class="c1"># 1. Check for /.dockerenv -- docker should create this is any container</span>
+
+    <span class="n">bool_env</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s1">&#39;/.dockerenv&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 2. Check /proc/self/cgroup for &quot;docker&quot;</span>
+
+    <span class="c1"># https://stackoverflow.com/a/48710609</span>
+
+    <span class="n">bool_cgroup</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">cgroup_path</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="s2">&quot;docker&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="n">cgroup_path</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">bool_env</span> <span class="ow">or</span> <span class="n">bool_cgroup</span>
+
+<span class="k">def</span> <span class="nf">_maybe_k8s</span><span class="p">(</span><span class="n">cgroup_path</span><span class="o">=</span><span class="s2">&quot;/proc/self/cgroup&quot;</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;Make a best effort to determine if run in a container via k8s</span>
+
+<span class="sd">    *Args*:</span>
+
+<span class="sd">        cgroup_path: path to cgroup file</span>
+
+<span class="sd">    *Returns*:</span>
+
+<span class="sd">        boolean of best effort k8s determination</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># A few options seem to be at play here:</span>
+
+    <span class="c1"># 1. Check for KUBERNETES_SERVICE_HOST -- kublet should add this to every running pod</span>
+
+    <span class="n">bool_env</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;KUBERNETES_SERVICE_HOST&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+    <span class="c1"># 2. Similar to docker check /proc/self/cgroup for &quot;kubepods&quot;</span>
+
+    <span class="c1"># https://stackoverflow.com/a/48710609</span>
+
+    <span class="n">bool_cgroup</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">cgroup_path</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="s2">&quot;kubepods&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="n">cgroup_path</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">bool_env</span> <span class="ow">or</span> <span class="n">bool_cgroup</span>
+
+<span class="k">def</span> <span class="nf">deep_payload_update</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">updates</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;Deeply updates a dictionary</span>
+
+<span class="sd">    Iterates through a dictionary recursively to update individual values within a possibly nested dictionary</span>
+
+<span class="sd">    of dictionaries -- creates a dictionary if empty and trying to recurse</span>
+
+<span class="sd">    *Args*:</span>
+
+<span class="sd">        source: source dictionary</span>
+
+<span class="sd">        updates: updates to the dictionary</span>
+
+<span class="sd">    *Returns*:</span>
+
+<span class="sd">        source: updated version of the source dictionary</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">updates</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="n">v</span><span class="p">:</span>
+
+            <span class="n">source_dict</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">source</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">source</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+
+            <span class="n">updated_dict</span> <span class="o">=</span> <span class="n">deep_payload_update</span><span class="p">(</span><span class="n">source_dict</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">updated_dict</span><span class="p">:</span>
+
+                <span class="n">source</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">updated_dict</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">source</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+    <span class="k">return</span> <span class="n">source</span>
+
+<span class="k">def</span> <span class="nf">check_payload_overwrite</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">updates</span><span class="p">,</span> <span class="n">configs</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;Warns when parameters are overwritten across payloads as order will matter</span>
+
+<span class="sd">    *Args*:</span>
+
+<span class="sd">        payload: current payload</span>
+
+<span class="sd">        payload_update: update to add to payload</span>
+
+<span class="sd">        configs: config path</span>
+
+<span class="sd">        overwrite: name of parent</span>
+
+<span class="sd">    *Returns*:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">updates</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="n">v</span><span class="p">:</span>
+
+            <span class="n">overwrite</span> <span class="o">+=</span> <span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span><span class="p">)</span>
+
+            <span class="n">current_payload</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+
+            <span class="n">check_payload_overwrite</span><span class="p">(</span><span class="n">current_payload</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">configs</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">payload</span><span class="p">:</span>
+
+                <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Overriding an already set parameter </span><span class="si">{</span><span class="n">overwrite</span> <span class="o">+</span> <span class="n">k</span><span class="si">}</span><span class="s1"> from </span><span class="si">{</span><span class="n">configs</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+
+                     <span class="sa">f</span><span class="s1">&#39;Be aware that value precedence is set by the order of the config files (last to load)...&#39;</span><span class="p">,</span>
+
+                     <span class="ne">SyntaxWarning</span><span class="p">)</span>
+</code></pre></div>
+
+</details>
+<h2 id="variables">Variables</h2>
+<div class="codehilite"><pre><span></span><code><span class="n">minor</span>
+</code></pre></div>
+
+<h2 id="functions">Functions</h2>
+<h3 id="add_generic_info">add_generic_info</h3>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">add_generic_info</span><span class="p">(</span>
+    <span class="n">out_dict</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Adds date, fqdn information to the output dictionary</p>
+<p><em>Args</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">out_dict</span><span class="o">:</span> <span class="n">output</span> <span class="n">dictionary</span>
+</code></pre></div>
+
+<p><em>Returns</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">out_dict</span><span class="o">:</span> <span class="n">output</span> <span class="n">dictionary</span>
+</code></pre></div>
+
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code><span class="nv">def</span> <span class="nv">add_generic_info</span><span class="ss">(</span><span class="nv">out_dict</span><span class="ss">)</span>:
+
+    <span class="s2">&quot;&quot;&quot;</span><span class="s">Adds date, fqdn information to the output dictionary</span>
+
+    <span class="o">*</span><span class="nv">Args</span><span class="o">*</span>:
+
+        <span class="nv">out_dict</span>: <span class="nv">output</span> <span class="nv">dictionary</span>
+
+    <span class="o">*</span><span class="nv">Returns</span><span class="o">*</span>:
+
+        <span class="nv">out_dict</span>: <span class="nv">output</span> <span class="nv">dictionary</span>
+
+    <span class="s2">&quot;&quot;&quot;</span>
+
+    <span class="nv">out_dict</span>.<span class="nv">update</span><span class="ss">(</span>{<span class="s1">&#39;</span><span class="s"># Machine FQDN</span><span class="s1">&#39;</span>: <span class="nv">socket</span>.<span class="nv">getfqdn</span><span class="ss">()</span>}<span class="ss">)</span>
+
+    <span class="nv">out_dict</span>.<span class="nv">update</span><span class="ss">(</span>{<span class="s1">&#39;</span><span class="s"># Python Executable</span><span class="s1">&#39;</span>: <span class="nv">sys</span>.<span class="nv">executable</span>}<span class="ss">)</span>
+
+    <span class="nv">out_dict</span>.<span class="nv">update</span><span class="ss">(</span>{<span class="s1">&#39;</span><span class="s"># Python Version</span><span class="s1">&#39;</span>: <span class="nv">f</span><span class="s1">&#39;</span><span class="s">{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}</span><span class="s1">&#39;</span>}<span class="ss">)</span>
+
+    <span class="nv">out_dict</span>.<span class="nv">update</span><span class="ss">(</span>{<span class="s1">&#39;</span><span class="s"># Python Script</span><span class="s1">&#39;</span>: <span class="nv">os</span>.<span class="nv">path</span>.<span class="nv">realpath</span><span class="ss">(</span><span class="nv">sys</span>.<span class="nv">argv</span>[<span class="mi">0</span>]<span class="ss">)</span>}<span class="ss">)</span>
+
+    <span class="nv">out_dict</span>.<span class="nv">update</span><span class="ss">(</span>{<span class="s1">&#39;</span><span class="s"># Run Date</span><span class="s1">&#39;</span>: <span class="nv">strftime</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">%Y-%m-%d</span><span class="s1">&#39;</span>, <span class="nv">localtime</span><span class="ss">())</span>}<span class="ss">)</span>
+
+    <span class="nv">out_dict</span>.<span class="nv">update</span><span class="ss">(</span>{<span class="s1">&#39;</span><span class="s"># Run Time</span><span class="s1">&#39;</span>: <span class="nv">strftime</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">%H:%M:%S</span><span class="s1">&#39;</span>, <span class="nv">localtime</span><span class="ss">())</span>}<span class="ss">)</span>
+
+    # <span class="nv">Make</span> <span class="nv">a</span> <span class="nv">best</span> <span class="nv">effort</span> <span class="nv">to</span> <span class="nv">determine</span> <span class="k">if</span> <span class="nv">run</span> <span class="nv">in</span> <span class="nv">a</span> <span class="nv">container</span>
+
+    <span class="nv">out_dict</span>.<span class="nv">update</span><span class="ss">(</span>{<span class="s1">&#39;</span><span class="s"># Run w/ Docker</span><span class="s1">&#39;</span>: <span class="nv">str</span><span class="ss">(</span><span class="nv">_maybe_docker</span><span class="ss">())</span>}<span class="ss">)</span>
+
+    # <span class="nv">Make</span> <span class="nv">a</span> <span class="nv">best</span> <span class="nv">effort</span> <span class="nv">to</span> <span class="nv">determine</span> <span class="k">if</span> <span class="nv">run</span> <span class="nv">in</span> <span class="nv">a</span> <span class="nv">container</span> <span class="nv">via</span> <span class="nv">k8s</span>
+
+    <span class="nv">out_dict</span>.<span class="nv">update</span><span class="ss">(</span>{<span class="s1">&#39;</span><span class="s"># Run w/ Kubernetes</span><span class="s1">&#39;</span>: <span class="nv">str</span><span class="ss">(</span><span class="nv">_maybe_k8s</span><span class="ss">())</span>}<span class="ss">)</span>
+
+    <span class="k">return</span> <span class="nv">out_dict</span>
+</code></pre></div>
+
+</details>
+<h3 id="add_info">add_info</h3>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">add_info</span><span class="p">(</span>
+
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Adds extra information to the output dictionary</p>
+<p><em>Args</em>:</p>
+<p><em>Returns</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">out_dict</span><span class="o">:</span> <span class="n">output</span> <span class="n">dictionary</span>
+</code></pre></div>
+
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code><span class="nv">def</span> <span class="nv">add_info</span><span class="ss">()</span>:
+
+    <span class="s2">&quot;&quot;&quot;</span><span class="s">Adds extra information to the output dictionary</span>
+
+    <span class="o">*</span><span class="nv">Args</span><span class="o">*</span>:
+
+    <span class="o">*</span><span class="nv">Returns</span><span class="o">*</span>:
+
+        <span class="nv">out_dict</span>: <span class="nv">output</span> <span class="nv">dictionary</span>
+
+    <span class="s2">&quot;&quot;&quot;</span>
+
+    <span class="nv">out_dict</span> <span class="o">=</span> {}
+
+    <span class="nv">out_dict</span> <span class="o">=</span> <span class="nv">add_generic_info</span><span class="ss">(</span><span class="nv">out_dict</span><span class="ss">)</span>
+
+    <span class="nv">out_dict</span> <span class="o">=</span> <span class="nv">add_repo_info</span><span class="ss">(</span><span class="nv">out_dict</span><span class="ss">)</span>
+
+    <span class="k">return</span> <span class="nv">out_dict</span>
+</code></pre></div>
+
+</details>
+<h3 id="add_repo_info">add_repo_info</h3>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">add_repo_info</span><span class="p">(</span>
+    <span class="n">out_dict</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Adds GIT information to the output dictionary</p>
+<p><em>Args</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">out_dict</span><span class="o">:</span> <span class="n">output</span> <span class="n">dictionary</span>
+</code></pre></div>
+
+<p><em>Returns</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">out_dict</span><span class="o">:</span> <span class="n">output</span> <span class="n">dictionary</span>
+</code></pre></div>
+
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code><span class="nv">def</span> <span class="nv">add_repo_info</span><span class="ss">(</span><span class="nv">out_dict</span><span class="ss">)</span>:
+
+    <span class="s2">&quot;&quot;&quot;</span><span class="s">Adds GIT information to the output dictionary</span>
+
+    <span class="o">*</span><span class="nv">Args</span><span class="o">*</span>:
+
+        <span class="nv">out_dict</span>: <span class="nv">output</span> <span class="nv">dictionary</span>
+
+    <span class="o">*</span><span class="nv">Returns</span><span class="o">*</span>:
+
+        <span class="nv">out_dict</span>: <span class="nv">output</span> <span class="nv">dictionary</span>
+
+    <span class="s2">&quot;&quot;&quot;</span>
+
+    <span class="nv">try</span>:  # <span class="nv">pragma</span>: <span class="nv">no</span> <span class="nv">cover</span>
+
+        # <span class="nv">Assume</span> <span class="nv">we</span> <span class="nv">are</span> <span class="nv">working</span> <span class="nv">out</span> <span class="nv">of</span> <span class="nv">a</span> <span class="nv">repo</span>
+
+        <span class="nv">repo</span> <span class="o">=</span> <span class="nv">git</span>.<span class="nv">Repo</span><span class="ss">(</span><span class="nv">os</span>.<span class="nv">getcwd</span><span class="ss">()</span>, <span class="nv">search_parent_directories</span><span class="o">=</span><span class="nv">True</span><span class="ss">)</span>
+
+        # <span class="nv">Check</span> <span class="k">if</span> <span class="nv">we</span> <span class="nv">are</span> <span class="nv">really</span> <span class="nv">in</span> <span class="nv">a</span> <span class="nv">detached</span> <span class="nv">head</span> <span class="nv">state</span> <span class="nv">as</span> <span class="nv">later</span> <span class="nv">info</span> <span class="nv">will</span> <span class="nv">fail</span> <span class="k">if</span> <span class="nv">we</span> <span class="nv">are</span>
+
+        <span class="k">if</span> <span class="nv">minor</span> <span class="o">&lt;</span> <span class="mi">7</span>:
+
+            <span class="nv">head_result</span> <span class="o">=</span> <span class="nv">subprocess</span>.<span class="nv">run</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">git rev-parse --abbrev-ref --symbolic-full-name HEAD</span><span class="s1">&#39;</span>, <span class="nv">stdout</span><span class="o">=</span><span class="nv">subprocess</span>.<span class="nv">PIPE</span>,
+
+                                         <span class="nv">shell</span><span class="o">=</span><span class="nv">True</span>, <span class="nv">check</span><span class="o">=</span><span class="nv">False</span><span class="ss">)</span>
+
+        <span class="k">else</span>:
+
+            <span class="nv">head_result</span> <span class="o">=</span> <span class="nv">subprocess</span>.<span class="nv">run</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">git rev-parse --abbrev-ref --symbolic-full-name HEAD</span><span class="s1">&#39;</span>, <span class="nv">capture_output</span><span class="o">=</span><span class="nv">True</span>,
+
+                                         <span class="nv">shell</span><span class="o">=</span><span class="nv">True</span>, <span class="nv">check</span><span class="o">=</span><span class="nv">False</span><span class="ss">)</span>
+
+        <span class="k">if</span> <span class="nv">head_result</span>.<span class="nv">stdout</span>.<span class="nv">decode</span><span class="ss">()</span>.<span class="nv">rstrip</span><span class="ss">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="ss">)</span> <span class="o">==</span> <span class="s1">&#39;</span><span class="s">HEAD</span><span class="s1">&#39;</span>:
+
+            <span class="nv">out_dict</span> <span class="o">=</span> <span class="nv">make_blank_git</span><span class="ss">(</span><span class="nv">out_dict</span><span class="ss">)</span>
+
+        <span class="k">else</span>:
+
+            <span class="nv">out_dict</span>.<span class="nv">update</span><span class="ss">(</span>{<span class="s1">&#39;</span><span class="s"># Git Branch</span><span class="s1">&#39;</span>: <span class="nv">repo</span>.<span class="nv">active_branch</span>.<span class="nv">name</span>}<span class="ss">)</span>
+
+            <span class="nv">out_dict</span>.<span class="nv">update</span><span class="ss">(</span>{<span class="s1">&#39;</span><span class="s"># Git Commit</span><span class="s1">&#39;</span>: <span class="nv">repo</span>.<span class="nv">active_branch</span>.<span class="nv">commit</span>.<span class="nv">hexsha</span>}<span class="ss">)</span>
+
+            <span class="nv">out_dict</span>.<span class="nv">update</span><span class="ss">(</span>{<span class="s1">&#39;</span><span class="s"># Git Date</span><span class="s1">&#39;</span>: <span class="nv">repo</span>.<span class="nv">active_branch</span>.<span class="nv">commit</span>.<span class="nv">committed_datetime</span>}<span class="ss">)</span>
+
+            <span class="k">if</span> <span class="nv">len</span><span class="ss">(</span><span class="nv">repo</span>.<span class="nv">untracked_files</span><span class="ss">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="nv">or</span> <span class="nv">len</span><span class="ss">(</span><span class="nv">repo</span>.<span class="nv">active_branch</span>.<span class="nv">commit</span>.<span class="nv">diff</span><span class="ss">(</span><span class="nv">None</span><span class="ss">))</span> <span class="o">&gt;</span> <span class="mi">0</span>:
+
+                <span class="nv">git_status</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="s">DIRTY</span><span class="s1">&#39;</span>
+
+            <span class="k">else</span>:
+
+                <span class="nv">git_status</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="s">CLEAN</span><span class="s1">&#39;</span>
+
+            <span class="nv">out_dict</span>.<span class="nv">update</span><span class="ss">(</span>{<span class="s1">&#39;</span><span class="s"># Git Status</span><span class="s1">&#39;</span>: <span class="nv">git_status</span>}<span class="ss">)</span>
+
+            <span class="nv">out_dict</span>.<span class="nv">update</span><span class="ss">(</span>{<span class="s1">&#39;</span><span class="s"># Git Origin</span><span class="s1">&#39;</span>: <span class="nv">repo</span>.<span class="nv">active_branch</span>.<span class="nv">commit</span>.<span class="nv">repo</span>.<span class="nv">remotes</span>.<span class="nv">origin</span>.<span class="nv">url</span>}<span class="ss">)</span>
+
+    <span class="nv">except</span> <span class="nv">git</span>.<span class="nv">InvalidGitRepositoryError</span>:  # <span class="nv">pragma</span>: <span class="nv">no</span> <span class="nv">cover</span>
+
+        # <span class="nv">But</span> <span class="nv">it</span><span class="s1">&#39;</span><span class="s">s okay if we are not</span>
+
+        <span class="nv">out_dict</span> <span class="o">=</span> <span class="nv">make_blank_git</span><span class="ss">(</span><span class="nv">out_dict</span><span class="ss">)</span>
+
+    <span class="k">return</span> <span class="nv">out_dict</span>
+</code></pre></div>
+
+</details>
+<h3 id="check_payload_overwrite">check_payload_overwrite</h3>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">check_payload_overwrite</span><span class="p">(</span>
+    <span class="n">payload</span><span class="p">,</span>
+    <span class="n">updates</span><span class="p">,</span>
+    <span class="n">configs</span><span class="p">,</span>
+    <span class="n">overwrite</span><span class="o">=</span><span class="s1">&#39;&#39;</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Warns when parameters are overwritten across payloads as order will matter</p>
+<p><em>Args</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">payload</span><span class="p">:</span> <span class="n">current</span> <span class="n">payload</span>
+<span class="n">payload_update</span><span class="p">:</span> <span class="n">update</span> <span class="n">to</span> <span class="n">add</span> <span class="n">to</span> <span class="n">payload</span>
+<span class="n">configs</span><span class="p">:</span> <span class="n">config</span> <span class="n">path</span>
+<span class="n">overwrite</span><span class="p">:</span> <span class="n">name</span> <span class="n">of</span> <span class="n">parent</span>
+</code></pre></div>
+
+<p><em>Returns</em>:</p>
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code><span class="n">def</span> <span class="n">check_payload_overwrite</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">updates</span><span class="p">,</span> <span class="n">configs</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;Warns when parameters are overwritten across payloads as order will matter</span>
+
+<span class="sd">    *Args*:</span>
+
+<span class="sd">        payload: current payload</span>
+
+<span class="sd">        payload_update: update to add to payload</span>
+
+<span class="sd">        configs: config path</span>
+
+<span class="sd">        overwrite: name of parent</span>
+
+<span class="sd">    *Returns*:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">updates</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+        <span class="k">if</span> <span class="n">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="n">v</span><span class="p">:</span>
+
+            <span class="n">overwrite</span> <span class="o">+=</span> <span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span><span class="p">)</span>
+
+            <span class="n">current_payload</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">is</span> <span class="n">None</span> <span class="k">else</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+
+            <span class="n">check_payload_overwrite</span><span class="p">(</span><span class="n">current_payload</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">configs</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">payload</span><span class="p">:</span>
+
+                <span class="n">warn</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Overriding an already set parameter {overwrite + k} from {configs}</span><span class="se">\n</span><span class="s1">&#39;</span>
+
+                     <span class="n">f</span><span class="s1">&#39;Be aware that value precedence is set by the order of the config files (last to load)...&#39;</span><span class="p">,</span>
+
+                     <span class="n">SyntaxWarning</span><span class="p">)</span>
+</code></pre></div>
+
+</details>
+<h3 id="deep_payload_update">deep_payload_update</h3>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">deep_payload_update</span><span class="p">(</span>
+    <span class="n">source</span><span class="p">,</span>
+    <span class="n">updates</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Deeply updates a dictionary</p>
+<p>Iterates through a dictionary recursively to update individual values within a possibly nested dictionary
+of dictionaries -- creates a dictionary if empty and trying to recurse</p>
+<p><em>Args</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">source</span><span class="o">:</span> <span class="n">source</span> <span class="n">dictionary</span>
+<span class="n">updates</span><span class="o">:</span> <span class="n">updates</span> <span class="n">to</span> <span class="n">the</span> <span class="n">dictionary</span>
+</code></pre></div>
+
+<p><em>Returns</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">source</span><span class="o">:</span> <span class="n">updated</span> <span class="n">version</span> <span class="n">of</span> <span class="n">the</span> <span class="n">source</span> <span class="n">dictionary</span>
+</code></pre></div>
+
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code><span class="n">def</span><span class="w"> </span><span class="n">deep_payload_update</span><span class="p">(</span><span class="n">source</span><span class="p">,</span><span class="w"> </span><span class="n">updates</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">    </span><span class="ss">&quot;&quot;&quot;Deeply updates a dictionary</span>
+
+<span class="ss">    Iterates through a dictionary recursively to update individual values within a possibly nested dictionary</span>
+
+<span class="ss">    of dictionaries -- creates a dictionary if empty and trying to recurse</span>
+
+<span class="ss">    *Args*:</span>
+
+<span class="ss">        source: source dictionary</span>
+
+<span class="ss">        updates: updates to the dictionary</span>
+
+<span class="ss">    *Returns*:</span>
+
+<span class="ss">        source: updated version of the source dictionary</span>
+
+<span class="ss">    &quot;&quot;&quot;</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">updates</span><span class="p">.</span><span class="n">items</span><span class="p">()</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">dict</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="nl">v</span><span class="p">:</span><span class="w"></span>
+
+<span class="w">            </span><span class="n">source_dict</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">{}</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">source</span><span class="p">.</span><span class="k">get</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">None</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="n">source</span><span class="p">.</span><span class="k">get</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">            </span><span class="n">updated_dict</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">deep_payload_update</span><span class="p">(</span><span class="n">source_dict</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="nl">updated_dict</span><span class="p">:</span><span class="w"></span>
+
+<span class="w">                </span><span class="n">source</span><span class="o">[</span><span class="n">k</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">updated_dict</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">else</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">            </span><span class="n">source</span><span class="o">[</span><span class="n">k</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">source</span><span class="w"></span>
+</code></pre></div>
+
+</details>
+<h3 id="make_argument">make_argument</h3>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">make_argument</span><span class="p">(</span>
+    <span class="n">arg_name</span><span class="p">,</span>
+    <span class="n">arg_type</span><span class="p">,</span>
+    <span class="n">parser</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Make argparser argument based on type</p>
+<p>Based on the type passed in handle the creation of the argparser argument so that overrides will have the correct
+behavior when set</p>
+<p><em>Args</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">arg_name</span><span class="o">:</span> <span class="n">name</span> <span class="k">for</span> <span class="n">the</span> <span class="n">argument</span>
+<span class="n">arg_type</span><span class="o">:</span> <span class="n">type</span> <span class="n">of</span> <span class="n">the</span> <span class="n">argument</span>
+<span class="n">parser</span><span class="o">:</span> <span class="n">current</span> <span class="n">parser</span>
+</code></pre></div>
+
+<p><em>Returns</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">parser</span><span class="o">:</span> <span class="n">updated</span> <span class="n">argparser</span>
+</code></pre></div>
+
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code><span class="n">def</span> <span class="n">make_argument</span><span class="p">(</span><span class="n">arg_name</span><span class="p">,</span> <span class="n">arg_type</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;Make argparser argument based on type</span>
+
+<span class="sd">    Based on the type passed in handle the creation of the argparser argument so that overrides will have the correct</span>
+
+<span class="sd">    behavior when set</span>
+
+<span class="sd">    *Args*:</span>
+
+<span class="sd">        arg_name: name for the argument</span>
+
+<span class="sd">        arg_type: type of the argument</span>
+
+<span class="sd">        parser: current parser</span>
+
+<span class="sd">    *Returns*:</span>
+
+<span class="sd">        parser: updated argparser</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># For generic alias we take the input string and use a custom type callable to convert</span>
+
+    <span class="k">if</span> <span class="n">isinstance</span><span class="p">(</span><span class="n">arg_type</span><span class="p">,</span> <span class="n">_GenericAlias</span><span class="p">):</span>
+
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="n">arg_name</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="n">False</span><span class="p">,</span> <span class="n">type</span><span class="o">=</span><span class="n">_handle_generic_type_args</span><span class="p">)</span>
+
+    <span class="c1"># For choice enums we need to check a few things first</span>
+
+    <span class="k">elif</span> <span class="n">isinstance</span><span class="p">(</span><span class="n">arg_type</span><span class="p">,</span> <span class="n">EnumMeta</span><span class="p">):</span>
+
+        <span class="n">type_set</span> <span class="o">=</span> <span class="n">list</span><span class="p">({</span><span class="n">type</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">arg_type</span><span class="p">})[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># if this is an enum of a class switch the type to str as this is how it gets matched</span>
+
+        <span class="n">type_set</span> <span class="o">=</span> <span class="nb">str</span> <span class="k">if</span> <span class="n">type_set</span><span class="o">.</span><span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;type&#39;</span> <span class="k">else</span> <span class="n">type_set</span>
+
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="n">arg_name</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="n">False</span><span class="p">,</span> <span class="n">type</span><span class="o">=</span><span class="n">type_set</span><span class="p">)</span>
+
+    <span class="c1"># For booleans we map to store true</span>
+
+    <span class="k">elif</span> <span class="n">arg_type</span> <span class="o">==</span> <span class="nb nb-Type">bool</span><span class="p">:</span>
+
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="n">arg_name</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="n">False</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Else we are a simple base type which we can cast to</span>
+
+    <span class="k">else</span><span class="p">:</span>
+
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="n">arg_name</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="n">False</span><span class="p">,</span> <span class="n">type</span><span class="o">=</span><span class="n">arg_type</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">parser</span>
+</code></pre></div>
+
+</details>
+<h3 id="make_blank_git">make_blank_git</h3>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">make_blank_git</span><span class="p">(</span>
+    <span class="n">out_dict</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Adds blank git info</p>
+<p><em>Args</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">out_dict</span><span class="o">:</span> <span class="n">current</span> <span class="n">output</span> <span class="n">dictionary</span>
+</code></pre></div>
+
+<p><em>Returns</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">out_dict</span><span class="o">:</span> <span class="n">output</span> <span class="n">dictionary</span> <span class="k">with</span> <span class="n">added</span> <span class="n">git</span> <span class="n">info</span>
+</code></pre></div>
+
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code><span class="nv">def</span> <span class="nv">make_blank_git</span><span class="ss">(</span><span class="nv">out_dict</span><span class="ss">)</span>:
+
+    <span class="s2">&quot;&quot;&quot;</span><span class="s">Adds blank git info</span>
+
+    <span class="o">*</span><span class="nv">Args</span><span class="o">*</span>:
+
+        <span class="nv">out_dict</span>: <span class="nv">current</span> <span class="nv">output</span> <span class="nv">dictionary</span>
+
+    <span class="o">*</span><span class="nv">Returns</span><span class="o">*</span>:
+
+        <span class="nv">out_dict</span>: <span class="nv">output</span> <span class="nv">dictionary</span> <span class="nv">with</span> <span class="nv">added</span> <span class="nv">git</span> <span class="nv">info</span>
+
+    <span class="s2">&quot;&quot;&quot;</span>
+
+    <span class="k">for</span> <span class="nv">key</span> <span class="nv">in</span> <span class="ss">(</span><span class="s1">&#39;</span><span class="s">BRANCH</span><span class="s1">&#39;</span>, <span class="s1">&#39;</span><span class="s">COMMIT SHA</span><span class="s1">&#39;</span>, <span class="s1">&#39;</span><span class="s">STATUS</span><span class="s1">&#39;</span>, <span class="s1">&#39;</span><span class="s">ORIGIN</span><span class="s1">&#39;</span><span class="ss">)</span>:
+
+        <span class="nv">out_dict</span>.<span class="nv">update</span><span class="ss">(</span>{<span class="nv">f</span><span class="s1">&#39;</span><span class="s"># Git {key}</span><span class="s1">&#39;</span>: <span class="s1">&#39;</span><span class="s">UNKNOWN</span><span class="s1">&#39;</span>}<span class="ss">)</span>
+
+    <span class="k">return</span> <span class="nv">out_dict</span>
+</code></pre></div>
+
+</details>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../" title="Index" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Index
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../backend/base/" title="Base" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Base
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Powered by
+        <a href="http://timothycrosley.github.io/portray">portray.</a>
+        You too can
+        <a href="http://timothycrosley.github.io/portray">
+          portray</a>
+        your Python project well using automatic documentation.
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../../assets/javascripts/workers/search.fe42c31b.min.js", "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.d892486b.min.js"></script>
+      
+    
+  </body>
+</html>

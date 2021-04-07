@@ -1,0 +1,2628 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      <link rel="icon" href="../../../resources/images/logo_small.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.0">
+    
+    
+      
+        <title>Handlers - spock</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.33e2939f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ef6f36e2.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#546d78">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="blue-grey" data-md-color-accent="pink">
+  
+    
+    <script>function __prefix(e){return new URL("../../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#module-spockhandlers" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="spock" class="md-header__button md-logo" aria-label="spock" data-md-component="logo">
+      
+  <img src="../../../resources/images/logo_small.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            spock
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Handlers
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/fidelity/spock/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    spock
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="spock" class="md-nav__button md-logo" aria-label="spock" data-md-component="logo">
+      
+  <img src="../../../resources/images/logo_small.png" alt="logo">
+
+    </a>
+    spock
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/fidelity/spock/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    spock
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/Installation/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/Motivation/" class="md-nav__link">
+        Motivation
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/Quick-Start/" class="md-nav__link">
+        Quick Start
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      <label class="md-nav__link" for="__nav_5">
+        Basic Tutorial
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Basic Tutorial" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Basic Tutorial
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/basic_tutorial/About/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/basic_tutorial/Define/" class="md-nav__link">
+        Define
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/basic_tutorial/Building/" class="md-nav__link">
+        Building
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/basic_tutorial/Configuration-Files/" class="md-nav__link">
+        Configuration Files
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/basic_tutorial/Saving/" class="md-nav__link">
+        Saving
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/basic_tutorial/Run/" class="md-nav__link">
+        Running
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      <label class="md-nav__link" for="__nav_6">
+        Advanced Features
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Advanced Features" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          Advanced Features
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/About/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Defaults/" class="md-nav__link">
+        Default Values
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Optional-Parameters/" class="md-nav__link">
+        Optional Parameters
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Parameter-Groups/" class="md-nav__link">
+        Parameter Groups
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Inheritance/" class="md-nav__link">
+        Inheritance
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Advanced-Types/" class="md-nav__link">
+        Advanced Types
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Local-Definitions/" class="md-nav__link">
+        Local Defintions
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Keyword-Configs/" class="md-nav__link">
+        Keyword Configs
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Composition/" class="md-nav__link">
+        Composition
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Command-Line-Overrides/" class="md-nav__link">
+        Command Line Overrides
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../CONTRIBUTING/" class="md-nav__link">
+        Contributing
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" checked>
+      
+      <label class="md-nav__link" for="__nav_8">
+        Reference
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Reference" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          Reference
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_1" type="checkbox" id="__nav_8_1" checked>
+      
+      <label class="md-nav__link" for="__nav_8_1">
+        Spock
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Spock" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_1">
+          <span class="md-nav__icon md-icon"></span>
+          Spock
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../args/" class="md-nav__link">
+        Args
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../builder/" class="md-nav__link">
+        Builder
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../config/" class="md-nav__link">
+        Config
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Handlers
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Handlers
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#classes" class="md-nav__link">
+    Classes
+  </a>
+  
+    <nav class="md-nav" aria-label="Classes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#handler" class="md-nav__link">
+    Handler
+  </a>
+  
+    <nav class="md-nav" aria-label="Handler">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#descendants" class="md-nav__link">
+    Descendants
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#static-methods" class="md-nav__link">
+    Static methods
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#write_extra_info" class="md-nav__link">
+    write_extra_info
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    Methods
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#load" class="md-nav__link">
+    load
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#save" class="md-nav__link">
+    save
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jsonhandler" class="md-nav__link">
+    JSONHandler
+  </a>
+  
+    <nav class="md-nav" aria-label="JSONHandler">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_1" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#static-methods_1" class="md-nav__link">
+    Static methods
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#write_extra_info_1" class="md-nav__link">
+    write_extra_info
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_1" class="md-nav__link">
+    Methods
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#load_1" class="md-nav__link">
+    load
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#save_1" class="md-nav__link">
+    save
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tomlhandler" class="md-nav__link">
+    TOMLHandler
+  </a>
+  
+    <nav class="md-nav" aria-label="TOMLHandler">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_2" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#static-methods_2" class="md-nav__link">
+    Static methods
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#write_extra_info_2" class="md-nav__link">
+    write_extra_info
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_2" class="md-nav__link">
+    Methods
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#load_2" class="md-nav__link">
+    load
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#save_2" class="md-nav__link">
+    save
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#yamlhandler" class="md-nav__link">
+    YAMLHandler
+  </a>
+  
+    <nav class="md-nav" aria-label="YAMLHandler">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_3" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#static-methods_3" class="md-nav__link">
+    Static methods
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#write_extra_info_3" class="md-nav__link">
+    write_extra_info
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_3" class="md-nav__link">
+    Methods
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#load_3" class="md-nav__link">
+    load
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#save_3" class="md-nav__link">
+    save
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        Index
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utils/" class="md-nav__link">
+        Utils
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_1_7" type="checkbox" id="__nav_8_1_7" >
+      
+      <label class="md-nav__link" for="__nav_8_1_7">
+        Backend
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Backend" data-md-level="3">
+        <label class="md-nav__title" for="__nav_8_1_7">
+          <span class="md-nav__icon md-icon"></span>
+          Backend
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/base/" class="md-nav__link">
+        Base
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/" class="md-nav__link">
+        Index
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_1_7_3" type="checkbox" id="__nav_8_1_7_3" >
+      
+      <label class="md-nav__link" for="__nav_8_1_7_3">
+        Attr
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Attr" data-md-level="4">
+        <label class="md-nav__title" for="__nav_8_1_7_3">
+          <span class="md-nav__icon md-icon"></span>
+          Attr
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/attr/builder/" class="md-nav__link">
+        Builder
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/attr/config/" class="md-nav__link">
+        Config
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/attr/" class="md-nav__link">
+        Index
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/attr/payload/" class="md-nav__link">
+        Payload
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/attr/saver/" class="md-nav__link">
+        Saver
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/attr/typed/" class="md-nav__link">
+        Typed
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/attr/utils/" class="md-nav__link">
+        Utils
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#classes" class="md-nav__link">
+    Classes
+  </a>
+  
+    <nav class="md-nav" aria-label="Classes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#handler" class="md-nav__link">
+    Handler
+  </a>
+  
+    <nav class="md-nav" aria-label="Handler">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#descendants" class="md-nav__link">
+    Descendants
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#static-methods" class="md-nav__link">
+    Static methods
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#write_extra_info" class="md-nav__link">
+    write_extra_info
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    Methods
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#load" class="md-nav__link">
+    load
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#save" class="md-nav__link">
+    save
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jsonhandler" class="md-nav__link">
+    JSONHandler
+  </a>
+  
+    <nav class="md-nav" aria-label="JSONHandler">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_1" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#static-methods_1" class="md-nav__link">
+    Static methods
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#write_extra_info_1" class="md-nav__link">
+    write_extra_info
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_1" class="md-nav__link">
+    Methods
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#load_1" class="md-nav__link">
+    load
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#save_1" class="md-nav__link">
+    save
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tomlhandler" class="md-nav__link">
+    TOMLHandler
+  </a>
+  
+    <nav class="md-nav" aria-label="TOMLHandler">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_2" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#static-methods_2" class="md-nav__link">
+    Static methods
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#write_extra_info_2" class="md-nav__link">
+    write_extra_info
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_2" class="md-nav__link">
+    Methods
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#load_2" class="md-nav__link">
+    load
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#save_2" class="md-nav__link">
+    save
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#yamlhandler" class="md-nav__link">
+    YAMLHandler
+  </a>
+  
+    <nav class="md-nav" aria-label="YAMLHandler">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_3" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#static-methods_3" class="md-nav__link">
+    Static methods
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#write_extra_info_3" class="md-nav__link">
+    write_extra_info
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_3" class="md-nav__link">
+    Methods
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#load_3" class="md-nav__link">
+    load
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#save_3" class="md-nav__link">
+    save
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/fidelity/spock/edit/main/reference/spock/handlers.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                <h1 id="module-spockhandlers">Module spock.handlers</h1>
+<p>I/O handlers for various file formats</p>
+<p>None</p>
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="c1"># Copyright 2019 FMR LLC &lt;opensource@fidelity.com&gt;</span>
+
+<span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
+
+<span class="sd">&quot;&quot;&quot;I/O handlers for various file formats&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span>
+
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">abstractmethod</span>
+
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="kn">from</span> <span class="nn">spock</span> <span class="kn">import</span> <span class="n">__version__</span>
+
+<span class="kn">import</span> <span class="nn">toml</span>
+
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+
+<span class="kn">import</span> <span class="nn">yaml</span>
+
+<span class="k">class</span> <span class="nc">Handler</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;Base class for file type loaders</span>
+
+<span class="sd">    ABC for loaders</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+
+    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Load function for file type</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">            path: path to file</span>
+
+<span class="sd">        *Returns*:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="nd">@abstractmethod</span>
+
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out_dict</span><span class="p">,</span> <span class="n">info_dict</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Write function for file type</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">            out_dict: payload to write</span>
+
+<span class="sd">            info_dict: info payload to write</span>
+
+<span class="sd">            path: path to write out</span>
+
+<span class="sd">        *Returns*:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="nd">@staticmethod</span>
+
+    <span class="k">def</span> <span class="nf">write_extra_info</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">info_dict</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Writes extra info to commented newlines</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">            path: path to write out</span>
+
+<span class="sd">            info_dict: info payload to write</span>
+
+<span class="sd">        *Returns*:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Write the commented info as new lines</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fid</span><span class="p">:</span>
+
+            <span class="c1"># Write a spock header</span>
+
+            <span class="n">fid</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;# Spock Version: </span><span class="si">{</span><span class="n">__version__</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Write info dict if not None</span>
+
+            <span class="k">if</span> <span class="n">info_dict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">info_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                    <span class="n">fid</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="n">fid</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">YAMLHandler</span><span class="p">(</span><span class="n">Handler</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;YAML class for loading YAML config files</span>
+
+<span class="sd">    Base YAML class</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># override default SafeLoader behavior to correctly</span>
+
+    <span class="c1"># interpret 1e1 (as opposed to 1.e+1) as 10</span>
+
+    <span class="c1"># https://stackoverflow.com/questions/30458977/yaml-loads-5e-6-as-string-and-not-a-number/30462009#30462009</span>
+
+    <span class="n">yaml</span><span class="o">.</span><span class="n">SafeLoader</span><span class="o">.</span><span class="n">add_implicit_resolver</span><span class="p">(</span>
+
+        <span class="sa">u</span><span class="s1">&#39;tag:yaml.org,2002:float&#39;</span><span class="p">,</span>
+
+        <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;&#39;&#39;^(?:</span>
+
+<span class="s1">         [-+]?(?:[0-9][0-9_]*)</span><span class="se">\\</span><span class="s1">.[0-9_]*(?:[eE][-+]?[0-9]+)?</span>
+
+<span class="s1">        |[-+]?(?:[0-9][0-9_]*)(?:[eE][-+]?[0-9]+)</span>
+
+<span class="s1">        |</span><span class="se">\\</span><span class="s1">.[0-9_]+(?:[eE][-+][0-9]+)?</span>
+
+<span class="s1">        |[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+</span><span class="se">\\</span><span class="s1">.[0-9_]*</span>
+
+<span class="s1">        |[-+]?</span><span class="se">\\</span><span class="s1">.(?:inf|Inf|INF)</span>
+
+<span class="s1">        |</span><span class="se">\\</span><span class="s1">.(?:nan|NaN|NAN))$&#39;&#39;&#39;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">X</span><span class="p">),</span>
+
+        <span class="nb">list</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;-+0123456789.&#39;</span><span class="p">)</span>
+
+    <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;YAML load function</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">            path: path to YAML file</span>
+
+<span class="sd">        *Returns*:</span>
+
+<span class="sd">            base_payload: dictionary of read file</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">file_contents</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+        <span class="n">file_contents</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;--([a-zA-Z0-9_]*)&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;\g&lt;1&gt;: True&#39;</span><span class="p">,</span> <span class="n">file_contents</span><span class="p">)</span>
+
+        <span class="n">base_payload</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file_contents</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">base_payload</span>
+
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out_dict</span><span class="p">,</span> <span class="n">info_dict</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Write function for YAML type</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">            out_dict: payload to write</span>
+
+<span class="sd">            info_dict: info payload to write</span>
+
+<span class="sd">            path: path to write out</span>
+
+<span class="sd">        *Returns*:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># First write the commented info</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">write_extra_info</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">info_dict</span><span class="o">=</span><span class="n">info_dict</span><span class="p">)</span>
+
+        <span class="c1"># Remove aliases in YAML dump</span>
+
+        <span class="n">yaml</span><span class="o">.</span><span class="n">Dumper</span><span class="o">.</span><span class="n">ignore_aliases</span> <span class="o">=</span> <span class="k">lambda</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="kc">True</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">yaml_fid</span><span class="p">:</span>
+
+            <span class="n">yaml</span><span class="o">.</span><span class="n">safe_dump</span><span class="p">(</span><span class="n">out_dict</span><span class="p">,</span> <span class="n">yaml_fid</span><span class="p">,</span> <span class="n">default_flow_style</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">TOMLHandler</span><span class="p">(</span><span class="n">Handler</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;TOML class for loading TOML config files</span>
+
+<span class="sd">    Base TOML class</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;TOML load function</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">            path: path to TOML file</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">            base_payload: dictionary of read file</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">base_payload</span> <span class="o">=</span> <span class="n">toml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">base_payload</span>
+
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out_dict</span><span class="p">,</span> <span class="n">info_dict</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Write function for TOML type</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">            out_dict: payload to write</span>
+
+<span class="sd">            info_dict: info payload to write</span>
+
+<span class="sd">            path: path to write out</span>
+
+<span class="sd">        *Returns*:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># First write the commented info</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">write_extra_info</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">info_dict</span><span class="o">=</span><span class="n">info_dict</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">toml_fid</span><span class="p">:</span>
+
+            <span class="n">toml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">out_dict</span><span class="p">,</span> <span class="n">toml_fid</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">JSONHandler</span><span class="p">(</span><span class="n">Handler</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;JSON class for loading JSON config files</span>
+
+<span class="sd">    Base JSON class</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;JSON load function</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">            path: path to JSON file</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">            base_payload: dictionary of read file</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_fid</span><span class="p">:</span>
+
+            <span class="n">base_payload</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_fid</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">base_payload</span>
+
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out_dict</span><span class="p">,</span> <span class="n">info_dict</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Write function for JSON type</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">            out_dict: payload to write</span>
+
+<span class="sd">            info_dict: info payload to write</span>
+
+<span class="sd">            path: path to write out</span>
+
+<span class="sd">        *Returns*:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">info_dict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;JSON does not support comments and thus cannot save extra info to file... removing extra info&#39;</span><span class="p">)</span>
+
+            <span class="n">info_dict</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_fid</span><span class="p">:</span>
+
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">out_dict</span><span class="p">,</span> <span class="n">json_fid</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;: &#39;</span><span class="p">))</span>
+</code></pre></div>
+
+</details>
+<h2 id="classes">Classes</h2>
+<h3 id="handler">Handler</h3>
+<div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">Handler</span><span class="p">(</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="n">Handler</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;Base class for file type loaders</span>
+
+<span class="sd">    ABC for loaders</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="err">@</span><span class="n">abstractmethod</span>
+
+    <span class="n">def</span> <span class="nb">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Load function for file type</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">            path: path to file</span>
+
+<span class="sd">        *Returns*:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">raise</span> <span class="n">NotImplementedError</span>
+
+    <span class="err">@</span><span class="n">abstractmethod</span>
+
+    <span class="n">def</span> <span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out_dict</span><span class="p">,</span> <span class="n">info_dict</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Write function for file type</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">            out_dict: payload to write</span>
+
+<span class="sd">            info_dict: info payload to write</span>
+
+<span class="sd">            path: path to write out</span>
+
+<span class="sd">        *Returns*:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">raise</span> <span class="n">NotImplementedError</span>
+
+    <span class="err">@</span><span class="n">staticmethod</span>
+
+    <span class="n">def</span> <span class="n">write_extra_info</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">info_dict</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Writes extra info to commented newlines</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">            path: path to write out</span>
+
+<span class="sd">            info_dict: info payload to write</span>
+
+<span class="sd">        *Returns*:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Write the commented info as new lines</span>
+
+        <span class="n">with</span> <span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fid</span><span class="p">:</span>
+
+            <span class="c1"># Write a spock header</span>
+
+            <span class="n">fid</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;# Spock Version: {__version__}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Write info dict if not None</span>
+
+            <span class="k">if</span> <span class="n">info_dict</span> <span class="k">is</span> <span class="ow">not</span> <span class="n">None</span><span class="p">:</span>
+
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">info_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                    <span class="n">fid</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;{k}: {v}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="n">fid</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+</details>
+<hr />
+<h4 id="ancestors-in-mro">Ancestors (in MRO)</h4>
+<ul>
+<li>abc.ABC</li>
+</ul>
+<h4 id="descendants">Descendants</h4>
+<ul>
+<li>spock.handlers.YAMLHandler</li>
+<li>spock.handlers.TOMLHandler</li>
+<li>spock.handlers.JSONHandler</li>
+</ul>
+<h4 id="static-methods">Static methods</h4>
+<h4 id="write_extra_info">write_extra_info</h4>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">write_extra_info</span><span class="p">(</span>
+    <span class="n">path</span><span class="p">,</span>
+    <span class="n">info_dict</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Writes extra info to commented newlines</p>
+<p><em>Args</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">path</span><span class="p">:</span> <span class="n">path</span> <span class="n">to</span> <span class="n">write</span> <span class="n">out</span>
+<span class="n">info_dict</span><span class="p">:</span> <span class="n">info</span> <span class="n">payload</span> <span class="n">to</span> <span class="n">write</span>
+</code></pre></div>
+
+<p><em>Returns</em>:</p>
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code>    <span class="err">@</span><span class="n">staticmethod</span>
+
+    <span class="n">def</span> <span class="n">write_extra_info</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">info_dict</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Writes extra info to commented newlines</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">            path: path to write out</span>
+
+<span class="sd">            info_dict: info payload to write</span>
+
+<span class="sd">        *Returns*:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Write the commented info as new lines</span>
+
+        <span class="n">with</span> <span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fid</span><span class="p">:</span>
+
+            <span class="c1"># Write a spock header</span>
+
+            <span class="n">fid</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;# Spock Version: {__version__}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Write info dict if not None</span>
+
+            <span class="k">if</span> <span class="n">info_dict</span> <span class="k">is</span> <span class="ow">not</span> <span class="n">None</span><span class="p">:</span>
+
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">info_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                    <span class="n">fid</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;{k}: {v}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="n">fid</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+</details>
+<h4 id="methods">Methods</h4>
+<h4 id="load">load</h4>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">load</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">path</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Load function for file type</p>
+<p><em>Args</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">path</span><span class="o">:</span> <span class="n">path</span> <span class="n">to</span> <span class="n">file</span>
+</code></pre></div>
+
+<p><em>Returns</em>:</p>
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code>    <span class="err">@</span><span class="n">abstractmethod</span>
+
+    <span class="n">def</span> <span class="nb">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Load function for file type</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">            path: path to file</span>
+
+<span class="sd">        *Returns*:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">raise</span> <span class="n">NotImplementedError</span>
+</code></pre></div>
+
+</details>
+<h4 id="save">save</h4>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">save</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">out_dict</span><span class="p">,</span>
+    <span class="n">info_dict</span><span class="p">,</span>
+    <span class="n">path</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Write function for file type</p>
+<p><em>Args</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">out_dict</span><span class="p">:</span> <span class="n">payload</span> <span class="n">to</span> <span class="n">write</span>
+<span class="n">info_dict</span><span class="p">:</span> <span class="n">info</span> <span class="n">payload</span> <span class="n">to</span> <span class="n">write</span>
+<span class="n">path</span><span class="p">:</span> <span class="n">path</span> <span class="n">to</span> <span class="n">write</span> <span class="n">out</span>
+</code></pre></div>
+
+<p><em>Returns</em>:</p>
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code>    <span class="err">@</span><span class="n">abstractmethod</span>
+
+    <span class="n">def</span> <span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out_dict</span><span class="p">,</span> <span class="n">info_dict</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Write function for file type</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">            out_dict: payload to write</span>
+
+<span class="sd">            info_dict: info payload to write</span>
+
+<span class="sd">            path: path to write out</span>
+
+<span class="sd">        *Returns*:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">raise</span> <span class="n">NotImplementedError</span>
+</code></pre></div>
+
+</details>
+<h3 id="jsonhandler">JSONHandler</h3>
+<div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">JSONHandler</span><span class="p">(</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="n">JSONHandler</span><span class="p">(</span><span class="n">Handler</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;JSON class for loading JSON config files</span>
+
+<span class="sd">    Base JSON class</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">def</span> <span class="nb">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;JSON load function</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">            path: path to JSON file</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">            base_payload: dictionary of read file</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">with</span> <span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_fid</span><span class="p">:</span>
+
+            <span class="n">base_payload</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_fid</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">base_payload</span>
+
+    <span class="n">def</span> <span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out_dict</span><span class="p">,</span> <span class="n">info_dict</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Write function for JSON type</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">            out_dict: payload to write</span>
+
+<span class="sd">            info_dict: info payload to write</span>
+
+<span class="sd">            path: path to write out</span>
+
+<span class="sd">        *Returns*:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">info_dict</span> <span class="k">is</span> <span class="ow">not</span> <span class="n">None</span><span class="p">:</span>
+
+            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;JSON does not support comments and thus cannot save extra info to file... removing extra info&#39;</span><span class="p">)</span>
+
+            <span class="n">info_dict</span> <span class="o">=</span> <span class="n">None</span>
+
+        <span class="n">with</span> <span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_fid</span><span class="p">:</span>
+
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">out_dict</span><span class="p">,</span> <span class="n">json_fid</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;: &#39;</span><span class="p">))</span>
+</code></pre></div>
+
+</details>
+<hr />
+<h4 id="ancestors-in-mro_1">Ancestors (in MRO)</h4>
+<ul>
+<li>spock.handlers.Handler</li>
+<li>abc.ABC</li>
+</ul>
+<h4 id="static-methods_1">Static methods</h4>
+<h4 id="write_extra_info_1">write_extra_info</h4>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">write_extra_info</span><span class="p">(</span>
+    <span class="n">path</span><span class="p">,</span>
+    <span class="n">info_dict</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Writes extra info to commented newlines</p>
+<p><em>Args</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">path</span><span class="p">:</span> <span class="n">path</span> <span class="n">to</span> <span class="n">write</span> <span class="n">out</span>
+<span class="n">info_dict</span><span class="p">:</span> <span class="n">info</span> <span class="n">payload</span> <span class="n">to</span> <span class="n">write</span>
+</code></pre></div>
+
+<p><em>Returns</em>:</p>
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code>    <span class="err">@</span><span class="n">staticmethod</span>
+
+    <span class="n">def</span> <span class="n">write_extra_info</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">info_dict</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Writes extra info to commented newlines</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">            path: path to write out</span>
+
+<span class="sd">            info_dict: info payload to write</span>
+
+<span class="sd">        *Returns*:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Write the commented info as new lines</span>
+
+        <span class="n">with</span> <span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fid</span><span class="p">:</span>
+
+            <span class="c1"># Write a spock header</span>
+
+            <span class="n">fid</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;# Spock Version: {__version__}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Write info dict if not None</span>
+
+            <span class="k">if</span> <span class="n">info_dict</span> <span class="k">is</span> <span class="ow">not</span> <span class="n">None</span><span class="p">:</span>
+
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">info_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                    <span class="n">fid</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;{k}: {v}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="n">fid</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+</details>
+<h4 id="methods_1">Methods</h4>
+<h4 id="load_1">load</h4>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">load</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">path</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>JSON load function</p>
+<p><em>Args</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">path</span><span class="o">:</span> <span class="n">path</span> <span class="n">to</span> <span class="n">JSON</span> <span class="n">file</span>
+</code></pre></div>
+
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>base_payload</td>
+<td>dictionary of read file</td>
+</tr>
+</tbody>
+</table>
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code>    <span class="n">def</span> <span class="nb">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;JSON load function</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">            path: path to JSON file</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">            base_payload: dictionary of read file</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">with</span> <span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_fid</span><span class="p">:</span>
+
+            <span class="n">base_payload</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_fid</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">base_payload</span>
+</code></pre></div>
+
+</details>
+<h4 id="save_1">save</h4>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">save</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">out_dict</span><span class="p">,</span>
+    <span class="n">info_dict</span><span class="p">,</span>
+    <span class="n">path</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Write function for JSON type</p>
+<p><em>Args</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">out_dict</span><span class="p">:</span> <span class="n">payload</span> <span class="n">to</span> <span class="n">write</span>
+<span class="n">info_dict</span><span class="p">:</span> <span class="n">info</span> <span class="n">payload</span> <span class="n">to</span> <span class="n">write</span>
+<span class="n">path</span><span class="p">:</span> <span class="n">path</span> <span class="n">to</span> <span class="n">write</span> <span class="n">out</span>
+</code></pre></div>
+
+<p><em>Returns</em>:</p>
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code>    <span class="n">def</span> <span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out_dict</span><span class="p">,</span> <span class="n">info_dict</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Write function for JSON type</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">            out_dict: payload to write</span>
+
+<span class="sd">            info_dict: info payload to write</span>
+
+<span class="sd">            path: path to write out</span>
+
+<span class="sd">        *Returns*:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">info_dict</span> <span class="k">is</span> <span class="ow">not</span> <span class="n">None</span><span class="p">:</span>
+
+            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;JSON does not support comments and thus cannot save extra info to file... removing extra info&#39;</span><span class="p">)</span>
+
+            <span class="n">info_dict</span> <span class="o">=</span> <span class="n">None</span>
+
+        <span class="n">with</span> <span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_fid</span><span class="p">:</span>
+
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">out_dict</span><span class="p">,</span> <span class="n">json_fid</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;: &#39;</span><span class="p">))</span>
+</code></pre></div>
+
+</details>
+<h3 id="tomlhandler">TOMLHandler</h3>
+<div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">TOMLHandler</span><span class="p">(</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="n">TOMLHandler</span><span class="p">(</span><span class="n">Handler</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;TOML class for loading TOML config files</span>
+
+<span class="sd">    Base TOML class</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">def</span> <span class="nb">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;TOML load function</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">            path: path to TOML file</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">            base_payload: dictionary of read file</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">base_payload</span> <span class="o">=</span> <span class="n">toml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">base_payload</span>
+
+    <span class="n">def</span> <span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out_dict</span><span class="p">,</span> <span class="n">info_dict</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Write function for TOML type</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">            out_dict: payload to write</span>
+
+<span class="sd">            info_dict: info payload to write</span>
+
+<span class="sd">            path: path to write out</span>
+
+<span class="sd">        *Returns*:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># First write the commented info</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">write_extra_info</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">info_dict</span><span class="o">=</span><span class="n">info_dict</span><span class="p">)</span>
+
+        <span class="n">with</span> <span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">toml_fid</span><span class="p">:</span>
+
+            <span class="n">toml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">out_dict</span><span class="p">,</span> <span class="n">toml_fid</span><span class="p">)</span>
+</code></pre></div>
+
+</details>
+<hr />
+<h4 id="ancestors-in-mro_2">Ancestors (in MRO)</h4>
+<ul>
+<li>spock.handlers.Handler</li>
+<li>abc.ABC</li>
+</ul>
+<h4 id="static-methods_2">Static methods</h4>
+<h4 id="write_extra_info_2">write_extra_info</h4>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">write_extra_info</span><span class="p">(</span>
+    <span class="n">path</span><span class="p">,</span>
+    <span class="n">info_dict</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Writes extra info to commented newlines</p>
+<p><em>Args</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">path</span><span class="p">:</span> <span class="n">path</span> <span class="n">to</span> <span class="n">write</span> <span class="n">out</span>
+<span class="n">info_dict</span><span class="p">:</span> <span class="n">info</span> <span class="n">payload</span> <span class="n">to</span> <span class="n">write</span>
+</code></pre></div>
+
+<p><em>Returns</em>:</p>
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code>    <span class="err">@</span><span class="n">staticmethod</span>
+
+    <span class="n">def</span> <span class="n">write_extra_info</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">info_dict</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Writes extra info to commented newlines</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">            path: path to write out</span>
+
+<span class="sd">            info_dict: info payload to write</span>
+
+<span class="sd">        *Returns*:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Write the commented info as new lines</span>
+
+        <span class="n">with</span> <span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fid</span><span class="p">:</span>
+
+            <span class="c1"># Write a spock header</span>
+
+            <span class="n">fid</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;# Spock Version: {__version__}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Write info dict if not None</span>
+
+            <span class="k">if</span> <span class="n">info_dict</span> <span class="k">is</span> <span class="ow">not</span> <span class="n">None</span><span class="p">:</span>
+
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">info_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                    <span class="n">fid</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;{k}: {v}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="n">fid</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+</details>
+<h4 id="methods_2">Methods</h4>
+<h4 id="load_2">load</h4>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">load</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">path</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>TOML load function</p>
+<p><em>Args</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">path</span><span class="o">:</span> <span class="n">path</span> <span class="n">to</span> <span class="n">TOML</span> <span class="n">file</span>
+</code></pre></div>
+
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>base_payload</td>
+<td>dictionary of read file</td>
+</tr>
+</tbody>
+</table>
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code>    <span class="n">def</span> <span class="nb">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;TOML load function</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">            path: path to TOML file</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">            base_payload: dictionary of read file</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">base_payload</span> <span class="o">=</span> <span class="n">toml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">base_payload</span>
+</code></pre></div>
+
+</details>
+<h4 id="save_2">save</h4>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">save</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">out_dict</span><span class="p">,</span>
+    <span class="n">info_dict</span><span class="p">,</span>
+    <span class="n">path</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Write function for TOML type</p>
+<p><em>Args</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">out_dict</span><span class="p">:</span> <span class="n">payload</span> <span class="n">to</span> <span class="n">write</span>
+<span class="n">info_dict</span><span class="p">:</span> <span class="n">info</span> <span class="n">payload</span> <span class="n">to</span> <span class="n">write</span>
+<span class="n">path</span><span class="p">:</span> <span class="n">path</span> <span class="n">to</span> <span class="n">write</span> <span class="n">out</span>
+</code></pre></div>
+
+<p><em>Returns</em>:</p>
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code>    <span class="n">def</span> <span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out_dict</span><span class="p">,</span> <span class="n">info_dict</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Write function for TOML type</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">            out_dict: payload to write</span>
+
+<span class="sd">            info_dict: info payload to write</span>
+
+<span class="sd">            path: path to write out</span>
+
+<span class="sd">        *Returns*:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># First write the commented info</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">write_extra_info</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">info_dict</span><span class="o">=</span><span class="n">info_dict</span><span class="p">)</span>
+
+        <span class="n">with</span> <span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">toml_fid</span><span class="p">:</span>
+
+            <span class="n">toml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">out_dict</span><span class="p">,</span> <span class="n">toml_fid</span><span class="p">)</span>
+</code></pre></div>
+
+</details>
+<h3 id="yamlhandler">YAMLHandler</h3>
+<div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">YAMLHandler</span><span class="p">(</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="n">YAMLHandler</span><span class="p">(</span><span class="n">Handler</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">    </span><span class="ss">&quot;&quot;&quot;YAML class for loading YAML config files</span>
+
+<span class="ss">    Base YAML class</span>
+
+<span class="ss">    &quot;&quot;&quot;</span><span class="w"></span>
+
+<span class="w">    </span><span class="err">#</span><span class="w"> </span><span class="n">override</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="n">SafeLoader</span><span class="w"> </span><span class="n">behavior</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">correctly</span><span class="w"></span>
+
+<span class="w">    </span><span class="err">#</span><span class="w"> </span><span class="n">interpret</span><span class="w"> </span><span class="mf">1e1</span><span class="w"> </span><span class="p">(</span><span class="k">as</span><span class="w"> </span><span class="n">opposed</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="mf">1.e+1</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="mi">10</span><span class="w"></span>
+
+<span class="w">    </span><span class="err">#</span><span class="w"> </span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="n">stackoverflow</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">questions</span><span class="o">/</span><span class="mi">30458977</span><span class="o">/</span><span class="n">yaml</span><span class="o">-</span><span class="n">loads</span><span class="o">-</span><span class="mf">5e-6</span><span class="o">-</span><span class="k">as</span><span class="o">-</span><span class="n">string</span><span class="o">-</span><span class="ow">and</span><span class="o">-</span><span class="ow">not</span><span class="o">-</span><span class="n">a</span><span class="o">-</span><span class="n">number</span><span class="o">/</span><span class="mi">30462009</span><span class="n">#30462009</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">yaml</span><span class="p">.</span><span class="n">SafeLoader</span><span class="p">.</span><span class="n">add_implicit_resolver</span><span class="p">(</span><span class="w"></span>
+
+<span class="w">        </span><span class="n">u</span><span class="s1">&#39;tag:yaml.org,2002:float&#39;</span><span class="p">,</span><span class="w"></span>
+
+<span class="w">        </span><span class="n">re</span><span class="p">.</span><span class="n">compile</span><span class="p">(</span><span class="n">u</span><span class="s1">&#39;&#39;&#39;^(?:</span>
+
+<span class="s1">         [-+]?(?:[0-9][0-9_]*)\\.[0-9_]*(?:[eE][-+]?[0-9]+)?</span>
+
+<span class="s1">        |[-+]?(?:[0-9][0-9_]*)(?:[eE][-+]?[0-9]+)</span>
+
+<span class="s1">        |\\.[0-9_]+(?:[eE][-+][0-9]+)?</span>
+
+<span class="s1">        |[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\\.[0-9_]*</span>
+
+<span class="s1">        |[-+]?\\.(?:inf|Inf|INF)</span>
+
+<span class="s1">        |\\.(?:nan|NaN|NAN))$&#39;&#39;&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">re</span><span class="p">.</span><span class="n">X</span><span class="p">),</span><span class="w"></span>
+
+<span class="w">        </span><span class="n">list</span><span class="p">(</span><span class="n">u</span><span class="s1">&#39;-+0123456789.&#39;</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">    </span><span class="p">)</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="k">load</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="k">path</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">        </span><span class="ss">&quot;&quot;&quot;YAML load function</span>
+
+<span class="ss">        *Args*:</span>
+
+<span class="ss">            path: path to YAML file</span>
+
+<span class="ss">        *Returns*:</span>
+
+<span class="ss">            base_payload: dictionary of read file</span>
+
+<span class="ss">        &quot;&quot;&quot;</span><span class="w"></span>
+
+<span class="w">        </span><span class="n">file_contents</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">open</span><span class="p">(</span><span class="k">path</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;r&#39;</span><span class="p">).</span><span class="k">read</span><span class="p">()</span><span class="w"></span>
+
+<span class="w">        </span><span class="n">file_contents</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">re</span><span class="p">.</span><span class="n">sub</span><span class="p">(</span><span class="n">r</span><span class="s1">&#39;--([a-zA-Z0-9_]*)&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="s1">&#39;\g&lt;1&gt;: True&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">file_contents</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">        </span><span class="n">base_payload</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">yaml</span><span class="p">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file_contents</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">base_payload</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="k">save</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">out_dict</span><span class="p">,</span><span class="w"> </span><span class="n">info_dict</span><span class="p">,</span><span class="w"> </span><span class="k">path</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">        </span><span class="ss">&quot;&quot;&quot;Write function for YAML type</span>
+
+<span class="ss">        *Args*:</span>
+
+<span class="ss">            out_dict: payload to write</span>
+
+<span class="ss">            info_dict: info payload to write</span>
+
+<span class="ss">            path: path to write out</span>
+
+<span class="ss">        *Returns*:</span>
+
+<span class="ss">        &quot;&quot;&quot;</span><span class="w"></span>
+
+<span class="w">        </span><span class="err">#</span><span class="w"> </span><span class="k">First</span><span class="w"> </span><span class="k">write</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">commented</span><span class="w"> </span><span class="n">info</span><span class="w"></span>
+
+<span class="w">        </span><span class="n">self</span><span class="p">.</span><span class="n">write_extra_info</span><span class="p">(</span><span class="k">path</span><span class="o">=</span><span class="k">path</span><span class="p">,</span><span class="w"> </span><span class="n">info_dict</span><span class="o">=</span><span class="n">info_dict</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">        </span><span class="err">#</span><span class="w"> </span><span class="n">Remove</span><span class="w"> </span><span class="n">aliases</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">YAML</span><span class="w"> </span><span class="k">dump</span><span class="w"></span>
+
+<span class="w">        </span><span class="n">yaml</span><span class="p">.</span><span class="n">Dumper</span><span class="p">.</span><span class="n">ignore_aliases</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lambda</span><span class="w"> </span><span class="o">*</span><span class="nl">args</span><span class="p">:</span><span class="w"> </span><span class="k">True</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">with</span><span class="w"> </span><span class="k">open</span><span class="p">(</span><span class="k">path</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;a&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nl">yaml_fid</span><span class="p">:</span><span class="w"></span>
+
+<span class="w">            </span><span class="n">yaml</span><span class="p">.</span><span class="n">safe_dump</span><span class="p">(</span><span class="n">out_dict</span><span class="p">,</span><span class="w"> </span><span class="n">yaml_fid</span><span class="p">,</span><span class="w"> </span><span class="n">default_flow_style</span><span class="o">=</span><span class="k">False</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+
+</details>
+<hr />
+<h4 id="ancestors-in-mro_3">Ancestors (in MRO)</h4>
+<ul>
+<li>spock.handlers.Handler</li>
+<li>abc.ABC</li>
+</ul>
+<h4 id="static-methods_3">Static methods</h4>
+<h4 id="write_extra_info_3">write_extra_info</h4>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">write_extra_info</span><span class="p">(</span>
+    <span class="n">path</span><span class="p">,</span>
+    <span class="n">info_dict</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Writes extra info to commented newlines</p>
+<p><em>Args</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">path</span><span class="p">:</span> <span class="n">path</span> <span class="n">to</span> <span class="n">write</span> <span class="n">out</span>
+<span class="n">info_dict</span><span class="p">:</span> <span class="n">info</span> <span class="n">payload</span> <span class="n">to</span> <span class="n">write</span>
+</code></pre></div>
+
+<p><em>Returns</em>:</p>
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code>    <span class="err">@</span><span class="n">staticmethod</span>
+
+    <span class="n">def</span> <span class="n">write_extra_info</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">info_dict</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Writes extra info to commented newlines</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">            path: path to write out</span>
+
+<span class="sd">            info_dict: info payload to write</span>
+
+<span class="sd">        *Returns*:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Write the commented info as new lines</span>
+
+        <span class="n">with</span> <span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fid</span><span class="p">:</span>
+
+            <span class="c1"># Write a spock header</span>
+
+            <span class="n">fid</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;# Spock Version: {__version__}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Write info dict if not None</span>
+
+            <span class="k">if</span> <span class="n">info_dict</span> <span class="k">is</span> <span class="ow">not</span> <span class="n">None</span><span class="p">:</span>
+
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">info_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                    <span class="n">fid</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;{k}: {v}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="n">fid</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+</details>
+<h4 id="methods_3">Methods</h4>
+<h4 id="load_3">load</h4>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">load</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">path</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>YAML load function</p>
+<p><em>Args</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">path</span><span class="o">:</span> <span class="n">path</span> <span class="n">to</span> <span class="n">YAML</span> <span class="n">file</span>
+</code></pre></div>
+
+<p><em>Returns</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">base_payload</span><span class="p">:</span> <span class="n">dictionary</span> <span class="n">of</span> <span class="n">read</span> <span class="n">file</span>
+</code></pre></div>
+
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code>    <span class="n">def</span> <span class="nb">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;YAML load function</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">            path: path to YAML file</span>
+
+<span class="sd">        *Returns*:</span>
+
+<span class="sd">            base_payload: dictionary of read file</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">file_contents</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+        <span class="n">file_contents</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;--([a-zA-Z0-9_]*)&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;\g&lt;1&gt;: True&#39;</span><span class="p">,</span> <span class="n">file_contents</span><span class="p">)</span>
+
+        <span class="n">base_payload</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file_contents</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">base_payload</span>
+</code></pre></div>
+
+</details>
+<h4 id="save_3">save</h4>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">save</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">out_dict</span><span class="p">,</span>
+    <span class="n">info_dict</span><span class="p">,</span>
+    <span class="n">path</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Write function for YAML type</p>
+<p><em>Args</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">out_dict</span><span class="p">:</span> <span class="n">payload</span> <span class="n">to</span> <span class="n">write</span>
+<span class="n">info_dict</span><span class="p">:</span> <span class="n">info</span> <span class="n">payload</span> <span class="n">to</span> <span class="n">write</span>
+<span class="n">path</span><span class="p">:</span> <span class="n">path</span> <span class="n">to</span> <span class="n">write</span> <span class="n">out</span>
+</code></pre></div>
+
+<p><em>Returns</em>:</p>
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code>    <span class="n">def</span> <span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out_dict</span><span class="p">,</span> <span class="n">info_dict</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Write function for YAML type</span>
+
+<span class="sd">        *Args*:</span>
+
+<span class="sd">            out_dict: payload to write</span>
+
+<span class="sd">            info_dict: info payload to write</span>
+
+<span class="sd">            path: path to write out</span>
+
+<span class="sd">        *Returns*:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># First write the commented info</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">write_extra_info</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">info_dict</span><span class="o">=</span><span class="n">info_dict</span><span class="p">)</span>
+
+        <span class="c1"># Remove aliases in YAML dump</span>
+
+        <span class="n">yaml</span><span class="o">.</span><span class="n">Dumper</span><span class="o">.</span><span class="n">ignore_aliases</span> <span class="o">=</span> <span class="n">lambda</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">True</span>
+
+        <span class="n">with</span> <span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">yaml_fid</span><span class="p">:</span>
+
+            <span class="n">yaml</span><span class="o">.</span><span class="n">safe_dump</span><span class="p">(</span><span class="n">out_dict</span><span class="p">,</span> <span class="n">yaml_fid</span><span class="p">,</span> <span class="n">default_flow_style</span><span class="o">=</span><span class="n">False</span><span class="p">)</span>
+</code></pre></div>
+
+</details>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../config/" title="Config" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Config
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../" title="Index" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Index
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Powered by
+        <a href="http://timothycrosley.github.io/portray">portray.</a>
+        You too can
+        <a href="http://timothycrosley.github.io/portray">
+          portray</a>
+        your Python project well using automatic documentation.
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../../assets/javascripts/workers/search.fe42c31b.min.js", "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.d892486b.min.js"></script>
+      
+    
+  </body>
+</html>
