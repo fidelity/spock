@@ -23,8 +23,8 @@ class AttrPayload(BasePayload):
         _loaders: maps of each file extension to the loader class
 
     """
-    def __init__(self):
-        super().__init__()
+    def __init__(self, s3_config=None):
+        super().__init__(s3_config=s3_config)
 
     def __call__(self, *args, **kwargs):
         """Call to allow self chaining
@@ -39,7 +39,7 @@ class AttrPayload(BasePayload):
             Payload: instance of self
 
         """
-        return AttrPayload()
+        return AttrPayload(*args, **kwargs)
 
     @staticmethod
     def _update_payload(base_payload, input_classes, payload):

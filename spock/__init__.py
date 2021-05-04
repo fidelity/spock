@@ -10,8 +10,9 @@ Please refer to the documentation provided in the README.md
 """
 
 from spock._version import get_versions
+from spock.backend.s3.utils import S3Config
 
-__all__ = ["args", "builder", "config"]
+__all__ = ["args", "builder", "config", "S3Config"]
 
 __version__ = get_versions()['version']
 del get_versions

@@ -10,7 +10,9 @@ from abc import abstractmethod
 import json
 import re
 from spock import __version__
+from spock.utils import check_path_s3
 import toml
+import typing
 from warnings import warn
 import yaml
 
@@ -21,9 +23,27 @@ class Handler(ABC):
     ABC for loaders
 
     """
-    @abstractmethod
-    def load(self, path):
+    def load(self, path: str, s3_config=None) -> typing.Dict:
         """Load function for file type
+
+        This handles s3 path conversion for all handler types pre load call
+
+        *Args*:
+
+            path: path to file
+            s3_config: optional s3 config object if using s3 storage
+
+        *Returns*:
+
+            dictionary of read file
+
+        """
+        path = self._handle_possible_s3_load_path(path=path, s3_config=s3_config)
+        return self._load(path=path)
+
+    @abstractmethod
+    def _load(self, path: str) -> typing.Dict:
+        """Private load function for file type
 
         *Args*:
 
@@ -31,12 +51,13 @@ class Handler(ABC):
 
         *Returns*:
 
+            dictionary of read file
 
         """
         raise NotImplementedError
 
     @abstractmethod
-    def save(self, out_dict, info_dict, path):
+    def save(self, out_dict: typing.Dict, info_dict: typing.Optional[typing.Dict], path: str, s3_config=None):
         """Write function for file type
 
         *Args*:
@@ -49,6 +70,32 @@ class Handler(ABC):
 
         """
         raise NotImplementedError
+
+    @staticmethod
+    def _handle_possible_s3_load_path(path: str, s3_config=None) -> str:
+        """Handles the possibility of having to handle a S3 file
+
+        Checks to see if it detects a S3 uri and if so triggers imports of s3 functionality and handles the file
+        download
+
+        *Args*:
+
+            path: spock config path
+            s3_config: optional s3 configuration object
+
+        *Returns*:
+
+            path: current path for the configuration file
+
+        """
+        is_s3 = check_path_s3(path=path)
+        if is_s3:
+            try:
+                from spock.backend.s3.utils import handle_s3_load_path
+                path = handle_s3_load_path(path=path, s3_config=s3_config)
+            except ImportError:
+                print('Error importing s3 utils after detecting s3:// path')
+        return path
 
     @staticmethod
     def write_extra_info(path, info_dict):
@@ -94,7 +141,7 @@ class YAMLHandler(Handler):
         list(u'-+0123456789.')
     )
 
-    def load(self, path):
+    def _load(self, path: str) -> typing.Dict:
         """YAML load function
 
         *Args*:
@@ -111,7 +158,7 @@ class YAMLHandler(Handler):
         base_payload = yaml.safe_load(file_contents)
         return base_payload
 
-    def save(self, out_dict, info_dict, path):
+    def save(self, out_dict: typing.Dict, info_dict: typing.Optional[typing.Dict], path: str, s3_config=None):
         """Write function for YAML type
 
         *Args*:
@@ -137,7 +184,7 @@ class TOMLHandler(Handler):
     Base TOML class
 
     """
-    def load(self, path):
+    def _load(self, path: str) -> typing.Dict:
         """TOML load function
 
         *Args*:
@@ -152,7 +199,7 @@ class TOMLHandler(Handler):
         base_payload = toml.load(path)
         return base_payload
 
-    def save(self, out_dict, info_dict, path):
+    def save(self, out_dict: typing.Dict, info_dict: typing.Optional[typing.Dict], path: str, s3_config=None):
         """Write function for TOML type
 
         *Args*:
@@ -176,7 +223,7 @@ class JSONHandler(Handler):
     Base JSON class
 
     """
-    def load(self, path):
+    def _load(self, path: str) -> typing.Dict:
         """JSON load function
 
         *Args*:
@@ -192,7 +239,7 @@ class JSONHandler(Handler):
             base_payload = json.load(json_fid)
         return base_payload
 
-    def save(self, out_dict, info_dict, path):
+    def save(self, out_dict: typing.Dict, info_dict: typing.Optional[typing.Dict], path: str, s3_config=None):
         """Write function for JSON type
 
         *Args*:

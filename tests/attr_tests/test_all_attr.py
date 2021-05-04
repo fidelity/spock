@@ -648,7 +648,7 @@ class TestInvalidExtensionTypeRaise:
                                     './tests/conf/yaml/test.yaml'])
             config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder')
             # Test the chained version
-            with pytest.raises(ValueError):
+            with pytest.raises(TypeError):
                 config.save(user_specified_path=f'{str(tmp_path)}/foo.bar/fizz.buzz/', file_extension='.foo').generate()
 
 

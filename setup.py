@@ -44,5 +44,6 @@ setuptools.setup(
     keywords=['configuration', 'argparse', 'parameters', 'machine learning', 'deep learning', 'reproducibility'],
     packages=setuptools.find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
     python_requires='>=3.6',
-    install_requires=install_reqs
+    install_requires=install_reqs,
+    extras_require={'s3': ['boto3', 'botocore', 'hurry.filesize']}
 )
