@@ -15,7 +15,6 @@ except ImportError:
 from hurry.filesize import size
 import os
 from urllib.parse import urlparse
-import re
 import sys
 import typing
 

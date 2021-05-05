@@ -91,7 +91,7 @@ class Handler(ABC):
         is_s3 = check_path_s3(path=path)
         if is_s3:
             try:
-                from spock.backend.s3.utils import handle_s3_load_path
+                from spock.addons.s3.utils import handle_s3_load_path
                 path = handle_s3_load_path(path=path, s3_config=s3_config)
             except ImportError:
                 print('Error importing s3 utils after detecting s3:// path')
