@@ -136,13 +136,14 @@ class Handler(ABC):
 
         Checks to see if it detects a S3 uri and if so generates a tmp location to write the file to pre-upload
 
-        Args:
+        *Args*:
+
             path: save path
             name: spock generated file name
             create_path: create the path for non s3 data
             s3_config: s3 config object
 
-        Returns:
+        *Returns*:
 
         """
         is_s3 = check_path_s3(path=path)

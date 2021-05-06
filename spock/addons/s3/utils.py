@@ -64,7 +64,7 @@ def handle_s3_save_path(temp_path: str, s3_path: str, name: str, s3_config: S3Co
         name: spock generated filename
         s3_config: s3_config object
 
-    Returns:
+    *Returns*:
 
     """
     if s3_config is None:
@@ -143,14 +143,15 @@ def upload_s3(bucket: str, obj: str, temp_path: str, s3_session: BaseClient,
               upload_config: S3UploadConfig):
     """Attempts to upload the local file to the S3 uri using any extra arguments to the upload
 
-    Args:
+    *Args*:
+
         bucket: s3 bucket
         obj: s3 object
         temp_path: temporary path of the config file
         s3_session: current s3 session
         upload_config: S3UploadConfig with extra options for the file transfer
 
-    Returns:
+    *Returns*:
 
     """
     try:
