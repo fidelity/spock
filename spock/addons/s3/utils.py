@@ -15,29 +15,11 @@ except ImportError:
 from hurry.filesize import size
 import os
 from urllib.parse import urlparse
+from spock.addons.s3.configs import S3Config
+from spock.addons.s3.configs import S3DownloadConfig
+from spock.addons.s3.configs import S3UploadConfig
 import sys
 import typing
-
-
-@attr.s(auto_attribs=True)
-class S3Config:
-    """Configuration class for S3 support
-
-    *Attributes*:
-
-        session: instantiated boto3 session object
-        s3_session: automatically generated s3 client from the boto3 session
-        kms_arn: AWS KMS key ARN (optional)
-        temp_folder: temporary working folder to write/read spock configuration(s) (optional: defaults to /tmp)
-
-    """
-    session: boto3.Session
-    s3_session: BaseClient = attr.ib(init=False)
-    kms_arn: typing.Optional[str] = None
-    temp_folder: typing.Optional[str] = '/tmp/'
-
-    def __attrs_post_init__(self):
-        self.s3_session = self.session.client('s3')
 
 
 def handle_s3_load_path(path: str, s3_config: S3Config) -> str:
@@ -57,14 +39,29 @@ def handle_s3_load_path(path: str, s3_config: S3Config) -> str:
 
     """
     if s3_config is None:
-        raise ValueError('Missing S3Config object which is necessary to handle S3 style paths')
+        raise ValueError('Load from S3 -- Missing S3Config object which is necessary to handle S3 style paths')
     bucket, obj, fid = get_s3_bucket_object_name(s3_path=path)
     # Construct the full temp path
     temp_path = f'{s3_config.temp_folder}/{fid}'
     # Strip double slashes if exist
     temp_path = temp_path.replace(r'//', r'/')
-    temp_path = download_s3(bucket=bucket, obj=obj, temp_path=temp_path, s3_session=s3_config.s3_session)
+    temp_path = download_s3(
+        bucket=bucket, obj=obj, temp_path=temp_path, s3_session=s3_config.s3_session,
+        download_config=s3_config.download_config
+    )
     return temp_path
+
+
+def handle_s3_save_path(temp_path: str, s3_path: str, name: str, s3_config: S3Config):
+    if s3_config is None:
+        raise ValueError('Save to S3 -- Missing S3Config object which is necessary to handle S3 style paths')
+    # Fix posix strip
+    s3_path = s3_path.replace('s3:/', 's3://')
+    bucket, obj, fid = get_s3_bucket_object_name(f'{s3_path}/{name}')
+    upload_s3(
+        bucket=bucket, obj=obj, temp_path=temp_path,
+        s3_session=s3_config.s3_session, upload_config=s3_config.upload_config
+    )
 
 
 def get_s3_bucket_object_name(s3_path: str) -> typing.Tuple[str, str, str]:
@@ -85,7 +82,8 @@ def get_s3_bucket_object_name(s3_path: str) -> typing.Tuple[str, str, str]:
     return parsed.netloc, parsed.path.lstrip('/'), os.path.basename(parsed.path)
 
 
-def download_s3(bucket: str, obj: str, temp_path: str, s3_session: BaseClient) -> str:
+def download_s3(bucket: str, obj: str, temp_path: str, s3_session: BaseClient,
+                download_config: S3DownloadConfig) -> str:
     """Attempts to download the file from the S3 uri to a temp location
 
     *Args*:
@@ -101,7 +99,9 @@ def download_s3(bucket: str, obj: str, temp_path: str, s3_session: BaseClient) -
 
     """
     try:
-        file_size = s3_session.head_object(Bucket=bucket, Key=obj)['ContentLength']
+        # Unroll the extra options for those values that are not None
+        extra_options = {k: v for k, v in attr.asdict(download_config).items() if v is not None}
+        file_size = s3_session.head_object(Bucket=bucket, Key=obj, **extra_options)['ContentLength']
         print(f'Attempting to download s3://{bucket}/{obj} (size: {size(file_size)})')
         current_progress = 0
         n_ticks = 50
@@ -116,7 +116,7 @@ def download_s3(bucket: str, obj: str, temp_path: str, s3_session: BaseClient) -
             sys.stdout.flush()
             sys.stdout.write('\n\n')
         # Download with the progress callback
-        s3_session.download_file(bucket, obj, temp_path, Callback=_s3_progress_bar)
+        s3_session.download_file(bucket, obj, temp_path, Callback=_s3_progress_bar, ExtraArgs=extra_options)
         return temp_path
     except IOError:
         print(f'Failed to download file from S3 '
@@ -124,7 +124,28 @@ def download_s3(bucket: str, obj: str, temp_path: str, s3_session: BaseClient) -
               f'and write to {temp_path}')
 
 
-def upload_s3(self):
-    # Here it should upload to S3 from the written path (/tmp?)
-    # How to manage KMS or if file is encrypted? Config obj? Would the session have it already
-    pass
+def upload_s3(bucket: str, obj: str, temp_path: str, s3_session: BaseClient,
+              upload_config: S3UploadConfig):
+    try:
+        # Unroll the extra options for those values that are not None
+        extra_options = {k: v for k, v in attr.asdict(upload_config).items() if v is not None}
+        file_size = os.path.getsize(temp_path)
+        print(f'Attempting to upload s3://{bucket}/{obj} (size: {size(file_size)})')
+        current_progress = 0
+        n_ticks = 50
+
+        def _s3_progress_bar(chunk):
+            nonlocal current_progress
+            # Increment progress
+            current_progress += chunk
+            done = int(n_ticks * (current_progress / file_size))
+            sys.stdout.write(f"\r[%s%s] "
+                             f"{int(current_progress/file_size) * 100}%%" % ('=' * done, ' ' * (n_ticks - done)))
+            sys.stdout.flush()
+            sys.stdout.write('\n\n')
+        # Upload with progress callback
+        s3_session.upload_file(temp_path, bucket, obj, Callback=_s3_progress_bar, ExtraArgs=extra_options)
+    except IOError:
+        print(f'Failed to upload file to S3 '
+              f'(bucket: {bucket}, object: {obj}) '
+              f'from {temp_path}')

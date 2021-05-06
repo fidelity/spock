@@ -97,21 +97,21 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
         """
         # Check extension
         self._check_extension(file_extension=file_extension)
-        # Make the filename
-        fname = str(uuid1()) if file_name is None else file_name
-        name = f'{fname}.spock.cfg{file_extension}'
-        fid = path / name
+        # Make the filename -- always append a uuid for unique-ness
+        uuid_str = str(uuid1())
+        fname = '' if file_name is None else f'{file_name}.'
+        name = f'{fname}{uuid_str}.spock.cfg{file_extension}'
         # Fix up values -- parameters
         out_dict = self._clean_up_values(payload, file_extension)
         # Get extra info
         extra_dict = add_info() if extra_info else None
         try:
-            if not os.path.exists(path) and create_save_path:
-                os.makedirs(path)
-            with open(fid, 'w') as file_out:
-                self._supported_extensions.get(file_extension)().save(out_dict, extra_dict, file_out)
+            self._supported_extensions.get(file_extension)().save(
+                out_dict=out_dict, info_dict=extra_dict, path=str(path), name=name,
+                create_path=create_save_path, s3_config=self._s3_config
+            )
         except OSError as e:
-            print(f'Not a valid file path to write to: {fid}')
+            print(f'Unable to write to given path: {path / name}')
             raise e
 
     @abstractmethod

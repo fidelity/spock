@@ -4,12 +4,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from attr.exceptions import FrozenInstanceError
+import datetime
 import glob
 import os
 import pytest
 from spock.builder import ConfigArgBuilder
 from spock.config import isinstance_spock
 from tests.attr_tests.attr_configs_test import *
+import re
 import sys
 
 
@@ -605,15 +607,22 @@ class TestYAMLWriterSavePath:
                                     './tests/conf/yaml/test_save_path.yaml'])
             config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder')
             # Test the chained version
-            config_values = config.save(file_extension='.yaml', file_name='pytest').generate()
-            check_path = f'{str(config_values.TypeConfig.save_path)}/pytest.spock.cfg.yaml'
-            fname = glob.glob(check_path)[0]
+            now = datetime.datetime.now()
+            curr_int_time = int(f'{now.year}{now.month}{now.day}{now.hour}{now.second}')
+
+            config_values = config.save(file_extension='.yaml', file_name=f'pytest.{curr_int_time}').generate()
+            yaml_regex = re.compile(fr'pytest.{curr_int_time}.'
+                                    fr'[a-fA-F0-9]{{8}}-[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{4}}-'
+                                    fr'[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{12}}.spock.cfg.yaml')
+            matches = [re.fullmatch(yaml_regex, val) for val in os.listdir(str(config_values.TypeConfig.save_path))
+                       if re.fullmatch(yaml_regex, val) is not None]
+            fname = f'{str(config_values.TypeConfig.save_path)}/{matches[0].string}'
             with open(fname, 'r') as fin:
                 print(fin.read())
-            assert os.path.exists(check_path)
+            assert os.path.exists(fname)
             # Clean up if assert is good
-            if os.path.exists(check_path):
-                os.remove(check_path)
+            if os.path.exists(fname):
+                os.remove(fname)
 
 
 class TestYAMLWriterNoPath:

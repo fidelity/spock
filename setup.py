@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+
+# Copyright 2019 FMR LLC <opensource@fidelity.com>
+# SPDX-License-Identifier: Apache-2.0
+
 """Spock Setup"""
 
 from pkg_resources import parse_requirements
@@ -45,5 +49,5 @@ setuptools.setup(
     packages=setuptools.find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
     python_requires='>=3.6',
     install_requires=install_reqs,
-    extras_require={'s3': ['boto3', 'botocore', 'hurry.filesize']}
+    extras_require={'s3': ['boto3', 'botocore', 's3transfer', 'hurry.filesize']}
 )

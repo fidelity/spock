@@ -36,8 +36,8 @@ def check_path_s3(path: str) -> bool:
         boolean of regex match
 
     """
-    # Make a case insensitive s3 regex
-    s3_regex = re.compile(r'(?i)^s3://').search(path)
+    # Make a case insensitive s3 regex with single or double forward slash (due to posix stripping)
+    s3_regex = re.compile(r'(?i)^s3://?').search(path)
     # If it returns an object then the path is an s3 style reference
     return s3_regex is not None
 

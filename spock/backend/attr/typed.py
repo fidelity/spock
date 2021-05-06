@@ -306,7 +306,7 @@ def _type_katra(typed, default=None, optional=False):
     elif isinstance(typed, _GenericAlias):
         name = _get_name_py_version(typed=typed)
     else:
-        raise TypeError('Encountered an uxpected type in _type_katra')
+        raise TypeError('Encountered an unexpected type in _type_katra')
     special_key = None
     # Default booleans to false and optional due to the nature of a boolean
     if isinstance(typed, type) and name == "bool":
