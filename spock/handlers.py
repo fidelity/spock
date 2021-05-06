@@ -61,11 +61,15 @@ class Handler(ABC):
              create_path: bool = False, s3_config=None):
         """Write function for file type
 
+        This will handle local or s3 writes with the boolean is_s3 flag. If detected it will conditionally import
+        the necessary addons to handle the upload
+
         *Args*:
 
             out_dict: payload to write
             info_dict: info payload to write
             path: path to write out
+            name: spock generated file name
             create_path: boolean to create the path if non-existent (for non S3)
             s3_config: optional s3 config object if using s3 storage
 
@@ -101,7 +105,7 @@ class Handler(ABC):
 
     @staticmethod
     def _handle_possible_s3_load_path(path: str, s3_config=None) -> str:
-        """Handles the possibility of having to handle a S3 file
+        """Handles the possibility of having to handle loading from a S3 path
 
         Checks to see if it detects a S3 uri and if so triggers imports of s3 functionality and handles the file
         download
@@ -128,8 +132,19 @@ class Handler(ABC):
     @staticmethod
     def _handle_possible_s3_save_path(path: str, name: str, create_path: bool,
                                       s3_config=None) -> typing.Tuple[str, bool]:
-        # Posix path will strip multiple forward slashes so map back
-        # path = path.replace('s3:/', 's3://')
+        """Handles the possibility of having to save to a S3 path
+
+        Checks to see if it detects a S3 uri and if so generates a tmp location to write the file to pre-upload
+
+        Args:
+            path: save path
+            name: spock generated file name
+            create_path: create the path for non s3 data
+            s3_config: s3 config object
+
+        Returns:
+
+        """
         is_s3 = check_path_s3(path=path)
         if is_s3:
             write_path = f'{s3_config.temp_folder}/{name}'

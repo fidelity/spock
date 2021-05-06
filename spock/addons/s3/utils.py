@@ -53,6 +53,20 @@ def handle_s3_load_path(path: str, s3_config: S3Config) -> str:
 
 
 def handle_s3_save_path(temp_path: str, s3_path: str, name: str, s3_config: S3Config):
+    """Handles saving to S3 uri
+
+    Points to the local spock configuration file and handles getting it up to S3
+
+    *Args*:
+
+        temp_path: the temporary path the spock config was written out to locally
+        s3_path: base s3 uri
+        name: spock generated filename
+        s3_config: s3_config object
+
+    Returns:
+
+    """
     if s3_config is None:
         raise ValueError('Save to S3 -- Missing S3Config object which is necessary to handle S3 style paths')
     # Fix posix strip
@@ -84,7 +98,7 @@ def get_s3_bucket_object_name(s3_path: str) -> typing.Tuple[str, str, str]:
 
 def download_s3(bucket: str, obj: str, temp_path: str, s3_session: BaseClient,
                 download_config: S3DownloadConfig) -> str:
-    """Attempts to download the file from the S3 uri to a temp location
+    """Attempts to download the file from the S3 uri to a temp location using any extra arguments to the download
 
     *Args*:
 
@@ -92,6 +106,7 @@ def download_s3(bucket: str, obj: str, temp_path: str, s3_session: BaseClient,
         obj: s3 object
         temp_path: local temporary path to write file
         s3_session: current s3 session
+        download_config: S3DownloadConfig with extra options for the file transfer
 
     *Returns*:
 
@@ -126,6 +141,18 @@ def download_s3(bucket: str, obj: str, temp_path: str, s3_session: BaseClient,
 
 def upload_s3(bucket: str, obj: str, temp_path: str, s3_session: BaseClient,
               upload_config: S3UploadConfig):
+    """Attempts to upload the local file to the S3 uri using any extra arguments to the upload
+
+    Args:
+        bucket: s3 bucket
+        obj: s3 object
+        temp_path: temporary path of the config file
+        s3_session: current s3 session
+        upload_config: S3UploadConfig with extra options for the file transfer
+
+    Returns:
+
+    """
     try:
         # Unroll the extra options for those values that are not None
         extra_options = {k: v for k, v in attr.asdict(upload_config).items() if v is not None}
