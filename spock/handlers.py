@@ -148,6 +148,8 @@ class Handler(ABC):
         """
         is_s3 = check_path_s3(path=path)
         if is_s3:
+            if s3_config is None:
+                raise ValueError('Save to S3 -- Missing S3Config object which is necessary to handle S3 style paths')
             write_path = f'{s3_config.temp_folder}/{name}'
             # Strip double slashes if exist
             write_path = write_path.replace(r'//', r'/')

@@ -15,6 +15,9 @@ with open('README.md', 'r') as fid:
 with open('REQUIREMENTS.txt', 'r') as fid:
     install_reqs = [str(req) for req in parse_requirements(fid)]
 
+with open('S3_REQUIREMENTS.txt', 'r') as fid:
+    s3_reqs = [str(req) for req in parse_requirements(fid)]
+
 setuptools.setup(
     name='spock-config',
     description='Spock is a framework designed to help manage complex parameter configurations for Python applications',
@@ -49,5 +52,5 @@ setuptools.setup(
     packages=setuptools.find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
     python_requires='>=3.6',
     install_requires=install_reqs,
-    extras_require={'s3': ['boto3', 'botocore', 's3transfer', 'hurry.filesize']}
+    extras_require={'s3': s3_reqs}
 )
