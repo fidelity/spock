@@ -39,17 +39,15 @@ recent features, bugfixes, and hotfixes.
 
 See [Releases](https://github.com/fidelity/spock/releases) for more information.
 
-#### March  18th, 2021
+#### May 6th, 2021
+* Added S3 support with `pip install spock-config[s3]`
+* S3 addon supports automatically handling loading/saving from paths defined with `s3://` URI(s) by passing in an
+active `boto3.Session`
+
+#### March 18th, 2021
 
 * Support for Google docstring style annotation of `spock` class (and Enums) and attributes
 * Added in ability to print docstring annotated help information to command line with `--help` argument
-
-#### March 1st, 2021
-
-* Removed legacy backend and API (dataclasses and custom typed interface)
-* Updated markdown save call to support advanced types so that saved configurations are now valid `spock` config 
-  input files
-* Changed tuples to support length restrictions
 
 ## Documentation
 
@@ -72,6 +70,8 @@ set of parameters.
 * Tractability and Reproducibility: Save runtime parameter configuration to YAML, TOML, or JSON with a single chained 
   command (with extra runtime info such as Git info, Python version, machine FQDN, etc). The saved markdown file can be
   used as the configuration input to reproduce prior runtime configurations.
+* S3 Addon: Automatically detects `s3://` URI(s) and handles loading and saving `spock` configuration files when an
+  active `boto3.Session` is passed in (plus any additional `S3Transfer` configurations)
 
 #### Main Contributors
 

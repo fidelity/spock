@@ -12,6 +12,7 @@ from spock.backend.attr.payload import AttrPayload
 from spock.backend.attr.saver import AttrSaver
 from spock.utils import check_payload_overwrite
 from spock.utils import deep_payload_update
+import typing
 
 
 class ConfigArgBuilder:
@@ -32,13 +33,14 @@ class ConfigArgBuilder:
         _saver_obj: instance of a BaseSaver class
 
     """
-    def __init__(self, *args, configs=None, create_save_path=False, desc='', no_cmd_line=False, **kwargs):
+    def __init__(self, *args, configs: typing.Optional[typing.List] = None, create_save_path: bool = False,
+                 desc: str = '', no_cmd_line: bool = False, s3_config=None, **kwargs):
         backend = self._set_backend(args)
         self._create_save_path = create_save_path
         self._builder_obj = backend.get('builder')(
             *args, configs=configs, create_save_path=create_save_path, desc=desc, no_cmd_line=no_cmd_line, **kwargs)
-        self._payload_obj = backend.get('payload')
-        self._saver_obj = backend.get('saver')()
+        self._payload_obj = backend.get('payload')(s3_config=s3_config)
+        self._saver_obj = backend.get('saver')(s3_config=s3_config)
         try:
             self._dict_args = self._get_payload()
             self._arg_namespace = self._builder_obj.generate(self._dict_args)
@@ -74,7 +76,7 @@ class ConfigArgBuilder:
         return self._arg_namespace
 
     @staticmethod
-    def _set_backend(args):
+    def _set_backend(args: typing.List):
         """Determines which backend class to use
 
         *Args*:
@@ -133,12 +135,13 @@ class ConfigArgBuilder:
         payload = {}
         dependencies = {'paths': [], 'rel_paths': [], 'roots': []}
         for configs in args.config:
-            payload_update = self._payload_obj().payload(self._builder_obj.input_classes, configs, args, dependencies)
+            payload_update = self._payload_obj.payload(self._builder_obj.input_classes, configs, args, dependencies)
             check_payload_overwrite(payload, payload_update, configs)
             deep_payload_update(payload, payload_update)
         return payload
 
-    def save(self, file_name=None, user_specified_path=None, extra_info=True, file_extension='.yaml'):
+    def save(self, file_name: str = None, user_specified_path: str = None, extra_info: bool = True,
+             file_extension: str = '.yaml'):
         """Saves the current config setup to file with a UUID
 
         *Args*:

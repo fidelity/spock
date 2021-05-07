@@ -60,5 +60,10 @@ Motivation = "docs/Motivation.md"
     [[tool.portray.mkdocs.nav."Advanced Features"]]
     "Command Line Overrides" = "docs/advanced_features/Command-Line-Overrides.md"
 
+# Addons
+[[tool.portray.mkdocs.nav]]
+    [[tool.portray.mkdocs.nav."Addons"]]
+    "S3" = "docs/addons/S3.md"
+
 [[tool.portray.mkdocs.nav]]
 Contributing = "CONTRIBUTING.md"

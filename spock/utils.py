@@ -9,6 +9,7 @@ import ast
 import attr
 from enum import EnumMeta
 import os
+import re
 import socket
 import subprocess
 import sys
@@ -21,6 +22,24 @@ if minor < 7:
     from typing import GenericMeta as _GenericAlias
 else:
     from typing import _GenericAlias
+
+
+def check_path_s3(path: str) -> bool:
+    """Checks the given path to see if it matches the s3:// regex
+
+    *Args*:
+
+        path: a spock config path
+
+    *Returns*:
+
+        boolean of regex match
+
+    """
+    # Make a case insensitive s3 regex with single or double forward slash (due to posix stripping)
+    s3_regex = re.compile(r'(?i)^s3://?').search(path)
+    # If it returns an object then the path is an s3 style reference
+    return s3_regex is not None
 
 
 def _is_spock_instance(__obj: object):

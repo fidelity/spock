@@ -1,6 +1,7 @@
 -r REQUIREMENTS.txt
 coveralls
 coverage
+moto
 portray
 pytest
 pytest-cov

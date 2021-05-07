@@ -20,11 +20,11 @@ class AttrSaver(BaseSaver):
         _writers: maps file extension to the correct i/o handler
 
     """
-    def __init__(self):
-        super().__init__()
+    def __init__(self, s3_config=None):
+        super().__init__(s3_config=s3_config)
 
     def __call__(self, *args, **kwargs):
-        return AttrSaver()
+        return AttrSaver(*args, **kwargs)
 
     def _clean_up_values(self, payload, file_extension):
         # Dictionary to recursively write to
