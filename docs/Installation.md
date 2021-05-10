@@ -8,9 +8,14 @@
 
 ### Install/Upgrade
 
-#### Pip/PyPi
+#### PyPi
 ```bash
 pip install spock-config
+```
+
+#### w/ S3 Extension
+```bash
+pip install spock-config[s3]
 ```
 
 #### Pip From Source

@@ -25,6 +25,12 @@ Requires Python 3.6+
 pip install spock-config
 ```
 
+w/ S3 extension
+
+```bash
+pip install spock-config[s3]
+```
+
 ## Version(s)
 
 All prior versions are available on PyPi. If legacy API and backend support is needed please install a pre v2.0.0+ 
