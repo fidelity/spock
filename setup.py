@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+
+# Copyright 2019 FMR LLC <opensource@fidelity.com>
+# SPDX-License-Identifier: Apache-2.0
+
 """Spock Setup"""
 
 from pkg_resources import parse_requirements
@@ -10,6 +14,9 @@ with open('README.md', 'r') as fid:
 
 with open('REQUIREMENTS.txt', 'r') as fid:
     install_reqs = [str(req) for req in parse_requirements(fid)]
+
+with open('S3_REQUIREMENTS.txt', 'r') as fid:
+    s3_reqs = [str(req) for req in parse_requirements(fid)]
 
 setuptools.setup(
     name='spock-config',
@@ -44,5 +51,6 @@ setuptools.setup(
     keywords=['configuration', 'argparse', 'parameters', 'machine learning', 'deep learning', 'reproducibility'],
     packages=setuptools.find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
     python_requires='>=3.6',
-    install_requires=install_reqs
+    install_requires=install_reqs,
+    extras_require={'s3': s3_reqs}
 )

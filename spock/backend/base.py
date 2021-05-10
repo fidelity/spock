@@ -21,6 +21,7 @@ from spock.handlers import JSONHandler
 from spock.handlers import TOMLHandler
 from spock.handlers import YAMLHandler
 from spock.utils import add_info
+from spock.utils import check_path_s3
 from spock.utils import make_argument
 from typing import List
 
@@ -40,7 +41,26 @@ class Spockspace(argparse.Namespace):
         return yaml.dump(self.__dict__, default_flow_style=False)
 
 
-class BaseSaver(ABC):  # pylint: disable=too-few-public-methods
+class BaseHandler(ABC):
+    """Base class for saver and payload
+
+    *Attributes*:
+
+        _writers: maps file extension to the correct i/o handler
+        _s3_config: optional S3Config object to handle s3 access
+
+    """
+    def __init__(self, s3_config=None):
+        self._supported_extensions = {'.yaml': YAMLHandler, '.toml': TOMLHandler, '.json': JSONHandler}
+        self._s3_config = s3_config
+
+    def _check_extension(self, file_extension: str):
+        if file_extension not in self._supported_extensions:
+            raise TypeError(f'File extension {file_extension} not supported -- \n'
+                            f'File extension must be from {list(self._supported_extensions.keys())}')
+
+
+class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
     """Base class for saving configs
 
     Contains methods to build a correct output payload and then writes to file based on the file
@@ -49,10 +69,11 @@ class BaseSaver(ABC):  # pylint: disable=too-few-public-methods
     *Attributes*:
 
         _writers: maps file extension to the correct i/o handler
+        _s3_config: optional S3Config object to handle s3 access
 
     """
-    def __init__(self):
-        self._writers = {'.yaml': YAMLHandler, '.toml': TOMLHandler, '.json': JSONHandler}
+    def __init__(self, s3_config=None):
+        super(BaseSaver, self).__init__(s3_config=s3_config)
 
     def save(self, payload, path, file_name=None, create_save_path=False, extra_info=True, file_extension='.yaml'):  #pylint: disable=too-many-arguments
         """Writes Spock config to file
@@ -74,24 +95,23 @@ class BaseSaver(ABC):  # pylint: disable=too-few-public-methods
             None
 
         """
-        supported_extensions = list(self._writers.keys())
-        if file_extension not in self._writers:
-            raise ValueError(f'Invalid fileout extension. Expected a fileout from {supported_extensions}')
-        # Make the filename
-        fname = str(uuid1()) if file_name is None else file_name
-        name = f'{fname}.spock.cfg{file_extension}'
-        fid = path / name
+        # Check extension
+        self._check_extension(file_extension=file_extension)
+        # Make the filename -- always append a uuid for unique-ness
+        uuid_str = str(uuid1())
+        fname = '' if file_name is None else f'{file_name}.'
+        name = f'{fname}{uuid_str}.spock.cfg{file_extension}'
         # Fix up values -- parameters
         out_dict = self._clean_up_values(payload, file_extension)
         # Get extra info
         extra_dict = add_info() if extra_info else None
         try:
-            if not os.path.exists(path) and create_save_path:
-                os.makedirs(path)
-            with open(fid, 'w') as file_out:
-                self._writers.get(file_extension)().save(out_dict, extra_dict, file_out)
+            self._supported_extensions.get(file_extension)().save(
+                out_dict=out_dict, info_dict=extra_dict, path=str(path), name=name,
+                create_path=create_save_path, s3_config=self._s3_config
+            )
         except OSError as e:
-            print(f'Not a valid file path to write to: {fid}')
+            print(f'Unable to write to given path: {path / name}')
             raise e
 
     @abstractmethod
@@ -672,19 +692,20 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         return module
 
 
-class BasePayload(ABC):  # pylint: disable=too-few-public-methods
+class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
     """Handles building the payload for config file(s)
 
     This class builds out the payload from config files of multiple types. It handles various
-    file types and also composition of config files via a recursive calls
+    file types and also composition of config files via recursive calls
 
     *Attributes*:
 
         _loaders: maps of each file extension to the loader class
+        __s3_config: optional S3Config object to handle s3 access
 
     """
-    def __init__(self):
-        self._loaders = {'.yaml': YAMLHandler(), '.toml': TOMLHandler(), '.json': JSONHandler()}
+    def __init__(self, s3_config=None):
+        super(BasePayload, self).__init__(s3_config=s3_config)
 
     @staticmethod
     @abstractmethod
@@ -745,12 +766,10 @@ class BasePayload(ABC):  # pylint: disable=too-few-public-methods
         """
         # Match to loader based on file-extension
         config_extension = Path(path).suffix.lower()
-        supported_extensions = list(self._loaders.keys())
-        if config_extension not in supported_extensions:
-            raise TypeError(f'File extension {config_extension} not supported\n'
-                            f'Must be from {supported_extensions}')
+        # Verify extension
+        self._check_extension(file_extension=config_extension)
         # Load from file
-        base_payload = self._loaders.get(config_extension).load(path)
+        base_payload = self._supported_extensions.get(config_extension)().load(path, s3_config=self._s3_config)
         # Check and? update the dependencies
         deps = self._handle_dependencies(deps, path, root)
         payload = {}
@@ -796,7 +815,8 @@ class BasePayload(ABC):  # pylint: disable=too-few-public-methods
         """Handles config composition
 
         For all of the config tags in the config file this function will recursively call the payload function
-        with the composition path to get the additional payload(s) from the composed file(s)
+        with the composition path to get the additional payload(s) from the composed file(s) -- checks for file
+        validity or if it is an S3 URI via regex
 
         *Args*:
 
@@ -814,14 +834,15 @@ class BasePayload(ABC):  # pylint: disable=too-few-public-methods
         """
         included_params = {}
         for inc_path in base_payload['config']:
-            if not os.path.exists(inc_path):
-                # maybe it's relative?
-                abs_inc_path = os.path.join(os.path.dirname(path), inc_path)
+            if check_path_s3(inc_path):
+                use_path = inc_path
+            elif os.path.exists(inc_path):
+                use_path = inc_path
+            elif os.path.join(os.path.dirname(path), inc_path):
+                use_path = os.path.join(os.path.dirname(path), inc_path)
             else:
-                abs_inc_path = inc_path
-            if not os.path.exists(abs_inc_path):
-                raise RuntimeError(f'Could not find included {config_extension} file {inc_path}!')
-            included_params.update(self._payload(input_classes, abs_inc_path, deps))
+                raise RuntimeError(f'Could not find included {config_extension} file {inc_path} or is not an S3 URI!')
+            included_params.update(self._payload(input_classes, use_path, deps))
         payload.update(included_params)
         return payload
 
