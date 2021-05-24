@@ -1,9 +1,46 @@
 # Saving
 
 The current configuration of running python code can be saved to file by chaining the `save()` method before 
-the `generate()` call to the `ConfigArgBuilder` class. `spock` supports two ways to specify the path to write and the
-output file can be either YAML, TOML, or JSON (via the `file_extension` keyword argument). The saved markdown file can 
-be used as the configuration input to reproduce prior runtime configurations.
+the `generate()` call to the `ConfigArgBuilder` class. `spock` supports two different ways to specify the write path 
+and supports multiple output formats (YAML, TOML, or JSON -- via the `file_extension` keyword argument). Most 
+importantly, the saved markdown file can be used as the configuration input to reproduce prior runtime configurations.
+
+### What Does spock Save?
+
+By default `spock` will append extra information (via the `extra_info` kwarg) as well as the entire state of the 
+configuration object. Extra info includes:
+
+  - Git Info: Branch, Commit ID (SHA-1), Commit Date, Status (e.g. dirty), Origin
+  - Python Info: Executable Path, Version, Script Entrypoint
+  - Run Information: Date, Time
+  - Env Information: Machine FQDN, Run w/ Docker, Run w/ Kubernetes 
+  - Spock Version
+
+For instance, here is an example of the `tutorial.py` saved `.toml` output:
+
+```toml
+# Spock Version: v2.1.5+0.gf9bf3bc.dirty
+# Machine FQDN: XXXXX.yyy.com
+# Python Executable: /Users/XXXXX/.virtualenvs/spock/bin/python
+# Python Version: 3.8.5
+# Python Script: /XXXX/open_source/spock/examples/tutorial/basic/tutorial.py
+# Run Date: 2021-05-24
+# Run Time: 13:33:41
+# Run w/ Docker: False
+# Run w/ Kubernetes: False
+# Git Branch: master
+# Git Commit: f9bf3bca0098a98b994eaa2aeb257f0023704e32
+# Git Date: 2021-05-10 10:33:56-04:00
+# Git Status: DIRTY
+# Git Origin: https://github.com/fidelity/spock.git
+
+[ModelConfig]
+save_path = "/tmp"
+n_features = 64
+dropout = [ 0.2, 0.1,]
+hidden_sizes = [ 32, 32, 16,]
+activation = "relu"
+```
 
 ### Specify spock Special Parameter Type
 
