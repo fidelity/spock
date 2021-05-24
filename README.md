@@ -63,25 +63,27 @@ Example `spock` usage is located [here](https://github.com/fidelity/spock/blob/m
 
 ## Key Features
 
-* [Simple Declaration](basic_tutorial/Define.md): Type checked parameters are defined within a `@spock` decorated 
-  class. Supports required/optional and automatic defaults.
+* [Simple Declaration](https://fidelity.github.io/spock/basic_tutorial/Define/): Type checked parameters are defined 
+  within a `@spock` decorated class. Supports required/optional and automatic defaults.
 * Easily Managed Parameter Groups: Each class automatically generates its own object within a single namespace.
-* [Parameter Inheritance](advanced_features/Inheritance.md): Classes support inheritance allowing for complex 
-  configurations derived from a common base set of parameters.
-* [Complex Types](advanced_features/Advanced-Types.md): Nested Lists/Tuples, List/Tuples of Enum of `@spock` classes, 
-  List of repeated `@spock` classes
+* [Parameter Inheritance](https://fidelity.github.io/spock/advanced_features/Inheritance/): Classes support inheritance 
+  allowing for complex configurations derived from a common base set of parameters.
+* [Complex Types](https://fidelity.github.io/spock/advanced_features/Advanced-Types/): Nested Lists/Tuples, 
+  List/Tuples of Enum of `@spock` classes, List of repeated `@spock` classes
 * Multiple Configuration File Types: Configurations are specified from YAML, TOML, or JSON files.
-* [Hierarchical Configuration](advanced_features/Composition.md): Compose from multiple configuration files via 
-  simple include statements.
-* [Command-Line Overrides](advanced_features/Command-Line-Overrides.md): Quickly experiment by overriding a value with 
-  automatically generated command line arguments.
+* [Hierarchical Configuration](https://fidelity.github.io/spock/advanced_features/Composition/): Compose from multiple 
+  configuration files via simple include statements.
+* [Command-Line Overrides](https://fidelity.github.io/spock/advanced_features/Command-Line-Overrides/): Quickly 
+  experiment by overriding a value with automatically generated command line arguments.
 * Immutable: All classes are *frozen* preventing any misuse or accidental overwrites (to the extent they can be in 
   Python).
-* [Tractability and Reproducibility](basic_tutorial/Saving.md): Save runtime parameter configuration to YAML, TOML, 
-  or JSON with a single chained command (with extra runtime info such as Git info, Python version, machine FQDN, 
-  etc). The saved markdown file can be used as the configuration input to reproduce prior runtime configurations.
-* [S3 Addon](addons/S3.md): Automatically detects `s3://` URI(s) and handles loading and saving `spock` configuration 
-  files when an active `boto3.Session` is passed in (plus any additional `S3Transfer` configurations)
+* [Tractability and Reproducibility](https://fidelity.github.io/spock/basic_tutorial/Saving/): Save runtime parameter 
+  configuration to YAML, TOML, or JSON with a single chained command (with extra runtime info such as Git info, 
+  Python version, machine FQDN, etc). The saved markdown file can be used as the configuration input to reproduce 
+  prior runtime configurations.
+* [S3 Addon](https://fidelity.github.io/spock/addons/S3/): Automatically detects `s3://` URI(s) and handles loading 
+  and saving `spock` configuration files when an active `boto3.Session` is passed in (plus any additional 
+  `S3Transfer` configurations)
 
 #### Main Contributors
 
