@@ -3,6 +3,7 @@ extra_dirs = ["resources"]
 
 [tool.portray.mkdocs]
 repo_url = "https://github.com/fidelity/spock"
+markdown_extensions = ["pymdownx.superfences", "pymdownx.highlight"]
 
 [tool.portray.mkdocs.theme]
 favicon = "resources/images/logo_small.png"

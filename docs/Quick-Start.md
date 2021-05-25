@@ -119,7 +119,7 @@ To get help for our `spock` class and defined parameters:
 $ python simple.py --help
 ```
 
-```
+```bash
 usage: /Users/a635179/Documents/git_repos/open_source/spock/examples/quick-start/simple.py -c [--config] config1 [config2, config3, ...]
 
 Quick start example
