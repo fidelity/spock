@@ -1,8 +1,8 @@
-# This workflow will install Python dependencies, run tests and report coverage to coveralls
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+# This workflow will run isort and black linters on PRs
 
-name: coverage
+name: lint
 
+# on: workflow_dispatch
 on:
   pull_request:
     branches: [master]
@@ -10,12 +10,12 @@ on:
     branches: [master]
 
 jobs:
-  build:
+  run_lint:
+
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
-
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
@@ -29,17 +29,14 @@ jobs:
     - name: Install dependencies and dev dependencies
       run: |
         python -m pip install --upgrade pip
+        pip install -e .
         pip install -r ./requirements/DEV_REQUIREMENTS.txt
         pip install -r ./requirements/S3_REQUIREMENTS.txt
 
-    - name: Test with pytest
+    - name: Run isort linter
       run: |
-        coverage run -m pytest --cov-config=.coveragerc
-        
-    - name: Debug coverage
-      run: coverage report -m
+        isort --check . --skip="debug" --skip="versioneer.py" --skip="tests" --skip="_version.py"
 
-    - name: Upload coverage data to coveralls.io
-      run: coveralls --service=github --rcfile=.coveragerc
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Run black linter
+      run: |
+        black --check . --exclude="versioneer.py|_version.py|debug|tests"

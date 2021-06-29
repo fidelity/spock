@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright 2019 FMR LLC <opensource@fidelity.com>
+# Copyright FMR LLC <opensource@fidelity.com>
 # SPDX-License-Identifier: Apache-2.0
 
 """Handles base Spock classes"""
@@ -709,7 +709,7 @@ class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
 
     @staticmethod
     @abstractmethod
-    def _update_payload(base_payload, input_classes, payload):
+    def _update_payload(base_payload, input_classes, ignore_classes, payload):
         """Updates the payload
 
         Checks the parameters defined in the config files against the provided classes and if
@@ -719,6 +719,7 @@ class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
 
             base_payload: current payload
             input_classes: class to roll into
+            ignore_classes: list of classes to ignore
             payload: total payload
 
         *Returns*:
@@ -727,7 +728,7 @@ class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
 
         """
 
-    def payload(self, input_classes, path, cmd_args, deps):
+    def payload(self, input_classes, ignore_classes, path, cmd_args, deps):
         """Builds the payload from config files
 
         Public exposed call to build the payload and set any command line overrides
@@ -735,6 +736,7 @@ class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
         *Args*:
 
             input_classes: list of backend classes
+            ignore_classes: list of classes to ignore
             path: path to config file(s)
             cmd_args: command line overrides
             deps: dictionary of config dependencies
@@ -744,11 +746,11 @@ class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
             payload: dictionary of all mapped parameters
 
         """
-        payload = self._payload(input_classes, path, deps, root=True)
+        payload = self._payload(input_classes, ignore_classes, path, deps, root=True)
         payload = self._handle_overrides(payload, cmd_args)
         return payload
 
-    def _payload(self, input_classes, path, deps, root=False):
+    def _payload(self, input_classes, ignore_classes, path, deps, root=False):
         """Private call to construct the payload
 
         Main function call that builds out the payload from config files of multiple types. It handles
@@ -756,6 +758,7 @@ class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
 
         *Args*:
             input_classes: list of backend classes
+            ignore_classes: list of classes to ignore
             path: path to config file(s)
             deps: dictionary of config dependencies
 
@@ -776,7 +779,7 @@ class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
         if 'config' in base_payload:
             payload = self._handle_includes(
                 base_payload, config_extension, input_classes, path, payload, deps)
-        payload = self._update_payload(base_payload, input_classes, payload)
+        payload = self._update_payload(base_payload, input_classes, ignore_classes, payload)
         return payload
 
     @staticmethod

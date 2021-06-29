@@ -21,6 +21,7 @@ class TestClassCmdLineOverride:
                                     '--TypeConfig.tuple_p_float', '(11.0, 21.0)', '--TypeConfig.tuple_p_int', '(11, 21)',
                                     '--TypeConfig.tuple_p_str', "('Hooray', 'Working')",
                                     '--TypeConfig.tuple_p_bool', '(False, True)',
+                                    '--TypeConfig.tuple_p_mixed', '(5, 11.5)',
                                     '--TypeConfig.list_list_p_int', "[[11, 21], [11, 21]]",
                                     '--TypeConfig.choice_p_str', 'option_2',
                                     '--TypeConfig.choice_p_int', '20', '--TypeConfig.choice_p_float', '20.0',
@@ -48,6 +49,7 @@ class TestClassCmdLineOverride:
         assert arg_builder.TypeConfig.tuple_p_int == (11, 21)
         assert arg_builder.TypeConfig.tuple_p_str == ('Hooray', 'Working')
         assert arg_builder.TypeConfig.tuple_p_bool == (False, True)
+        assert arg_builder.TypeConfig.tuple_p_mixed == (5, 11.5)
         assert arg_builder.TypeConfig.choice_p_str == 'option_2'
         assert arg_builder.TypeConfig.choice_p_int == 20
         assert arg_builder.TypeConfig.choice_p_float == 20.0

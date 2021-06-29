@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright 2019 FMR LLC <opensource@fidelity.com>
+# Copyright FMR LLC <opensource@fidelity.com>
 # SPDX-License-Identifier: Apache-2.0
 
 """Handles the building/saving of the configurations from the Spock config classes"""
@@ -37,12 +37,13 @@ class ConfigArgBuilder:
                  desc: str = '', no_cmd_line: bool = False, s3_config=None, **kwargs):
         backend = self._set_backend(args)
         self._create_save_path = create_save_path
+        fixed_args, tune_args = self._strip_tune_parameters(args)
         self._builder_obj = backend.get('builder')(
-            *args, configs=configs, create_save_path=create_save_path, desc=desc, no_cmd_line=no_cmd_line, **kwargs)
+            *fixed_args, configs=configs, create_save_path=create_save_path, desc=desc, no_cmd_line=no_cmd_line, **kwargs)
         self._payload_obj = backend.get('payload')(s3_config=s3_config)
         self._saver_obj = backend.get('saver')(s3_config=s3_config)
         try:
-            self._dict_args = self._get_payload()
+            self._dict_args = self._get_payload(tune_args=tune_args)
             self._arg_namespace = self._builder_obj.generate(self._dict_args)
         except Exception as e:
             self._builder_obj.print_usage_and_exit(str(e), sys_exit=False)
@@ -65,8 +66,6 @@ class ConfigArgBuilder:
     def generate(self):
         """Generate method that returns the actual argument namespace
 
-        *Args*:
-
 
         *Returns*:
 
@@ -76,12 +75,12 @@ class ConfigArgBuilder:
         return self._arg_namespace
 
     @staticmethod
-    def _set_backend(args: typing.List):
+    def _set_backend(args: typing.Tuple):
         """Determines which backend class to use
 
         *Args*:
 
-            args: list of classes passed to the builder
+            args: tuple of classes passed to the builder
 
         *Returns*:
 
@@ -102,6 +101,29 @@ class ConfigArgBuilder:
             backend = {'builder': AttrBuilder, 'payload': AttrPayload, 'saver': AttrSaver}
         return backend
 
+    @staticmethod
+    def _strip_tune_parameters(args: typing.Tuple):
+        """Separates the fixed arguments from any hyper-parameter arguments
+
+        *Args*:
+
+            args: tuple of classes passed to the builder
+
+        *Returns*:
+
+            fixed_args: list of fixed args
+            tune_args: list of args destined for a tuner backend
+
+        """
+        fixed_args = []
+        tune_args = []
+        for arg in args:
+            if arg.__module__ == 'spock.backend.attr.config':
+                fixed_args.append(arg)
+            elif arg.__module__ == 'spock.addons.tune.config':
+                tune_args.append(arg)
+        return fixed_args, tune_args
+
     def _get_config_paths(self):
         """Get config paths from all methods
 
@@ -117,11 +139,15 @@ class ConfigArgBuilder:
         args = self._builder_obj.get_config_paths()
         return args
 
-    def _get_payload(self):
+    def _get_payload(self, tune_args: typing.List):
         """Get the parameter payload from the config file(s)
 
         Calls the various ways to get configs and then parses to retrieve the parameter payload - make sure to call
         deep update so as to not lose some parameters when only partially updating the payload
+
+        *Args*:
+
+            tune_args: args that were decorated for hyper-parameter tuning
 
         *Returns*:
 
@@ -135,7 +161,9 @@ class ConfigArgBuilder:
         payload = {}
         dependencies = {'paths': [], 'rel_paths': [], 'roots': []}
         for configs in args.config:
-            payload_update = self._payload_obj.payload(self._builder_obj.input_classes, configs, args, dependencies)
+            payload_update = self._payload_obj.payload(
+                self._builder_obj.input_classes, tune_args, configs, args, dependencies
+            )
             check_payload_overwrite(payload, payload_update, configs)
             deep_payload_update(payload, payload_update)
         return payload

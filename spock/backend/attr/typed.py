@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright 2019 FMR LLC <opensource@fidelity.com>
+# Copyright FMR LLC <opensource@fidelity.com>
 # SPDX-License-Identifier: Apache-2.0
 
 """Handles the definitions of arguments types for Spock (backend: attrs)"""
@@ -83,10 +83,17 @@ def _recursive_generic_validator(typed):
     """
     if hasattr(typed, '__args__'):
         # If there are more __args__ then we still need to recurse as it is still a GenericAlias
-        return_type = attr.validators.deep_iterable(
-            member_validator=_recursive_generic_validator(typed.__args__[0]),
-            iterable_validator=attr.validators.instance_of(typed.__origin__)
-        )
+        # Iterate through since there might be multiple types?
+        if len(typed.__args__) > 1:
+            return_type = attr.validators.deep_iterable(
+                member_validator=_recursive_generic_validator(typed.__args__),
+                iterable_validator=attr.validators.instance_of(typed.__origin__)
+            )
+        else:
+            return_type = attr.validators.deep_iterable(
+                member_validator=_recursive_generic_validator(typed.__args__[0]),
+                iterable_validator=attr.validators.instance_of(typed.__origin__)
+            )
         return return_type
     else:
         # If no more __args__ then we are to the base type and need to bubble up the type
@@ -372,13 +379,14 @@ def _check_generic_recursive_single_type(typed):
 
     """
     # Check if it has __args__ to look for optionality as it is a GenericAlias
-    if hasattr(typed, '__args__'):
-        if len(set(typed.__args__)) > 1:
-            type_list = [str(val) for val in typed.__args__]
-            raise TypeError(f"Passing multiple different subscript types to GenericAlias is not supported: {type_list}")
-        else:
-            for val in typed.__args__:
-                _check_generic_recursive_single_type(typed=val)
+    # if hasattr(typed, '__args__'):
+    #     if len(set(typed.__args__)) > 1:
+    #         type_list = [str(val) for val in typed.__args__]
+    #         raise TypeError(f"Passing multiple different subscript types to GenericAlias is not supported: {type_list}")
+    #     else:
+    #         for val in typed.__args__:
+    #             _check_generic_recursive_single_type(typed=val)
+    pass
 
 
 def katra(typed, default=None):

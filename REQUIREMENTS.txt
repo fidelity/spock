@@ -1,4 +1,4 @@
 attrs
 GitPython
+pytomlpp
 pyYAML
-toml

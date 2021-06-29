@@ -1,3 +1,6 @@
+[tool.isort]
+profile = "black"
+
 [tool.portray]
 extra_dirs = ["resources"]
 

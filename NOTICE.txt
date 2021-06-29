@@ -12,5 +12,5 @@ FMR LLC (https://www.fidelity.com/).
 This product relies on the following works (and the dependencies thereof), installed separately:
 - attrs | https://github.com/python-attrs/attrs | MIT License
 - GitPython | https://github.com/gitpython-developers/GitPython | BSD 3-Clause License
+- pytomlpp | https://github.com/bobfang1992/pytomlpp | MIT License
 - PyYAML | https://github.com/yaml/pyyaml | MIT License
-- toml | https://github.com/toml-lang/toml | MIT License

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright 2019 FMR LLC <opensource@fidelity.com>
+# Copyright FMR LLC <opensource@fidelity.com>
 # SPDX-License-Identifier: Apache-2.0
 
 """Spock Setup"""
@@ -15,8 +15,11 @@ with open('README.md', 'r') as fid:
 with open('REQUIREMENTS.txt', 'r') as fid:
     install_reqs = [str(req) for req in parse_requirements(fid)]
 
-with open('S3_REQUIREMENTS.txt', 'r') as fid:
+with open('./requirements/S3_REQUIREMENTS.txt', 'r') as fid:
     s3_reqs = [str(req) for req in parse_requirements(fid)]
+
+with open('./requirements/TUNE_REQUIREMENTS.txt', 'r') as fid:
+    tune_reqs = [str(req) for req in parse_requirements(fid)]
 
 setuptools.setup(
     name='spock-config',
@@ -52,5 +55,5 @@ setuptools.setup(
     packages=setuptools.find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
     python_requires='>=3.6',
     install_requires=install_reqs,
-    extras_require={'s3': s3_reqs}
+    extras_require={'s3': s3_reqs, 'tune': tune_reqs}
 )

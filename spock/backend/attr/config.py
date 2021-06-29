@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright 2019 FMR LLC <opensource@fidelity.com>
+# Copyright FMR LLC <opensource@fidelity.com>
 # SPDX-License-Identifier: Apache-2.0
 
 """Creates the spock config interface that wraps attr"""
@@ -10,7 +10,7 @@ import attr
 from spock.backend.attr.typed import katra
 
 
-def spock_attr(cls):
+def _base_attr(cls):
     """Map type hints to katras
 
     Connector function that maps type hinting style to the defined katra style which uses the more strict
@@ -24,7 +24,6 @@ def spock_attr(cls):
 
         cls: slotted attrs class that is frozen and kw only
     """
-
     # Since we are not using the @attr.s decorator we need to get the parent classes for inheritance
     # We do this by using the mro and grabbing anything that is not the first and last indices in the list and wrapping
     # it into a tuple
@@ -43,6 +42,24 @@ def spock_attr(cls):
             else:
                 default = None
             attrs_dict.update({k: katra(typed=v, default=default)})
+    return bases, attrs_dict
+
+
+def spock_attr(cls):
+    """Map type hints to katras
+
+    Connector function that maps type hinting style to the defined katra style which uses the more strict
+    attr.ib() definition
+
+    *Args*:
+
+        cls: basic class def
+
+    *Returns*:
+
+        cls: slotted attrs class that is frozen and kw only
+    """
+    bases, attrs_dict = _base_attr(cls)
     # Dynamically make an attr class
     obj = attr.make_class(name=cls.__name__, bases=bases, attrs=attrs_dict, kw_only=True, frozen=True)
     # For each class we dynamically create we need to register it within the system modules for pickle to work

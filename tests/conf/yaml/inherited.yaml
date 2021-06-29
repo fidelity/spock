@@ -24,6 +24,8 @@ tuple_p_float: [10.0, 20.0]
 tuple_p_int: [10, 20]
 # Required Tuple -- Str
 tuple_p_str: [Spock, Package]
+# Required Tuple -- mixed
+tuple_p_mixed: [5, 11.5]
 # Required Tuple -- Bool
 tuple_p_bool: [True, False]
 # Required Choice -- Str

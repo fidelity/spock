@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright 2019 FMR LLC <opensource@fidelity.com>
+# Copyright FMR LLC <opensource@fidelity.com>
 # SPDX-License-Identifier: Apache-2.0
 
 """I/O handlers for various file formats"""
@@ -12,7 +12,7 @@ import os
 import re
 from spock import __version__
 from spock.utils import check_path_s3
-import toml
+import pytomlpp
 import typing
 from warnings import warn
 import yaml
@@ -260,7 +260,7 @@ class TOMLHandler(Handler):
             base_payload: dictionary of read file
 
         """
-        base_payload = toml.load(path)
+        base_payload = pytomlpp.load(path)
         return base_payload
 
     def _save(self, out_dict: typing.Dict, info_dict: typing.Optional[typing.Dict], path: str):
@@ -278,7 +278,7 @@ class TOMLHandler(Handler):
         # First write the commented info
         self.write_extra_info(path=path, info_dict=info_dict)
         with open(path, 'a') as toml_fid:
-            toml.dump(out_dict, toml_fid)
+            pytomlpp.dump(out_dict, toml_fid)
         return path
 
 
