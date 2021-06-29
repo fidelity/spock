@@ -778,7 +778,7 @@ class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
         payload = {}
         if 'config' in base_payload:
             payload = self._handle_includes(
-                base_payload, config_extension, input_classes, path, payload, deps)
+                base_payload, config_extension, input_classes, ignore_classes, path, payload, deps)
         payload = self._update_payload(base_payload, input_classes, ignore_classes, payload)
         return payload
 
@@ -814,7 +814,7 @@ class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
                 deps.get('roots').append(path)
         return deps
 
-    def _handle_includes(self, base_payload, config_extension, input_classes, path, payload, deps):  # pylint: disable=too-many-arguments
+    def _handle_includes(self, base_payload, config_extension, input_classes, ignore_classes, path, payload, deps):  # pylint: disable=too-many-arguments
         """Handles config composition
 
         For all of the config tags in the config file this function will recursively call the payload function
@@ -826,6 +826,7 @@ class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
             base_payload: base payload that has a config kwarg
             config_extension: file type
             input_classes: defined backend classes
+            ignore_classes: list of classes to ignore
             path: path to base file
             payload: payload pulled from composed files
             deps: dictionary of config dependencies
@@ -845,7 +846,7 @@ class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
                 use_path = os.path.join(os.path.dirname(path), inc_path)
             else:
                 raise RuntimeError(f'Could not find included {config_extension} file {inc_path} or is not an S3 URI!')
-            included_params.update(self._payload(input_classes, use_path, deps))
+            included_params.update(self._payload(input_classes, ignore_classes, use_path, deps))
         payload.update(included_params)
         return payload
 
