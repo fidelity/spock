@@ -13,7 +13,7 @@ try:
 except ImportError:
     print('Missing libraries to support S3 functionality. Please re-install spock with the extra s3 dependencies -- '
           'pip install spock-config[s3]')
-import typing
+from typing import Optional
 
 
 # Iterate through the allowed download args for S3 and map into optional attr.ib
@@ -58,8 +58,8 @@ class S3Config:
     """
     session: boto3.Session
     # s3_session: BaseClient = attr.ib(init=False)
-    s3_session: typing.Optional[BaseClient] = None
-    temp_folder: typing.Optional[str] = '/tmp/'
+    s3_session: Optional[BaseClient] = None
+    temp_folder: Optional[str] = '/tmp/'
     download_config: S3DownloadConfig = S3DownloadConfig()
     upload_config: S3UploadConfig = S3UploadConfig()
 

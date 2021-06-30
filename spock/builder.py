@@ -7,9 +7,9 @@
 
 from pathlib import Path
 import attr
-from spock.backend.attr.builder import AttrBuilder
-from spock.backend.attr.payload import AttrPayload
-from spock.backend.attr.saver import AttrSaver
+from spock.backend.builder import AttrBuilder
+from spock.backend.payload import AttrPayload
+from spock.backend.saver import AttrSaver
 from spock.utils import check_payload_overwrite
 from spock.utils import deep_payload_update
 import typing
@@ -27,23 +27,44 @@ class ConfigArgBuilder:
 
         _arg_namespace: generated argument namespace
         _builder_obj: instance of a BaseBuilder class
-        _create_save_path: boolean to make the path to save to
         _dict_args: dictionary args from the command line
         _payload_obj: instance of a BasePayload class
         _saver_obj: instance of a BaseSaver class
 
     """
-    def __init__(self, *args, configs: typing.Optional[typing.List] = None, create_save_path: bool = False,
+    def __init__(self, *args, configs: typing.Optional[typing.List] = None,
                  desc: str = '', no_cmd_line: bool = False, s3_config=None, **kwargs):
+        """Init call for ConfigArgBuilder
+
+        *Args*:
+
+            *args: tuple of spock decorated classes to process
+            configs: list of config paths
+            desc: description for help
+            no_cmd_line: turn off cmd line args
+            s3_config: s3Config object for S3 support
+            **kwargs: keyword args
+
+        """
         backend = self._set_backend(args)
-        self._create_save_path = create_save_path
         fixed_args, tune_args = self._strip_tune_parameters(args)
         self._builder_obj = backend.get('builder')(
-            *fixed_args, configs=configs, create_save_path=create_save_path, desc=desc, no_cmd_line=no_cmd_line, **kwargs)
+            *fixed_args, configs=configs, desc=desc, no_cmd_line=no_cmd_line, **kwargs
+        )
+        if len(tune_args) > 0:
+            try:
+                from spock.addons.tune.optuna import OptunaBuilder
+                self._tuner_obj = OptunaBuilder(
+                    *tune_args, configs=configs, no_cmd_line=no_cmd_line
+                )
+            except ImportError:
+                print(
+                    'Missing libraries to support tune functionality. Please re-install with the extra tune '
+                    'dependencies -- pip install spock-config[tune]')
         self._payload_obj = backend.get('payload')(s3_config=s3_config)
         self._saver_obj = backend.get('saver')(s3_config=s3_config)
         try:
-            self._dict_args = self._get_payload(tune_args=tune_args)
+            self._dict_args = self._get_payload(ignore_args=tune_args)
             self._arg_namespace = self._builder_obj.generate(self._dict_args)
         except Exception as e:
             self._builder_obj.print_usage_and_exit(str(e), sys_exit=False)
@@ -118,7 +139,7 @@ class ConfigArgBuilder:
         fixed_args = []
         tune_args = []
         for arg in args:
-            if arg.__module__ == 'spock.backend.attr.config':
+            if arg.__module__ == 'spock.backend.config':
                 fixed_args.append(arg)
             elif arg.__module__ == 'spock.addons.tune.config':
                 tune_args.append(arg)
@@ -139,7 +160,7 @@ class ConfigArgBuilder:
         args = self._builder_obj.get_config_paths()
         return args
 
-    def _get_payload(self, tune_args: typing.List):
+    def _get_payload(self, ignore_args: typing.List):
         """Get the parameter payload from the config file(s)
 
         Calls the various ways to get configs and then parses to retrieve the parameter payload - make sure to call
@@ -147,7 +168,7 @@ class ConfigArgBuilder:
 
         *Args*:
 
-            tune_args: args that were decorated for hyper-parameter tuning
+            ignore_args: args that were decorated for hyper-parameter tuning
 
         *Returns*:
 
@@ -162,20 +183,21 @@ class ConfigArgBuilder:
         dependencies = {'paths': [], 'rel_paths': [], 'roots': []}
         for configs in args.config:
             payload_update = self._payload_obj.payload(
-                self._builder_obj.input_classes, tune_args, configs, args, dependencies
+                self._builder_obj.input_classes, ignore_args, configs, args, dependencies
             )
             check_payload_overwrite(payload, payload_update, configs)
             deep_payload_update(payload, payload_update)
         return payload
 
-    def save(self, file_name: str = None, user_specified_path: str = None, extra_info: bool = True,
-             file_extension: str = '.yaml'):
+    def save(self, file_name: str = None, user_specified_path: str = None, create_save_path: bool = True,
+             extra_info: bool = True, file_extension: str = '.yaml'):
         """Saves the current config setup to file with a UUID
 
         *Args*:
 
             file_name: name of file (will be appended with .spock.cfg.file_extension) -- falls back to uuid if None
             user_specified_path: if user provides a path it will be used as the path to write
+            create_save_path: bool to create the path to save if called
             extra_info: additional info to write to saved config (run date and git info)
             file_extension: file type to write (default: yaml)
 
@@ -192,6 +214,6 @@ class ConfigArgBuilder:
                              'the keyword arg user_specified_path')
         # Call the saver class and save function
         self._saver_obj.save(
-            self._arg_namespace, save_path, file_name, self._create_save_path, extra_info, file_extension
+            self._arg_namespace, save_path, file_name, create_save_path, extra_info, file_extension
         )
         return self

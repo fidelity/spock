@@ -5,7 +5,7 @@
 
 """Creates the spock config decorator that wraps attrs"""
 
-from spock.backend.attr.config import spock_attr
+from spock.backend.config import spock_attr
 from spock.utils import _is_spock_instance
 
 # Simplified decorator for attrs

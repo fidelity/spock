@@ -3,7 +3,7 @@
 # Copyright FMR LLC <opensource@fidelity.com>
 # SPDX-License-Identifier: Apache-2.0
 
-"""Handles base Spock classes"""
+"""Handles the building/saving of the configurations from the Spock config classes"""
 
 from abc import ABC
 from abc import abstractmethod
@@ -11,188 +11,11 @@ import argparse
 import attr
 from attr import NOTHING
 from enum import EnumMeta
-import os
-from pathlib import Path
 import re
 import sys
-from uuid import uuid1
-import yaml
-from spock.handlers import JSONHandler
-from spock.handlers import TOMLHandler
-from spock.handlers import YAMLHandler
-from spock.utils import add_info
-from spock.utils import check_path_s3
+from spock.backend.wrappers import Spockspace
 from spock.utils import make_argument
 from typing import List
-
-
-class Spockspace(argparse.Namespace):
-    """Inherits from Namespace to implement a pretty print on the obj
-
-    Overwrites the __repr__ method with a pretty version of printing
-
-    """
-    def __init__(self, **kwargs):
-        super(Spockspace, self).__init__(**kwargs)
-
-    def __repr__(self):
-        # Remove aliases in YAML print
-        yaml.Dumper.ignore_aliases = lambda *args: True
-        return yaml.dump(self.__dict__, default_flow_style=False)
-
-
-class BaseHandler(ABC):
-    """Base class for saver and payload
-
-    *Attributes*:
-
-        _writers: maps file extension to the correct i/o handler
-        _s3_config: optional S3Config object to handle s3 access
-
-    """
-    def __init__(self, s3_config=None):
-        self._supported_extensions = {'.yaml': YAMLHandler, '.toml': TOMLHandler, '.json': JSONHandler}
-        self._s3_config = s3_config
-
-    def _check_extension(self, file_extension: str):
-        if file_extension not in self._supported_extensions:
-            raise TypeError(f'File extension {file_extension} not supported -- \n'
-                            f'File extension must be from {list(self._supported_extensions.keys())}')
-
-
-class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
-    """Base class for saving configs
-
-    Contains methods to build a correct output payload and then writes to file based on the file
-    extension
-
-    *Attributes*:
-
-        _writers: maps file extension to the correct i/o handler
-        _s3_config: optional S3Config object to handle s3 access
-
-    """
-    def __init__(self, s3_config=None):
-        super(BaseSaver, self).__init__(s3_config=s3_config)
-
-    def save(self, payload, path, file_name=None, create_save_path=False, extra_info=True, file_extension='.yaml'):  #pylint: disable=too-many-arguments
-        """Writes Spock config to file
-
-        Cleans and builds an output payload and then correctly writes it to file based on the
-        specified file extension
-
-        *Args*:
-
-            payload: current config payload
-            path: path to save
-            file_name: name of file (will be appended with .spock.cfg.file_extension) -- falls back to uuid if None
-            create_save_path: boolean to create the path if non-existent
-            extra_info: boolean to write extra info
-            file_extension: what type of file to write
-
-        *Returns*:
-
-            None
-
-        """
-        # Check extension
-        self._check_extension(file_extension=file_extension)
-        # Make the filename -- always append a uuid for unique-ness
-        uuid_str = str(uuid1())
-        fname = '' if file_name is None else f'{file_name}.'
-        name = f'{fname}{uuid_str}.spock.cfg{file_extension}'
-        # Fix up values -- parameters
-        out_dict = self._clean_up_values(payload, file_extension)
-        # Get extra info
-        extra_dict = add_info() if extra_info else None
-        try:
-            self._supported_extensions.get(file_extension)().save(
-                out_dict=out_dict, info_dict=extra_dict, path=str(path), name=name,
-                create_path=create_save_path, s3_config=self._s3_config
-            )
-        except OSError as e:
-            print(f'Unable to write to given path: {path / name}')
-            raise e
-
-    @abstractmethod
-    def _clean_up_values(self, payload, file_extension):
-        """Clean up the config payload so it can be written to file
-
-        *Args*:
-
-            payload: dirty payload
-            extra_info: boolean to add extra info
-            file_extension: type of file to write
-
-        *Returns*:
-
-            clean_dict: cleaned output payload
-
-        """
-
-    def _clean_output(self, out_dict):
-        """Clean up the dictionary so it can be written to file
-
-        *Args*:
-
-            out_dict: cleaned dictionary
-            extra_info: boolean to add extra info
-
-        *Returns*:
-
-            clean_dict: cleaned output payload
-
-        """
-        # Convert values
-        clean_dict = {}
-        for key, val in out_dict.items():
-            clean_inner_dict = {}
-            if isinstance(val, list):
-                for idx, list_val in enumerate(val):
-                    tmp_dict = {}
-                    for inner_key, inner_val in list_val.items():
-                        tmp_dict = self._convert(tmp_dict, inner_val, inner_key)
-                    val[idx] = tmp_dict
-                clean_inner_dict = val
-            else:
-                for inner_key, inner_val in val.items():
-                    clean_inner_dict = self._convert(clean_inner_dict, inner_val, inner_key)
-            clean_dict.update({key: clean_inner_dict})
-        return clean_dict
-
-    def _convert(self, clean_inner_dict, inner_val, inner_key):
-        # Convert tuples to lists so they get written correctly
-        if isinstance(inner_val, tuple):
-            clean_inner_dict.update({inner_key: self._recursive_tuple_to_list(inner_val)})
-        elif inner_val is not None:
-            clean_inner_dict.update({inner_key: inner_val})
-        return clean_inner_dict
-
-    def _recursive_tuple_to_list(self, value):
-        """Recursively turn tuples into lists
-
-        Recursively looks through tuple(s) and convert to lists
-
-        *Args*:
-
-            value: value to check and set typ if necessary
-            typed: type of the generic alias to check against
-
-        *Returns*:
-
-            value: updated value with correct type casts
-
-        """
-        # Check for __args__ as it signifies a generic and make sure it's not already been cast as a tuple
-        # from a composed payload
-        list_v = []
-        for v in value:
-            if isinstance(v, tuple):
-                v = self._recursive_tuple_to_list(v)
-                list_v.append(v)
-            else:
-                list_v.append(v)
-        return list_v
 
 
 class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
@@ -205,18 +28,15 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
 
         input_classes: list of input classes that link to a backend
         _configs: None or List of configs to read from
-        _create_save_path: boolean to make the path to save to
         _desc: description for the arg parser
         _no_cmd_line: flag to force no command line reads
         _max_indent: maximum to indent between help prints
         save_path: list of path(s) to save the configs to
 
     """
-    def __init__(self, *args, configs=None, create_save_path=False, desc='', no_cmd_line=False,
-                 max_indent=4, **kwargs):
+    def __init__(self, *args, configs=None, desc='', no_cmd_line=False, max_indent=4, **kwargs):
         self.input_classes = args
         self._configs = configs
-        self._create_save_path = create_save_path
         self._desc = desc
         self._no_cmd_line = no_cmd_line
         self._max_indent = max_indent
@@ -404,7 +224,8 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         args = parser.parse_args()
         return args
 
-    def _make_group_override_parser(self, parser, class_obj):
+    @staticmethod
+    def _make_group_override_parser(parser, class_obj):
         """Makes a name specific override parser for a given class obj
 
         Takes a class object of the backend and adds a new argument group with argument names given with name
@@ -426,7 +247,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
             val_type = val.metadata['type'] if 'type' in val.metadata else val.type
             # Check if the val type has __args__
             # TODO (ncilfone): Fix up this super super ugly logic
-            if hasattr(val_type, '__args__') and ((list(set(val_type.__args__))[0]).__module__ == 'spock.backend.attr.config') and attr.has((list(set(val_type.__args__))[0])):
+            if hasattr(val_type, '__args__') and ((list(set(val_type.__args__))[0]).__module__ == 'spock.backend.config') and attr.has((list(set(val_type.__args__))[0])):
                 args = (list(set(val_type.__args__))[0])
                 for inner_val in args.__attrs_attrs__:
                     arg_name = f"--{str(attr_name)}.{val.name}.{args.__name__}.{inner_val.name}"
@@ -585,7 +406,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
                     return_list.extend(recurse_return)
                 else:
                     return_list.append(self._extract_other_types(val))
-        elif isinstance(typed, EnumMeta) or (typed.__module__ == 'spock.backend.attr.config'):
+        elif isinstance(typed, EnumMeta) or (typed.__module__ == 'spock.backend.config'):
             return f'{typed.__module__}.{typed.__name__}'
         return return_list
 
@@ -646,7 +467,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         # Iterate any Enum type classes
         for other in other_list:
             # if it's longer than 2 then it's an embedded Spock class
-            if '.'.join(other.split('.')[:-1]) == 'spock.backend.attr.config':
+            if '.'.join(other.split('.')[:-1]) == 'spock.backend.config':
                 class_type = self._get_from_sys_modules(other)
                 # Invoke recursive call for the class
                 self._attrs_help([class_type])
@@ -692,241 +513,131 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         return module
 
 
-class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
-    """Handles building the payload for config file(s)
+class AttrBuilder(BaseBuilder):
+    """Attr specific builder
 
-    This class builds out the payload from config files of multiple types. It handles various
-    file types and also composition of config files via recursive calls
+    Class that handles building for the attr backend
 
-    *Attributes*:
+    *Attributes*
 
-        _loaders: maps of each file extension to the loader class
-        __s3_config: optional S3Config object to handle s3 access
+        input_classes: list of input classes that link to a backend
+        _configs: None or List of configs to read from
+        _create_save_path: boolean to make the path to save to
+        _desc: description for the arg parser
+        _no_cmd_line: flag to force no command line reads
+        save_path: list of path(s) to save the configs to
 
     """
-    def __init__(self, s3_config=None):
-        super(BasePayload, self).__init__(s3_config=s3_config)
+    def __init__(self, *args, configs=None, desc='', no_cmd_line=False, **kwargs):
+        """AttrBuilder init
 
-    @staticmethod
-    @abstractmethod
-    def _update_payload(base_payload, input_classes, ignore_classes, payload):
-        """Updates the payload
+        Args:
+            *args: list of input classes that link to a backend
+            configs: None or List of configs to read from
+            desc: description for the arg parser
+            no_cmd_line: flag to force no command line reads
+            **kwargs: any extra keyword args
+        """
+        super().__init__(*args, configs=configs, desc=desc, no_cmd_line=no_cmd_line, **kwargs)
+        self._verify_attr()
 
-        Checks the parameters defined in the config files against the provided classes and if
-        passable adds them to the payload
+    def _verify_attr(self):
+        """Verifies that all the input classes are attr based
 
-        *Args*:
+         *Returns*:
 
-            base_payload: current payload
-            input_classes: class to roll into
-            ignore_classes: list of classes to ignore
-            payload: total payload
-
-        *Returns*:
-
-            payload: updated payload
+            None
 
         """
+        for arg in self.input_classes:
+            if not attr.has(arg):
+                raise TypeError(f'*arg inputs to {self.__class__.__name__} must all be class instances with attrs attributes')
 
-    def payload(self, input_classes, ignore_classes, path, cmd_args, deps):
-        """Builds the payload from config files
+    def print_usage_and_exit(self, msg=None, sys_exit=True, exit_code=1):
+        print(f'usage: {sys.argv[0]} -c [--config] config1 [config2, config3, ...]')
+        print(f'\n{self._desc if self._desc != "" else ""}\n')
+        print('configuration(s):\n')
+        self._handle_help_info()
+        if msg is not None:
+            print(msg)
+        if sys_exit:
+            sys.exit(exit_code)
 
-        Public exposed call to build the payload and set any command line overrides
+    def _handle_help_info(self):
+        self._attrs_help(self.input_classes)
 
-        *Args*:
-
-            input_classes: list of backend classes
-            ignore_classes: list of classes to ignore
-            path: path to config file(s)
-            cmd_args: command line overrides
-            deps: dictionary of config dependencies
-
-        *Returns*:
-
-            payload: dictionary of all mapped parameters
-
-        """
-        payload = self._payload(input_classes, ignore_classes, path, deps, root=True)
-        payload = self._handle_overrides(payload, cmd_args)
-        return payload
-
-    def _payload(self, input_classes, ignore_classes, path, deps, root=False):
-        """Private call to construct the payload
-
-        Main function call that builds out the payload from config files of multiple types. It handles
-        various file types and also composition of config files via a recursive calls
-
-        *Args*:
-            input_classes: list of backend classes
-            ignore_classes: list of classes to ignore
-            path: path to config file(s)
-            deps: dictionary of config dependencies
-
-        *Returns*:
-
-            payload: dictionary of all mapped parameters
-
-        """
-        # Match to loader based on file-extension
-        config_extension = Path(path).suffix.lower()
-        # Verify extension
-        self._check_extension(file_extension=config_extension)
-        # Load from file
-        base_payload = self._supported_extensions.get(config_extension)().load(path, s3_config=self._s3_config)
-        # Check and? update the dependencies
-        deps = self._handle_dependencies(deps, path, root)
-        payload = {}
-        if 'config' in base_payload:
-            payload = self._handle_includes(
-                base_payload, config_extension, input_classes, ignore_classes, path, payload, deps)
-        payload = self._update_payload(base_payload, input_classes, ignore_classes, payload)
-        return payload
-
-    @staticmethod
-    def _handle_dependencies(deps, path, root):
-        """Handles config file dependencies
-
-        Checks to see if the config path (full or relative) has already been encountered. Essentially a DFS for graph
-        cycles
-
-        *Args*:
-
-            deps: dictionary of config dependencies
-            path: current config path
-            root: boolean if root
-
-        *Returns*:
-
-            deps: updated dependencies
-
-        """
-        if root and path in deps.get('paths'):
-            raise ValueError(f'Duplicate Read -- Config file {path} has already been encountered. '
-                             f'Please remove duplicate reads of config files.')
-        elif path in deps.get('paths') or path in deps.get('rel_paths'):
-            raise ValueError(f'Cyclical Dependency -- Config file {path} has already been encountered. '
-                             f'Please remove cyclical dependencies between config files.')
+    def _handle_arguments(self, args, class_obj):
+        attr_name = class_obj.__name__
+        class_names = [val.__name__ for val in self.input_classes]
+        # Handle repeated classes
+        if attr_name in class_names and attr_name in args and isinstance(args[attr_name], list):
+            fields = self._handle_repeated(args[attr_name], attr_name, class_names)
+        # Handle non-repeated classes
         else:
-            # Update the dependency lists
-            deps.get('paths').append(path)
-            deps.get('rel_paths').append(os.path.basename(path))
-            if root:
-                deps.get('roots').append(path)
-        return deps
+            fields = {}
+            for val in class_obj.__attrs_attrs__:
+                # Check if namespace is named and then check for key -- checking for local class def
+                if attr_name in args and val.name in args[attr_name]:
+                    fields[val.name] = self._handle_nested_class(args, args[attr_name][val.name], class_names)
+                # If not named then just check for keys -- checking for global def
+                elif val.name in args:
+                    fields[val.name] = self._handle_nested_class(args, args[val.name], class_names)
+                # Check for special keys to set
+                if 'special_key' in val.metadata and val.metadata['special_key'] is not None:
+                    if val.name in args:
+                        self.save_path = args[val.name]
+                    elif val.default is not None:
+                        self.save_path = val.default
+        return fields
 
-    def _handle_includes(self, base_payload, config_extension, input_classes, ignore_classes, path, payload, deps):  # pylint: disable=too-many-arguments
-        """Handles config composition
-
-        For all of the config tags in the config file this function will recursively call the payload function
-        with the composition path to get the additional payload(s) from the composed file(s) -- checks for file
-        validity or if it is an S3 URI via regex
+    def _handle_repeated(self, args, check_value, class_names):
+        """Handles repeated classes as lists
 
         *Args*:
 
-            base_payload: base payload that has a config kwarg
-            config_extension: file type
-            input_classes: defined backend classes
-            ignore_classes: list of classes to ignore
-            path: path to base file
-            payload: payload pulled from composed files
-            deps: dictionary of config dependencies
+            args: dictionary of arguments from the configs
+            check_value: value to check classes against
+            class_names: current class names
 
         *Returns*:
 
-            payload: payload update from composed files
+            list of input_class[match)idx[0]] types filled with repeated values
 
         """
-        included_params = {}
-        for inc_path in base_payload['config']:
-            if check_path_s3(inc_path):
-                use_path = inc_path
-            elif os.path.exists(inc_path):
-                use_path = inc_path
-            elif os.path.join(os.path.dirname(path), inc_path):
-                use_path = os.path.join(os.path.dirname(path), inc_path)
+        # Check to see if the value trying to be set is actually an input class
+        match_idx = [idx for idx, val in enumerate(class_names) if val == check_value]
+        return [self.input_classes[match_idx[0]](**val) for val in args]
+
+    def _handle_nested_class(self, args, check_value, class_names):
+        """Handles passing another class to the field dictionary
+
+        *Args*:
+            args: dictionary of arguments from the configs
+            check_value: value to check classes against
+            class_names: current class names
+
+        *Returns*:
+
+            either the check_value or the necessary class
+
+        """
+        # Check to see if the value trying to be set is actually an input class
+        match_idx = [idx for idx, val in enumerate(class_names) if val == check_value]
+        # If so then create the needed class object by unrolling the args to **kwargs and return it
+        if len(match_idx) > 0:
+            if len(match_idx) > 1:
+                raise ValueError('Match error -- multiple classes with the same name definition')
             else:
-                raise RuntimeError(f'Could not find included {config_extension} file {inc_path} or is not an S3 URI!')
-            included_params.update(self._payload(input_classes, ignore_classes, use_path, deps))
-        payload.update(included_params)
-        return payload
-
-    def _handle_overrides(self, payload, args):
-        """Handle command line overrides
-
-        Iterate through the command line override values, determine at what level to set them, and set them if possible
-
-        *Args*:
-
-            payload: current payload dictionary
-            args: command line override args
-
-        *Returns*:
-
-            payload: updated payload dictionary with override values set
-
-        """
-        skip_keys = ['config', 'help']
-        for k, v in vars(args).items():
-            if k not in skip_keys and v is not None:
-                payload = self._handle_payload_override(payload, k, v)
-        return payload
-
-    @staticmethod
-    def _handle_payload_override(payload, key, value):
-        """Handles the complex logic needed for List[spock class] overrides
-
-        Messy logic that sets overrides for the various different types. The hardest being List[spock class] since str
-        names have to be mapped backed to sys.modules and can be set at either the general or class level.
-
-        *Args*:
-
-            payload: current payload dictionary
-            key: current arg key
-            value: value at current arg key
-
-        *Returns*:
-
-            payload: modified payload with overrides
-
-        """
-        key_split = key.split('.')
-        curr_ref = payload
-        for idx, split in enumerate(key_split):
-            # If the root isn't in the payload then it needs to be added but only for the first key split
-            if idx == 0 and (split not in payload):
-                payload.update({split: {}})
-            # Check for curr_ref switch over -- verify by checking the sys modules names
-            if idx != 0 and (split in payload) and (isinstance(curr_ref, str)) and (hasattr(sys.modules['spock'].backend.attr.config, split)):
-                curr_ref = payload[split]
-            elif idx != 0 and (split in payload) and (isinstance(payload[split], str)) and (hasattr(sys.modules['spock'].backend.attr.config, payload[split])):
-                curr_ref = payload[split]
-            # elif check if it's the last value and figure out the override
-            elif idx == (len(key_split)-1):
-                # Handle bool(s) a bit differently as they are store_true
-                if isinstance(curr_ref, dict) and isinstance(value, bool):
-                    if value is not False:
-                        curr_ref[split] = value
-                # If we are at the dictionary level we should be able to just payload override
-                elif isinstance(curr_ref, dict) and not isinstance(value, bool):
-                    curr_ref[split] = value
-                # If we are at a list level it must be some form of repeated class since this is the end of the class
-                # tree -- check the instance type but also make sure the cmd-line override is the correct len
-                elif isinstance(curr_ref, list) and len(value) == len(curr_ref):
-                    # Walk the list and check for the key
-                    for ref_idx, val in enumerate(curr_ref):
-                        if split in val:
-                            val[split] = value[ref_idx]
-                        else:
-                            raise ValueError(f'cmd-line override failed for {key} -- '
-                                             f'Failed to find key {split} within lowest level List[Dict]')
-                elif isinstance(curr_ref, list) and len(value) != len(curr_ref):
-                    raise ValueError(f'cmd-line override failed for {key} -- '
-                                     f'Specified key {split} with len {len(value)} does not match len {len(curr_ref)} '
-                                     f'of List[Dict]')
+                if args.get(self.input_classes[match_idx[0]].__name__) is None:
+                    raise ValueError(f'Missing config file definition for the referenced class '
+                                     f'{self.input_classes[match_idx[0]].__name__}')
+                current_arg = args.get(self.input_classes[match_idx[0]].__name__)
+                if isinstance(current_arg, list):
+                    class_value = [self.input_classes[match_idx[0]](**val) for val in current_arg]
                 else:
-                    raise ValueError(f'cmd-line override failed for {key} -- '
-                                     f'Failed to find key {split} within lowest level Dict')
-            # If it's not keep walking the current payload
-            else:
-                curr_ref = curr_ref[split]
-        return payload
+                    class_value = self.input_classes[match_idx[0]](**current_arg)
+            return_value = class_value
+        # else return the expected value
+        else:
+            return_value = check_value
+        return return_value

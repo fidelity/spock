@@ -43,10 +43,9 @@ class TestYAMLWriterCreate:
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
                                     './tests/conf/yaml/test.yaml'])
-            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder',
-                                      create_save_path=True)
+            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder')
             # Test the chained version
-            config.save(user_specified_path=f'{tmp_path}/tmp', file_extension='.yaml').generate()
+            config.save(user_specified_path=f'{tmp_path}/tmp', create_save_path=True, file_extension='.yaml').generate()
             check_path = f'{str(tmp_path)}/tmp/*.yaml'
             fname = glob.glob(check_path)[0]
             with open(fname, 'r') as fin:
@@ -101,7 +100,10 @@ class TestWritePathRaise:
             config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder')
             # Test the chained version
             with pytest.raises(FileNotFoundError):
-                config.save(user_specified_path=f'{str(tmp_path)}/foo.bar/fizz.buzz/', file_extension='.yaml').generate()
+                config.save(
+                    user_specified_path=f'{str(tmp_path)}/foo.bar/fizz.buzz/', file_extension='.yaml',
+                    create_save_path=False
+                ).generate()
 
 
 class TestInvalidExtensionTypeRaise:

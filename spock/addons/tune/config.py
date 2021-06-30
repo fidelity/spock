@@ -8,7 +8,7 @@ import typing
 
 import attr
 from enum import Enum
-from spock.backend.attr.config import _base_attr
+from spock.backend.config import _base_attr
 import sys
 from typing import List, Optional, Tuple, Union
 
