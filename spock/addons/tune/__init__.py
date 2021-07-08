@@ -10,4 +10,4 @@ Please refer to the documentation provided in the README.md
 """
 
 
-__all__ = ["config"]
+__all__ = ["builder", "config"]

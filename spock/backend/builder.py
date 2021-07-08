@@ -7,7 +7,6 @@
 
 from abc import ABC
 from abc import abstractmethod
-import argparse
 import attr
 from attr import NOTHING
 from enum import EnumMeta
@@ -34,30 +33,33 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         save_path: list of path(s) to save the configs to
 
     """
-    def __init__(self, *args, configs=None, desc='', no_cmd_line=False, max_indent=4, **kwargs):
+    def __init__(self, *args, max_indent=4, module_name, **kwargs):
         self.input_classes = args
-        self._configs = configs
-        self._desc = desc
-        self._no_cmd_line = no_cmd_line
+        self._module_name = module_name
         self._max_indent = max_indent
         self.save_path = None
 
+    @staticmethod
     @abstractmethod
-    def print_usage_and_exit(self, msg=None, sys_exit=True):
-        """Prints the help message and exits
+    def _make_group_override_parser(parser, class_obj, class_name):
+        """Makes a name specific override parser for a given class obj
+
+        Takes a class object of the backend and adds a new argument group with argument names given with name
+        Class.name so that individual parameters specific to a class can be overridden.
 
         *Args*:
 
-            msg: message to print pre exit
+            parser: argument parser
+            class_obj: instance of a backend class
+            class_name: used for module matching
 
         *Returns*:
 
-            None
+            parser: argument parser with new class specific overrides
 
         """
 
-    @abstractmethod
-    def _handle_help_info(self):
+    def handle_help_info(self):
         """Handles walking through classes to get help info
 
         For each class this function will search __doc__ and attempt to pull out help information for both the class
@@ -68,8 +70,25 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
             None
 
         """
+        self._attrs_help(self.input_classes, self._module_name)
 
-    @abstractmethod
+    # @abstractmethod
+    # def _handle_arguments(self, args, class_obj):
+    #     """Handles all argument mapping
+    #
+    #     Creates a dictionary of named parameters that are mapped to the final type of object
+    #
+    #     *Args*:
+    #
+    #         args: read file arguments
+    #         class_obj: instance of a class obj
+    #
+    #     *Returns*:
+    #
+    #         fields: dictionary of mapped parameters
+    #
+    #     """
+
     def _handle_arguments(self, args, class_obj):
         """Handles all argument mapping
 
@@ -85,6 +104,80 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
             fields: dictionary of mapped parameters
 
         """
+        attr_name = class_obj.__name__
+        class_names = [val.__name__ for val in self.input_classes]
+        # Handle repeated classes
+        if attr_name in class_names and attr_name in args and isinstance(args[attr_name], list):
+            fields = self._handle_repeated(args[attr_name], attr_name, class_names)
+        # Handle non-repeated classes
+        else:
+            fields = {}
+            for val in class_obj.__attrs_attrs__:
+                # Check if namespace is named and then check for key -- checking for local class def
+                if attr_name in args and val.name in args[attr_name]:
+                    fields[val.name] = self._handle_nested_class(args, args[attr_name][val.name], class_names)
+                # If not named then just check for keys -- checking for global def
+                elif val.name in args:
+                    fields[val.name] = self._handle_nested_class(args, args[val.name], class_names)
+                # Check for special keys to set
+                if 'special_key' in val.metadata and val.metadata['special_key'] is not None:
+                    if val.name in args:
+                        self.save_path = args[val.name]
+                    elif val.default is not None:
+                        self.save_path = val.default
+        return fields
+
+    def _handle_repeated(self, args, check_value, class_names):
+        """Handles repeated classes as lists
+
+        *Args*:
+
+            args: dictionary of arguments from the configs
+            check_value: value to check classes against
+            class_names: current class names
+
+        *Returns*:
+
+            list of input_class[match)idx[0]] types filled with repeated values
+
+        """
+        # Check to see if the value trying to be set is actually an input class
+        match_idx = [idx for idx, val in enumerate(class_names) if val == check_value]
+        return [self.input_classes[match_idx[0]](**val) for val in args]
+
+    def _handle_nested_class(self, args, check_value, class_names):
+        """Handles passing another class to the field dictionary
+
+        *Args*:
+            args: dictionary of arguments from the configs
+            check_value: value to check classes against
+            class_names: current class names
+
+        *Returns*:
+
+            either the check_value or the necessary class
+
+        """
+        # Check to see if the value trying to be set is actually an input class
+        match_idx = [idx for idx, val in enumerate(class_names) if val == check_value]
+        # If so then create the needed class object by unrolling the args to **kwargs and return it
+        if len(match_idx) > 0:
+            if len(match_idx) > 1:
+                raise ValueError('Match error -- multiple classes with the same name definition')
+            else:
+                if args.get(self.input_classes[match_idx[0]].__name__) is None:
+                    raise ValueError(f'Missing config file definition for the referenced class '
+                                     f'{self.input_classes[match_idx[0]].__name__}')
+                current_arg = args.get(self.input_classes[match_idx[0]].__name__)
+                if isinstance(current_arg, list):
+                    class_value = [self.input_classes[match_idx[0]](**val) for val in current_arg]
+                else:
+                    class_value = self.input_classes[match_idx[0]](**current_arg)
+            return_value = class_value
+        # else return the expected value
+        else:
+            return_value = check_value
+        return return_value
 
     def generate(self, dict_args):
         """Method to auto-generate the actual class instances from the generated args
@@ -111,10 +204,9 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
             else:
                 auto_dict.update({type(attr_build).__name__: attr_build})
         return Spockspace(**auto_dict)
-        # return argparse.Namespace(**auto_dict)
 
     def _auto_generate(self, args, input_class):
-        """Builds an instance of a DataClass
+        """Builds an instance of an attr class
 
         Builds an instance with the necessary field values from the argument
         dictionary read from the config file(s)
@@ -177,30 +269,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
                     fields.update({val: default_value})
         return fields
 
-    def get_config_paths(self):
-        """Get config paths from all methods
-
-        Config paths can enter from either the command line or be added in the class init call
-        as a kwarg (configs=[])
-
-        *Returns*:
-
-            args: namespace of args
-
-        """
-        # Check if the no_cmd_line is not flagged and if the configs are not empty
-
-        if self._no_cmd_line and (self._configs is None):
-            raise ValueError("Flag set for preventing command line read but no paths were passed to the config kwarg")
-        if not self._no_cmd_line:
-            args = self._build_override_parsers(desc=self._desc)
-        else:
-            args = argparse.Namespace(config=[], help=False)
-        if self._configs is not None:
-            args = self._get_from_kwargs(args, self._configs)
-        return args
-
-    def _build_override_parsers(self, desc):
+    def build_override_parsers(self, parser):
         """Creates parsers for command-line overrides
 
         Builds the basic command line parser for configs and help then iterates through each attr instance to make
@@ -208,59 +277,21 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
 
         *Args*:
 
-            desc: argparser description
-
-        *Returns*:
-
-            args: argument namespace
-
-        """
-        parser = argparse.ArgumentParser(description=desc, add_help=False)
-        parser.add_argument('-c', '--config', required=False, nargs='+', default=[])
-        parser.add_argument('-h', '--help', action='store_true')
-        # Build out each class override specific parser
-        for val in self.input_classes:
-            parser = self._make_group_override_parser(parser=parser, class_obj=val)
-        args = parser.parse_args()
-        return args
-
-    @staticmethod
-    def _make_group_override_parser(parser, class_obj):
-        """Makes a name specific override parser for a given class obj
-
-        Takes a class object of the backend and adds a new argument group with argument names given with name
-        Class.name so that individual parameters specific to a class can be overridden.
-
-        *Args*:
-
             parser: argument parser
-            class_obj: instance of a backend class
 
         *Returns*:
 
             parser: argument parser with new class specific overrides
 
         """
-        attr_name = class_obj.__name__
-        group_parser = parser.add_argument_group(title=str(attr_name) + " Specific Overrides")
-        for val in class_obj.__attrs_attrs__:
-            val_type = val.metadata['type'] if 'type' in val.metadata else val.type
-            # Check if the val type has __args__
-            # TODO (ncilfone): Fix up this super super ugly logic
-            if hasattr(val_type, '__args__') and ((list(set(val_type.__args__))[0]).__module__ == 'spock.backend.config') and attr.has((list(set(val_type.__args__))[0])):
-                args = (list(set(val_type.__args__))[0])
-                for inner_val in args.__attrs_attrs__:
-                    arg_name = f"--{str(attr_name)}.{val.name}.{args.__name__}.{inner_val.name}"
-                    group_parser = make_argument(arg_name, List[inner_val.type], group_parser)
-            else:
-                arg_name = f"--{str(attr_name)}.{val.name}"
-                group_parser = make_argument(arg_name, val_type, group_parser)
+        # Build out each class override specific parser
+        for val in self.input_classes:
+            parser = self._make_group_override_parser(parser=parser, class_obj=val, class_name=self._module_name)
         return parser
 
     @staticmethod
     def _get_from_kwargs(args, configs):
         """Get configs from the configs kwarg
-
 
         *Args*:
 
@@ -272,7 +303,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
             args: arg namespace
 
         """
-        if type(configs).__name__ == 'list':
+        if isinstance(configs, list):
             args.config.extend(configs)
         else:
             raise TypeError(f'configs kwarg must be of type list -- given {type(configs)}')
@@ -386,12 +417,13 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         # Blank for spacing :-/
         print('')
 
-    def _extract_other_types(self, typed):
+    def _extract_other_types(self, typed, module_name):
         """Takes a high level type and recursively extracts any enum or class types
 
         *Args*:
 
             typed: highest level type
+            module_name: name of module to match
 
         *Returns*:
 
@@ -401,16 +433,16 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         return_list = []
         if hasattr(typed, '__args__'):
             for val in typed.__args__:
-                recurse_return = self._extract_other_types(val)
+                recurse_return = self._extract_other_types(val, module_name)
                 if isinstance(recurse_return, list):
                     return_list.extend(recurse_return)
                 else:
-                    return_list.append(self._extract_other_types(val))
-        elif isinstance(typed, EnumMeta) or (typed.__module__ == 'spock.backend.config'):
-            return f'{typed.__module__}.{typed.__name__}'
+                    return_list.append(self._extract_other_types(val, module_name))
+        elif isinstance(typed, EnumMeta) or (typed.__module__ == module_name):
+            return [f'{typed.__module__}.{typed.__name__}']
         return return_list
 
-    def _attrs_help(self, input_classes):
+    def _attrs_help(self, input_classes, module_name):
         """Handles walking through a list classes to get help info
 
         For each class this function will search __doc__ and attempt to pull out help information for both the class
@@ -420,10 +452,63 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         *Args*:
 
             input_classes: list of attr classes
+            module_name: name of module to match
 
         *Returns*:
 
             None
+
+        """
+        # Handle the main loop
+        other_list = self._handle_help_main(input_classes, module_name)
+        self._handle_help_enums(other_list=other_list, module_name=module_name)
+
+    @staticmethod
+    def _get_type_string(val, nested_others):
+        """Gets the type of the attr val as a string
+
+        *Args*:
+
+            val: current attr being processed
+            nested_others: list of nested others to deal with that might have module path info in the string
+
+        *Returns*:
+
+            type_string: type of the attr as a str
+
+        """
+        # Grab the base or type info depending on what is provided
+        if 'type' in val.metadata:
+            type_string = repr(val.metadata['type'])
+        elif 'base' in val.metadata:
+            type_string = val.metadata['base']
+        elif hasattr(val.type, '__name__'):
+            type_string = val.type.__name__
+        else:
+            type_string = str(val.type)
+        # Regex out the typing info if present
+        type_string = re.sub(r'typing.', '', type_string)
+        # Regex out any nested_others that have module path information
+        for other_val in nested_others:
+            split_other = f"{'.'.join(other_val.split('.')[:-1])}."
+            type_string = re.sub(split_other, '', type_string)
+        # Regex the string to see if it matches any Enums in the __main__ module space
+        # Construct the type with the metadata
+        if 'optional' in val.metadata:
+            type_string = f"Optional[{type_string}]"
+        return type_string
+
+    def _handle_help_main(self, input_classes, module_name):
+        """Handles the print of the main class types
+
+        *Args*:
+
+            input_classes: current set of input classes
+            module_name: module name to match
+
+        *Returns*:
+
+            other_list: extended list of other classes/enums to process
 
         """
         # List to catch Enums and classes and handle post spock wrapped attr classes
@@ -441,36 +526,39 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
                 if isinstance(val.type, EnumMeta):
                     other_list.append(f'{val.type.__module__}.{val.type.__name__}')
                 # if there is a type (implied Iterable) -- check it for nested Enums or classes
-                nested_others = self._extract_other_types(val.metadata['type']) if 'type' in val.metadata else []
+                nested_others = self._extract_fnc(val, module_name)
                 if len(nested_others) > 0:
                     other_list.extend(nested_others)
-                # Grab the base or type info depending on what is provided
-                type_string = repr(val.metadata['type']) if 'type' in val.metadata else val.metadata['base']
-                # Regex out the typing info if present
-                type_string = re.sub(r'typing.', '', type_string)
-                # Regex out any nested_others that have module path information
-                for other_val in nested_others:
-                    split_other = f"{'.'.join(other_val.split('.')[:-1])}."
-                    type_string = re.sub(split_other, '', type_string)
-                # Regex the string to see if it matches any Enums in the __main__ module space
-                # for val in sys.modules
-                # Construct the type with the metadata
-                if 'optional' in val.metadata:
-                    type_string = f"Optional[{type_string}]"
+                # Get the type represented as a string
+                type_string = self._get_type_string(val, nested_others)
                 info_dict.update(self._match_attribute_docs(val.name, attr_docs, type_string, val.default))
             # Add to covered so we don't print help twice in the case of some recursive nesting
             covered_set.add(f'{attrs_class.__module__}.{attrs_class.__name__}')
             self._handle_attributes_print(info_dict=info_dict)
         # Convert the enum list to a set to remove dupes and then back to a list so it is iterable -- set diff to not
         # repeat
-        other_list = list(set(other_list) - covered_set)
+        return list(set(other_list) - covered_set)
+
+    def _handle_help_enums(self, other_list, module_name):
+        """handles any extra enums from non main args
+
+        *Args*:
+
+            other_list: extended list of other classes/enums to process
+            module_name: module name to match
+
+        *Returns*:
+
+            None
+
+        """
         # Iterate any Enum type classes
         for other in other_list:
             # if it's longer than 2 then it's an embedded Spock class
-            if '.'.join(other.split('.')[:-1]) == 'spock.backend.config':
+            if '.'.join(other.split('.')[:-1]) == module_name:
                 class_type = self._get_from_sys_modules(other)
                 # Invoke recursive call for the class
-                self._attrs_help([class_type])
+                self._attrs_help([class_type], module_name)
             # Fall back to enum style
             else:
                 enum = self._get_from_sys_modules(other)
@@ -485,6 +573,21 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
                         attr_type_str=type(val.value).__name__
                     ))
                 self._handle_attributes_print(info_dict=info_dict)
+
+    @abstractmethod
+    def _extract_fnc(self, val, module_name):
+        """Function that gets the nested lists within classes
+
+        *Args*:
+
+            val: current attr
+            module_name: matching module name
+
+        *Returns*:
+
+            list of any nested classes/enums
+
+        """
 
     @staticmethod
     def _get_from_sys_modules(cls_name):
@@ -528,7 +631,7 @@ class AttrBuilder(BaseBuilder):
         save_path: list of path(s) to save the configs to
 
     """
-    def __init__(self, *args, configs=None, desc='', no_cmd_line=False, **kwargs):
+    def __init__(self, *args, **kwargs):
         """AttrBuilder init
 
         Args:
@@ -538,33 +641,41 @@ class AttrBuilder(BaseBuilder):
             no_cmd_line: flag to force no command line reads
             **kwargs: any extra keyword args
         """
-        super().__init__(*args, configs=configs, desc=desc, no_cmd_line=no_cmd_line, **kwargs)
-        self._verify_attr()
+        super().__init__(*args, module_name='spock.backend.config', **kwargs)
 
-    def _verify_attr(self):
-        """Verifies that all the input classes are attr based
+    @staticmethod
+    def _make_group_override_parser(parser, class_obj, class_name):
+        """Makes a name specific override parser for a given class obj
 
-         *Returns*:
+        Takes a class object of the backend and adds a new argument group with argument names given with name
+        Class.name so that individual parameters specific to a class can be overridden.
 
-            None
+        *Args*:
+
+            parser: argument parser
+            class_obj: instance of a backend class
+            class_name: used for module matching
+
+        *Returns*:
+
+            parser: argument parser with new class specific overrides
 
         """
-        for arg in self.input_classes:
-            if not attr.has(arg):
-                raise TypeError(f'*arg inputs to {self.__class__.__name__} must all be class instances with attrs attributes')
-
-    def print_usage_and_exit(self, msg=None, sys_exit=True, exit_code=1):
-        print(f'usage: {sys.argv[0]} -c [--config] config1 [config2, config3, ...]')
-        print(f'\n{self._desc if self._desc != "" else ""}\n')
-        print('configuration(s):\n')
-        self._handle_help_info()
-        if msg is not None:
-            print(msg)
-        if sys_exit:
-            sys.exit(exit_code)
-
-    def _handle_help_info(self):
-        self._attrs_help(self.input_classes)
+        attr_name = class_obj.__name__
+        group_parser = parser.add_argument_group(title=str(attr_name) + " Specific Overrides")
+        for val in class_obj.__attrs_attrs__:
+            val_type = val.metadata['type'] if 'type' in val.metadata else val.type
+            # Check if the val type has __args__ -- this catches lists?
+            # TODO (ncilfone): Fix up this super super ugly logic
+            if hasattr(val_type, '__args__') and ((list(set(val_type.__args__))[0]).__module__ == class_name) and attr.has((list(set(val_type.__args__))[0])):
+                args = (list(set(val_type.__args__))[0])
+                for inner_val in args.__attrs_attrs__:
+                    arg_name = f"--{str(attr_name)}.{val.name}.{args.__name__}.{inner_val.name}"
+                    group_parser = make_argument(arg_name, List[inner_val.type], group_parser)
+            else:
+                arg_name = f"--{str(attr_name)}.{val.name}"
+                group_parser = make_argument(arg_name, val_type, group_parser)
+        return parser
 
     def _handle_arguments(self, args, class_obj):
         attr_name = class_obj.__name__
@@ -641,3 +752,18 @@ class AttrBuilder(BaseBuilder):
         else:
             return_value = check_value
         return return_value
+
+    def _extract_fnc(self, val, module_name):
+        """Function that gets the nested lists within classes
+
+        *Args*:
+
+            val: current attr
+            module_name: matching module name
+
+        *Returns*:
+
+            list of any nested classes/enums
+
+        """
+        return self._extract_other_types(val.metadata['type'], module_name) if 'type' in val.metadata else []

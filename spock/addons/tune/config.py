@@ -9,13 +9,9 @@ import typing
 import attr
 from enum import Enum
 from spock.backend.config import _base_attr
+from spock.backend.typed import _extract_base_type
 import sys
 from typing import List, Optional, Tuple, Union
-
-
-class _TypeEnum(Enum):
-    int = 'int'
-    float = 'float'
 
 
 def _spock_tune(cls):
@@ -46,13 +42,38 @@ def _spock_tune(cls):
 spockTuner = _spock_tune
 
 
-@attr.s(auto_attribs=True)
+@attr.s
 class RangeHyperParameter:
-    type: _TypeEnum
-    bounds: Tuple[Union[int, float], Union[int, float]]
-    log_scale: bool
+    """Range based hyper-parameter that is sampled uniformly
+
+    Attributes:
+        type: type of the hyper-parameter (note: spock will attempt to autocast into this type)
+        bounds: min and max of the hyper-parameter range
+        log_scale: log scale the values before sampling
+
+    """
+    type = attr.ib(type=str, validator=[attr.validators.instance_of(str), attr.validators.in_(['float', 'int'])])
+    bounds = attr.ib(type=Union[Tuple[float, float], Tuple[int, int]],
+                     validator=attr.validators.deep_iterable(
+                         member_validator=attr.validators.instance_of((float, int)),
+                         iterable_validator=attr.validators.instance_of(tuple)
+                     ))
+    log_scale = attr.ib(type=bool, validator=attr.validators.instance_of(bool))
 
 
-@attr.s(auto_attribs=True)
+@attr.s
 class ChoiceHyperParameter:
-    choices: Union[List[int], List[float], List[str], List[bool]]
+    """Choice based hyper-parameter that is sampled uniformly
+
+    Attributes:
+        type: type of the hyper-parameter -- (note: spock will attempt to autocast into this type)
+        choices: list of variable length that contains all the possible choices to select from
+
+    """
+    type = attr.ib(type=str,
+                   validator=[attr.validators.instance_of(str), attr.validators.in_(['float', 'int', 'str', 'bool'])])
+    choices = attr.ib(type=Union[List[str], List[int], List[float], List[bool]],
+                      validator=attr.validators.deep_iterable(
+                          member_validator=attr.validators.instance_of((float, int, bool, str)),
+                          iterable_validator=attr.validators.instance_of(list)
+                      ))

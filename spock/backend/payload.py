@@ -72,7 +72,7 @@ class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
 
         """
         payload = self._payload(input_classes, ignore_classes, path, deps, root=True)
-        payload = self._handle_overrides(payload, cmd_args)
+        payload = self._handle_overrides(payload, ignore_classes, cmd_args)
         return payload
 
     def _payload(self, input_classes, ignore_classes, path, deps, root=False):
@@ -175,7 +175,7 @@ class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
         payload.update(included_params)
         return payload
 
-    def _handle_overrides(self, payload, args):
+    def _handle_overrides(self, payload, ignore_classes, args):
         """Handle command line overrides
 
         Iterate through the command line override values, determine at what level to set them, and set them if possible
@@ -191,12 +191,31 @@ class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
 
         """
         skip_keys = ['config', 'help']
-        for k, v in vars(args).items():
+        pruned_args = self._prune_args(args, ignore_classes)
+        for k, v in pruned_args.items():
             if k not in skip_keys and v is not None:
                 payload = self._handle_payload_override(payload, k, v)
         return payload
 
     @staticmethod
+    def _prune_args(args, ignore_classes):
+        """Prunes ignored class names from the cmd line args list to prevent incorrect access
+
+        *Args*:
+
+            args: current cmd line args
+            ignore_classes: list of class names to ignore
+
+        *Returns*:
+
+            dictionary of pruned cmd line args
+
+        """
+        ignored_stems = [val.__name__ for val in ignore_classes]
+        return {k: v for k, v in vars(args).items() if k.split('.')[0] not in ignored_stems}
+
+    @staticmethod
+    @abstractmethod
     def _handle_payload_override(payload, key, value):
         """Handles the complex logic needed for List[spock class] overrides
 
@@ -214,47 +233,6 @@ class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
             payload: modified payload with overrides
 
         """
-        key_split = key.split('.')
-        curr_ref = payload
-        for idx, split in enumerate(key_split):
-            # If the root isn't in the payload then it needs to be added but only for the first key split
-            if idx == 0 and (split not in payload):
-                payload.update({split: {}})
-            # Check for curr_ref switch over -- verify by checking the sys modules names
-            if idx != 0 and (split in payload) and (isinstance(curr_ref, str)) and (hasattr(sys.modules['spock'].backend.config, split)):
-                curr_ref = payload[split]
-            elif idx != 0 and (split in payload) and (isinstance(payload[split], str)) and (hasattr(sys.modules['spock'].backend.config, payload[split])):
-                curr_ref = payload[split]
-            # elif check if it's the last value and figure out the override
-            elif idx == (len(key_split)-1):
-                # Handle bool(s) a bit differently as they are store_true
-                if isinstance(curr_ref, dict) and isinstance(value, bool):
-                    if value is not False:
-                        curr_ref[split] = value
-                # If we are at the dictionary level we should be able to just payload override
-                elif isinstance(curr_ref, dict) and not isinstance(value, bool):
-                    curr_ref[split] = value
-                # If we are at a list level it must be some form of repeated class since this is the end of the class
-                # tree -- check the instance type but also make sure the cmd-line override is the correct len
-                elif isinstance(curr_ref, list) and len(value) == len(curr_ref):
-                    # Walk the list and check for the key
-                    for ref_idx, val in enumerate(curr_ref):
-                        if split in val:
-                            val[split] = value[ref_idx]
-                        else:
-                            raise ValueError(f'cmd-line override failed for {key} -- '
-                                             f'Failed to find key {split} within lowest level List[Dict]')
-                elif isinstance(curr_ref, list) and len(value) != len(curr_ref):
-                    raise ValueError(f'cmd-line override failed for {key} -- '
-                                     f'Specified key {split} with len {len(value)} does not match len {len(curr_ref)} '
-                                     f'of List[Dict]')
-                else:
-                    raise ValueError(f'cmd-line override failed for {key} -- '
-                                     f'Failed to find key {split} within lowest level Dict')
-            # If it's not keep walking the current payload
-            else:
-                curr_ref = curr_ref[split]
-        return payload
 
 
 class AttrPayload(BasePayload):
@@ -269,6 +247,13 @@ class AttrPayload(BasePayload):
 
     """
     def __init__(self, s3_config=None):
+        """Init for AttrPayload
+
+        *Args*:
+
+            s3_config: optional S3 config object
+
+        """
         super().__init__(s3_config=s3_config)
 
     def __call__(self, *args, **kwargs):
@@ -334,4 +319,64 @@ class AttrPayload(BasePayload):
                     payload[keys] = values
         tuple_payload = convert_to_tuples(payload, type_fields, class_names)
         payload = deep_update(payload, tuple_payload)
+        return payload
+
+    @staticmethod
+    def _handle_payload_override(payload, key, value):
+        """Handles the complex logic needed for List[spock class] overrides
+
+        Messy logic that sets overrides for the various different types. The hardest being List[spock class] since str
+        names have to be mapped backed to sys.modules and can be set at either the general or class level.
+
+        *Args*:
+
+            payload: current payload dictionary
+            key: current arg key
+            value: value at current arg key
+
+        *Returns*:
+
+            payload: modified payload with overrides
+
+        """
+        key_split = key.split('.')
+        curr_ref = payload
+        for idx, split in enumerate(key_split):
+            # If the root isn't in the payload then it needs to be added but only for the first key split
+            if idx == 0 and (split not in payload):
+                payload.update({split: {}})
+            # Check for curr_ref switch over -- verify by checking the sys modules names
+            if idx != 0 and (split in payload) and (isinstance(curr_ref, str)) and (hasattr(sys.modules['spock'].backend.config, split)):
+                curr_ref = payload[split]
+            elif idx != 0 and (split in payload) and (isinstance(payload[split], str)) and (hasattr(sys.modules['spock'].backend.config, payload[split])):
+                curr_ref = payload[split]
+            # elif check if it's the last value and figure out the override
+            elif idx == (len(key_split)-1):
+                # Handle bool(s) a bit differently as they are store_true
+                if isinstance(curr_ref, dict) and isinstance(value, bool):
+                    if value is not False:
+                        curr_ref[split] = value
+                # If we are at the dictionary level we should be able to just payload override
+                elif isinstance(curr_ref, dict) and not isinstance(value, bool):
+                    curr_ref[split] = value
+                # If we are at a list level it must be some form of repeated class since this is the end of the class
+                # tree -- check the instance type but also make sure the cmd-line override is the correct len
+                elif isinstance(curr_ref, list) and len(value) == len(curr_ref):
+                    # Walk the list and check for the key
+                    for ref_idx, val in enumerate(curr_ref):
+                        if split in val:
+                            val[split] = value[ref_idx]
+                        else:
+                            raise ValueError(f'cmd-line override failed for {key} -- '
+                                             f'Failed to find key {split} within lowest level List[Dict]')
+                elif isinstance(curr_ref, list) and len(value) != len(curr_ref):
+                    raise ValueError(f'cmd-line override failed for {key} -- '
+                                     f'Specified key {split} with len {len(value)} does not match len {len(curr_ref)} '
+                                     f'of List[Dict]')
+                else:
+                    raise ValueError(f'cmd-line override failed for {key} -- '
+                                     f'Failed to find key {split} within lowest level Dict')
+            # If it's not keep walking the current payload
+            else:
+                curr_ref = curr_ref[split]
         return payload

@@ -5,13 +5,15 @@
 
 """Handles the building/saving of the configurations from the Spock config classes"""
 
-from pathlib import Path
 import attr
+import argparse
+from pathlib import Path
 from spock.backend.builder import AttrBuilder
 from spock.backend.payload import AttrPayload
 from spock.backend.saver import AttrSaver
 from spock.utils import check_payload_overwrite
 from spock.utils import deep_payload_update
+import sys
 import typing
 
 
@@ -46,28 +48,42 @@ class ConfigArgBuilder:
             **kwargs: keyword args
 
         """
-        backend = self._set_backend(args)
+        # Do some verification first
+        self._verify_attr(args)
+        self._configs = configs
+        self._no_cmd_line = no_cmd_line
+        self._desc = desc
+        # Build the payload and saver objects
+        self._payload_obj = AttrPayload(s3_config=s3_config)
+        self._saver_obj = AttrSaver(s3_config=s3_config)
+        # Split the fixed parameters from the tuneable ones (if present)
         fixed_args, tune_args = self._strip_tune_parameters(args)
-        self._builder_obj = backend.get('builder')(
-            *fixed_args, configs=configs, desc=desc, no_cmd_line=no_cmd_line, **kwargs
-        )
-        if len(tune_args) > 0:
-            try:
-                from spock.addons.tune.optuna import OptunaBuilder
-                self._tuner_obj = OptunaBuilder(
-                    *tune_args, configs=configs, no_cmd_line=no_cmd_line
-                )
-            except ImportError:
-                print(
-                    'Missing libraries to support tune functionality. Please re-install with the extra tune '
-                    'dependencies -- pip install spock-config[tune]')
-        self._payload_obj = backend.get('payload')(s3_config=s3_config)
-        self._saver_obj = backend.get('saver')(s3_config=s3_config)
+        # The fixed parameter builder
+        self._builder_obj = AttrBuilder(*fixed_args, **kwargs)
+        # The possible tunable parameter builder -- might return None
+        self._tune_obj, self._tune_payload_obj = self._handle_tuner_objects(tune_args, s3_config, kwargs)
         try:
-            self._dict_args = self._get_payload(ignore_args=tune_args)
+            # Get all cmd line args and build overrides
+            self._args = self._handle_cmd_line()
+            # Get the actual payload from the config files -- fixed configs
+            self._dict_args = self._get_payload(
+                payload_obj=self._payload_obj,
+                input_classes=self._builder_obj.input_classes,
+                ignore_args=tune_args
+            )
+            # Get the payload from the config files -- hyper-parameters
+            self._tune_args = self._get_payload(
+                payload_obj=self._tune_payload_obj,
+                input_classes=self._tune_obj.input_classes,
+                ignore_args=fixed_args
+            )
+            # Build the Spockspace from the payload and the classes
+            # fixed configs
             self._arg_namespace = self._builder_obj.generate(self._dict_args)
+            # tuneable parameters
+            self._tune_namespace = self._tune_obj.generate(self._tune_args)
         except Exception as e:
-            self._builder_obj.print_usage_and_exit(str(e), sys_exit=False)
+            self._print_usage_and_exit(str(e), sys_exit=False)
             raise ValueError(e)
 
     def __call__(self, *args, **kwargs):
@@ -95,9 +111,65 @@ class ConfigArgBuilder:
         """
         return self._arg_namespace
 
+    def sample(self):
+        return
+
+    def _print_usage_and_exit(self, msg=None, sys_exit=True, exit_code=1):
+        """Prints the help message and exits
+
+        *Args*:
+
+            msg: message to print pre exit
+
+        *Returns*:
+
+            None
+
+        """
+        print(f'usage: {sys.argv[0]} -c [--config] config1 [config2, config3, ...]')
+        print(f'\n{self._desc if self._desc != "" else ""}\n')
+        print('configuration(s):\n')
+        # Call the fixed parameter help info
+        self._builder_obj.handle_help_info()
+        if self._tune_obj is not None:
+            self._tune_obj.handle_help_info()
+        if msg is not None:
+            print(msg)
+        if sys_exit:
+            sys.exit(exit_code)
+
     @staticmethod
-    def _set_backend(args: typing.Tuple):
-        """Determines which backend class to use
+    def _handle_tuner_objects(tune_args, s3_config, kwargs):
+        """Handles creating the tuner builder object if @spockTuner classes were passed in
+
+        *Args*:
+
+            tune_args: list of tuner classes
+            s3_config: s3Config object for S3 support
+            kwargs: optional keyword args
+
+        *Returns*:
+
+            tuner builder object or None
+
+        """
+        if len(tune_args) > 0:
+            try:
+                from spock.addons.tune.builder import TunerBuilder
+                from spock.addons.tune.payload import TunerPayload
+                tuner_builder = TunerBuilder(*tune_args, **kwargs)
+                tuner_payload = TunerPayload(s3_config=s3_config)
+                return tuner_builder, tuner_payload
+            except ImportError:
+                print(
+                    'Missing libraries to support tune functionality. Please re-install with the extra tune '
+                    'dependencies -- pip install spock-config[tune]')
+        else:
+            return None, None
+
+    @staticmethod
+    def _verify_attr(args: typing.Tuple):
+        """Verifies that all the input classes are attr based
 
         *Args*:
 
@@ -105,7 +177,7 @@ class ConfigArgBuilder:
 
         *Returns*:
 
-            backend: class of backend
+            None
 
         """
         # Gather if all attr backend
@@ -118,9 +190,6 @@ class ConfigArgBuilder:
             else:
                 raise TypeError(f"*args must be of all attrs backend -- invalid type "
                                 f"{type(args[which_idx])}")
-        else:
-            backend = {'builder': AttrBuilder, 'payload': AttrPayload, 'saver': AttrSaver}
-        return backend
 
     @staticmethod
     def _strip_tune_parameters(args: typing.Tuple):
@@ -145,22 +214,76 @@ class ConfigArgBuilder:
                 tune_args.append(arg)
         return fixed_args, tune_args
 
-    def _get_config_paths(self):
-        """Get config paths from all methods
+    def _handle_cmd_line(self):
+        """Handle all cmd line related tasks
 
         Config paths can enter from either the command line or be added in the class init call
-        as a kwarg (configs=[])
+        as a kwarg (configs=[]) -- also trigger the building of the cmd line overrides for each fixed and
+        tunable objects
 
         *Returns*:
 
             args: namespace of args
 
         """
-        # Call the objects get_config_paths function
-        args = self._builder_obj.get_config_paths()
+        # Need to hold an overarching parser here that just gets appended to for both fixed and tunable objects
+        # Check if the no_cmd_line is not flagged and if the configs are not empty
+        if self._no_cmd_line and (self._configs is None):
+            raise ValueError("Flag set for preventing command line read but no paths were passed to the config kwarg")
+        # If cmd_line is flagged then build the parsers if not make any empty Namespace
+        args = self._build_override_parsers(desc=self._desc) if not self._no_cmd_line else argparse.Namespace(config=[], help=False)
+        # If configs are present from the init call then roll these into the namespace
+        if self._configs is not None:
+            args = self._get_from_kwargs(args, self._configs)
         return args
 
-    def _get_payload(self, ignore_args: typing.List):
+    def _build_override_parsers(self, desc):
+        """Creates parsers for command-line overrides
+
+        Builds the basic command line parser for configs and help then iterates through each attr instance to make
+        namespace specific cmd line override parsers -- handles calling both the fixed and tunable objects
+
+        *Args*:
+
+            desc: argparser description
+
+        *Returns*:
+
+            args: argument namespace
+
+        """
+        # Highest level parser object
+        parser = argparse.ArgumentParser(description=desc, add_help=False)
+        parser.add_argument('-c', '--config', required=False, nargs='+', default=[])
+        parser.add_argument('-h', '--help', action='store_true')
+        # Handle the builder obj
+        parser = self._builder_obj.build_override_parsers(parser=parser)
+        if self._tune_obj is not None:
+            parser = self._tune_obj.build_override_parsers(parser=parser)
+        args = parser.parse_args()
+        return args
+
+    @staticmethod
+    def _get_from_kwargs(args, configs):
+        """Get configs from the configs kwarg
+
+        *Args*:
+
+            args: argument namespace
+            configs: config kwarg
+
+        *Returns*:
+
+            args: arg namespace
+
+        """
+        if isinstance(configs, list):
+            args.config.extend(configs)
+        else:
+            raise TypeError(f'configs kwarg must be of type list -- given {type(configs)}')
+        return args
+
+    def _get_payload(self, payload_obj, input_classes, ignore_args: typing.List):
         """Get the parameter payload from the config file(s)
 
         Calls the various ways to get configs and then parses to retrieve the parameter payload - make sure to call
@@ -168,6 +291,8 @@ class ConfigArgBuilder:
 
         *Args*:
 
+            payload_obj: current payload object to call
+            input_classes: classes to use to get payload
             ignore_args: args that were decorated for hyper-parameter tuning
 
         *Returns*:
@@ -175,18 +300,19 @@ class ConfigArgBuilder:
             payload: dictionary of parameter values
 
         """
-        args = self._get_config_paths()
-        if args.help:
+        if self._args.help:
             # Call sys exit with a clean code as this is the help call which is not unexpected behavior
-            self._builder_obj.print_usage_and_exit(sys_exit=True, exit_code=0)
+            self._print_usage_and_exit(sys_exit=True, exit_code=0)
         payload = {}
         dependencies = {'paths': [], 'rel_paths': [], 'roots': []}
-        for configs in args.config:
-            payload_update = self._payload_obj.payload(
-                self._builder_obj.input_classes, ignore_args, configs, args, dependencies
-            )
-            check_payload_overwrite(payload, payload_update, configs)
-            deep_payload_update(payload, payload_update)
+        if payload_obj is not None:
+            if len(input_classes) > 0:
+                for configs in self._args.config:
+                    payload_update = payload_obj.payload(
+                        input_classes, ignore_args, configs, self._args, dependencies
+                    )
+                    check_payload_overwrite(payload, payload_update, configs)
+                    deep_payload_update(payload, payload_update)
         return payload
 
     def save(self, file_name: str = None, user_specified_path: str = None, create_save_path: bool = True,

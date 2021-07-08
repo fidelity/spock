@@ -371,6 +371,8 @@ def _handle_optional_typing(typed):
 def _check_generic_recursive_single_type(typed):
     """Checks generics for the single types -- mixed types of generics are not allowed
 
+    DEPRECATED -- NOW SUPPORTS MIXED TYPES OF TUPLES
+
     *Args*:
 
         typed: type
