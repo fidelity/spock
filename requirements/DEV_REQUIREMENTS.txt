@@ -1,5 +1,7 @@
+black
 coveralls
 coverage
+isort
 moto
 portray
 pytest

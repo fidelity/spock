@@ -9,4 +9,7 @@ Spock is a framework that helps manage complex parameter configurations for Pyth
 Please refer to the documentation provided in the README.md
 """
 
-__all__ = ["configs", "utils"]
+from spock.addons.s3.configs import S3DownloadConfig, S3UploadConfig
+from spock.addons.s3.configs import S3Config
+
+__all__ = ["configs", "utils", "S3Config", "S3DownloadConfig", "S3UploadConfig"]

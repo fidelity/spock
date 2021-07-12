@@ -2,7 +2,7 @@
 import datetime
 from tests.base.base_asserts_test import *
 from spock.builder import ConfigArgBuilder
-from spock.addons import S3Config
+from spock.addons.s3 import S3Config
 from tests.base.attr_configs_test import *
 from tests.s3.fixtures_test import *
 import re
