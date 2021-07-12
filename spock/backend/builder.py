@@ -5,16 +5,17 @@
 
 """Handles the building/saving of the configurations from the Spock config classes"""
 
-from abc import ABC
-from abc import abstractmethod
-import attr
-from attr import NOTHING
-from enum import EnumMeta
 import re
 import sys
+from abc import ABC, abstractmethod
+from enum import EnumMeta
+from typing import List
+
+import attr
+from attr import NOTHING
+
 from spock.backend.wrappers import Spockspace
 from spock.utils import make_argument
-from typing import List
 
 
 class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
@@ -33,6 +34,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         save_path: list of path(s) to save the configs to
 
     """
+
     def __init__(self, *args, max_indent=4, module_name, **kwargs):
         self.input_classes = args
         self._module_name = module_name
@@ -72,23 +74,6 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         """
         self._attrs_help(self.input_classes, self._module_name)
 
-    # @abstractmethod
-    # def _handle_arguments(self, args, class_obj):
-    #     """Handles all argument mapping
-    #
-    #     Creates a dictionary of named parameters that are mapped to the final type of object
-    #
-    #     *Args*:
-    #
-    #         args: read file arguments
-    #         class_obj: instance of a class obj
-    #
-    #     *Returns*:
-    #
-    #         fields: dictionary of mapped parameters
-    #
-    #     """
-
     def _handle_arguments(self, args, class_obj):
         """Handles all argument mapping
 
@@ -107,7 +92,11 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         attr_name = class_obj.__name__
         class_names = [val.__name__ for val in self.input_classes]
         # Handle repeated classes
-        if attr_name in class_names and attr_name in args and isinstance(args[attr_name], list):
+        if (
+            attr_name in class_names
+            and attr_name in args
+            and isinstance(args[attr_name], list)
+        ):
             fields = self._handle_repeated(args[attr_name], attr_name, class_names)
         # Handle non-repeated classes
         else:
@@ -115,12 +104,19 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
             for val in class_obj.__attrs_attrs__:
                 # Check if namespace is named and then check for key -- checking for local class def
                 if attr_name in args and val.name in args[attr_name]:
-                    fields[val.name] = self._handle_nested_class(args, args[attr_name][val.name], class_names)
+                    fields[val.name] = self._handle_nested_class(
+                        args, args[attr_name][val.name], class_names
+                    )
                 # If not named then just check for keys -- checking for global def
                 elif val.name in args:
-                    fields[val.name] = self._handle_nested_class(args, args[val.name], class_names)
+                    fields[val.name] = self._handle_nested_class(
+                        args, args[val.name], class_names
+                    )
                 # Check for special keys to set
-                if 'special_key' in val.metadata and val.metadata['special_key'] is not None:
+                if (
+                    "special_key" in val.metadata
+                    and val.metadata["special_key"] is not None
+                ):
                     if val.name in args:
                         self.save_path = args[val.name]
                     elif val.default is not None:
@@ -163,14 +159,20 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         # If so then create the needed class object by unrolling the args to **kwargs and return it
         if len(match_idx) > 0:
             if len(match_idx) > 1:
-                raise ValueError('Match error -- multiple classes with the same name definition')
+                raise ValueError(
+                    "Match error -- multiple classes with the same name definition"
+                )
             else:
                 if args.get(self.input_classes[match_idx[0]].__name__) is None:
-                    raise ValueError(f'Missing config file definition for the referenced class '
-                                     f'{self.input_classes[match_idx[0]].__name__}')
+                    raise ValueError(
+                        f"Missing config file definition for the referenced class "
+                        f"{self.input_classes[match_idx[0]].__name__}"
+                    )
                 current_arg = args.get(self.input_classes[match_idx[0]].__name__)
                 if isinstance(current_arg, list):
-                    class_value = [self.input_classes[match_idx[0]](**val) for val in current_arg]
+                    class_value = [
+                        self.input_classes[match_idx[0]](**val) for val in current_arg
+                    ]
                 else:
                     class_value = self.input_classes[match_idx[0]](**current_arg)
             return_value = class_value
@@ -199,7 +201,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
             if isinstance(attr_build, list):
                 class_name = list({type(val).__name__ for val in attr_build})
                 if len(class_name) > 1:
-                    raise ValueError('Repeated class has more than one unique name')
+                    raise ValueError("Repeated class has more than one unique name")
                 auto_dict.update({class_name[0]: attr_build})
             else:
                 auto_dict.update({type(attr_build).__name__: attr_build})
@@ -252,20 +254,39 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         field_list = list(fields.keys())
         arg_list = list(args.keys())
         # Exclude all the base types that are supported -- these can be set by attrs
-        exclude_list = ['_Nothing', 'NoneType', 'bool', 'int', 'float', 'str', 'list', 'tuple']
+        exclude_list = [
+            "_Nothing",
+            "NoneType",
+            "bool",
+            "int",
+            "float",
+            "str",
+            "list",
+            "tuple",
+        ]
         for val in names:
             if val not in field_list:
-                default_type_name = type(getattr(input_class.__attrs_attrs__, val).default).__name__
+                default_type_name = type(
+                    getattr(input_class.__attrs_attrs__, val).default
+                ).__name__
                 if default_type_name not in exclude_list:
-                    default_name = getattr(input_class.__attrs_attrs__, val).default.__name__
+                    default_name = getattr(
+                        input_class.__attrs_attrs__, val
+                    ).default.__name__
                 else:
                     default_name = None
                 if default_name is not None and default_name in arg_list:
                     if isinstance(args.get(default_name), list):
-                        default_value = [self.input_classes[class_names.index(default_name)](**arg_val)
-                                         for arg_val in args.get(default_name)]
+                        default_value = [
+                            self.input_classes[class_names.index(default_name)](
+                                **arg_val
+                            )
+                            for arg_val in args.get(default_name)
+                        ]
                     else:
-                        default_value = self.input_classes[class_names.index(default_name)](**args.get(default_name))
+                        default_value = self.input_classes[
+                            class_names.index(default_name)
+                        ](**args.get(default_name))
                     fields.update({val: default_value})
         return fields
 
@@ -286,7 +307,9 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         """
         # Build out each class override specific parser
         for val in self.input_classes:
-            parser = self._make_group_override_parser(parser=parser, class_obj=val, class_name=self._module_name)
+            parser = self._make_group_override_parser(
+                parser=parser, class_obj=val, class_name=self._module_name
+            )
         return parser
 
     @staticmethod
@@ -306,7 +329,9 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         if isinstance(configs, list):
             args.config.extend(configs)
         else:
-            raise TypeError(f'configs kwarg must be of type list -- given {type(configs)}')
+            raise TypeError(
+                f"configs kwarg must be of type list -- given {type(configs)}"
+            )
         return args
 
     @staticmethod
@@ -323,7 +348,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
 
         """
         for idx, val in enumerate(newline_split_docs):
-            re_check = re.search(r'(?i)Attribute?s?:', val)
+            re_check = re.search(r"(?i)Attribute?s?:", val)
             if re_check is not None:
                 return idx
         return -1
@@ -346,7 +371,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         """
         if obj.__doc__ is not None:
             # Split by new line
-            newline_split_docs = obj.__doc__.split('\n')
+            newline_split_docs = obj.__doc__.split("\n")
             # Cleanup l/t whitespace
             newline_split_docs = [val.strip() for val in newline_split_docs]
         else:
@@ -354,21 +379,27 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         # Find the break between the class docs and the Attribute section -- if this returns -1 then there is no
         # Attributes section
         attr_idx = self._find_attribute_idx(newline_split_docs)
-        head_docs = newline_split_docs[:attr_idx] if attr_idx != -1 else newline_split_docs
+        head_docs = (
+            newline_split_docs[:attr_idx] if attr_idx != -1 else newline_split_docs
+        )
         attr_docs = newline_split_docs[attr_idx:] if attr_idx != -1 else []
         # Grab only the first contiguous line as everything else will probably be too verbose (e.g. the
         # mid-level docstring that has detailed descriptions
-        class_doc = ''
+        class_doc = ""
         for idx, val in enumerate(head_docs):
-            class_doc += f' {val}'
-            if idx + 1 != len(head_docs) and head_docs[idx + 1] == '':
+            class_doc += f" {val}"
+            if idx + 1 != len(head_docs) and head_docs[idx + 1] == "":
                 break
         # Clean up any l/t whitespace
         class_doc = class_doc.strip()
+        if len(class_doc) > 0:
+            class_doc = f"-- {class_doc}"
         return class_doc, attr_docs
 
     @staticmethod
-    def _match_attribute_docs(attr_name, attr_docs, attr_type_str, attr_default=NOTHING):
+    def _match_attribute_docs(
+        attr_name, attr_docs, attr_type_str, attr_default=NOTHING
+    ):
         """Matches class attributes with attribute docstrings via regex
 
         *Args*:
@@ -386,17 +417,20 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         # Regex match each value
         a_str = None
         for a_doc in attr_docs:
-            match_re = re.search(r'(?i)^' + attr_name + '?:', a_doc)
+            match_re = re.search(r"(?i)^" + attr_name + "?:", a_doc)
             # Find only the first match -- if more than one than ignore
             if match_re:
-                a_str = a_doc[match_re.end():].strip()
-        return {attr_name: {
-            'type': attr_type_str,
-            'desc': a_str if a_str is not None else "",
-            'default': "(default: " + repr(attr_default) + ")" if type(attr_default).__name__ != '_Nothing'
-            else "",
-            'len': {'name': len(attr_name), 'type': len(attr_type_str)}
-        }}
+                a_str = a_doc[match_re.end() :].strip()
+        return {
+            attr_name: {
+                "type": attr_type_str,
+                "desc": a_str if a_str is not None else "",
+                "default": "(default: " + repr(attr_default) + ")"
+                if type(attr_default).__name__ != "_Nothing"
+                else "",
+                "len": {"name": len(attr_name), "type": len(attr_type_str)},
+            }
+        }
 
     def _handle_attributes_print(self, info_dict):
         """Prints attribute information in an argparser style format
@@ -408,14 +442,18 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         """
         # Figure out indents
         max_param_length = max([len(k) for k in info_dict.keys()])
-        max_type_length = max([v['len']['type'] for v in info_dict.values()])
+        max_type_length = max([v["len"]["type"] for v in info_dict.values()])
         # Print akin to the argparser
         for k, v in info_dict.items():
-            print(f'    {k}' + (' ' * (max_param_length - v["len"]["name"] + self._max_indent)) +
-                  f'{v["type"]}' + (' ' * (max_type_length - v["len"]["type"] + self._max_indent)) +
-                  f'{v["desc"]} {v["default"]}')
+            print(
+                f"    {k}"
+                + (" " * (max_param_length - v["len"]["name"] + self._max_indent))
+                + f'{v["type"]}'
+                + (" " * (max_type_length - v["len"]["type"] + self._max_indent))
+                + f'{v["desc"]} {v["default"]}'
+            )
         # Blank for spacing :-/
-        print('')
+        print("")
 
     def _extract_other_types(self, typed, module_name):
         """Takes a high level type and recursively extracts any enum or class types
@@ -431,7 +469,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
 
         """
         return_list = []
-        if hasattr(typed, '__args__'):
+        if hasattr(typed, "__args__"):
             for val in typed.__args__:
                 recurse_return = self._extract_other_types(val, module_name)
                 if isinstance(recurse_return, list):
@@ -439,7 +477,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
                 else:
                     return_list.append(self._extract_other_types(val, module_name))
         elif isinstance(typed, EnumMeta) or (typed.__module__ == module_name):
-            return [f'{typed.__module__}.{typed.__name__}']
+            return [f"{typed.__module__}.{typed.__name__}"]
         return return_list
 
     def _attrs_help(self, input_classes, module_name):
@@ -478,23 +516,23 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
 
         """
         # Grab the base or type info depending on what is provided
-        if 'type' in val.metadata:
-            type_string = repr(val.metadata['type'])
-        elif 'base' in val.metadata:
-            type_string = val.metadata['base']
-        elif hasattr(val.type, '__name__'):
+        if "type" in val.metadata:
+            type_string = repr(val.metadata["type"])
+        elif "base" in val.metadata:
+            type_string = val.metadata["base"]
+        elif hasattr(val.type, "__name__"):
             type_string = val.type.__name__
         else:
             type_string = str(val.type)
         # Regex out the typing info if present
-        type_string = re.sub(r'typing.', '', type_string)
+        type_string = re.sub(r"typing.", "", type_string)
         # Regex out any nested_others that have module path information
         for other_val in nested_others:
             split_other = f"{'.'.join(other_val.split('.')[:-1])}."
-            type_string = re.sub(split_other, '', type_string)
+            type_string = re.sub(split_other, "", type_string)
         # Regex the string to see if it matches any Enums in the __main__ module space
         # Construct the type with the metadata
-        if 'optional' in val.metadata:
+        if "optional" in val.metadata:
             type_string = f"Optional[{type_string}]"
         return type_string
 
@@ -517,23 +555,27 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         for attrs_class in input_classes:
             # Split the docs into class docs and any attribute docs
             class_doc, attr_docs = self._split_docs(attrs_class)
-            print('  ' + attrs_class.__name__ + f' ({class_doc})')
+            print("  " + attrs_class.__name__ + f" {class_doc}")
             # Keep a running info_dict of all the attribute level info
             info_dict = {}
             for val in attrs_class.__attrs_attrs__:
                 # If the type is an enum we need to handle it outside of this attr loop
                 # Match the style of nested enums and return a string of module.name notation
                 if isinstance(val.type, EnumMeta):
-                    other_list.append(f'{val.type.__module__}.{val.type.__name__}')
+                    other_list.append(f"{val.type.__module__}.{val.type.__name__}")
                 # if there is a type (implied Iterable) -- check it for nested Enums or classes
                 nested_others = self._extract_fnc(val, module_name)
                 if len(nested_others) > 0:
                     other_list.extend(nested_others)
                 # Get the type represented as a string
                 type_string = self._get_type_string(val, nested_others)
-                info_dict.update(self._match_attribute_docs(val.name, attr_docs, type_string, val.default))
+                info_dict.update(
+                    self._match_attribute_docs(
+                        val.name, attr_docs, type_string, val.default
+                    )
+                )
             # Add to covered so we don't print help twice in the case of some recursive nesting
-            covered_set.add(f'{attrs_class.__module__}.{attrs_class.__name__}')
+            covered_set.add(f"{attrs_class.__module__}.{attrs_class.__name__}")
             self._handle_attributes_print(info_dict=info_dict)
         # Convert the enum list to a set to remove dupes and then back to a list so it is iterable -- set diff to not
         # repeat
@@ -555,7 +597,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         # Iterate any Enum type classes
         for other in other_list:
             # if it's longer than 2 then it's an embedded Spock class
-            if '.'.join(other.split('.')[:-1]) == module_name:
+            if ".".join(other.split(".")[:-1]) == module_name:
                 class_type = self._get_from_sys_modules(other)
                 # Invoke recursive call for the class
                 self._attrs_help([class_type], module_name)
@@ -564,14 +606,16 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
                 enum = self._get_from_sys_modules(other)
                 # Split the docs into class docs and any attribute docs
                 class_doc, attr_docs = self._split_docs(enum)
-                print('  ' + enum.__name__ + f' ({class_doc})')
+                print("  " + enum.__name__ + f" ({class_doc})")
                 info_dict = {}
                 for val in enum:
-                    info_dict.update(self._match_attribute_docs(
-                        attr_name=val.name,
-                        attr_docs=attr_docs,
-                        attr_type_str=type(val.value).__name__
-                    ))
+                    info_dict.update(
+                        self._match_attribute_docs(
+                            attr_name=val.name,
+                            attr_docs=attr_docs,
+                            attr_type_str=type(val.value).__name__,
+                        )
+                    )
                 self._handle_attributes_print(info_dict=info_dict)
 
     @abstractmethod
@@ -603,7 +647,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
 
         """
         # Split on dot notation
-        split_string = cls_name.split('.')
+        split_string = cls_name.split(".")
         module = None
         for idx, val in enumerate(split_string):
             # idx = 0 will always be a call to the sys.modules dict
@@ -631,6 +675,7 @@ class AttrBuilder(BaseBuilder):
         save_path: list of path(s) to save the configs to
 
     """
+
     def __init__(self, *args, **kwargs):
         """AttrBuilder init
 
@@ -641,7 +686,7 @@ class AttrBuilder(BaseBuilder):
             no_cmd_line: flag to force no command line reads
             **kwargs: any extra keyword args
         """
-        super().__init__(*args, module_name='spock.backend.config', **kwargs)
+        super().__init__(*args, module_name="spock.backend.config", **kwargs)
 
     @staticmethod
     def _make_group_override_parser(parser, class_obj, class_name):
@@ -662,16 +707,24 @@ class AttrBuilder(BaseBuilder):
 
         """
         attr_name = class_obj.__name__
-        group_parser = parser.add_argument_group(title=str(attr_name) + " Specific Overrides")
+        group_parser = parser.add_argument_group(
+            title=str(attr_name) + " Specific Overrides"
+        )
         for val in class_obj.__attrs_attrs__:
-            val_type = val.metadata['type'] if 'type' in val.metadata else val.type
+            val_type = val.metadata["type"] if "type" in val.metadata else val.type
             # Check if the val type has __args__ -- this catches lists?
             # TODO (ncilfone): Fix up this super super ugly logic
-            if hasattr(val_type, '__args__') and ((list(set(val_type.__args__))[0]).__module__ == class_name) and attr.has((list(set(val_type.__args__))[0])):
-                args = (list(set(val_type.__args__))[0])
+            if (
+                hasattr(val_type, "__args__")
+                and ((list(set(val_type.__args__))[0]).__module__ == class_name)
+                and attr.has((list(set(val_type.__args__))[0]))
+            ):
+                args = list(set(val_type.__args__))[0]
                 for inner_val in args.__attrs_attrs__:
                     arg_name = f"--{str(attr_name)}.{val.name}.{args.__name__}.{inner_val.name}"
-                    group_parser = make_argument(arg_name, List[inner_val.type], group_parser)
+                    group_parser = make_argument(
+                        arg_name, List[inner_val.type], group_parser
+                    )
             else:
                 arg_name = f"--{str(attr_name)}.{val.name}"
                 group_parser = make_argument(arg_name, val_type, group_parser)
@@ -681,7 +734,11 @@ class AttrBuilder(BaseBuilder):
         attr_name = class_obj.__name__
         class_names = [val.__name__ for val in self.input_classes]
         # Handle repeated classes
-        if attr_name in class_names and attr_name in args and isinstance(args[attr_name], list):
+        if (
+            attr_name in class_names
+            and attr_name in args
+            and isinstance(args[attr_name], list)
+        ):
             fields = self._handle_repeated(args[attr_name], attr_name, class_names)
         # Handle non-repeated classes
         else:
@@ -689,12 +746,19 @@ class AttrBuilder(BaseBuilder):
             for val in class_obj.__attrs_attrs__:
                 # Check if namespace is named and then check for key -- checking for local class def
                 if attr_name in args and val.name in args[attr_name]:
-                    fields[val.name] = self._handle_nested_class(args, args[attr_name][val.name], class_names)
+                    fields[val.name] = self._handle_nested_class(
+                        args, args[attr_name][val.name], class_names
+                    )
                 # If not named then just check for keys -- checking for global def
                 elif val.name in args:
-                    fields[val.name] = self._handle_nested_class(args, args[val.name], class_names)
+                    fields[val.name] = self._handle_nested_class(
+                        args, args[val.name], class_names
+                    )
                 # Check for special keys to set
-                if 'special_key' in val.metadata and val.metadata['special_key'] is not None:
+                if (
+                    "special_key" in val.metadata
+                    and val.metadata["special_key"] is not None
+                ):
                     if val.name in args:
                         self.save_path = args[val.name]
                     elif val.default is not None:
@@ -737,14 +801,20 @@ class AttrBuilder(BaseBuilder):
         # If so then create the needed class object by unrolling the args to **kwargs and return it
         if len(match_idx) > 0:
             if len(match_idx) > 1:
-                raise ValueError('Match error -- multiple classes with the same name definition')
+                raise ValueError(
+                    "Match error -- multiple classes with the same name definition"
+                )
             else:
                 if args.get(self.input_classes[match_idx[0]].__name__) is None:
-                    raise ValueError(f'Missing config file definition for the referenced class '
-                                     f'{self.input_classes[match_idx[0]].__name__}')
+                    raise ValueError(
+                        f"Missing config file definition for the referenced class "
+                        f"{self.input_classes[match_idx[0]].__name__}"
+                    )
                 current_arg = args.get(self.input_classes[match_idx[0]].__name__)
                 if isinstance(current_arg, list):
-                    class_value = [self.input_classes[match_idx[0]](**val) for val in current_arg]
+                    class_value = [
+                        self.input_classes[match_idx[0]](**val) for val in current_arg
+                    ]
                 else:
                     class_value = self.input_classes[match_idx[0]](**current_arg)
             return_value = class_value
@@ -766,4 +836,8 @@ class AttrBuilder(BaseBuilder):
             list of any nested classes/enums
 
         """
-        return self._extract_other_types(val.metadata['type'], module_name) if 'type' in val.metadata else []
+        return (
+            self._extract_other_types(val.metadata["type"], module_name)
+            if "type" in val.metadata
+            else []
+        )

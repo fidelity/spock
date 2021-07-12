@@ -1,3 +1,4 @@
-optuna
+optuna==2.8.0
+torchvision
 pytorch
-ax-platform
+#ax-platform

@@ -4,14 +4,24 @@
 # SPDX-License-Identifier: Apache-2.0
 
 """Creates the spock config interface that wraps attr -- tune version for hyper-parameters"""
-import typing
+import sys
+from typing import List, Optional, Sequence, Tuple, Union
 
 import attr
-from enum import Enum
+import optuna
+
 from spock.backend.config import _base_attr
-from spock.backend.typed import _extract_base_type
-import sys
-from typing import List, Optional, Tuple, Union
+
+
+@attr.s(auto_attribs=True)
+class OptunaTunerConfig:
+    storage: Optional[Union[str, optuna.storages.BaseStorage]] = None
+    sampler: Optional[optuna.samplers.BaseSampler] = None
+    pruner: Optional[optuna.pruners.BasePruner] = None
+    study_name: Optional[str] = None
+    direction: Optional[Union[str, optuna.study.StudyDirection]] = None
+    load_if_exists: bool = False
+    directions: Optional[Sequence[Union[str, optuna.study.StudyDirection]]] = None
 
 
 def _spock_tune(cls):
@@ -30,9 +40,11 @@ def _spock_tune(cls):
     """
     bases, attrs_dict = _base_attr(cls)
     # Dynamically make an attr class
-    obj = attr.make_class(name=cls.__name__, bases=bases, attrs=attrs_dict, kw_only=True, frozen=True)
+    obj = attr.make_class(
+        name=cls.__name__, bases=bases, attrs=attrs_dict, kw_only=True, frozen=True
+    )
     # For each class we dynamically create we need to register it within the system modules for pickle to work
-    setattr(sys.modules['spock'].addons.tune.config, obj.__name__, obj)
+    setattr(sys.modules["spock"].addons.tune.config, obj.__name__, obj)
     # Swap the __doc__ string from cls to obj
     obj.__doc__ = cls.__doc__
     return obj
@@ -52,12 +64,21 @@ class RangeHyperParameter:
         log_scale: log scale the values before sampling
 
     """
-    type = attr.ib(type=str, validator=[attr.validators.instance_of(str), attr.validators.in_(['float', 'int'])])
-    bounds = attr.ib(type=Union[Tuple[float, float], Tuple[int, int]],
-                     validator=attr.validators.deep_iterable(
-                         member_validator=attr.validators.instance_of((float, int)),
-                         iterable_validator=attr.validators.instance_of(tuple)
-                     ))
+
+    type = attr.ib(
+        type=str,
+        validator=[
+            attr.validators.instance_of(str),
+            attr.validators.in_(["float", "int"]),
+        ],
+    )
+    bounds = attr.ib(
+        type=Union[Tuple[float, float], Tuple[int, int]],
+        validator=attr.validators.deep_iterable(
+            member_validator=attr.validators.instance_of((float, int)),
+            iterable_validator=attr.validators.instance_of(tuple),
+        ),
+    )
     log_scale = attr.ib(type=bool, validator=attr.validators.instance_of(bool))
 
 
@@ -70,10 +91,18 @@ class ChoiceHyperParameter:
         choices: list of variable length that contains all the possible choices to select from
 
     """
-    type = attr.ib(type=str,
-                   validator=[attr.validators.instance_of(str), attr.validators.in_(['float', 'int', 'str', 'bool'])])
-    choices = attr.ib(type=Union[List[str], List[int], List[float], List[bool]],
-                      validator=attr.validators.deep_iterable(
-                          member_validator=attr.validators.instance_of((float, int, bool, str)),
-                          iterable_validator=attr.validators.instance_of(list)
-                      ))
+
+    type = attr.ib(
+        type=str,
+        validator=[
+            attr.validators.instance_of(str),
+            attr.validators.in_(["float", "int", "str", "bool"]),
+        ],
+    )
+    choices = attr.ib(
+        type=Union[List[str], List[int], List[float], List[bool]],
+        validator=attr.validators.deep_iterable(
+            member_validator=attr.validators.instance_of((float, int, bool, str)),
+            iterable_validator=attr.validators.instance_of(list),
+        ),
+    )

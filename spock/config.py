@@ -12,4 +12,4 @@ from spock.utils import _is_spock_instance
 spock = spock_attr
 
 # Public alias for checking if an object is a @spock annotated class
-isinstance_spock =_is_spock_instance
+isinstance_spock = _is_spock_instance

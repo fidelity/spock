@@ -5,16 +5,17 @@
 
 """Handles the building/saving of the configurations from the Spock config classes"""
 
-import attr
 import argparse
+import sys
+import typing
 from pathlib import Path
+
+import attr
+
 from spock.backend.builder import AttrBuilder
 from spock.backend.payload import AttrPayload
 from spock.backend.saver import AttrSaver
-from spock.utils import check_payload_overwrite
-from spock.utils import deep_payload_update
-import sys
-import typing
+from spock.utils import check_payload_overwrite, deep_payload_update
 
 
 class ConfigArgBuilder:
@@ -27,15 +28,30 @@ class ConfigArgBuilder:
 
     *Attributes*:
 
+        _args: all command line args
         _arg_namespace: generated argument namespace
         _builder_obj: instance of a BaseBuilder class
         _dict_args: dictionary args from the command line
         _payload_obj: instance of a BasePayload class
         _saver_obj: instance of a BaseSaver class
+        _tune_payload_obj: payload for tuner related objects -- instance of TunerPayload class
+        _tune_obj: instance of TunerBuilder class
+        _tuner_interface: interface that handles the underlying library for sampling -- instance of TunerInterface
+        _tuner_state: current state of the hyper-parameter sampler
+        _tune_namespace: namespace that hold the generated tuner related parameters
+        _sample_count: current call to the sample function
 
     """
-    def __init__(self, *args, configs: typing.Optional[typing.List] = None,
-                 desc: str = '', no_cmd_line: bool = False, s3_config=None, **kwargs):
+
+    def __init__(
+        self,
+        *args,
+        configs: typing.Optional[typing.List] = None,
+        desc: str = "",
+        no_cmd_line: bool = False,
+        s3_config=None,
+        **kwargs,
+    ):
         """Init call for ConfigArgBuilder
 
         *Args*:
@@ -61,7 +77,12 @@ class ConfigArgBuilder:
         # The fixed parameter builder
         self._builder_obj = AttrBuilder(*fixed_args, **kwargs)
         # The possible tunable parameter builder -- might return None
-        self._tune_obj, self._tune_payload_obj = self._handle_tuner_objects(tune_args, s3_config, kwargs)
+        self._tune_obj, self._tune_payload_obj = self._handle_tuner_objects(
+            tune_args, s3_config, kwargs
+        )
+        self._tuner_interface = None
+        self._tuner_state = None
+        self._sample_count = 0
         try:
             # Get all cmd line args and build overrides
             self._args = self._handle_cmd_line()
@@ -69,19 +90,21 @@ class ConfigArgBuilder:
             self._dict_args = self._get_payload(
                 payload_obj=self._payload_obj,
                 input_classes=self._builder_obj.input_classes,
-                ignore_args=tune_args
-            )
-            # Get the payload from the config files -- hyper-parameters
-            self._tune_args = self._get_payload(
-                payload_obj=self._tune_payload_obj,
-                input_classes=self._tune_obj.input_classes,
-                ignore_args=fixed_args
+                ignore_args=tune_args,
             )
             # Build the Spockspace from the payload and the classes
-            # fixed configs
+            # Fixed configs
             self._arg_namespace = self._builder_obj.generate(self._dict_args)
-            # tuneable parameters
-            self._tune_namespace = self._tune_obj.generate(self._tune_args)
+            # Get the payload from the config files -- hyper-parameters -- only if the obj is not None
+            if self._tune_obj is not None:
+                self._tune_args = self._get_payload(
+                    payload_obj=self._tune_payload_obj,
+                    input_classes=self._tune_obj.input_classes,
+                    ignore_args=fixed_args,
+                )
+                # Build the Spockspace from the payload and the classes
+                # Tuneable parameters
+                self._tune_namespace = self._tune_obj.generate(self._tune_args)
         except Exception as e:
             self._print_usage_and_exit(str(e), sys_exit=False)
             raise ValueError(e)
@@ -112,7 +135,59 @@ class ConfigArgBuilder:
         return self._arg_namespace
 
     def sample(self):
-        return
+        """Sample method that constructs a namespace from the fixed parameters and samples from the tuner space to
+        generate a Spockspace derived from both
+
+        *Returns*:
+
+            argument namespace(s) -- fixed + drawn sample from tuner backend
+
+        """
+        if self._tune_obj is None:
+            raise ValueError(
+                f"Called sample method without passing any @spockTuner decorated classes"
+            )
+        if self._tuner_interface is None:
+            raise ValueError(
+                f"Called sample method without first calling the tuner method that initializes the "
+                f"backend library"
+            )
+        return_tuple = self._tuner_state
+        self._tuner_state = self._tuner_interface.sample()
+        self._sample_count += 1
+        return return_tuple
+
+    def tuner(self, tuner_config):
+        """Chained call that builds the tuner interface for either optuna or ax depending upon the type of the tuner_obj
+
+        *Args*:
+
+            tuner_config: a class of type optuna.study.Study or AX****
+
+        *Returns*:
+
+            self so that functions can be chained
+
+        """
+        if self._tune_obj is None:
+            raise ValueError(
+                f"Called tuner method without passing any @spockTuner decorated classes"
+            )
+        try:
+            from spock.addons.tune.tuner import TunerInterface
+
+            self._tuner_interface = TunerInterface(
+                tuner_config=tuner_config,
+                tuner_namespace=self._tune_namespace,
+                fixed_namespace=self._arg_namespace,
+            )
+            self._tuner_state = self._tuner_interface.sample()
+        except ImportError:
+            print(
+                "Missing libraries to support tune functionality. Please re-install with the extra tune "
+                "dependencies -- pip install spock-config[tune]"
+            )
+        return self
 
     def _print_usage_and_exit(self, msg=None, sys_exit=True, exit_code=1):
         """Prints the help message and exits
@@ -126,9 +201,9 @@ class ConfigArgBuilder:
             None
 
         """
-        print(f'usage: {sys.argv[0]} -c [--config] config1 [config2, config3, ...]')
+        print(f"usage: {sys.argv[0]} -c [--config] config1 [config2, config3, ...]")
         print(f'\n{self._desc if self._desc != "" else ""}\n')
-        print('configuration(s):\n')
+        print("configuration(s):\n")
         # Call the fixed parameter help info
         self._builder_obj.handle_help_info()
         if self._tune_obj is not None:
@@ -157,13 +232,15 @@ class ConfigArgBuilder:
             try:
                 from spock.addons.tune.builder import TunerBuilder
                 from spock.addons.tune.payload import TunerPayload
+
                 tuner_builder = TunerBuilder(*tune_args, **kwargs)
                 tuner_payload = TunerPayload(s3_config=s3_config)
                 return tuner_builder, tuner_payload
             except ImportError:
                 print(
-                    'Missing libraries to support tune functionality. Please re-install with the extra tune '
-                    'dependencies -- pip install spock-config[tune]')
+                    "Missing libraries to support tune functionality. Please re-install with the extra tune "
+                    "dependencies -- pip install spock-config[tune]"
+                )
         else:
             return None, None
 
@@ -184,12 +261,16 @@ class ConfigArgBuilder:
         type_attrs = all([attr.has(arg) for arg in args])
         if not type_attrs:
             which_idx = [attr.has(arg) for arg in args].index(False)
-            if hasattr(args[which_idx], '__name__'):
-                raise TypeError(f"*args must be of all attrs backend -- missing a @spock decorator on class "
-                                f"{args[which_idx].__name__}")
+            if hasattr(args[which_idx], "__name__"):
+                raise TypeError(
+                    f"*args must be of all attrs backend -- missing a @spock decorator on class "
+                    f"{args[which_idx].__name__}"
+                )
             else:
-                raise TypeError(f"*args must be of all attrs backend -- invalid type "
-                                f"{type(args[which_idx])}")
+                raise TypeError(
+                    f"*args must be of all attrs backend -- invalid type "
+                    f"{type(args[which_idx])}"
+                )
 
     @staticmethod
     def _strip_tune_parameters(args: typing.Tuple):
@@ -208,9 +289,9 @@ class ConfigArgBuilder:
         fixed_args = []
         tune_args = []
         for arg in args:
-            if arg.__module__ == 'spock.backend.config':
+            if arg.__module__ == "spock.backend.config":
                 fixed_args.append(arg)
-            elif arg.__module__ == 'spock.addons.tune.config':
+            elif arg.__module__ == "spock.addons.tune.config":
                 tune_args.append(arg)
         return fixed_args, tune_args
 
@@ -229,9 +310,15 @@ class ConfigArgBuilder:
         # Need to hold an overarching parser here that just gets appended to for both fixed and tunable objects
         # Check if the no_cmd_line is not flagged and if the configs are not empty
         if self._no_cmd_line and (self._configs is None):
-            raise ValueError("Flag set for preventing command line read but no paths were passed to the config kwarg")
+            raise ValueError(
+                "Flag set for preventing command line read but no paths were passed to the config kwarg"
+            )
         # If cmd_line is flagged then build the parsers if not make any empty Namespace
-        args = self._build_override_parsers(desc=self._desc) if not self._no_cmd_line else argparse.Namespace(config=[], help=False)
+        args = (
+            self._build_override_parsers(desc=self._desc)
+            if not self._no_cmd_line
+            else argparse.Namespace(config=[], help=False)
+        )
         # If configs are present from the init call then roll these into the namespace
         if self._configs is not None:
             args = self._get_from_kwargs(args, self._configs)
@@ -254,8 +341,8 @@ class ConfigArgBuilder:
         """
         # Highest level parser object
         parser = argparse.ArgumentParser(description=desc, add_help=False)
-        parser.add_argument('-c', '--config', required=False, nargs='+', default=[])
-        parser.add_argument('-h', '--help', action='store_true')
+        parser.add_argument("-c", "--config", required=False, nargs="+", default=[])
+        parser.add_argument("-h", "--help", action="store_true")
         # Handle the builder obj
         parser = self._builder_obj.build_override_parsers(parser=parser)
         if self._tune_obj is not None:
@@ -280,7 +367,9 @@ class ConfigArgBuilder:
         if isinstance(configs, list):
             args.config.extend(configs)
         else:
-            raise TypeError(f'configs kwarg must be of type list -- given {type(configs)}')
+            raise TypeError(
+                f"configs kwarg must be of type list -- given {type(configs)}"
+            )
         return args
 
     def _get_payload(self, payload_obj, input_classes, ignore_args: typing.List):
@@ -304,7 +393,7 @@ class ConfigArgBuilder:
             # Call sys exit with a clean code as this is the help call which is not unexpected behavior
             self._print_usage_and_exit(sys_exit=True, exit_code=0)
         payload = {}
-        dependencies = {'paths': [], 'rel_paths': [], 'roots': []}
+        dependencies = {"paths": [], "rel_paths": [], "roots": []}
         if payload_obj is not None:
             if len(input_classes) > 0:
                 for configs in self._args.config:
@@ -315,13 +404,21 @@ class ConfigArgBuilder:
                     deep_payload_update(payload, payload_update)
         return payload
 
-    def save(self, file_name: str = None, user_specified_path: str = None, create_save_path: bool = True,
-             extra_info: bool = True, file_extension: str = '.yaml'):
-        """Saves the current config setup to file with a UUID
+    def _save(
+        self,
+        payload,
+        file_name: str = None,
+        user_specified_path: str = None,
+        create_save_path: bool = True,
+        extra_info: bool = True,
+        file_extension: str = ".yaml",
+    ):
+        """Private interface -- saves the current config setup to file with a UUID
 
         *Args*:
 
-            file_name: name of file (will be appended with .spock.cfg.file_extension) -- falls back to uuid if None
+            payload: Spockspace to save
+            file_name: name of file (will be appended with .spock.cfg.file_extension) -- falls back to just uuid if None
             user_specified_path: if user provides a path it will be used as the path to write
             create_save_path: bool to create the path to save if called
             extra_info: additional info to write to saved config (run date and git info)
@@ -336,10 +433,61 @@ class ConfigArgBuilder:
         elif self._builder_obj.save_path is not None:
             save_path = Path(self._builder_obj.save_path)
         else:
-            raise ValueError('Save did not receive a valid path from: (1) markup file(s) or (2) '
-                             'the keyword arg user_specified_path')
+            raise ValueError(
+                "Save did not receive a valid path from: (1) markup file(s) or (2) "
+                "the keyword arg user_specified_path"
+            )
         # Call the saver class and save function
         self._saver_obj.save(
-            self._arg_namespace, save_path, file_name, create_save_path, extra_info, file_extension
+            payload, save_path, file_name, create_save_path, extra_info, file_extension
         )
+        return self
+
+    def save(
+        self,
+        file_name: str = None,
+        user_specified_path: str = None,
+        create_save_path: bool = True,
+        extra_info: bool = True,
+        file_extension: str = ".yaml",
+        add_tuner_sample: bool = False,
+    ):
+        """Saves the current config setup to file with a UUID
+
+        *Args*:
+
+            file_name: name of file (will be appended with .spock.cfg.file_extension) -- falls back to just uuid if None
+            user_specified_path: if user provides a path it will be used as the path to write
+            create_save_path: bool to create the path to save if called
+            extra_info: additional info to write to saved config (run date and git info)
+            file_extension: file type to write (default: yaml)
+            append_tuner_state: save the current tuner sample to the payload
+
+        *Returns*:
+
+            self so that functions can be chained
+        """
+        if add_tuner_sample:
+            file_name = (
+                f"hp.sample.{self._sample_count+1}"
+                if file_name is None
+                else f"{file_name}.hp.sample.{self._sample_count+1}"
+            )
+            self._save(
+                self._tuner_state[0],
+                file_name,
+                user_specified_path,
+                create_save_path,
+                extra_info,
+                file_extension,
+            )
+        else:
+            self._save(
+                self._arg_namespace,
+                file_name,
+                user_specified_path,
+                create_save_path,
+                extra_info,
+                file_extension,
+            )
         return self

@@ -6,20 +6,23 @@
 """Handles all S3 related ops -- allows for s3 functionality to be optional to keep req deps light"""
 
 import attr
+
 try:
     import boto3
     from botocore.client import BaseClient
 except ImportError:
-    print('Missing libraries to support S3 functionality. Please re-install spock with the extra s3 dependencies -- '
-          'pip install spock-config[s3]')
-from hurry.filesize import size
+    print(
+        "Missing libraries to support S3 functionality. Please re-install spock with the extra s3 dependencies -- "
+        "pip install spock-config[s3]"
+    )
 import os
-from urllib.parse import urlparse
-from spock.addons.s3.configs import S3Config
-from spock.addons.s3.configs import S3DownloadConfig
-from spock.addons.s3.configs import S3UploadConfig
 import sys
 import typing
+from urllib.parse import urlparse
+
+from hurry.filesize import size
+
+from spock.addons.s3.configs import S3Config, S3DownloadConfig, S3UploadConfig
 
 
 def handle_s3_load_path(path: str, s3_config: S3Config) -> str:
@@ -39,15 +42,20 @@ def handle_s3_load_path(path: str, s3_config: S3Config) -> str:
 
     """
     if s3_config is None:
-        raise ValueError('Load from S3 -- Missing S3Config object which is necessary to handle S3 style paths')
+        raise ValueError(
+            "Load from S3 -- Missing S3Config object which is necessary to handle S3 style paths"
+        )
     bucket, obj, fid = get_s3_bucket_object_name(s3_path=path)
     # Construct the full temp path
-    temp_path = f'{s3_config.temp_folder}/{fid}'
+    temp_path = f"{s3_config.temp_folder}/{fid}"
     # Strip double slashes if exist
-    temp_path = temp_path.replace(r'//', r'/')
+    temp_path = temp_path.replace(r"//", r"/")
     temp_path = download_s3(
-        bucket=bucket, obj=obj, temp_path=temp_path, s3_session=s3_config.s3_session,
-        download_config=s3_config.download_config
+        bucket=bucket,
+        obj=obj,
+        temp_path=temp_path,
+        s3_session=s3_config.s3_session,
+        download_config=s3_config.download_config,
     )
     return temp_path
 
@@ -68,13 +76,18 @@ def handle_s3_save_path(temp_path: str, s3_path: str, name: str, s3_config: S3Co
 
     """
     if s3_config is None:
-        raise ValueError('Save to S3 -- Missing S3Config object which is necessary to handle S3 style paths')
+        raise ValueError(
+            "Save to S3 -- Missing S3Config object which is necessary to handle S3 style paths"
+        )
     # Fix posix strip
-    s3_path = s3_path.replace('s3:/', 's3://')
-    bucket, obj, fid = get_s3_bucket_object_name(f'{s3_path}/{name}')
+    s3_path = s3_path.replace("s3:/", "s3://")
+    bucket, obj, fid = get_s3_bucket_object_name(f"{s3_path}/{name}")
     upload_s3(
-        bucket=bucket, obj=obj, temp_path=temp_path,
-        s3_session=s3_config.s3_session, upload_config=s3_config.upload_config
+        bucket=bucket,
+        obj=obj,
+        temp_path=temp_path,
+        s3_session=s3_config.s3_session,
+        upload_config=s3_config.upload_config,
     )
 
 
@@ -93,11 +106,16 @@ def get_s3_bucket_object_name(s3_path: str) -> typing.Tuple[str, str, str]:
 
     """
     parsed = urlparse(s3_path)
-    return parsed.netloc, parsed.path.lstrip('/'), os.path.basename(parsed.path)
+    return parsed.netloc, parsed.path.lstrip("/"), os.path.basename(parsed.path)
 
 
-def download_s3(bucket: str, obj: str, temp_path: str, s3_session: BaseClient,
-                download_config: S3DownloadConfig) -> str:
+def download_s3(
+    bucket: str,
+    obj: str,
+    temp_path: str,
+    s3_session: BaseClient,
+    download_config: S3DownloadConfig,
+) -> str:
     """Attempts to download the file from the S3 uri to a temp location using any extra arguments to the download
 
     *Args*:
@@ -115,9 +133,13 @@ def download_s3(bucket: str, obj: str, temp_path: str, s3_session: BaseClient,
     """
     try:
         # Unroll the extra options for those values that are not None
-        extra_options = {k: v for k, v in attr.asdict(download_config).items() if v is not None}
-        file_size = s3_session.head_object(Bucket=bucket, Key=obj, **extra_options)['ContentLength']
-        print(f'Attempting to download s3://{bucket}/{obj} (size: {size(file_size)})')
+        extra_options = {
+            k: v for k, v in attr.asdict(download_config).items() if v is not None
+        }
+        file_size = s3_session.head_object(Bucket=bucket, Key=obj, **extra_options)[
+            "ContentLength"
+        ]
+        print(f"Attempting to download s3://{bucket}/{obj} (size: {size(file_size)})")
         current_progress = 0
         n_ticks = 50
 
@@ -126,21 +148,34 @@ def download_s3(bucket: str, obj: str, temp_path: str, s3_session: BaseClient,
             # Increment progress
             current_progress += chunk
             done = int(n_ticks * (current_progress / file_size))
-            sys.stdout.write(f"\r[%s%s] "
-                             f"{int(current_progress/file_size) * 100}%%" % ('=' * done, ' ' * (n_ticks - done)))
+            sys.stdout.write(
+                f"\r[%s%s] "
+                f"{int(current_progress/file_size) * 100}%%"
+                % ("=" * done, " " * (n_ticks - done))
+            )
             sys.stdout.flush()
-            sys.stdout.write('\n\n')
+            sys.stdout.write("\n\n")
+
         # Download with the progress callback
-        s3_session.download_file(bucket, obj, temp_path, Callback=_s3_progress_bar, ExtraArgs=extra_options)
+        s3_session.download_file(
+            bucket, obj, temp_path, Callback=_s3_progress_bar, ExtraArgs=extra_options
+        )
         return temp_path
     except IOError:
-        print(f'Failed to download file from S3 '
-              f'(bucket: {bucket}, object: {obj}) '
-              f'and write to {temp_path}')
+        print(
+            f"Failed to download file from S3 "
+            f"(bucket: {bucket}, object: {obj}) "
+            f"and write to {temp_path}"
+        )
 
 
-def upload_s3(bucket: str, obj: str, temp_path: str, s3_session: BaseClient,
-              upload_config: S3UploadConfig):
+def upload_s3(
+    bucket: str,
+    obj: str,
+    temp_path: str,
+    s3_session: BaseClient,
+    upload_config: S3UploadConfig,
+):
     """Attempts to upload the local file to the S3 uri using any extra arguments to the upload
 
     *Args*:
@@ -156,9 +191,11 @@ def upload_s3(bucket: str, obj: str, temp_path: str, s3_session: BaseClient,
     """
     try:
         # Unroll the extra options for those values that are not None
-        extra_options = {k: v for k, v in attr.asdict(upload_config).items() if v is not None}
+        extra_options = {
+            k: v for k, v in attr.asdict(upload_config).items() if v is not None
+        }
         file_size = os.path.getsize(temp_path)
-        print(f'Attempting to upload s3://{bucket}/{obj} (size: {size(file_size)})')
+        print(f"Attempting to upload s3://{bucket}/{obj} (size: {size(file_size)})")
         current_progress = 0
         n_ticks = 50
 
@@ -167,13 +204,21 @@ def upload_s3(bucket: str, obj: str, temp_path: str, s3_session: BaseClient,
             # Increment progress
             current_progress += chunk
             done = int(n_ticks * (current_progress / file_size))
-            sys.stdout.write(f"\r[%s%s] "
-                             f"{int(current_progress/file_size) * 100}%%" % ('=' * done, ' ' * (n_ticks - done)))
+            sys.stdout.write(
+                f"\r[%s%s] "
+                f"{int(current_progress/file_size) * 100}%%"
+                % ("=" * done, " " * (n_ticks - done))
+            )
             sys.stdout.flush()
-            sys.stdout.write('\n\n')
+            sys.stdout.write("\n\n")
+
         # Upload with progress callback
-        s3_session.upload_file(temp_path, bucket, obj, Callback=_s3_progress_bar, ExtraArgs=extra_options)
+        s3_session.upload_file(
+            temp_path, bucket, obj, Callback=_s3_progress_bar, ExtraArgs=extra_options
+        )
     except IOError:
-        print(f'Failed to upload file to S3 '
-              f'(bucket: {bucket}, object: {obj}) '
-              f'from {temp_path}')
+        print(
+            f"Failed to upload file to S3 "
+            f"(bucket: {bucket}, object: {obj}) "
+            f"from {temp_path}"
+        )

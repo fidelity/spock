@@ -5,17 +5,18 @@
 
 """I/O handlers for various file formats"""
 
-from abc import ABC
-from abc import abstractmethod
 import json
 import os
 import re
+import typing
+from abc import ABC, abstractmethod
+from warnings import warn
+
+import pytomlpp
+import yaml
+
 from spock import __version__
 from spock.utils import check_path_s3
-import pytomlpp
-import typing
-from warnings import warn
-import yaml
 
 
 class Handler(ABC):
@@ -24,6 +25,7 @@ class Handler(ABC):
     ABC for loaders
 
     """
+
     def load(self, path: str, s3_config=None) -> typing.Dict:
         """Load function for file type
 
@@ -57,8 +59,15 @@ class Handler(ABC):
         """
         raise NotImplementedError
 
-    def save(self, out_dict: typing.Dict, info_dict: typing.Optional[typing.Dict], path: str, name: str,
-             create_path: bool = False, s3_config=None):
+    def save(
+        self,
+        out_dict: typing.Dict,
+        info_dict: typing.Optional[typing.Dict],
+        path: str,
+        name: str,
+        create_path: bool = False,
+        s3_config=None,
+    ):
         """Write function for file type
 
         This will handle local or s3 writes with the boolean is_s3 flag. If detected it will conditionally import
@@ -84,12 +93,17 @@ class Handler(ABC):
         if is_s3:
             try:
                 from spock.addons.s3.utils import handle_s3_save_path
-                handle_s3_save_path(temp_path=write_path, s3_path=path, name=name, s3_config=s3_config)
+
+                handle_s3_save_path(
+                    temp_path=write_path, s3_path=path, name=name, s3_config=s3_config
+                )
             except ImportError:
-                print('Error importing spock s3 utils after detecting s3:// save path')
+                print("Error importing spock s3 utils after detecting s3:// save path")
 
     @abstractmethod
-    def _save(self, out_dict: typing.Dict, info_dict: typing.Optional[typing.Dict], path: str) -> str:
+    def _save(
+        self, out_dict: typing.Dict, info_dict: typing.Optional[typing.Dict], path: str
+    ) -> str:
         """Write function for file type
 
         *Args*:
@@ -124,14 +138,16 @@ class Handler(ABC):
         if is_s3:
             try:
                 from spock.addons.s3.utils import handle_s3_load_path
+
                 path = handle_s3_load_path(path=path, s3_config=s3_config)
             except ImportError:
-                print('Error importing spock s3 utils after detecting s3:// load path')
+                print("Error importing spock s3 utils after detecting s3:// load path")
         return path
 
     @staticmethod
-    def _handle_possible_s3_save_path(path: str, name: str, create_path: bool,
-                                      s3_config=None) -> typing.Tuple[str, bool]:
+    def _handle_possible_s3_save_path(
+        path: str, name: str, create_path: bool, s3_config=None
+    ) -> typing.Tuple[str, bool]:
         """Handles the possibility of having to save to a S3 path
 
         Checks to see if it detects a S3 uri and if so generates a tmp location to write the file to pre-upload
@@ -149,15 +165,17 @@ class Handler(ABC):
         is_s3 = check_path_s3(path=path)
         if is_s3:
             if s3_config is None:
-                raise ValueError('Save to S3 -- Missing S3Config object which is necessary to handle S3 style paths')
-            write_path = f'{s3_config.temp_folder}/{name}'
+                raise ValueError(
+                    "Save to S3 -- Missing S3Config object which is necessary to handle S3 style paths"
+                )
+            write_path = f"{s3_config.temp_folder}/{name}"
             # Strip double slashes if exist
-            write_path = write_path.replace(r'//', r'/')
+            write_path = write_path.replace(r"//", r"/")
         else:
             # Handle the path logic for non S3
             if not os.path.exists(path) and create_path:
                 os.makedirs(path)
-            write_path = f'{path}/{name}'
+            write_path = f"{path}/{name}"
         return write_path, is_s3
 
     @staticmethod
@@ -173,14 +191,14 @@ class Handler(ABC):
 
         """
         # Write the commented info as new lines
-        with open(path, 'w+') as fid:
+        with open(path, "w+") as fid:
             # Write a spock header
-            fid.write(f'# Spock Version: {__version__}\n')
+            fid.write(f"# Spock Version: {__version__}\n")
             # Write info dict if not None
             if info_dict is not None:
                 for k, v in info_dict.items():
-                    fid.write(f'{k}: {v}\n')
-            fid.write('\n')
+                    fid.write(f"{k}: {v}\n")
+            fid.write("\n")
 
 
 class YAMLHandler(Handler):
@@ -189,19 +207,23 @@ class YAMLHandler(Handler):
     Base YAML class
 
     """
+
     # override default SafeLoader behavior to correctly
     # interpret 1e1 (as opposed to 1.e+1) as 10
     # https://stackoverflow.com/questions/30458977/yaml-loads-5e-6-as-string-and-not-a-number/30462009#30462009
     yaml.SafeLoader.add_implicit_resolver(
-        u'tag:yaml.org,2002:float',
-        re.compile(u'''^(?:
+        "tag:yaml.org,2002:float",
+        re.compile(
+            """^(?:
          [-+]?(?:[0-9][0-9_]*)\\.[0-9_]*(?:[eE][-+]?[0-9]+)?
         |[-+]?(?:[0-9][0-9_]*)(?:[eE][-+]?[0-9]+)
         |\\.[0-9_]+(?:[eE][-+][0-9]+)?
         |[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\\.[0-9_]*
         |[-+]?\\.(?:inf|Inf|INF)
-        |\\.(?:nan|NaN|NAN))$''', re.X),
-        list(u'-+0123456789.')
+        |\\.(?:nan|NaN|NAN))$""",
+            re.X,
+        ),
+        list("-+0123456789."),
     )
 
     def _load(self, path: str) -> typing.Dict:
@@ -216,12 +238,14 @@ class YAMLHandler(Handler):
             base_payload: dictionary of read file
 
         """
-        file_contents = open(path, 'r').read()
-        file_contents = re.sub(r'--([a-zA-Z0-9_]*)', r'\g<1>: True', file_contents)
+        file_contents = open(path, "r").read()
+        file_contents = re.sub(r"--([a-zA-Z0-9_]*)", r"\g<1>: True", file_contents)
         base_payload = yaml.safe_load(file_contents)
         return base_payload
 
-    def _save(self, out_dict: typing.Dict, info_dict: typing.Optional[typing.Dict], path: str):
+    def _save(
+        self, out_dict: typing.Dict, info_dict: typing.Optional[typing.Dict], path: str
+    ):
         """Write function for YAML type
 
         *Args*:
@@ -237,7 +261,7 @@ class YAMLHandler(Handler):
         self.write_extra_info(path=path, info_dict=info_dict)
         # Remove aliases in YAML dump
         yaml.Dumper.ignore_aliases = lambda *args: True
-        with open(path, 'a') as yaml_fid:
+        with open(path, "a") as yaml_fid:
             yaml.safe_dump(out_dict, yaml_fid, default_flow_style=False)
         return path
 
@@ -248,6 +272,7 @@ class TOMLHandler(Handler):
     Base TOML class
 
     """
+
     def _load(self, path: str) -> typing.Dict:
         """TOML load function
 
@@ -263,7 +288,9 @@ class TOMLHandler(Handler):
         base_payload = pytomlpp.load(path)
         return base_payload
 
-    def _save(self, out_dict: typing.Dict, info_dict: typing.Optional[typing.Dict], path: str):
+    def _save(
+        self, out_dict: typing.Dict, info_dict: typing.Optional[typing.Dict], path: str
+    ):
         """Write function for TOML type
 
         *Args*:
@@ -277,7 +304,7 @@ class TOMLHandler(Handler):
         """
         # First write the commented info
         self.write_extra_info(path=path, info_dict=info_dict)
-        with open(path, 'a') as toml_fid:
+        with open(path, "a") as toml_fid:
             pytomlpp.dump(out_dict, toml_fid)
         return path
 
@@ -288,6 +315,7 @@ class JSONHandler(Handler):
     Base JSON class
 
     """
+
     def _load(self, path: str) -> typing.Dict:
         """JSON load function
 
@@ -304,7 +332,9 @@ class JSONHandler(Handler):
             base_payload = json.load(json_fid)
         return base_payload
 
-    def _save(self, out_dict: typing.Dict, info_dict: typing.Optional[typing.Dict], path: str):
+    def _save(
+        self, out_dict: typing.Dict, info_dict: typing.Optional[typing.Dict], path: str
+    ):
         """Write function for JSON type
 
         *Args*:
@@ -317,8 +347,10 @@ class JSONHandler(Handler):
 
         """
         if info_dict is not None:
-            warn('JSON does not support comments and thus cannot save extra info to file... removing extra info')
+            warn(
+                "JSON does not support comments and thus cannot save extra info to file... removing extra info"
+            )
             info_dict = None
-        with open(path, 'a') as json_fid:
-            json.dump(out_dict, json_fid, indent=4, separators=(',', ': '))
+        with open(path, "a") as json_fid:
+            json.dump(out_dict, json_fid, indent=4, separators=(",", ": "))
         return path

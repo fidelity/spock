@@ -6,7 +6,9 @@
 """Creates the spock config interface that wraps attr"""
 
 import sys
+
 import attr
+
 from spock.backend.typed import katra
 
 
@@ -34,7 +36,7 @@ def _base_attr(cls):
         bases = ()
     # Make a blank attrs dict for new attrs
     attrs_dict = {}
-    if hasattr(cls, '__annotations__'):
+    if hasattr(cls, "__annotations__"):
         for k, v in cls.__annotations__.items():
             # If the cls has the attribute then a default was set
             if hasattr(cls, k):
@@ -61,9 +63,11 @@ def spock_attr(cls):
     """
     bases, attrs_dict = _base_attr(cls)
     # Dynamically make an attr class
-    obj = attr.make_class(name=cls.__name__, bases=bases, attrs=attrs_dict, kw_only=True, frozen=True)
+    obj = attr.make_class(
+        name=cls.__name__, bases=bases, attrs=attrs_dict, kw_only=True, frozen=True
+    )
     # For each class we dynamically create we need to register it within the system modules for pickle to work
-    setattr(sys.modules['spock'].backend.config, obj.__name__, obj)
+    setattr(sys.modules["spock"].backend.config, obj.__name__, obj)
     # Swap the __doc__ string from cls to obj
     obj.__doc__ = cls.__doc__
     return obj

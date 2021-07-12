@@ -6,9 +6,8 @@
 """Base handler Spock class"""
 
 from abc import ABC
-from spock.handlers import JSONHandler
-from spock.handlers import TOMLHandler
-from spock.handlers import YAMLHandler
+
+from spock.handlers import JSONHandler, TOMLHandler, YAMLHandler
 
 
 class BaseHandler(ABC):
@@ -20,11 +19,18 @@ class BaseHandler(ABC):
         _s3_config: optional S3Config object to handle s3 access
 
     """
+
     def __init__(self, s3_config=None):
-        self._supported_extensions = {'.yaml': YAMLHandler, '.toml': TOMLHandler, '.json': JSONHandler}
+        self._supported_extensions = {
+            ".yaml": YAMLHandler,
+            ".toml": TOMLHandler,
+            ".json": JSONHandler,
+        }
         self._s3_config = s3_config
 
     def _check_extension(self, file_extension: str):
         if file_extension not in self._supported_extensions:
-            raise TypeError(f'File extension {file_extension} not supported -- \n'
-                            f'File extension must be from {list(self._supported_extensions.keys())}')
+            raise TypeError(
+                f"File extension {file_extension} not supported -- \n"
+                f"File extension must be from {list(self._supported_extensions.keys())}"
+            )

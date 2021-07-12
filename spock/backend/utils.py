@@ -23,8 +23,8 @@ def get_type_fields(input_classes):
     for attr in input_classes:
         input_attr = {}
         for val in attr.__attrs_attrs__:
-            if 'type' in val.metadata:
-                input_attr.update({val.name: val.metadata['type']})
+            if "type" in val.metadata:
+                input_attr.update({val.name: val.metadata["type"]})
             else:
                 input_attr.update({val.name: None})
         type_fields.update({attr.__name__: input_attr})
@@ -73,14 +73,16 @@ def convert_to_tuples(input_dict, named_type_dict, class_names):
     updated_dict = {}
     all_typed_dict = flatten_type_dict(named_type_dict)
     for k, v in input_dict.items():
-        if k != 'config':
+        if k != "config":
             if isinstance(v, dict):
                 updated = convert_to_tuples(v, named_type_dict.get(k), class_names)
                 if updated:
                     updated_dict.update({k: updated})
             elif isinstance(v, list) and k in class_names:
                 for val in v:
-                    updated = convert_to_tuples(val, named_type_dict.get(k), class_names)
+                    updated = convert_to_tuples(
+                        val, named_type_dict.get(k), class_names
+                    )
                     if updated:
                         updated_dict.update({k: updated})
             elif all_typed_dict[k] is not None:
@@ -133,18 +135,25 @@ def _recursive_list_to_tuple(value, typed, class_names):
     """
     # Check for __args__ as it signifies a generic and make sure it's not already been cast as a tuple
     # from a composed payload
-    if hasattr(typed, '__args__') and not isinstance(value, tuple) and not (isinstance(value, str)
-                                                                            and value in class_names):
+    if (
+        hasattr(typed, "__args__")
+        and not isinstance(value, tuple)
+        and not (isinstance(value, str) and value in class_names)
+    ):
         # Force those with origin tuple types to be of the defined length
-        if (typed.__origin__.__name__.lower() == 'tuple') and len(value) != len(typed.__args__):
-            raise ValueError(f'Tuple(s) use a fixed/defined length -- Length of the provided argument ({len(value)}) '
-                             f'does not match the length of the defined argument ({len(typed.__args__)})')
+        if (typed.__origin__.__name__.lower() == "tuple") and len(value) != len(
+            typed.__args__
+        ):
+            raise ValueError(
+                f"Tuple(s) use a fixed/defined length -- Length of the provided argument ({len(value)}) "
+                f"does not match the length of the defined argument ({len(typed.__args__)})"
+            )
         # need to recurse before casting as we can't set values in a tuple with idx
         # Since it's generic it should be iterable to recurse and check it's children
         for idx, val in enumerate(value):
             value[idx] = _recursive_list_to_tuple(val, typed.__args__[0], class_names)
         # First check if list and then swap to tuple if the origin is tuple
-        if isinstance(value, list) and typed.__origin__.__name__.lower() == 'tuple':
+        if isinstance(value, list) and typed.__origin__.__name__.lower() == "tuple":
             value = tuple(value)
     else:
         return value

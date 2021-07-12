@@ -6,8 +6,10 @@
 """Handles prepping and saving the Spock config"""
 
 from abc import abstractmethod
-import attr
 from uuid import uuid1
+
+import attr
+
 from spock.backend.handler import BaseHandler
 from spock.utils import add_info
 
@@ -24,10 +26,19 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
         _s3_config: optional S3Config object to handle s3 access
 
     """
+
     def __init__(self, s3_config=None):
         super(BaseSaver, self).__init__(s3_config=s3_config)
 
-    def save(self, payload, path, file_name=None, create_save_path=False, extra_info=True, file_extension='.yaml'):  #pylint: disable=too-many-arguments
+    def save(
+        self,
+        payload,
+        path,
+        file_name=None,
+        create_save_path=False,
+        extra_info=True,
+        file_extension=".yaml",
+    ):  # pylint: disable=too-many-arguments
         """Writes Spock config to file
 
         Cleans and builds an output payload and then correctly writes it to file based on the
@@ -51,19 +62,23 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
         self._check_extension(file_extension=file_extension)
         # Make the filename -- always append a uuid for unique-ness
         uuid_str = str(uuid1())
-        fname = '' if file_name is None else f'{file_name}.'
-        name = f'{fname}{uuid_str}.spock.cfg{file_extension}'
+        fname = "" if file_name is None else f"{file_name}."
+        name = f"{fname}{uuid_str}.spock.cfg{file_extension}"
         # Fix up values -- parameters
         out_dict = self._clean_up_values(payload, file_extension)
         # Get extra info
         extra_dict = add_info() if extra_info else None
         try:
             self._supported_extensions.get(file_extension)().save(
-                out_dict=out_dict, info_dict=extra_dict, path=str(path), name=name,
-                create_path=create_save_path, s3_config=self._s3_config
+                out_dict=out_dict,
+                info_dict=extra_dict,
+                path=str(path),
+                name=name,
+                create_path=create_save_path,
+                s3_config=self._s3_config,
             )
         except OSError as e:
-            print(f'Unable to write to given path: {path / name}')
+            print(f"Unable to write to given path: {path / name}")
             raise e
 
     @abstractmethod
@@ -108,14 +123,18 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
                 clean_inner_dict = val
             else:
                 for inner_key, inner_val in val.items():
-                    clean_inner_dict = self._convert(clean_inner_dict, inner_val, inner_key)
+                    clean_inner_dict = self._convert(
+                        clean_inner_dict, inner_val, inner_key
+                    )
             clean_dict.update({key: clean_inner_dict})
         return clean_dict
 
     def _convert(self, clean_inner_dict, inner_val, inner_key):
         # Convert tuples to lists so they get written correctly
         if isinstance(inner_val, tuple):
-            clean_inner_dict.update({inner_key: self._recursive_tuple_to_list(inner_val)})
+            clean_inner_dict.update(
+                {inner_key: self._recursive_tuple_to_list(inner_val)}
+            )
         elif inner_val is not None:
             clean_inner_dict.update({inner_key: inner_val})
         return clean_inner_dict
@@ -158,6 +177,7 @@ class AttrSaver(BaseSaver):
         _writers: maps file extension to the correct i/o handler
 
     """
+
     def __init__(self, s3_config=None):
         super().__init__(s3_config=s3_config)
 
@@ -169,12 +189,16 @@ class AttrSaver(BaseSaver):
         out_dict = {}
         # All of the classes are defined at the top level
         all_spock_cls = set(vars(payload).keys())
-        out_dict = self._recursively_handle_clean(payload, out_dict, all_cls=all_spock_cls)
+        out_dict = self._recursively_handle_clean(
+            payload, out_dict, all_cls=all_spock_cls
+        )
         # Convert values
         clean_dict = self._clean_output(out_dict)
         return clean_dict
 
-    def _recursively_handle_clean(self, payload, out_dict, parent_name=None, all_cls=None):
+    def _recursively_handle_clean(
+        self, payload, out_dict, parent_name=None, all_cls=None
+    ):
         """Recursively works through spock classes and adds clean data to a dictionary
 
         Given a payload (Spockspace) work recursively through items that don't have parents to catch all
@@ -219,11 +243,13 @@ class AttrSaver(BaseSaver):
                     clean_val = list(set(clean_val))[-1]
                 out_dict.update({key: clean_val})
             # If it's a spock class but has a parent then just use the class name to reference the values
-            elif(val_name in all_cls) and parent_name is not None:
+            elif (val_name in all_cls) and parent_name is not None:
                 out_dict.update({key: val_name})
             # Check if it's a spock class without a parent -- iterate the values and recurse to catch more lists
             elif val_name in all_cls:
-                new_dict = self._recursively_handle_clean(val, {}, parent_name=key, all_cls=all_cls)
+                new_dict = self._recursively_handle_clean(
+                    val, {}, parent_name=key, all_cls=all_cls
+                )
                 out_dict.update({key: new_dict})
             # Either base type or no nested values that could be Spock classes
             else:

@@ -47,15 +47,21 @@ class TunerPayload(BasePayload):
 
     @staticmethod
     def _update_payload(base_payload, input_classes, ignore_classes, payload):
+        # Get the ignore fields
+        ignore_fields = {
+            attr.__name__: [val.name for val in attr.__attrs_attrs__]
+            for attr in ignore_classes
+        }
         for k, v in base_payload.items():
-            for ik, iv in v.items():
-                if 'bounds' in iv:
-                    iv['bounds'] = tuple(iv['bounds'])
+            if k not in ignore_fields:
+                for ik, iv in v.items():
+                    if "bounds" in iv:
+                        iv["bounds"] = tuple(iv["bounds"])
         return base_payload
 
     @staticmethod
     def _handle_payload_override(payload, key, value):
-        key_split = key.split('.')
+        key_split = key.split(".")
         curr_ref = payload
         for idx, split in enumerate(key_split):
             # If the root isn't in the payload then it needs to be added but only for the first key split
@@ -71,8 +77,10 @@ class TunerPayload(BasePayload):
                 elif isinstance(curr_ref, dict) and not isinstance(value, bool):
                     curr_ref[split] = value
                 else:
-                    raise ValueError(f'cmd-line override failed for {key} -- '
-                                     f'Failed to find key {split} within lowest level Dict')
+                    raise ValueError(
+                        f"cmd-line override failed for {key} -- "
+                        f"Failed to find key {split} within lowest level Dict"
+                    )
             # If it's not keep walking the current payload
             else:
                 curr_ref = curr_ref[split]

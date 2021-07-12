@@ -6,6 +6,7 @@
 """Handles Spock data type wrappers"""
 
 import argparse
+
 import yaml
 
 
@@ -15,6 +16,7 @@ class Spockspace(argparse.Namespace):
     Overwrites the __repr__ method with a pretty version of printing
 
     """
+
     def __init__(self, **kwargs):
         super(Spockspace, self).__init__(**kwargs)
 

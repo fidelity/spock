@@ -13,5 +13,5 @@ from spock._version import get_versions
 
 __all__ = ["args", "builder", "config"]
 
-__version__ = get_versions()['version']
+__version__ = get_versions()["version"]
 del get_versions
