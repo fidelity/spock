@@ -401,7 +401,11 @@ class ConfigArgBuilder:
                 if len(self._args.config) > 0:
                     for configs in self._args.config:
                         payload_update = payload_obj.payload(
-                            input_classes, ignore_args, configs, self._args, dependencies
+                            input_classes,
+                            ignore_args,
+                            configs,
+                            self._args,
+                            dependencies,
                         )
                         check_payload_overwrite(payload, payload_update, configs)
                         deep_payload_update(payload, payload_update)

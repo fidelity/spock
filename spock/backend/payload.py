@@ -395,7 +395,11 @@ class AttrPayload(BasePayload):
         key_split = key.split(".")
         curr_ref = payload
         # Handle non existing parts of the payload for specific cases
-        root_classes = [idx for idx, val in enumerate(key_split) if hasattr(sys.modules["spock"].backend.config, val)]
+        root_classes = [
+            idx
+            for idx, val in enumerate(key_split)
+            if hasattr(sys.modules["spock"].backend.config, val)
+        ]
         # Verify any classes have roots in the payload dict
         for idx in root_classes:
             # Update all root classes if not present
@@ -405,13 +409,24 @@ class AttrPayload(BasePayload):
             # Make sure it's there by setting it -- since this is an override setting is fine as these should be the
             # final say in the param values so don't worry about clashing
             if idx != 0:
-                payload[key_split[0]][key_split[idx-1]] = key_split[idx]
+                payload[key_split[0]][key_split[idx - 1]] = key_split[idx]
                 # Check also for repeated classes -- value will be a list when the type is not
-                var = getattr(getattr(sys.modules["spock"].backend.config, key_split[idx]).__attrs_attrs__, key_split[-1])
+                var = getattr(
+                    getattr(
+                        sys.modules["spock"].backend.config, key_split[idx]
+                    ).__attrs_attrs__,
+                    key_split[-1],
+                )
                 if isinstance(value, list) and var.type != list:
                     # If the dict is blank we need to handle the creation of the list of dicts
                     if len(payload[key_split[idx]]) == 0:
-                        payload.update({key_split[idx]: [{key_split[-1]: None} for _ in range(len(value))]})
+                        payload.update(
+                            {
+                                key_split[idx]: [
+                                    {key_split[-1]: None} for _ in range(len(value))
+                                ]
+                            }
+                        )
                     # If it's already partially filled we need to update not overwrite
                     else:
                         for val in payload[key_split[idx]]:
