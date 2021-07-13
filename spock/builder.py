@@ -395,12 +395,23 @@ class ConfigArgBuilder:
         payload = {}
         dependencies = {"paths": [], "rel_paths": [], "roots": []}
         if payload_obj is not None:
+            # Make sure we are actually trying to map to input classes
             if len(input_classes) > 0:
-                for configs in self._args.config:
+                # If configs are present then iterate through them and deal with the payload
+                if len(self._args.config) > 0:
+                    for configs in self._args.config:
+                        payload_update = payload_obj.payload(
+                            input_classes, ignore_args, configs, self._args, dependencies
+                        )
+                        check_payload_overwrite(payload, payload_update, configs)
+                        deep_payload_update(payload, payload_update)
+                # If there are no configs present we have to fall back only on cmd line args to fill out the necessary
+                # data -- this is essentially using spock as a drop in replacement of arg-parser
+                else:
                     payload_update = payload_obj.payload(
-                        input_classes, ignore_args, configs, self._args, dependencies
+                        input_classes, ignore_args, None, self._args, dependencies
                     )
-                    check_payload_overwrite(payload, payload_update, configs)
+                    check_payload_overwrite(payload, payload_update, None)
                     deep_payload_update(payload, payload_update)
         return payload
 

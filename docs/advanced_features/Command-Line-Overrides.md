@@ -117,5 +117,17 @@ We could override the parameters like so (note that the len must match the defin
 
 ```bash
 $ python tutorial.py --config tutorial.yaml --TypeConfig.nested_list.NestedListStuff.one [1,2] \
---TypeConfig.nested_list.NestedListStuff.two [ciao,ciao]
+--TypeConfig.nested_list.NestedListStuff.two ['ciao','ciao']
+```
+
+### Spock As a Drop In For Argparser
+
+`spock` can easily be used as a drop in for argparser. This means that all parameter definitions as required to come in 
+from the command line or from setting defaults within the `@spock` decorated classes. Simply do not pass a `-c` or 
+`--config` argument at the command line and instead pass in all of the automatically generated cmd-line arguments.
+
+
+```bash
+$ python tutorial.py --TypeConfig.nested_list.NestedListStuff.one [1,2] \
+  --TypeConfig.nested_list.NestedListStuff.two [ciao,ciao] ...
 ```

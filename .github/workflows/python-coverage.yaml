@@ -29,6 +29,7 @@ jobs:
     - name: Install dependencies and dev dependencies
       run: |
         python -m pip install --upgrade pip
+        pip install -r REQUIREMENTS.txt
         pip install -r ./requirements/DEV_REQUIREMENTS.txt
         pip install -r ./requirements/S3_REQUIREMENTS.txt
 

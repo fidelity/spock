@@ -92,30 +92,32 @@ class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
             payload: dictionary of all mapped parameters
 
         """
-        # Match to loader based on file-extension
-        config_extension = Path(path).suffix.lower()
-        # Verify extension
-        self._check_extension(file_extension=config_extension)
-        # Load from file
-        base_payload = self._supported_extensions.get(config_extension)().load(
-            path, s3_config=self._s3_config
-        )
-        # Check and? update the dependencies
-        deps = self._handle_dependencies(deps, path, root)
+        # empty payload
         payload = {}
-        if "config" in base_payload:
-            payload = self._handle_includes(
-                base_payload,
-                config_extension,
-                input_classes,
-                ignore_classes,
-                path,
-                payload,
-                deps,
+        if path is not None:
+            # Match to loader based on file-extension
+            config_extension = Path(path).suffix.lower()
+            # Verify extension
+            self._check_extension(file_extension=config_extension)
+            # Load from file
+            base_payload = self._supported_extensions.get(config_extension)().load(
+                path, s3_config=self._s3_config
             )
-        payload = self._update_payload(
-            base_payload, input_classes, ignore_classes, payload
-        )
+            # Check and? update the dependencies
+            deps = self._handle_dependencies(deps, path, root)
+            if "config" in base_payload:
+                payload = self._handle_includes(
+                    base_payload,
+                    config_extension,
+                    input_classes,
+                    ignore_classes,
+                    path,
+                    payload,
+                    deps,
+                )
+            payload = self._update_payload(
+                base_payload, input_classes, ignore_classes, payload
+            )
         return payload
 
     @staticmethod
@@ -392,10 +394,30 @@ class AttrPayload(BasePayload):
         """
         key_split = key.split(".")
         curr_ref = payload
+        # Handle non existing parts of the payload for specific cases
+        root_classes = [idx for idx, val in enumerate(key_split) if hasattr(sys.modules["spock"].backend.config, val)]
+        # Verify any classes have roots in the payload dict
+        for idx in root_classes:
+            # Update all root classes if not present
+            if key_split[idx] not in payload:
+                payload.update({key_split[idx]: {}})
+            # If not updating the root then it is a reference to another class which might not be in the payload
+            # Make sure it's there by setting it -- since this is an override setting is fine as these should be the
+            # final say in the param values so don't worry about clashing
+            if idx != 0:
+                payload[key_split[0]][key_split[idx-1]] = key_split[idx]
+                # Check also for repeated classes -- value will be a list when the type is not
+                var = getattr(getattr(sys.modules["spock"].backend.config, key_split[idx]).__attrs_attrs__, key_split[-1])
+                if isinstance(value, list) and var.type != list:
+                    # If the dict is blank we need to handle the creation of the list of dicts
+                    if len(payload[key_split[idx]]) == 0:
+                        payload.update({key_split[idx]: [{key_split[-1]: None} for _ in range(len(value))]})
+                    # If it's already partially filled we need to update not overwrite
+                    else:
+                        for val in payload[key_split[idx]]:
+                            val.update({key_split[-1]: None})
+
         for idx, split in enumerate(key_split):
-            # If the root isn't in the payload then it needs to be added but only for the first key split
-            if idx == 0 and (split not in payload):
-                payload.update({split: {}})
             # Check for curr_ref switch over -- verify by checking the sys modules names
             if (
                 idx != 0
@@ -404,6 +426,7 @@ class AttrPayload(BasePayload):
                 and (hasattr(sys.modules["spock"].backend.config, split))
             ):
                 curr_ref = payload[split]
+                # Look ahead to check if the next value exists in the dictionary
             elif (
                 idx != 0
                 and (split in payload)

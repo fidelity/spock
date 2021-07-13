@@ -9,5 +9,6 @@ Spock is a framework that helps manage complex parameter configurations for Pyth
 Please refer to the documentation provided in the README.md
 """
 
+from spock.addons.tune.config import spockTuner
 
-__all__ = ["builder", "config"]
+__all__ = ["builder", "config", "spockTuner"]

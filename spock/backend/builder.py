@@ -725,6 +725,12 @@ class AttrBuilder(BaseBuilder):
                     group_parser = make_argument(
                         arg_name, List[inner_val.type], group_parser
                     )
+            # If it's a reference to a class it needs to be an arg of a simple string as class matching will take care
+            # of it later on
+            elif val_type.__module__ == 'spock.backend.config':
+                arg_name = f"--{str(attr_name)}.{val.name}"
+                val_type = str
+                group_parser = make_argument(arg_name, val_type, group_parser)
             else:
                 arg_name = f"--{str(attr_name)}.{val.name}"
                 group_parser = make_argument(arg_name, val_type, group_parser)

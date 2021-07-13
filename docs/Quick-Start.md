@@ -107,7 +107,7 @@ fancier_parameter: 64.64
 most_fancy_parameter: [768, 768, 512, 128]
 ```
 
-Finally, we would run our script and pass the path to the configuration file to the command line (-c or --config):
+Finally, we would run our script and pass the path to the configuration file to the command line (`-c` or `--config`):
 
 ```bash
 $ python simple.py -c simple.yaml
@@ -131,4 +131,16 @@ configuration(s):
     fancy_parameter         float        parameter that multiplies a value 
     fancier_parameter       float        parameter that gets added to product of val and fancy_parameter 
     most_fancy_parameter    List[int]    values to apply basic algebra to 
+```
+
+### Spock As a Drop In For Argparser
+
+`spock` can easily be used as a drop in for argparser. This means that all parameter definitions as required to come in 
+from the command line or from setting defaults within the `@spock` decorated classes. Simply do not pass a `-c` or 
+`--config` argument at the command line and instead pass in all of the automatically generated cmd-line arguments.
+
+
+```bash
+$ python simple.py --BasicConfig.parameter --BasicConfig.fancy_parameter 8.8 --BasicConfig.fancier_parameter 64.64 \
+  --BasicConfig.most_fancy_parameter [768, 768, 512, 128]
 ```

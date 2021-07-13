@@ -6,12 +6,11 @@
 # https://optuna.readthedocs.io/en/stable/tutorial/20_recipes/009_ask_and_tell.html#define-and-run
 
 
-import optuna
 from sklearn.datasets import load_iris
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 
-from spock.addons import spockTuner
+from spock.addons.tune import spockTuner
 from spock.addons.tune.config import (
     ChoiceHyperParameter,
     OptunaTunerConfig,
