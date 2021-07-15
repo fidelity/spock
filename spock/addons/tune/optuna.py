@@ -6,7 +6,10 @@
 """Handles the optuna backend"""
 
 import attr
+import json
+import hashlib
 import optuna
+from warnings import warn
 
 from spock.addons.tune.config import OptunaTunerConfig
 from spock.addons.tune.interface import BaseInterface
@@ -36,6 +39,9 @@ class OptunaInterface(BaseInterface):
         """
         super(OptunaInterface, self).__init__(tuner_config, tuner_namespace)
         self._tuner_obj = optuna.create_study(**self._tuner_config)
+        self._trial = None
+        self._sample_hash = None
+        self._trial_status_hash = None
         # Mapping spock underlying classes to optuna distributions (define-and-run interface)
         self._map_type = {
             "RangeHyperParameter": {
@@ -52,19 +58,34 @@ class OptunaInterface(BaseInterface):
         # Build the correct underlying dictionary object for Optuna
         self._param_obj = self._construct()
 
+    @property
+    def tuner_status(self):
+        return {'trial': self._trial, 'study': self._tuner_obj}
+
     def sample(self):
-        trial = self._tuner_obj.ask(self._param_obj)
+        self._trial = self._tuner_obj.ask(self._param_obj)
         # Roll this back out into a Spockspace so it can be merged into the fixed parameter Spockspace
         # Also need to un-dot the param names to rebuild the nested structure
-        key_set = {k.split(".")[0] for k in trial.params.keys()}
+        rollup_dict, sample_hash = self._trial_rollup()
+        self._sample_hash = sample_hash
+        return self._to_spockspace(self._gen_attr_classes(rollup_dict))
+
+    def _trial_rollup(self):
+        """Rollup the trial into a dictionary that can be converted to a spockspace with the correct names and roots
+
+        *Returns*:
+
+            dictionary of rolled up sampled parameters
+            md5 hash of the dictionary contents
+
+        """
+        key_set = {k.split(".")[0] for k in self._trial.params.keys()}
         rollup_dict = {val: {} for val in key_set}
-        for k, v in trial.params.items():
+        for k, v in self._trial.params.items():
             split_names = k.split(".")
             rollup_dict[split_names[0]].update({split_names[1]: v})
-        return self._to_spockspace(self._gen_attr_classes(rollup_dict)), {
-            "trial": trial,
-            "study": self._tuner_obj,
-        }
+        dict_hash = hashlib.md5(json.dumps(rollup_dict, sort_keys=True).encode('utf-8')).digest()
+        return rollup_dict, dict_hash
 
     def _construct(self):
         """Constructs the base object needed by the underlying library to construct the correct object that allows

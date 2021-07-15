@@ -63,9 +63,11 @@ class TunerInterface:
             Spockspace of drawn sample of hyper-parameters and fixed parameters
 
         """
-        curr_sample, extra_dict = self._lib_interface.sample()
+        curr_sample = self._lib_interface.sample()
         # Merge w/ fixed parameters
-        return (
-            Spockspace(**vars(curr_sample), **vars(self._fixed_namespace)),
-            extra_dict,
-        )
+        return Spockspace(**vars(curr_sample), **vars(self._fixed_namespace))
+
+    @property
+    def tuner_status(self):
+        """Returns a dictionary of all the necessary underlying tuner internals to report the result"""
+        return self._lib_interface.tuner_status

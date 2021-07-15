@@ -82,6 +82,7 @@ class ConfigArgBuilder:
         )
         self._tuner_interface = None
         self._tuner_state = None
+        self._tuner_status = None
         self._sample_count = 0
         try:
             # Get all cmd line args and build overrides
@@ -134,6 +135,11 @@ class ConfigArgBuilder:
         """
         return self._arg_namespace
 
+    @property
+    def tuner_status(self):
+        """Returns a dictionary of all the necessary underlying tuner internals to report the result"""
+        return self._tuner_status
+
     def sample(self):
         """Sample method that constructs a namespace from the fixed parameters and samples from the tuner space to
         generate a Spockspace derived from both
@@ -153,6 +159,7 @@ class ConfigArgBuilder:
                 f"backend library"
             )
         return_tuple = self._tuner_state
+        self._tuner_status = self._tuner_interface.tuner_status
         self._tuner_state = self._tuner_interface.sample()
         self._sample_count += 1
         return return_tuple
@@ -489,7 +496,7 @@ class ConfigArgBuilder:
                 else f"{file_name}.hp.sample.{self._sample_count+1}"
             )
             self._save(
-                self._tuner_state[0],
+                self._tuner_state,
                 file_name,
                 user_specified_path,
                 create_save_path,

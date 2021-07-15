@@ -60,6 +60,6 @@ nesterov: true
 
 
 ### Warning 
-You can add as many configuration files as you want to a `config` tag however be aware of circular dependencies (we
-do not check for these yet) and that the lower a configuration file is in the order (i.e. later in the list) that
-it will take precedence over the others.
+You can add as many configuration files as you want to a `config` tag however be aware of circular dependencies (this 
+should get caught and raise an exception) and that the lower a configuration file is in the order (i.e. later in the 
+list) that it will take precedence over the others.

@@ -1,0 +1,32 @@
+# Test conf for all hyper-parameters
+HPOne:
+  hp_int:
+    type: int
+    bounds: [ 10, 100 ]
+    log_scale: false
+  hp_float:
+    type: float
+    bounds: [ 10.0, 100.0 ]
+    log_scale: false
+  hp_int_log:
+    type: int
+    bounds: [ 10, 100 ]
+    log_scale: true
+  hp_float_log:
+    type: float
+    bounds: [ 10.0, 100.0 ]
+    log_scale: true
+
+HPTwo:
+  hp_choice_int:
+    type: int
+    choices: [10, 20, 40, 80 ]
+  hp_choice_float:
+    type: float
+    choices: [ 10.0, 20.0, 40.0, 80.0 ]
+  hp_choice_bool:
+    type: bool
+    choices: [ true, false ]
+  hp_choice_str:
+    type: str
+    choices: [ "hello", "ciao", "bonjour" ]

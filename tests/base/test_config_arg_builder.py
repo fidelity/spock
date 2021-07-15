@@ -6,6 +6,18 @@ from tests.base.attr_configs_test import *
 import sys
 
 
+class TestBasic(AllTypes):
+    """Testing basic functionality"""
+    @staticmethod
+    @pytest.fixture
+    def arg_builder(monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, 'argv', ['', '--config',
+                                    './tests/conf/yaml/test.yaml'])
+            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig)
+            return config.generate()
+
+
 class TestNoCmdLineKwarg(AllTypes):
     """Testing to see that the kwarg no cmd line works"""
     @staticmethod

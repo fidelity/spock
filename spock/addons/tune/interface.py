@@ -36,7 +36,6 @@ class BaseInterface(ABC):
         *Returns*:
 
             Spockspace of the current hyper-parameter draw
-            dictionary of any extra returns needed to use for the underlying hyper-parameter library
 
         """
         pass
@@ -95,3 +94,9 @@ class BaseInterface(ABC):
 
         """
         return __builtins__[val.type]
+
+    @property
+    @abstractmethod
+    def tuner_status(self):
+        """Returns a dictionary of all the necessary underlying tuner internals to report the result"""
+        pass

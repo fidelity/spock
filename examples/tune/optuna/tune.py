@@ -11,7 +11,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 
 from spock.addons.tune import spockTuner
-from spock.addons.tune.config import (
+from spock.addons.tune import (
     ChoiceHyperParameter,
     OptunaTunerConfig,
     RangeHyperParameter,
@@ -62,19 +62,22 @@ def main():
         # then call save to return the composed Spockspace of the fixed parameters and the sampled parameters
         # Under the hood spock uses the define-and-run Optuna interface -- thus it handled the underlying 'ask' call
         # and returns the necessary trial object in the return dictionary to call 'tell' with the study object
-        attrs_class, tune_dict = attrs_obj.save(
+        hp_attrs = attrs_obj.save(
             add_tuner_sample=True, user_specified_path="/tmp"
         ).sample()
         # Use the currently sampled parameters in a simple LogisticRegression from sklearn
         clf = LogisticRegression(
-            C=attrs_class.LogisticRegressionHP.c,
-            solver=attrs_class.LogisticRegressionHP.solver,
+            C=hp_attrs.LogisticRegressionHP.c,
+            solver=hp_attrs.LogisticRegressionHP.solver,
         )
         clf.fit(X_train, y_train)
         val_acc = clf.score(X_valid, y_valid)
+        # Get the status of the tuner -- this dict will contain all the objects needed to update
+        tuner_status = attrs_obj.tuner_status
         # Pull the study and trials object out of the return dictionary and pass it to the tell call using the study
         # object
-        tune_dict["study"].tell(tune_dict["trial"], val_acc)
+        tuner_status["study"].tell(tuner_status["trial"], val_acc)
+        print('hi')
 
 
 if __name__ == "__main__":
