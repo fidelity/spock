@@ -1,7 +1,7 @@
-# This workflow will install Python dependencies, run tests and report coverage to coveralls
+# This workflow will install Python dependencies, run S3 tests with a variety of Python versions
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: coverage
+name: pytest-tune
 
 on:
   pull_request:
@@ -12,36 +12,38 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.6, 3.7, 3.8, 3.9]
 
     steps:
     - uses: actions/checkout@v2
-
-    - name: Set up Python
+    - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
-        python-version: '3.8'
+        python-version: ${{ matrix.python-version }}
 
     - uses: actions/cache@v2
       with:
         path: ${{ env.pythonLocation }}
         key: ${{ env.pythonLocation }}-${{ hashFiles('setup.py') }}-${{ hashFiles('REQUIREMENTS.txt') }}-${{ hashFiles('./requirements/DEV_REQUIREMENTS.txt') }}-${{ hashFiles('./requirements/S3_REQUIREMENTS.txt') }}-${{ hashFiles('./requirements/TUNE_REQUIREMENTS.txt') }}
 
-    - name: Install dependencies and dev dependencies
+    - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r REQUIREMENTS.txt
+        pip install -e .
         pip install -r ./requirements/DEV_REQUIREMENTS.txt
         pip install -r ./requirements/S3_REQUIREMENTS.txt
         pip install -r ./requirements/TUNE_REQUIREMENTS.txt
 
     - name: Test with pytest
       run: |
-        coverage run -m pytest --cov-config=.coveragerc
-        
-    - name: Debug coverage
-      run: coverage report -m
+        pytest tests/tune --cov=spock --cov-config=.coveragerc --junitxml=junit/test-results-tune-${{ matrix.python-version }}.xml --cov-report=xml --cov-report=html
 
-    - name: Upload coverage data to coveralls.io
-      run: coveralls --service=github --rcfile=.coveragerc
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Upload pytest test results
+      uses: actions/upload-artifact@v2
+      with:
+        name: pytest-results-${{ matrix.python-version }}
+        path: junit/test-results-${{ matrix.python-version }}.xml
+      # Use always() to always run this step to publish test results when there are test failures
+      if: ${{ always() }}

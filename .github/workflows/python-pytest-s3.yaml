@@ -37,7 +37,7 @@ jobs:
 
     - name: Test with pytest
       run: |
-        pytest tests/s3 --cov=spock --cov-config=.coveragerc --junitxml=junit/test-results-${{ matrix.python-version }}.xml --cov-report=xml --cov-report=html
+        pytest tests/s3 --cov=spock --cov-config=.coveragerc --junitxml=junit/test-results-s3-${{ matrix.python-version }}.xml --cov-report=xml --cov-report=html
 
     - name: Upload pytest test results
       uses: actions/upload-artifact@v2
