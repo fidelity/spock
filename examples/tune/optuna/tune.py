@@ -77,7 +77,6 @@ def main():
         # Pull the study and trials object out of the return dictionary and pass it to the tell call using the study
         # object
         tuner_status["study"].tell(tuner_status["trial"], val_acc)
-        print("hi")
 
 
 if __name__ == "__main__":

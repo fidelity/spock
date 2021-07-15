@@ -42,7 +42,7 @@ class TunerInterface:
         # Todo: add ax type check here
         accept_types = OptunaTunerConfig
         if not isinstance(tuner_config, accept_types):
-            raise ValueError(
+            raise TypeError(
                 f"Passed incorrect tuner_config type of {type(tuner_config)} -- must be of type "
                 f"{repr(accept_types)}"
             )

@@ -19,3 +19,9 @@ class HPTwo:
     hp_choice_float: ChoiceHyperParameter
     hp_choice_bool: ChoiceHyperParameter
     hp_choice_str: ChoiceHyperParameter
+
+
+@spockTuner
+class LogisticRegressionHP:
+    c: RangeHyperParameter
+    solver: ChoiceHyperParameter

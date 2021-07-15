@@ -26,7 +26,7 @@ jobs:
     - uses: actions/cache@v2
       with:
         path: ${{ env.pythonLocation }}
-        key: ${{ env.pythonLocation }}-${{ hashFiles('setup.py') }}-${{ hashFiles('REQUIREMENTS.txt') }}-${{ hashFiles('./requirements/DEV_REQUIREMENTS.txt') }}-${{ hashFiles('./requirements/S3_REQUIREMENTS.txt') }}-${{ hashFiles('./requirements/TUNE_REQUIREMENTS.txt') }}
+        key: ${{ env.pythonLocation }}-${{ hashFiles('setup.py') }}-${{ hashFiles('REQUIREMENTS.txt') }}-${{ hashFiles('./requirements/DEV_REQUIREMENTS.txt') }}-${{ hashFiles('./requirements/S3_REQUIREMENTS.txt') }}-${{ hashFiles('./requirements/TUNE_REQUIREMENTS.txt') }}-${{ hashFiles('./requirements/TEST_EXTRAS_REQUIREMENTS_REQUIREMENTS.txt') }}
 
     - name: Install dependencies
       run: |
@@ -35,6 +35,7 @@ jobs:
         pip install -r ./requirements/DEV_REQUIREMENTS.txt
         pip install -r ./requirements/S3_REQUIREMENTS.txt
         pip install -r ./requirements/TUNE_REQUIREMENTS.txt
+        pip install -r ./requirements/TEST_EXTRAS_REQUIREMENTS.txt
 
     - name: Test with pytest
       run: |

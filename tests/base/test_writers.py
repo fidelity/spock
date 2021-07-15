@@ -63,7 +63,6 @@ class TestYAMLWriterSavePath:
             # Test the chained version
             now = datetime.datetime.now()
             curr_int_time = int(f'{now.year}{now.month}{now.day}{now.hour}{now.second}')
-
             config_values = config.save(file_extension='.yaml', file_name=f'pytest.{curr_int_time}').generate()
             yaml_regex = re.compile(fr'pytest.{curr_int_time}.'
                                     fr'[a-fA-F0-9]{{8}}-[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{4}}-'
