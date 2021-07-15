@@ -10,11 +10,11 @@ from sklearn.datasets import load_iris
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 
-from spock.addons.tune import spockTuner
 from spock.addons.tune import (
     ChoiceHyperParameter,
     OptunaTunerConfig,
     RangeHyperParameter,
+    spockTuner,
 )
 from spock.builder import ConfigArgBuilder
 from spock.config import spock
@@ -77,7 +77,7 @@ def main():
         # Pull the study and trials object out of the return dictionary and pass it to the tell call using the study
         # object
         tuner_status["study"].tell(tuner_status["trial"], val_acc)
-        print('hi')
+        print("hi")
 
 
 if __name__ == "__main__":

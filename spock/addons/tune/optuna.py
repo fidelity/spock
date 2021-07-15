@@ -5,11 +5,12 @@
 
 """Handles the optuna backend"""
 
-import attr
-import json
 import hashlib
-import optuna
+import json
 from warnings import warn
+
+import attr
+import optuna
 
 from spock.addons.tune.config import OptunaTunerConfig
 from spock.addons.tune.interface import BaseInterface
@@ -60,7 +61,7 @@ class OptunaInterface(BaseInterface):
 
     @property
     def tuner_status(self):
-        return {'trial': self._trial, 'study': self._tuner_obj}
+        return {"trial": self._trial, "study": self._tuner_obj}
 
     def sample(self):
         self._trial = self._tuner_obj.ask(self._param_obj)
@@ -84,7 +85,9 @@ class OptunaInterface(BaseInterface):
         for k, v in self._trial.params.items():
             split_names = k.split(".")
             rollup_dict[split_names[0]].update({split_names[1]: v})
-        dict_hash = hashlib.md5(json.dumps(rollup_dict, sort_keys=True).encode('utf-8')).digest()
+        dict_hash = hashlib.md5(
+            json.dumps(rollup_dict, sort_keys=True).encode("utf-8")
+        ).digest()
         return rollup_dict, dict_hash
 
     def _construct(self):
