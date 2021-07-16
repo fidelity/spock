@@ -6,6 +6,7 @@
 """Handles the tuner payload backend"""
 
 from spock.backend.payload import BasePayload
+from spock.backend.utils import get_attr_fields
 
 
 class TunerPayload(BasePayload):
@@ -47,17 +48,35 @@ class TunerPayload(BasePayload):
 
     @staticmethod
     def _update_payload(base_payload, input_classes, ignore_classes, payload):
+        # Get basic args
+        attr_fields = get_attr_fields(input_classes=input_classes)
         # Get the ignore fields
-        ignore_fields = {
-            attr.__name__: [val.name for val in attr.__attrs_attrs__]
-            for attr in ignore_classes
-        }
+        ignore_fields = get_attr_fields(input_classes=ignore_classes)
         for k, v in base_payload.items():
             if k not in ignore_fields:
-                for ik, iv in v.items():
-                    if "bounds" in iv:
-                        iv["bounds"] = tuple(iv["bounds"])
-        return base_payload
+                if k != "config":
+                    # Dict infers that we are overriding a global setting in a specific config
+                    if isinstance(v, dict):
+                        # we're in a namespace
+                        # Check for incorrect specific override of global def
+                        if k not in attr_fields:
+                            raise TypeError(
+                                f"Referring to a class space {k} that is undefined"
+                            )
+                        for i_keys in v.keys():
+                            if i_keys not in attr_fields[k]:
+                                raise ValueError(
+                                    f"Provided an unknown argument named {k}.{i_keys}"
+                                )
+                    if k in payload and isinstance(v, dict):
+                        payload[k].update(v)
+                    else:
+                        payload[k] = v
+                    # Handle tuple conversion here -- lazily
+                    for ik, iv in v.items():
+                        if "bounds" in iv:
+                            iv["bounds"] = tuple(iv["bounds"])
+        return payload
 
     @staticmethod
     def _handle_payload_override(payload, key, value):

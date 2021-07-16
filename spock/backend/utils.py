@@ -6,6 +6,24 @@
 """Attr utility functions for Spock"""
 
 
+def get_attr_fields(input_classes):
+    """Gets the attribute fields from all classes
+
+    *Args*:
+
+        input_classes: current list of input classes
+
+    *Returns*:
+
+        dictionary of all attrs attribute fields
+
+    """
+    return {
+        attr.__name__: [val.name for val in attr.__attrs_attrs__]
+        for attr in input_classes
+    }
+
+
 def get_type_fields(input_classes):
     """Creates a dictionary of names and types
 

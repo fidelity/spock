@@ -12,7 +12,7 @@ from itertools import chain
 from pathlib import Path
 
 from spock.backend.handler import BaseHandler
-from spock.backend.utils import convert_to_tuples, deep_update, get_type_fields
+from spock.backend.utils import convert_to_tuples, deep_update, get_type_fields, get_attr_fields
 from spock.utils import check_path_s3
 
 
@@ -307,15 +307,9 @@ class AttrPayload(BasePayload):
     @staticmethod
     def _update_payload(base_payload, input_classes, ignore_classes, payload):
         # Get basic args
-        attr_fields = {
-            attr.__name__: [val.name for val in attr.__attrs_attrs__]
-            for attr in input_classes
-        }
+        attr_fields = get_attr_fields(input_classes=input_classes)
         # Get the ignore fields
-        ignore_fields = {
-            attr.__name__: [val.name for val in attr.__attrs_attrs__]
-            for attr in ignore_classes
-        }
+        ignore_fields = get_attr_fields(input_classes=ignore_classes)
         # Class names
         class_names = [val.__name__ for val in input_classes]
         # Parse out the types if generic

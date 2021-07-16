@@ -25,6 +25,31 @@ class TestOptunaBasic(AllTypes):
             return config
 
 
+class TestOptunaCompose(AllTypes):
+    @staticmethod
+    @pytest.fixture
+    def arg_builder(monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, 'argv', ['', '--config',
+                                    './tests/conf/yaml/test_hp_compose.yaml'])
+            optuna_config = OptunaTunerConfig(study_name="Basic Tests", direction="maximize")
+            config = ConfigArgBuilder(HPOne, HPTwo).tuner(optuna_config)
+            return config
+
+    def test_hp_one(self, arg_builder):
+        assert arg_builder._tune_namespace.HPOne.hp_int.bounds == (20, 200)
+        assert arg_builder._tune_namespace.HPOne.hp_int.type == 'int'
+        assert arg_builder._tune_namespace.HPOne.hp_int.log_scale is False
+        assert arg_builder._tune_namespace.HPOne.hp_int_log.bounds == (10, 100)
+        assert arg_builder._tune_namespace.HPOne.hp_int_log.type == 'int'
+        assert arg_builder._tune_namespace.HPOne.hp_int_log.log_scale is True
+        assert arg_builder._tune_namespace.HPOne.hp_float.bounds == (10.0, 100.0)
+        assert arg_builder._tune_namespace.HPOne.hp_float.type == 'float'
+        assert arg_builder._tune_namespace.HPOne.hp_float.log_scale is False
+        assert arg_builder._tune_namespace.HPOne.hp_float_log.bounds == (10.0, 100.0)
+        assert arg_builder._tune_namespace.HPOne.hp_float_log.type == 'float'
+        assert arg_builder._tune_namespace.HPOne.hp_float_log.log_scale is True
+
 class TestOptunaSample(SampleTypes):
     @staticmethod
     @pytest.fixture
@@ -81,7 +106,7 @@ class TestIrisOptuna:
             # Pull the study and trials object out of the return dictionary and pass it to the tell call using the study
             # object
             tuner_status["study"].tell(tuner_status["trial"], val_acc)
-
+            # Verify the sample was written out to file
             yaml_regex = re.compile(fr'pytest.{curr_int_time}.hp.sample.[0-9]+.'
                                     fr'[a-fA-F0-9]{{8}}-[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{4}}-'
                                     fr'[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{12}}.spock.cfg.yaml')
