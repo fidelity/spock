@@ -24,6 +24,8 @@ if minor < 7:
 else:
     from typing import _GenericAlias
 
+from typing import Union
+
 
 def check_path_s3(path: str) -> bool:
     """Checks the given path to see if it matches the s3:// regex
@@ -81,6 +83,13 @@ def make_argument(arg_name, arg_type, parser):
     # For generic alias we take the input string and use a custom type callable to convert
     if isinstance(arg_type, _GenericAlias):
         parser.add_argument(arg_name, required=False, type=_handle_generic_type_args)
+    # For Unions -- python 3.6 can't deal with them correctly -- use the same ast method that generics require
+    elif (
+        hasattr(arg_type, "__origin__")
+        and (arg_type.__origin__ is Union)
+        and (minor < 7)
+    ):
+        parser.add_argument(arg_name, required=False, type=_handle_generic_type_args)
     # For choice enums we need to check a few things first
     elif isinstance(arg_type, EnumMeta):
         type_set = list({type(val.value) for val in arg_type})[0]
@@ -99,7 +108,7 @@ def make_argument(arg_name, arg_type, parser):
 def _handle_generic_type_args(val):
     """Evaluates a string containing a Python literal
 
-    Seeing a list types will come in as string literal format, use ast to get the actual type
+    Seeing a list and tuple types will come in as string literal format, use ast to get the actual type
 
     *Args*:
 

@@ -12,7 +12,12 @@ from itertools import chain
 from pathlib import Path
 
 from spock.backend.handler import BaseHandler
-from spock.backend.utils import convert_to_tuples, deep_update, get_type_fields, get_attr_fields
+from spock.backend.utils import (
+    convert_to_tuples,
+    deep_update,
+    get_attr_fields,
+    get_type_fields,
+)
 from spock.utils import check_path_s3
 
 
