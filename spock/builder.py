@@ -16,8 +16,8 @@ import attr
 from spock.backend.builder import AttrBuilder
 from spock.backend.payload import AttrPayload
 from spock.backend.saver import AttrSaver
-from spock.utils import check_payload_overwrite, deep_payload_update
 from spock.backend.wrappers import Spockspace
+from spock.utils import check_payload_overwrite, deep_payload_update
 
 
 class ConfigArgBuilder:
@@ -444,7 +444,7 @@ class ConfigArgBuilder:
         extra_info: bool = True,
         file_extension: str = ".yaml",
         tuner_payload=None,
-        fixed_uuid=None
+        fixed_uuid=None,
     ):
         """Private interface -- saves the current config setup to file with a UUID
 
@@ -474,7 +474,14 @@ class ConfigArgBuilder:
             )
         # Call the saver class and save function
         self._saver_obj.save(
-            payload, save_path, file_name, create_save_path, extra_info, file_extension, tuner_payload, fixed_uuid
+            payload,
+            save_path,
+            file_name,
+            create_save_path,
+            extra_info,
+            file_extension,
+            tuner_payload,
+            fixed_uuid,
         )
         return self
 
@@ -530,17 +537,19 @@ class ConfigArgBuilder:
                 create_save_path,
                 extra_info,
                 file_extension,
-                tuner_payload=self._tune_namespace if self._tune_obj is not None else None
+                tuner_payload=self._tune_namespace
+                if self._tune_obj is not None
+                else None,
             )
         return self
 
     def save_best(
-            self,
-            file_name: str = None,
-            user_specified_path: str = None,
-            create_save_path: bool = True,
-            extra_info: bool = True,
-            file_extension: str = ".yaml",
+        self,
+        file_name: str = None,
+        user_specified_path: str = None,
+        create_save_path: bool = True,
+        extra_info: bool = True,
+        file_extension: str = ".yaml",
     ):
         """Saves the current best config setup to file
 
@@ -561,11 +570,7 @@ class ConfigArgBuilder:
                 f"Called save_best method without passing any @spockTuner decorated classes -- please use the save()"
                 f" method for saving non hyper-parameter tuning runs"
             )
-        file_name = (
-            f"hp.best"
-            if file_name is None
-            else f"{file_name}.hp.best"
-        )
+        file_name = f"hp.best" if file_name is None else f"{file_name}.hp.best"
         self._save(
             Spockspace(**vars(self._arg_namespace), **vars(self.best[0])),
             file_name,
@@ -573,5 +578,5 @@ class ConfigArgBuilder:
             create_save_path,
             extra_info,
             file_extension,
-            fixed_uuid=self._fixed_uuid
+            fixed_uuid=self._fixed_uuid,
         )

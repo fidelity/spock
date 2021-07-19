@@ -47,11 +47,15 @@ def main():
 
     # Use the builder to setup
     # Call tuner to indicate that we are going to do some HP tuning -- passing in an optuna study object
-    attrs_obj = ConfigArgBuilder(
-        LogisticRegressionHP,
-        BasicParams,
-        desc="Example Logistic Regression Hyper-Parameter Tuning",
-    ).tuner(tuner_config=optuna_config).save(user_specified_path='/tmp')
+    attrs_obj = (
+        ConfigArgBuilder(
+            LogisticRegressionHP,
+            BasicParams,
+            desc="Example Logistic Regression Hyper-Parameter Tuning",
+        )
+        .tuner(tuner_config=optuna_config)
+        .save(user_specified_path="/tmp")
+    )
 
     # Here we need some of the fixed parameters first so we can just call the generate fnc to grab all the fixed params
     # prior to starting the sampling process
@@ -70,7 +74,7 @@ def main():
         clf = LogisticRegression(
             C=hp_attrs.LogisticRegressionHP.c,
             solver=hp_attrs.LogisticRegressionHP.solver,
-            max_iter=hp_attrs.BasicParams.max_iter
+            max_iter=hp_attrs.BasicParams.max_iter,
         )
         clf.fit(X_train, y_train)
         val_acc = clf.score(X_valid, y_valid)
@@ -80,12 +84,12 @@ def main():
         # object
         tuner_status["study"].tell(tuner_status["trial"], val_acc)
         # Always save the current best set of hyper-parameters
-        attrs_obj.save_best(user_specified_path='/tmp')
+        attrs_obj.save_best(user_specified_path="/tmp")
 
     # Grab the best config and metric
     best_config, best_metric = attrs_obj.best
-    print(f'Best HP Config:\n{best_config}')
-    print(f'Best Metric: {best_metric}')
+    print(f"Best HP Config:\n{best_config}")
+    print(f"Best Metric: {best_metric}")
 
 
 if __name__ == "__main__":

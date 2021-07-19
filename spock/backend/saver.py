@@ -39,7 +39,7 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
         extra_info=True,
         file_extension=".yaml",
         tuner_payload=None,
-        fixed_uuid=None
+        fixed_uuid=None,
     ):  # pylint: disable=too-many-arguments
         """Writes Spock config to file
 
@@ -71,7 +71,11 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
         # Fix up values -- parameters
         out_dict = self._clean_up_values(payload, file_extension)
         # Fix up the tuner values if present
-        tuner_dict = self._clean_tuner_values(tuner_payload) if tuner_payload is not None else None
+        tuner_dict = (
+            self._clean_tuner_values(tuner_payload)
+            if tuner_payload is not None
+            else None
+        )
         if tuner_dict is not None:
             out_dict.update(tuner_dict)
         # Get extra info
@@ -220,7 +224,10 @@ class AttrSaver(BaseSaver):
 
     def _clean_tuner_values(self, payload):
         # Just a double nested dict comprehension to unroll to dicts
-        out_dict = {k: {ik: vars(iv) for ik, iv in vars(v).items()} for k, v in vars(payload).items()}
+        out_dict = {
+            k: {ik: vars(iv) for ik, iv in vars(v).items()}
+            for k, v in vars(payload).items()
+        }
         # Convert values
         clean_dict = self._clean_output(out_dict)
         return clean_dict

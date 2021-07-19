@@ -66,7 +66,10 @@ class OptunaInterface(BaseInterface):
     @property
     def best(self):
         rollup_dict, _ = self._trial_rollup(self._tuner_obj.best_trial)
-        return self._to_spockspace(self._gen_attr_classes(rollup_dict)), self._tuner_obj.best_value
+        return (
+            self._to_spockspace(self._gen_attr_classes(rollup_dict)),
+            self._tuner_obj.best_value,
+        )
 
     def sample(self):
         self._trial = self._tuner_obj.ask(self._param_obj)
