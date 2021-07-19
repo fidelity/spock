@@ -71,3 +71,8 @@ class TunerInterface:
     def tuner_status(self):
         """Returns a dictionary of all the necessary underlying tuner internals to report the result"""
         return self._lib_interface.tuner_status
+
+    @property
+    def best(self):
+        """Returns a Spockspace of the best hyper-parameter config and the associated metric value"""
+        return self._lib_interface.best

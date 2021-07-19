@@ -1,4 +1,4 @@
 optuna==2.8.0
-torchvision
-torch
+#torchvision
+#torch
 #ax-platform

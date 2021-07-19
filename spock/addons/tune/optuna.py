@@ -63,15 +63,21 @@ class OptunaInterface(BaseInterface):
     def tuner_status(self):
         return {"trial": self._trial, "study": self._tuner_obj}
 
+    @property
+    def best(self):
+        rollup_dict, _ = self._trial_rollup(self._tuner_obj.best_trial)
+        return self._to_spockspace(self._gen_attr_classes(rollup_dict)), self._tuner_obj.best_value
+
     def sample(self):
         self._trial = self._tuner_obj.ask(self._param_obj)
         # Roll this back out into a Spockspace so it can be merged into the fixed parameter Spockspace
         # Also need to un-dot the param names to rebuild the nested structure
-        rollup_dict, sample_hash = self._trial_rollup()
+        rollup_dict, sample_hash = self._trial_rollup(self._trial)
         self._sample_hash = sample_hash
         return self._to_spockspace(self._gen_attr_classes(rollup_dict))
 
-    def _trial_rollup(self):
+    @staticmethod
+    def _trial_rollup(trial):
         """Rollup the trial into a dictionary that can be converted to a spockspace with the correct names and roots
 
         *Returns*:
@@ -80,9 +86,9 @@ class OptunaInterface(BaseInterface):
             md5 hash of the dictionary contents
 
         """
-        key_set = {k.split(".")[0] for k in self._trial.params.keys()}
+        key_set = {k.split(".")[0] for k in trial.params.keys()}
         rollup_dict = {val: {} for val in key_set}
-        for k, v in self._trial.params.items():
+        for k, v in trial.params.items():
             split_names = k.split(".")
             rollup_dict[split_names[0]].update({split_names[1]: v})
         dict_hash = hashlib.md5(

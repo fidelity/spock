@@ -70,11 +70,13 @@ Motivation = "docs/Motivation.md"
     "S3" = "docs/addons/S3.md"
     [[tool.portray.mkdocs.nav."Addons"]]
         [[tool.portray.mkdocs.nav."Addons"."Hyper-Parameter Tuning"]]
+        "About" = "docs/addons/tuner/About.md"
+        [[tool.portray.mkdocs.nav."Addons"."Hyper-Parameter Tuning"]]
         "Basics" = "docs/addons/tuner/Basics.md"
         [[tool.portray.mkdocs.nav."Addons"."Hyper-Parameter Tuning"]]
         "Optuna" = "docs/addons/tuner/Optuna.md"
         [[tool.portray.mkdocs.nav."Addons"."Hyper-Parameter Tuning"]]
-        "Ax" = "docs/addons/tuner/Ax.md"
+        "Saving" = "docs/addons/tuner/Saving.md"
 
 [[tool.portray.mkdocs.nav]]
 Contributing = "CONTRIBUTING.md"

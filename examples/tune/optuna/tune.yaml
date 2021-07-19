@@ -3,6 +3,7 @@
 ################
 BasicParams:
   n_trials: 10
+  max_iter: 150
 
 LogisticRegressionHP:
   c:

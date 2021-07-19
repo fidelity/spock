@@ -6,7 +6,7 @@
 """Handles prepping and saving the Spock config"""
 
 from abc import abstractmethod
-from uuid import uuid1
+from uuid import uuid4
 
 import attr
 
@@ -38,6 +38,8 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
         create_save_path=False,
         extra_info=True,
         file_extension=".yaml",
+        tuner_payload=None,
+        fixed_uuid=None
     ):  # pylint: disable=too-many-arguments
         """Writes Spock config to file
 
@@ -52,6 +54,8 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
             create_save_path: boolean to create the path if non-existent
             extra_info: boolean to write extra info
             file_extension: what type of file to write
+            tuner_payload: tuner level payload (unsampled)
+            fixed_uuid: fixed uuid to allow for file overwrite
 
         *Returns*:
 
@@ -61,11 +65,15 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
         # Check extension
         self._check_extension(file_extension=file_extension)
         # Make the filename -- always append a uuid for unique-ness
-        uuid_str = str(uuid1())
+        uuid_str = str(uuid4()) if fixed_uuid is None else fixed_uuid
         fname = "" if file_name is None else f"{file_name}."
         name = f"{fname}{uuid_str}.spock.cfg{file_extension}"
         # Fix up values -- parameters
         out_dict = self._clean_up_values(payload, file_extension)
+        # Fix up the tuner values if present
+        tuner_dict = self._clean_tuner_values(tuner_payload) if tuner_payload is not None else None
+        if tuner_dict is not None:
+            out_dict.update(tuner_dict)
         # Get extra info
         extra_dict = add_info() if extra_info else None
         try:
@@ -90,6 +98,20 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
             payload: dirty payload
             extra_info: boolean to add extra info
             file_extension: type of file to write
+
+        *Returns*:
+
+            clean_dict: cleaned output payload
+
+        """
+
+    @abstractmethod
+    def _clean_tuner_values(self, payload):
+        """Cleans up the base tuner payload that is not sampled
+
+        *Args*:
+
+            payload: dirty payload
 
         *Returns*:
 
@@ -192,6 +214,13 @@ class AttrSaver(BaseSaver):
         out_dict = self._recursively_handle_clean(
             payload, out_dict, all_cls=all_spock_cls
         )
+        # Convert values
+        clean_dict = self._clean_output(out_dict)
+        return clean_dict
+
+    def _clean_tuner_values(self, payload):
+        # Just a double nested dict comprehension to unroll to dicts
+        out_dict = {k: {ik: vars(iv) for ik, iv in vars(v).items()} for k, v in vars(payload).items()}
         # Convert values
         clean_dict = self._clean_output(out_dict)
         return clean_dict

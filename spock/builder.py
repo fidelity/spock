@@ -9,6 +9,7 @@ import argparse
 import sys
 import typing
 from pathlib import Path
+from uuid import uuid4
 
 import attr
 
@@ -16,6 +17,7 @@ from spock.backend.builder import AttrBuilder
 from spock.backend.payload import AttrPayload
 from spock.backend.saver import AttrSaver
 from spock.utils import check_payload_overwrite, deep_payload_update
+from spock.backend.wrappers import Spockspace
 
 
 class ConfigArgBuilder:
@@ -40,6 +42,7 @@ class ConfigArgBuilder:
         _tuner_state: current state of the hyper-parameter sampler
         _tune_namespace: namespace that hold the generated tuner related parameters
         _sample_count: current call to the sample function
+        _fixed_uuid: fixed uuid to write the best file to the same path
 
     """
 
@@ -84,6 +87,7 @@ class ConfigArgBuilder:
         self._tuner_state = None
         self._tuner_status = None
         self._sample_count = 0
+        self._fixed_uuid = str(uuid4())
         try:
             # Get all cmd line args and build overrides
             self._args = self._handle_cmd_line()
@@ -139,6 +143,11 @@ class ConfigArgBuilder:
     def tuner_status(self):
         """Returns a dictionary of all the necessary underlying tuner internals to report the result"""
         return self._tuner_status
+
+    @property
+    def best(self):
+        """Returns a Spockspace of the best hyper-parameter config and the associated metric value"""
+        return self._tuner_interface.best
 
     def sample(self):
         """Sample method that constructs a namespace from the fixed parameters and samples from the tuner space to
@@ -434,6 +443,8 @@ class ConfigArgBuilder:
         create_save_path: bool = True,
         extra_info: bool = True,
         file_extension: str = ".yaml",
+        tuner_payload=None,
+        fixed_uuid=None
     ):
         """Private interface -- saves the current config setup to file with a UUID
 
@@ -445,6 +456,8 @@ class ConfigArgBuilder:
             create_save_path: bool to create the path to save if called
             extra_info: additional info to write to saved config (run date and git info)
             file_extension: file type to write (default: yaml)
+            tuner_payload: tuner level payload (unsampled)
+            fixed_uuid: fixed uuid to allow for file overwrite
 
         *Returns*:
 
@@ -461,7 +474,7 @@ class ConfigArgBuilder:
             )
         # Call the saver class and save function
         self._saver_obj.save(
-            payload, save_path, file_name, create_save_path, extra_info, file_extension
+            payload, save_path, file_name, create_save_path, extra_info, file_extension, tuner_payload, fixed_uuid
         )
         return self
 
@@ -490,6 +503,12 @@ class ConfigArgBuilder:
             self so that functions can be chained
         """
         if add_tuner_sample:
+            if self._tune_obj is None:
+                raise ValueError(
+                    f"Called save method with add_tuner_sample as {add_tuner_sample} without passing any @spockTuner "
+                    f"decorated classes -- please use the add_tuner_sample flag for saving only hyper-parameter tuning "
+                    f"runs"
+                )
             file_name = (
                 f"hp.sample.{self._sample_count+1}"
                 if file_name is None
@@ -511,5 +530,48 @@ class ConfigArgBuilder:
                 create_save_path,
                 extra_info,
                 file_extension,
+                tuner_payload=self._tune_namespace if self._tune_obj is not None else None
             )
         return self
+
+    def save_best(
+            self,
+            file_name: str = None,
+            user_specified_path: str = None,
+            create_save_path: bool = True,
+            extra_info: bool = True,
+            file_extension: str = ".yaml",
+    ):
+        """Saves the current best config setup to file
+
+        *Args*:
+
+            file_name: name of file (will be appended with .spock.cfg.file_extension) -- falls back to just uuid if None
+            user_specified_path: if user provides a path it will be used as the path to write
+            create_save_path: bool to create the path to save if called
+            extra_info: additional info to write to saved config (run date and git info)
+            file_extension: file type to write (default: yaml)
+
+        *Returns*:
+
+            self so that functions can be chained
+        """
+        if self._tune_obj is None:
+            raise ValueError(
+                f"Called save_best method without passing any @spockTuner decorated classes -- please use the save()"
+                f" method for saving non hyper-parameter tuning runs"
+            )
+        file_name = (
+            f"hp.best"
+            if file_name is None
+            else f"{file_name}.hp.best"
+        )
+        self._save(
+            Spockspace(**vars(self._arg_namespace), **vars(self.best[0])),
+            file_name,
+            user_specified_path,
+            create_save_path,
+            extra_info,
+            file_extension,
+            fixed_uuid=self._fixed_uuid
+        )

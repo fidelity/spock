@@ -50,6 +50,7 @@ class TestOptunaCompose(AllTypes):
         assert arg_builder._tune_namespace.HPOne.hp_float_log.type == 'float'
         assert arg_builder._tune_namespace.HPOne.hp_float_log.log_scale is True
 
+
 class TestOptunaSample(SampleTypes):
     @staticmethod
     @pytest.fixture
@@ -59,6 +60,37 @@ class TestOptunaSample(SampleTypes):
                                     './tests/conf/yaml/test_hp.yaml'])
             optuna_config = OptunaTunerConfig(study_name="Sample Tests", direction="maximize")
             config = ConfigArgBuilder(HPOne, HPTwo).tuner(optuna_config)
+            return config
+
+
+class TestOptunaSaveTopLevel:
+    def test_save_top_level(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, 'argv', ['', '--config',
+                                    './tests/conf/yaml/test_optuna.yaml'])
+            # Optuna config -- this will internally spawn the study object for the define-and-run style which will be returned
+            # as part of the call to sample()
+            optuna_config = OptunaTunerConfig(
+                study_name="Iris Logistic Regression Tests", direction="maximize"
+            )
+            now = datetime.datetime.now()
+            curr_int_time = int(f'{now.year}{now.month}{now.day}{now.hour}{now.second}')
+            config = ConfigArgBuilder(LogisticRegressionHP).tuner(optuna_config).save(
+                user_specified_path="/tmp", file_name=f'pytest.{curr_int_time}',
+            ).sample()
+            # Verify the sample was written out to file
+            yaml_regex = re.compile(fr'pytest.{curr_int_time}.'
+                                    fr'[a-fA-F0-9]{{8}}-[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{4}}-'
+                                    fr'[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{12}}.spock.cfg.yaml')
+            matches = [re.fullmatch(yaml_regex, val) for val in os.listdir('/tmp')
+                       if re.fullmatch(yaml_regex, val) is not None]
+            fname = f'/tmp/{matches[0].string}'
+            assert os.path.exists(fname)
+            with open(fname, 'r') as fin:
+                print(fin.read())
+            # Clean up if assert is good
+            if os.path.exists(fname):
+                os.remove(fname)
             return config
 
 
@@ -106,6 +138,8 @@ class TestIrisOptuna:
             # Pull the study and trials object out of the return dictionary and pass it to the tell call using the study
             # object
             tuner_status["study"].tell(tuner_status["trial"], val_acc)
+            # Always save the current best set of hyper-parameters
+            arg_builder.save_best(user_specified_path='/tmp', file_name=f'pytest')
             # Verify the sample was written out to file
             yaml_regex = re.compile(fr'pytest.{curr_int_time}.hp.sample.[0-9]+.'
                                     fr'[a-fA-F0-9]{{8}}-[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{4}}-'
@@ -119,3 +153,20 @@ class TestIrisOptuna:
             # Clean up if assert is good
             if os.path.exists(fname):
                 os.remove(fname)
+
+        best_config, best_metric = arg_builder.best
+        print(f'Best HP Config:\n{best_config}')
+        print(f'Best Metric: {best_metric}')
+        # Verify the sample was written out to file
+        yaml_regex = re.compile(fr'pytest.hp.best.'
+                                fr'[a-fA-F0-9]{{8}}-[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{4}}-'
+                                fr'[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{12}}.spock.cfg.yaml')
+        matches = [re.fullmatch(yaml_regex, val) for val in os.listdir('/tmp')
+                   if re.fullmatch(yaml_regex, val) is not None]
+        fname = f'/tmp/{matches[0].string}'
+        assert os.path.exists(fname)
+        with open(fname, 'r') as fin:
+            print(fin.read())
+        # Clean up if assert is good
+        if os.path.exists(fname):
+            os.remove(fname)

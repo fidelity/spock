@@ -23,6 +23,7 @@ from spock.config import spock
 @spock
 class BasicParams:
     n_trials: int
+    max_iter: int
 
 
 @spockTuner
@@ -39,7 +40,7 @@ def main():
     X_train, X_valid, y_train, y_valid = train_test_split(X, y)
 
     # Optuna config -- this will internally spawn the study object for the define-and-run style which will be returned
-    # as part of the call to sample()
+    # by accessing the tuner_status property on the ConfigArgBuilder object
     optuna_config = OptunaTunerConfig(
         study_name="Iris Logistic Regression", direction="maximize"
     )
@@ -50,7 +51,7 @@ def main():
         LogisticRegressionHP,
         BasicParams,
         desc="Example Logistic Regression Hyper-Parameter Tuning",
-    ).tuner(tuner_config=optuna_config)
+    ).tuner(tuner_config=optuna_config).save(user_specified_path='/tmp')
 
     # Here we need some of the fixed parameters first so we can just call the generate fnc to grab all the fixed params
     # prior to starting the sampling process
@@ -59,7 +60,7 @@ def main():
     # Now we iterate through a bunch of optuna trials
     for _ in range(fixed_params.BasicParams.n_trials):
         # The crux of spock support -- call save w/ the add_tuner_sample flag to write the current draw to file and
-        # then call save to return the composed Spockspace of the fixed parameters and the sampled parameters
+        # then call sample to return the composed Spockspace of the fixed parameters and the sampled parameters
         # Under the hood spock uses the define-and-run Optuna interface -- thus it handled the underlying 'ask' call
         # and returns the necessary trial object in the return dictionary to call 'tell' with the study object
         hp_attrs = attrs_obj.save(
@@ -69,6 +70,7 @@ def main():
         clf = LogisticRegression(
             C=hp_attrs.LogisticRegressionHP.c,
             solver=hp_attrs.LogisticRegressionHP.solver,
+            max_iter=hp_attrs.BasicParams.max_iter
         )
         clf.fit(X_train, y_train)
         val_acc = clf.score(X_valid, y_valid)
@@ -77,6 +79,13 @@ def main():
         # Pull the study and trials object out of the return dictionary and pass it to the tell call using the study
         # object
         tuner_status["study"].tell(tuner_status["trial"], val_acc)
+        # Always save the current best set of hyper-parameters
+        attrs_obj.save_best(user_specified_path='/tmp')
+
+    # Grab the best config and metric
+    best_config, best_metric = attrs_obj.best
+    print(f'Best HP Config:\n{best_config}')
+    print(f'Best Metric: {best_metric}')
 
 
 if __name__ == "__main__":

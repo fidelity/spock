@@ -100,3 +100,8 @@ class BaseInterface(ABC):
     def tuner_status(self):
         """Returns a dictionary of all the necessary underlying tuner internals to report the result"""
         pass
+
+    @property
+    @abstractmethod
+    def best(self):
+        """Returns a Spockspace of the best hyper-parameter config and the associated metric value"""
