@@ -16,13 +16,15 @@ The `RangeHyperParameter` type is used for hyper-parameters that are to be drawn
 of values that can be of base type `int`, `float`, `bool`, or `str`.
 
 `RangeHyperParameter` requires the following inputs:
-* type: string of either int or float depending on the needed type
-* bounds: a tuple of two values that define the lower and upper bound of the range (int or float)
-* log_scale: boolean to activate log scaling of the range
+
+- type: string of either int or float depending on the needed type
+- bounds: a tuple of two values that define the lower and upper bound of the range (int or float)
+- log_scale: boolean to activate log scaling of the range
 
 `ChoiceHyperParameter` requires the following inputs:
-* type: string of either int, float, bool, str depending on the needed type
-* choices: a list of any length that contains the discrete values to sample from
+
+- type: string of either int, float, bool, str depending on the needed type
+- choices: a list of any length that contains the discrete values to sample from
 
 ### Defining a spockTuner Class
 
