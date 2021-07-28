@@ -18,54 +18,6 @@ creating ArgParsers, reading configuration files, implementing traceability etc.
 In short, `spock` configurations are defined by simple and familiar class-based structures. This allows `spock` to 
 support inheritance, read from multiple markdown formats, and allow hierarchical configuration by composition.
 
-## Quick Install
-
-Requires Python 3.6+
-
-```bash
-pip install spock-config
-```
-
-w/ S3 extension
-
-```bash
-pip install spock-config[s3]
-```
-
-## Version(s)
-
-All prior versions are available on PyPi. If legacy API and backend support is needed please install a pre v2.0.0+ 
-version. We recommend refactoring your code to the new API and backend instead as legacy versions will be missing 
-recent features, bugfixes, and hotfixes.
-
-* v2.0.0+: Dropped support for legacy backend and API semantics
-* v1.1.0-v1.2.1: New API with support for legacy backend and legacy API semantics
-* v1.0.0: Legacy API and backend 
-
-## News
-
-See [Releases](https://github.com/fidelity/spock/releases) for more information.
-
-#### July 21, 2021
-* Added hyper-parameter tuning support with `pip install spock-config[tune]`
-* Hyper-parameter tuning backend support for Optuna define-and-run API (WIP for Ax)
-
-#### May 6th, 2021
-* Added S3 support with `pip install spock-config[s3]`
-* S3 addon supports automatically handling loading/saving from paths defined with `s3://` URI(s) by passing in an
-active `boto3.Session`
-
-#### March 18th, 2021
-
-* Support for Google docstring style annotation of `spock` class (and Enums) and attributes
-* Added in ability to print docstring annotated help information to command line with `--help` argument
-
-## Documentation
-
-Current documentation and more information can be found [here](https://fidelity.github.io/spock/).
-
-Example `spock` usage is located [here](https://github.com/fidelity/spock/blob/master/examples).
-
 ## Key Features
 
 * [Simple Declaration](https://fidelity.github.io/spock/docs/basic_tutorial/Define/): Type checked parameters are 
@@ -87,12 +39,48 @@ Example `spock` usage is located [here](https://github.com/fidelity/spock/blob/m
   Python version, machine FQDN, etc). The saved markdown file can be used as the configuration input to reproduce 
   prior runtime configurations.
 * [Hyper-Parameter Tuner Addon](https://fidelity.github.io/spock/docs/addons/tuner/About.html): Provides a unified
-  interface for hyper-parameter tuning that supports various backends (Optuna, WIP: Ax)
+  interface for defining hyper-parameters (via `@spockTuner` decorator) that supports various tuning/algorithm 
+  backends (Optuna, WIP: Ax)
 * [S3 Addon](https://fidelity.github.io/spock/docs/addons/S3/): Automatically detects `s3://` URI(s) and handles loading 
   and saving `spock` configuration files when an active `boto3.Session` is passed in (plus any additional 
   `S3Transfer` configurations)
 
-#### Main Contributors
+## Quick Install
+
+Requires Python 3.6+
+
+| Base | w/ S3 Extension | w/ Hyper-Parameter Tuner |
+|------|-----------------|--------------------------|
+| `pip install spock-config` | `pip install spock-config[s3]` | `pip install spock-config[tune]` |
+
+## Quick Start & Documentation
+
+Refer to the quick-start guide [here](https://fidelity.github.io/spock/docs/Quick-Start/).
+
+Current documentation and more information can be found [here](https://fidelity.github.io/spock/).
+
+Example `spock` usage is located [here](https://github.com/fidelity/spock/blob/master/examples).
+
+## News/Releases
+
+See [Releases](https://github.com/fidelity/spock/releases) for more information.
+
+#### July 21, 2021
+* Added hyper-parameter tuning support with `pip install spock-config[tune]`
+* Hyper-parameter tuning backend support for Optuna define-and-run API (WIP for Ax)
+
+#### May 6th, 2021
+* Added S3 support with `pip install spock-config[s3]`
+* S3 addon supports automatically handling loading/saving from paths defined with `s3://` URI(s) by passing in an
+active `boto3.Session`
+
+#### March 18th, 2021
+
+* Support for Google docstring style annotation of `spock` class (and Enums) and attributes
+* Added in ability to print docstring annotated help information to command line with `--help` argument
+
+
+### Original Implementation
 
 [Nicholas Cilfone](https://github.com/ncilfone), [Siddharth Narayanan](https://github.com/sidnarayanan)
 ___
