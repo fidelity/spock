@@ -87,6 +87,8 @@ set of parameters.
 * Tractability and Reproducibility: Save runtime parameter configuration to YAML, TOML, or JSON with a single chained 
   command (with extra runtime info such as Git info, Python version, machine FQDN, etc). The saved markdown file can be
   used as the configuration input to reproduce prior runtime configurations.
+* Hyper-Parameter Tuner Addon: Provides a unified interface for hyper-parameter tuning that supports various 
+  backends (Optuna, WIP: Ax)
 * S3 Addon: Automatically detects `s3://` URI(s) and handles loading and saving `spock` configuration files when an
   active `boto3.Session` is passed in (plus any additional `S3Transfer` configurations)
 

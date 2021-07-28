@@ -1,6 +1,7 @@
--r REQUIREMENTS.txt
+black
 coveralls
 coverage
+isort
 moto
 portray
 pytest

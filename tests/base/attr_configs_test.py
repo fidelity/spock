@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright 2019 FMR LLC <opensource@fidelity.com>
+# Copyright FMR LLC <opensource@fidelity.com>
 # SPDX-License-Identifier: Apache-2.0
 
 from enum import Enum
@@ -88,6 +88,8 @@ class TypeConfig:
     tuple_p_str: Tuple[str, str]
     # Required Tuple -- Bool
     tuple_p_bool: Tuple[bool, bool]
+    # Required Tuple -- mixed
+    tuple_p_mixed: Tuple[int, float]
     # Required choice -- Str
     choice_p_str: StrChoice
     # Required choice -- Int

@@ -1,27 +1,30 @@
 # -*- coding: utf-8 -*-
 
-# Copyright 2019 FMR LLC <opensource@fidelity.com>
+# Copyright FMR LLC <opensource@fidelity.com>
 # SPDX-License-Identifier: Apache-2.0
 
 """Utility functions for Spock"""
 
 import ast
-import attr
-from enum import EnumMeta
 import os
 import re
 import socket
 import subprocess
 import sys
-from time import localtime
-from time import strftime
+from enum import EnumMeta
+from time import localtime, strftime
 from warnings import warn
+
+import attr
 import git
+
 minor = sys.version_info.minor
 if minor < 7:
     from typing import GenericMeta as _GenericAlias
 else:
     from typing import _GenericAlias
+
+from typing import Union
 
 
 def check_path_s3(path: str) -> bool:
@@ -37,7 +40,7 @@ def check_path_s3(path: str) -> bool:
 
     """
     # Make a case insensitive s3 regex with single or double forward slash (due to posix stripping)
-    s3_regex = re.compile(r'(?i)^s3://?').search(path)
+    s3_regex = re.compile(r"(?i)^s3://?").search(path)
     # If it returns an object then the path is an s3 style reference
     return s3_regex is not None
 
@@ -57,7 +60,7 @@ def _is_spock_instance(__obj: object):
         bool
 
     """
-    return (__obj.__module__ == 'spock.backend.attr.config') and attr.has(__obj)
+    return (__obj.__module__ == "spock.backend.config") and attr.has(__obj)
 
 
 def make_argument(arg_name, arg_type, parser):
@@ -80,15 +83,22 @@ def make_argument(arg_name, arg_type, parser):
     # For generic alias we take the input string and use a custom type callable to convert
     if isinstance(arg_type, _GenericAlias):
         parser.add_argument(arg_name, required=False, type=_handle_generic_type_args)
+    # For Unions -- python 3.6 can't deal with them correctly -- use the same ast method that generics require
+    elif (
+        hasattr(arg_type, "__origin__")
+        and (arg_type.__origin__ is Union)
+        and (minor < 7)
+    ):
+        parser.add_argument(arg_name, required=False, type=_handle_generic_type_args)
     # For choice enums we need to check a few things first
     elif isinstance(arg_type, EnumMeta):
         type_set = list({type(val.value) for val in arg_type})[0]
         # if this is an enum of a class switch the type to str as this is how it gets matched
-        type_set = str if type_set.__name__ == 'type' else type_set
+        type_set = str if type_set.__name__ == "type" else type_set
         parser.add_argument(arg_name, required=False, type=type_set)
     # For booleans we map to store true
     elif arg_type == bool:
-        parser.add_argument(arg_name, required=False, action='store_true')
+        parser.add_argument(arg_name, required=False, action="store_true")
     # Else we are a simple base type which we can cast to
     else:
         parser.add_argument(arg_name, required=False, type=arg_type)
@@ -98,7 +108,7 @@ def make_argument(arg_name, arg_type, parser):
 def _handle_generic_type_args(val):
     """Evaluates a string containing a Python literal
 
-    Seeing a list types will come in as string literal format, use ast to get the actual type
+    Seeing a list and tuple types will come in as string literal format, use ast to get the actual type
 
     *Args*:
 
@@ -140,8 +150,8 @@ def make_blank_git(out_dict):
         out_dict: output dictionary with added git info
 
     """
-    for key in ('BRANCH', 'COMMIT SHA', 'STATUS', 'ORIGIN'):
-        out_dict.update({f'# Git {key}': 'UNKNOWN'})
+    for key in ("BRANCH", "COMMIT SHA", "STATUS", "ORIGIN"):
+        out_dict.update({f"# Git {key}": "UNKNOWN"})
     return out_dict
 
 
@@ -161,23 +171,38 @@ def add_repo_info(out_dict):
         repo = git.Repo(os.getcwd(), search_parent_directories=True)
         # Check if we are really in a detached head state as later info will fail if we are
         if minor < 7:
-            head_result = subprocess.run('git rev-parse --abbrev-ref --symbolic-full-name HEAD', stdout=subprocess.PIPE,
-                                         shell=True, check=False)
+            head_result = subprocess.run(
+                "git rev-parse --abbrev-ref --symbolic-full-name HEAD",
+                stdout=subprocess.PIPE,
+                shell=True,
+                check=False,
+            )
         else:
-            head_result = subprocess.run('git rev-parse --abbrev-ref --symbolic-full-name HEAD', capture_output=True,
-                                         shell=True, check=False)
-        if head_result.stdout.decode().rstrip('\n') == 'HEAD':
+            head_result = subprocess.run(
+                "git rev-parse --abbrev-ref --symbolic-full-name HEAD",
+                capture_output=True,
+                shell=True,
+                check=False,
+            )
+        if head_result.stdout.decode().rstrip("\n") == "HEAD":
             out_dict = make_blank_git(out_dict)
         else:
-            out_dict.update({'# Git Branch': repo.active_branch.name})
-            out_dict.update({'# Git Commit': repo.active_branch.commit.hexsha})
-            out_dict.update({'# Git Date': repo.active_branch.commit.committed_datetime})
-            if len(repo.untracked_files) > 0 or len(repo.active_branch.commit.diff(None)) > 0:
-                git_status = 'DIRTY'
+            out_dict.update({"# Git Branch": repo.active_branch.name})
+            out_dict.update({"# Git Commit": repo.active_branch.commit.hexsha})
+            out_dict.update(
+                {"# Git Date": repo.active_branch.commit.committed_datetime}
+            )
+            if (
+                len(repo.untracked_files) > 0
+                or len(repo.active_branch.commit.diff(None)) > 0
+            ):
+                git_status = "DIRTY"
             else:
-                git_status = 'CLEAN'
-            out_dict.update({'# Git Status': git_status})
-            out_dict.update({'# Git Origin': repo.active_branch.commit.repo.remotes.origin.url})
+                git_status = "CLEAN"
+            out_dict.update({"# Git Status": git_status})
+            out_dict.update(
+                {"# Git Origin": repo.active_branch.commit.repo.remotes.origin.url}
+            )
     except git.InvalidGitRepositoryError:  # pragma: no cover
         # But it's okay if we are not
         out_dict = make_blank_git(out_dict)
@@ -195,16 +220,20 @@ def add_generic_info(out_dict):
 
         out_dict: output dictionary
     """
-    out_dict.update({'# Machine FQDN': socket.getfqdn()})
-    out_dict.update({'# Python Executable': sys.executable})
-    out_dict.update({'# Python Version': f'{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}'})
-    out_dict.update({'# Python Script': os.path.realpath(sys.argv[0])})
-    out_dict.update({'# Run Date': strftime('%Y-%m-%d', localtime())})
-    out_dict.update({'# Run Time': strftime('%H:%M:%S', localtime())})
+    out_dict.update({"# Machine FQDN": socket.getfqdn()})
+    out_dict.update({"# Python Executable": sys.executable})
+    out_dict.update(
+        {
+            "# Python Version": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
+        }
+    )
+    out_dict.update({"# Python Script": os.path.realpath(sys.argv[0])})
+    out_dict.update({"# Run Date": strftime("%Y-%m-%d", localtime())})
+    out_dict.update({"# Run Time": strftime("%H:%M:%S", localtime())})
     # Make a best effort to determine if run in a container
-    out_dict.update({'# Run w/ Docker': str(_maybe_docker())})
+    out_dict.update({"# Run w/ Docker": str(_maybe_docker())})
     # Make a best effort to determine if run in a container via k8s
-    out_dict.update({'# Run w/ Kubernetes': str(_maybe_k8s())})
+    out_dict.update({"# Run w/ Kubernetes": str(_maybe_k8s())})
 
     return out_dict
 
@@ -223,10 +252,12 @@ def _maybe_docker(cgroup_path="/proc/self/cgroup"):
     """
     # A few options seem to be at play here:
     # 1. Check for /.dockerenv -- docker should create this is any container
-    bool_env = os.path.exists('/.dockerenv')
+    bool_env = os.path.exists("/.dockerenv")
     # 2. Check /proc/self/cgroup for "docker"
     # https://stackoverflow.com/a/48710609
-    bool_cgroup = os.path.isfile(cgroup_path) and any("docker" in line for line in open(cgroup_path))
+    bool_cgroup = os.path.isfile(cgroup_path) and any(
+        "docker" in line for line in open(cgroup_path)
+    )
     return bool_env or bool_cgroup
 
 
@@ -247,7 +278,9 @@ def _maybe_k8s(cgroup_path="/proc/self/cgroup"):
     bool_env = os.environ.get("KUBERNETES_SERVICE_HOST") is not None
     # 2. Similar to docker check /proc/self/cgroup for "kubepods"
     # https://stackoverflow.com/a/48710609
-    bool_cgroup = os.path.isfile(cgroup_path) and any("kubepods" in line for line in open(cgroup_path))
+    bool_cgroup = os.path.isfile(cgroup_path) and any(
+        "kubepods" in line for line in open(cgroup_path)
+    )
     return bool_env or bool_cgroup
 
 
@@ -279,7 +312,7 @@ def deep_payload_update(source, updates):
     return source
 
 
-def check_payload_overwrite(payload, updates, configs, overwrite=''):
+def check_payload_overwrite(payload, updates, configs, overwrite=""):
     """Warns when parameters are overwritten across payloads as order will matter
 
     *Args*:
@@ -294,11 +327,13 @@ def check_payload_overwrite(payload, updates, configs, overwrite=''):
     """
     for k, v in updates.items():
         if isinstance(v, dict) and v:
-            overwrite += (k + ":")
+            overwrite += k + ":"
             current_payload = {} if payload.get(k) is None else payload.get(k)
             check_payload_overwrite(current_payload, v, configs, overwrite=overwrite)
         else:
             if k in payload:
-                warn(f'Overriding an already set parameter {overwrite + k} from {configs}\n'
-                     f'Be aware that value precedence is set by the order of the config files (last to load)...',
-                     SyntaxWarning)
+                warn(
+                    f"Overriding an already set parameter {overwrite + k} from {configs}\n"
+                    f"Be aware that value precedence is set by the order of the config files (last to load)...",
+                    SyntaxWarning,
+                )

@@ -1,0 +1,12 @@
+###############################
+# optuna simple sklearn example
+###############################
+
+LogisticRegressionHP:
+  c:
+    type: float
+    bounds: [1E-07, 10.0]
+    log_scale: true
+  solver:
+    type: str
+    choices: ["lbfgs", "saga"]

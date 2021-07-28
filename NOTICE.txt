@@ -4,7 +4,7 @@
 // ------------------------------------------------------------------
 
 Spock
-Copyright [2109-2020] FMR LLC
+Copyright [2019-2021] FMR LLC
 
 This product includes software developed at
 FMR LLC (https://www.fidelity.com/).
@@ -12,5 +12,13 @@ FMR LLC (https://www.fidelity.com/).
 This product relies on the following works (and the dependencies thereof), installed separately:
 - attrs | https://github.com/python-attrs/attrs | MIT License
 - GitPython | https://github.com/gitpython-developers/GitPython | BSD 3-Clause License
+- pytomlpp | https://github.com/bobfang1992/pytomlpp | MIT License
 - PyYAML | https://github.com/yaml/pyyaml | MIT License
-- toml | https://github.com/toml-lang/toml | MIT License
+
+
+Optional extensions rely on the following works (and the dependencies thereof), installed separately:
+- boto3 | https://github.com/boto/boto3 | Apache License 2.0
+- botocore | https://github.com/boto/botocore | Apache License 2.0
+- hurry.filesize | https://pypi.org/project/hurry.filesize/ | ZPL 2.1
+- optuna | https://optuna.org/ | MIT License
+- s3transfer | https://github.com/boto/s3transfer | Apache License 2.0

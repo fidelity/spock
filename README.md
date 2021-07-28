@@ -3,6 +3,7 @@
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-9cf)](https://opensource.org/licenses/Apache-2.0)
 [![Python](https://img.shields.io/badge/python-3.6+-informational.svg)]()
+[![Style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![PyPI version](https://badge.fury.io/py/spock-config.svg)](https://badge.fury.io/py/spock-config)
 [![Coverage Status](https://coveralls.io/repos/github/fidelity/spock/badge.svg?branch=master)](https://coveralls.io/github/fidelity/spock?branch=master)
 ![Tests](https://github.com/fidelity/spock/workflows/pytest/badge.svg?branch=master)
@@ -45,6 +46,10 @@ recent features, bugfixes, and hotfixes.
 
 See [Releases](https://github.com/fidelity/spock/releases) for more information.
 
+#### July 21, 2021
+* Added hyper-parameter tuning support with `pip install spock-config[tune]`
+* Hyper-parameter tuning backend support for Optuna define-and-run API (WIP for Ax)
+
 #### May 6th, 2021
 * Added S3 support with `pip install spock-config[s3]`
 * S3 addon supports automatically handling loading/saving from paths defined with `s3://` URI(s) by passing in an
@@ -81,6 +86,8 @@ Example `spock` usage is located [here](https://github.com/fidelity/spock/blob/m
   parameter configuration to YAML, TOML, or JSON with a single chained command (with extra runtime info such as Git info, 
   Python version, machine FQDN, etc). The saved markdown file can be used as the configuration input to reproduce 
   prior runtime configurations.
+* [Hyper-Parameter Tuner Addon](https://fidelity.github.io/spock/docs/addons/tuner/About.html): Provides a unified
+  interface for hyper-parameter tuning that supports various backends (Optuna, WIP: Ax)
 * [S3 Addon](https://fidelity.github.io/spock/docs/addons/S3/): Automatically detects `s3://` URI(s) and handles loading 
   and saving `spock` configuration files when an active `boto3.Session` is passed in (plus any additional 
   `S3Transfer` configurations)

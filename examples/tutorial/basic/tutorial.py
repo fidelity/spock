@@ -1,11 +1,12 @@
-from basic_nn import BasicNet
 from enum import Enum
+from typing import List, Tuple
+
+import torch
+from basic_nn import BasicNet
+
 from spock.args import SavePath
 from spock.builder import ConfigArgBuilder
 from spock.config import spock
-import torch
-from typing import List
-from typing import Tuple
 
 
 class Activation(Enum):
@@ -16,9 +17,10 @@ class Activation(Enum):
         gelu: gelu activation
         tanh: tanh activation
     """
-    relu = 'relu'
-    gelu = 'gelu'
-    tanh = 'tanh'
+
+    relu = "relu"
+    gelu = "gelu"
+    tanh = "tanh"
 
 
 @spock
@@ -32,6 +34,7 @@ class ModelConfig:
         hidden_sizes: hidden size for each layer
         activation: choice from the Activation enum of the activation function to use
     """
+
     save_path: SavePath
     n_features: int
     dropout: List[float]
@@ -41,10 +44,13 @@ class ModelConfig:
 
 def main():
     # A simple description
-    description = 'spock Basic Tutorial'
+    description = "spock Basic Tutorial"
     # Build out the parser by passing in Spock config objects as *args after description
-    config = ConfigArgBuilder(
-        ModelConfig, desc=description, create_save_path=True).save(file_extension='.toml').generate()
+    config = (
+        ConfigArgBuilder(ModelConfig, desc=description, create_save_path=True)
+        .save(file_extension=".toml")
+        .generate()
+    )
     # Instantiate our neural net using
     basic_nn = BasicNet(model_config=config.ModelConfig)
     # Make some random data (BxH): H has dim of features in
@@ -53,5 +59,5 @@ def main():
     print(result)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

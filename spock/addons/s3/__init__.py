@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright 2019 FMR LLC <opensource@fidelity.com>
+# Copyright FMR LLC <opensource@fidelity.com>
 # SPDX-License-Identifier: Apache-2.0
 
 """
@@ -9,4 +9,6 @@ Spock is a framework that helps manage complex parameter configurations for Pyth
 Please refer to the documentation provided in the README.md
 """
 
-__all__ = ["utils"]
+from spock.addons.s3.configs import S3Config, S3DownloadConfig, S3UploadConfig
+
+__all__ = ["configs", "utils", "S3Config", "S3DownloadConfig", "S3UploadConfig"]

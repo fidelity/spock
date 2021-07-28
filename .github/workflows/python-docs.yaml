@@ -18,12 +18,18 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: '3.8'
+
+    - uses: actions/cache@v2
+      with:
+        path: ${{ env.pythonLocation }}
+        key: ${{ env.pythonLocation }}-${{ hashFiles('setup.py') }}-${{ hashFiles('REQUIREMENTS.txt') }}-${{ hashFiles('./requirements/DEV_REQUIREMENTS.txt') }}-${{ hashFiles('./requirements/S3_REQUIREMENTS.txt') }}
+
     - name: Install dependencies and dev dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -e .[s3]
-        pip install -r DEV_REQUIREMENTS.txt
-        pip install -r S3_REQUIREMENTS.txt
+        pip install -r ./requirements/DEV_REQUIREMENTS.txt
+        pip install -r ./requirements/S3_REQUIREMENTS.txt
 
     - name: Build docs with Portray
       env:

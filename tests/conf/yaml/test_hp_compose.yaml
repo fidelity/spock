@@ -1,0 +1,8 @@
+config: [test_hp.yaml]
+
+# Test conf for all hyper-parameters
+HPOne:
+  hp_int:
+    type: int
+    bounds: [ 20, 200 ]
+    log_scale: false

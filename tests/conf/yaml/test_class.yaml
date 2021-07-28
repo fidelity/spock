@@ -2,7 +2,7 @@
 ### Required or Boolean Base Types ###
 TypeConfig:
   # Boolean - Set
-  bool_p_set: true
+  bool_p: true
   # Required Int
   int_p: 10
   # Required Float
@@ -46,7 +46,7 @@ TypeConfig:
   # Nested List configuration
   nested_list: NestedListStuff
   # Class Enum
-  class_enum: NestedStuff
+  class_enum: NestedListStuff
 NestedListStuff:
     - one: 10
       two: hello

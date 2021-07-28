@@ -43,10 +43,9 @@ class TestYAMLWriterCreate:
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
                                     './tests/conf/yaml/test.yaml'])
-            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder',
-                                      create_save_path=True)
+            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder')
             # Test the chained version
-            config.save(user_specified_path=f'{tmp_path}/tmp', file_extension='.yaml').generate()
+            config.save(user_specified_path=f'{tmp_path}/tmp', create_save_path=True, file_extension='.yaml').generate()
             check_path = f'{str(tmp_path)}/tmp/*.yaml'
             fname = glob.glob(check_path)[0]
             with open(fname, 'r') as fin:
@@ -64,7 +63,6 @@ class TestYAMLWriterSavePath:
             # Test the chained version
             now = datetime.datetime.now()
             curr_int_time = int(f'{now.year}{now.month}{now.day}{now.hour}{now.second}')
-
             config_values = config.save(file_extension='.yaml', file_name=f'pytest.{curr_int_time}').generate()
             yaml_regex = re.compile(fr'pytest.{curr_int_time}.'
                                     fr'[a-fA-F0-9]{{8}}-[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{4}}-'
@@ -101,7 +99,10 @@ class TestWritePathRaise:
             config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder')
             # Test the chained version
             with pytest.raises(FileNotFoundError):
-                config.save(user_specified_path=f'{str(tmp_path)}/foo.bar/fizz.buzz/', file_extension='.yaml').generate()
+                config.save(
+                    user_specified_path=f'{str(tmp_path)}/foo.bar/fizz.buzz/', file_extension='.yaml',
+                    create_save_path=False
+                ).generate()
 
 
 class TestInvalidExtensionTypeRaise:

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright 2019 FMR LLC <opensource@fidelity.com>
+# Copyright FMR LLC <opensource@fidelity.com>
 # SPDX-License-Identifier: Apache-2.0
 
 
@@ -21,6 +21,7 @@ class AllTypes:
         assert arg_builder.TypeConfig.tuple_p_int == (10, 20)
         assert arg_builder.TypeConfig.tuple_p_str == ('Spock', 'Package')
         assert arg_builder.TypeConfig.tuple_p_bool == (True, False)
+        assert arg_builder.TypeConfig.tuple_p_mixed == (5, 11.5)
         assert arg_builder.TypeConfig.choice_p_str == 'option_1'
         assert arg_builder.TypeConfig.choice_p_int == 10
         assert arg_builder.TypeConfig.choice_p_float == 10.0
