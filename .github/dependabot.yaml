@@ -13,13 +13,13 @@ updates:
       prefix: "pip"
       include: "scope"
   - package-ecosystem: "pip"
-      directory: "/requirements"
-      schedule:
-        interval: "weekly"
-      assignees:
-        - "ncilfone"
-      reviewers:
-        - "ncilfone"
-      commit-message:
-        prefix: "pip extras"
-        include: "scope"
+    directory: "/requirements"
+    schedule:
+      interval: "weekly"
+    assignees:
+      - "ncilfone"
+    reviewers:
+      - "ncilfone"
+    commit-message:
+      prefix: "pip extras"
+      include: "scope"
