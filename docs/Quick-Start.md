@@ -1,17 +1,10 @@
 # Quick Start
 
-*Updated for the new and simpler API!*
-
-*New API is 100% backwards compatible with existing code!*
-
 This is a quick and dirty guide to getting up and running with `spock`. Read the 
 [Basic Tutorial](basic_tutorial/About.md) as a simple guide and then explore more
 [Advanced Features](advanced_features/About.md) for in-depth usage.
 
 All examples can be found [here](https://github.com/fidelity/spock/blob/master/examples).
-
-Legacy documentation for the old API (pre v2.0) can be 
-found [here](https://github.com/fidelity/spock/blob/master/docs/legacy)
 
 ### TL;DR
 1. Import the necessary components from `spock`
@@ -133,14 +126,7 @@ configuration(s):
     most_fancy_parameter    List[int]    values to apply basic algebra to 
 ```
 
-### Spock As a Drop In For Argparser
+### Spock As a Drop In Replacement For Argparser
 
-`spock` can easily be used as a drop in for argparser. This means that all parameter definitions as required to come in 
-from the command line or from setting defaults within the `@spock` decorated classes. Simply do not pass a `-c` or 
-`--config` argument at the command line and instead pass in all of the automatically generated cmd-line arguments.
-
-
-```bash
-$ python simple.py --BasicConfig.parameter --BasicConfig.fancy_parameter 8.8 --BasicConfig.fancier_parameter 64.64 \
-  --BasicConfig.most_fancy_parameter [768, 768, 512, 128]
-```
+`spock` can easily be used as a drop in replacement for argparser. 
+See the docs/example [here](https://fidelity.github.io/spock/docs/ArgParser-Replacement/).

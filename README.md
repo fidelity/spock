@@ -16,7 +16,8 @@ applications. `spock` lets you focus on the code you need to write instead of re
 creating ArgParsers, reading configuration files, implementing traceability etc.
 
 In short, `spock` configurations are defined by simple and familiar class-based structures. This allows `spock` to 
-support inheritance, read from multiple markdown formats, and allow hierarchical configuration by composition.
+support inheritance, read from multiple markdown formats, automatically generate cmd-line arguments, and allow 
+hierarchical configuration by composition.
 
 ## Key Features
 
