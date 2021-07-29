@@ -26,6 +26,9 @@ Motivation = "docs/Motivation.md"
 [[tool.portray.mkdocs.nav]]
 "Quick Start" = "docs/Quick-Start.md"
 
+[[tool.portray.mkdocs.nav]]
+"argparse Replacement" = "docs/ArgParser-Replacement.md"
+
 # Basic Tutorial
 [[tool.portray.mkdocs.nav]]
     [[tool.portray.mkdocs.nav."Basic Tutorial"]]

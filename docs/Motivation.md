@@ -73,25 +73,6 @@ Thus, the idea of of `spock` was born... A simple, understandable, and lightweig
 configurations during Python development. Anyone familiar with Python and knows how to define a basic class object can 
 use `spock` (or if they don't there is plenty of documentation and tutorials on classes).
 
-
-* Simple Declaration: Type checked parameters are defined within a `@spock` decorated class. Supports required/optional 
-and automatic defaults.
-* Easily Managed Parameter Groups: Each class automatically generates its own object within a single namespace.
-* Parameter Inheritance: Classes support inheritance allowing for complex configurations derived from a common base 
-set of parameters.
-* Complex Types: Nested Lists/Tuples, List/Tuples of Enum of `@spock` classes, List of repeated `@spock` classes
-* Multiple Configuration File Types: Configurations are specified from YAML, TOML, or JSON files.
-* Hierarchical Configuration: Compose from multiple configuration files via simple include statements.
-* Command-Line Overrides: Quickly experiment by overriding a value with automatically generated command line arguments.
-* Immutable: All classes are *frozen* preventing any misuse or accidental overwrites.
-* Tractability and Reproducibility: Save runtime parameter configuration to YAML, TOML, or JSON with a single chained 
-  command (with extra runtime info such as Git info, Python version, machine FQDN, etc). The saved markdown file can be
-  used as the configuration input to reproduce prior runtime configurations.
-* Hyper-Parameter Tuner Addon: Provides a unified interface for hyper-parameter tuning that supports various 
-  backends (Optuna, WIP: Ax)
-* S3 Addon: Automatically detects `s3://` URI(s) and handles loading and saving `spock` configuration files when an
-  active `boto3.Session` is passed in (plus any additional `S3Transfer` configurations)
-
 ### Other Libraries
 
 There are other open source complex configuration libraries available for Python. We think that `spock` fits

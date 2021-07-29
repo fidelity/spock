@@ -1,11 +1,58 @@
 # Utilizing Command Line Overrides
 
 `spock` supports overriding parameter values set from configuration files via the command line. This can be useful for
-exploration of parameter values or for things like hyperparameter optimization.
+exploration of parameter values, quick-and-dirty value overrides, or to parse other command-line arguments that would
+normally require use of another argparser.
+
+### Automatic Command-Line Argument Generation
+
+`spock` will automatically generate command line arguments for each parameter, unless the `no_cmd_line=True` flag is 
+passed to the `ConfigArgBuilder`. Let's look at two of the `@spock` decorated classes from the `tutorial.py` file to 
+illustrate how this works in practice:
+
+```python
+from enum import Enum
+from spock.args import SavePath
+from spock.config import spock
+from typing import List
+from typing import Optional
+from typing import Tuple
+
+@spock
+class DataConfig:
+    batch_size: int = 2
+    n_samples: int = 8
+    cache_path: Optional[str]
+    
+@spock
+class OptimizerConfig:
+    lr: float = 0.01
+    n_epochs: int = 2
+    grad_clip: Optional[float]
+```
+
+Given these definitions, `spock` will automatically generate a command-line argument (via an internally maintained 
+argparser) for each parameter within each `@spock` decorated class. The syntax follows simple dot notation 
+of `--classname.parameter`. Thus, for our sample classes above, `spock` will automatically generate the following 
+valid command-line arguments:
+
+```shell
+--DataConfig.batch_size *value*
+--DataConfig.n_samples *value*
+--DataConfig.cache_path *value*
+--OptimizerConfig.lr *value*
+--OptimizerConfig.n_epochs *value*
+--OptimizerConfig.grad_clip *value*
+```
+
+None of these command-line arguments are required (i.e. sets `required=False` within the argparser), but a value must
+be set via one of the three core mechanisms: (1) a default value (set withing the `@spock` decorated class), (2) the 
+configuration file (passed in with the `--config` argument), or (3) the command-line argument (this takes precedence 
+over all other methods).
 
 ### Overriding Configuration File Values
 
- Let's override a few values from our example in: `tutorial.py`
+Using the automatically generated command-line arguments, let's override a few values from our example in `tutorial.py`:
 
 ```python
 from enum import Enum
@@ -120,14 +167,9 @@ $ python tutorial.py --config tutorial.yaml --TypeConfig.nested_list.NestedListS
 --TypeConfig.nested_list.NestedListStuff.two ['ciao','ciao']
 ```
 
-### Spock As a Drop In For Argparser
+### Spock As a Drop In Replacement For Argparser
 
-`spock` can easily be used as a drop in for argparser. This means that all parameter definitions as required to come in 
-from the command line or from setting defaults within the `@spock` decorated classes. Simply do not pass a `-c` or 
-`--config` argument at the command line and instead pass in all of the automatically generated cmd-line arguments.
-
-
-```bash
-$ python tutorial.py --TypeConfig.nested_list.NestedListStuff.one [1,2] \
-  --TypeConfig.nested_list.NestedListStuff.two [ciao,ciao] ...
-```
+`spock` can easily be used as a drop in replacement for argparser. This means that all parameter definitions as 
+required to come in from the command line or from setting defaults within the `@spock` decorated classes. Simply do not 
+pass a `-c` or`--config` argument at the command line and instead pass in values to all of the automatically generated 
+cmd-line arguments. See more information [here](https://fidelity.github.io/spock/docs/ArgParser-Replacement/).
