@@ -27,8 +27,8 @@ class TestAllDefaultsYAML(AllDefaults):
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
                                     './tests/conf/yaml/test.yaml'])
-            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, TypeDefaultConfig,
-                                      TypeDefaultOptConfig,
+            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, NestedStuffDefault, TypeOptConfig,
+                                      TypeDefaultConfig, TypeDefaultOptConfig,
                                       desc='Test Builder')
             return config.generate()
 
@@ -66,7 +66,8 @@ class TestAllDefaultsTOML(AllDefaults):
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
                                     './tests/conf/toml/test.toml'])
-            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, TypeDefaultConfig, TypeDefaultOptConfig,
+            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, NestedStuffDefault, TypeOptConfig,
+                                      TypeDefaultConfig, TypeDefaultOptConfig,
                                       desc='Test Builder')
             return config.generate()
 
@@ -92,7 +93,8 @@ class TestAllDefaultsJSON(AllDefaults):
         with monkeypatch.context() as m:
             m.setattr(sys, 'argv', ['', '--config',
                                     './tests/conf/json/test.json'])
-            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, TypeDefaultConfig, TypeDefaultOptConfig,
+            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, NestedStuffDefault, TypeOptConfig,
+                                      TypeDefaultConfig, TypeDefaultOptConfig,
                                       desc='Test Builder')
             return config.generate()
 
