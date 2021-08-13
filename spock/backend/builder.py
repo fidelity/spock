@@ -270,9 +270,13 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
                     getattr(input_class.__attrs_attrs__, val).default
                 ).__name__
                 if default_type_name not in exclude_list:
-                    default_name = getattr(
-                        input_class.__attrs_attrs__, val
-                    ).default.__name__
+                    default_attr = getattr(input_class.__attrs_attrs__, val).default
+                    # If the default is given for a class then it's the actual class and not a type -- logic needs
+                    # to deal with both
+                    if type(default_attr).__name__ == "type":
+                        default_name = default_attr.__name__
+                    else:
+                        default_name = type(default_attr).__name__
                 else:
                     default_name = None
                 if default_name is not None and default_name in arg_list:

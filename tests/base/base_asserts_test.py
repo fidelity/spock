@@ -78,6 +78,8 @@ class AllDefaults:
         assert arg_builder.TypeDefaultConfig.list_list_choice_p_str_def == [['option_1'], ['option_1']]
         assert arg_builder.TypeDefaultConfig.nested_def.one == 11
         assert arg_builder.TypeDefaultConfig.nested_def.two == 'ciao'
+        assert arg_builder.TypeDefaultConfig.nested_no_conf_def.away == 'arsenal'
+        assert arg_builder.TypeDefaultConfig.nested_no_conf_def.goals == 0
         assert arg_builder.TypeDefaultConfig.nested_list_def[0].one == 10
         assert arg_builder.TypeDefaultConfig.nested_list_def[0].two == 'hello'
         assert arg_builder.TypeDefaultConfig.nested_list_def[1].one == 20

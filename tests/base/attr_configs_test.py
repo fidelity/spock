@@ -155,6 +155,12 @@ class TypeOptConfig:
 
 
 @spock
+class NestedStuffDefault:
+    away: str = 'arsenal'
+    goals: int = 0
+
+
+@spock
 class TypeDefaultConfig:
     """This creates a test Spock config of all supported variable types as required parameters and falls back
         to defaults
@@ -191,6 +197,8 @@ class TypeDefaultConfig:
     list_list_choice_p_str_def: List[List[StrChoice]] = [['option_1'], ['option_1']]
     # Nested configuration
     nested_def: NestedStuff = NestedStuff
+    # Nested configuration with no config
+    nested_no_conf_def: NestedStuffDefault = NestedStuffDefault()
     # Nested list configuration
     nested_list_def: List[NestedListStuff] = NestedListStuff
     # Class Enum
