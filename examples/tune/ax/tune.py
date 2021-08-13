@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-"""A simple example using sklearn and Optuna support"""
+"""A simple example using sklearn and Ax support"""
 
-# Spock ONLY supports the define-and-run style interface from Optuna
-# https://optuna.readthedocs.io/en/stable/tutorial/20_recipes/009_ask_and_tell.html#define-and-run
+# Spock ONLY supports the service style API from Ax
+# https://ax.dev/docs/api.html
 
 
 from sklearn.datasets import load_iris
@@ -12,7 +12,7 @@ from sklearn.model_selection import train_test_split
 
 from spock.addons.tune import (
     ChoiceHyperParameter,
-    OptunaTunerConfig,
+    AxTunerConfig,
     RangeHyperParameter,
     spockTuner,
 )
@@ -41,8 +41,9 @@ def main():
 
     # Optuna config -- this will internally spawn the study object for the define-and-run style which will be returned
     # by accessing the tuner_status property on the ConfigArgBuilder object
-    optuna_config = OptunaTunerConfig(
-        study_name="Iris Logistic Regression", direction="maximize"
+    ax_config = AxTunerConfig(
+        objective_name='accuracy',
+        minimize=False
     )
 
     # Use the builder to setup
@@ -51,10 +52,10 @@ def main():
         ConfigArgBuilder(
             LogisticRegressionHP,
             BasicParams,
-            desc="Example Logistic Regression Hyper-Parameter Tuning -- Optuna Backend",
+            desc="Example Logistic Regression Hyper-Parameter Tuning -- Ax Backend",
         )
-        .tuner(tuner_config=optuna_config)
-        .save(user_specified_path="/tmp/optuna")
+        .tuner(tuner_config=ax_config)
+        .save(user_specified_path="/tmp/ax")
     )
 
     # Here we need some of the fixed parameters first so we can just call the generate fnc to grab all the fixed params
@@ -68,7 +69,7 @@ def main():
         # Under the hood spock uses the define-and-run Optuna interface -- thus it handled the underlying 'ask' call
         # and returns the necessary trial object in the return dictionary to call 'tell' with the study object
         hp_attrs = attrs_obj.save(
-            add_tuner_sample=True, user_specified_path="/tmp/optuna"
+            add_tuner_sample=True, user_specified_path="/tmp/ax"
         ).sample()
         # Use the currently sampled parameters in a simple LogisticRegression from sklearn
         clf = LogisticRegression(
@@ -82,9 +83,12 @@ def main():
         tuner_status = attrs_obj.tuner_status
         # Pull the study and trials object out of the return dictionary and pass it to the tell call using the study
         # object
-        tuner_status["study"].tell(tuner_status["trial"], val_acc)
+        tuner_status['client'].complete_trial(
+            trial_index=tuner_status['trial_index'],
+            raw_data={'accuracy': (val_acc, 0.0)}
+        )
         # Always save the current best set of hyper-parameters
-        attrs_obj.save_best(user_specified_path="/tmp/optuna")
+        attrs_obj.save_best(user_specified_path="/tmp/ax")
 
     # Grab the best config and metric
     best_config, best_metric = attrs_obj.best

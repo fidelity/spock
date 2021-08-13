@@ -7,6 +7,8 @@
 
 from typing import Union
 
+from spock.addons.tune.config import AxTunerConfig
+from spock.addons.tune.ax import AxInterface
 from spock.addons.tune.config import OptunaTunerConfig
 from spock.addons.tune.optuna import OptunaInterface
 from spock.backend.wrappers import Spockspace
@@ -25,7 +27,7 @@ class TunerInterface:
 
     def __init__(
         self,
-        tuner_config: Union[OptunaTunerConfig],
+        tuner_config: Union[OptunaTunerConfig, AxTunerConfig],
         tuner_namespace: Spockspace,
         fixed_namespace: Spockspace,
     ):
@@ -39,20 +41,20 @@ class TunerInterface:
 
         """
         self._fixed_namespace = fixed_namespace
-        # Todo: add ax type check here
-        accept_types = OptunaTunerConfig
-        if not isinstance(tuner_config, accept_types):
-            raise TypeError(
-                f"Passed incorrect tuner_config type of {type(tuner_config)} -- must be of type "
-                f"{repr(accept_types)}"
-            )
+        accept_types = (OptunaTunerConfig, AxTunerConfig)
         if isinstance(tuner_config, OptunaTunerConfig):
             self._lib_interface = OptunaInterface(
                 tuner_config=tuner_config, tuner_namespace=tuner_namespace
             )
-        # # TODO: Add ax class logic
-        # elif isinstance(tuner_config, (ax.Experiment, ax.SimpleExperiment)):
-        #     pass
+        elif isinstance(tuner_config, AxTunerConfig):
+            self._lib_interface = AxInterface(
+                tuner_config=tuner_config, tuner_namespace=tuner_namespace
+            )
+        else:
+            raise TypeError(
+                f"Passed incorrect tuner_config type of {type(tuner_config)} -- must be of type "
+                f"{repr(accept_types)}"
+            )
 
     def sample(self):
         """Public interface to underlying library sepcific sample that returns a single sample/draw from the
