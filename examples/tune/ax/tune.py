@@ -11,8 +11,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 
 from spock.addons.tune import (
-    ChoiceHyperParameter,
     AxTunerConfig,
+    ChoiceHyperParameter,
     RangeHyperParameter,
     spockTuner,
 )
@@ -41,10 +41,7 @@ def main():
 
     # Ax config -- this will internally spawn the AxClient service API style which will be returned
     # by accessing the tuner_status property on the ConfigArgBuilder object
-    ax_config = AxTunerConfig(
-        objective_name='accuracy',
-        minimize=False
-    )
+    ax_config = AxTunerConfig(objective_name="accuracy", minimize=False)
 
     # Use the builder to setup
     # Call tuner to indicate that we are going to do some HP tuning -- passing in an ax study object
@@ -84,9 +81,9 @@ def main():
         tuner_status = attrs_obj.tuner_status
         # Pull the AxClient object and trial index out of the return dictionary and call 'complete_trial' on the
         # AxClient object with the correct raw_data that contains the objective name
-        tuner_status['client'].complete_trial(
-            trial_index=tuner_status['trial_index'],
-            raw_data={'accuracy': (val_acc, 0.0)}
+        tuner_status["client"].complete_trial(
+            trial_index=tuner_status["trial_index"],
+            raw_data={"accuracy": (val_acc, 0.0)},
         )
         # Always save the current best set of hyper-parameters
         attrs_obj.save_best(user_specified_path="/tmp/ax")

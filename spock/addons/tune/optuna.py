@@ -26,6 +26,7 @@ class OptunaTunerStatus(TypedDict):
         study: current optuna study object
 
     """
+
     trial: optuna.Trial
     study: optuna.Study
 
@@ -55,7 +56,9 @@ class OptunaInterface(BaseInterface):
 
         """
         super(OptunaInterface, self).__init__(tuner_config, tuner_namespace)
-        self._tuner_obj = optuna.create_study(**self._config_to_dict(self._tuner_config))
+        self._tuner_obj = optuna.create_study(
+            **self._config_to_dict(self._tuner_config)
+        )
         # Some variables to use later
         self._trial = None
         self._sample_hash = None

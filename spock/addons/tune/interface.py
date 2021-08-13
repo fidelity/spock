@@ -4,19 +4,15 @@
 # SPDX-License-Identifier: Apache-2.0
 
 """Handles the base interface"""
-from abc import ABC, abstractmethod
-from typing import Dict
-
-import attr
 import hashlib
 import json
+from abc import ABC, abstractmethod
+from typing import Dict, Union
 
+import attr
+
+from spock.addons.tune.config import AxTunerConfig, OptunaTunerConfig
 from spock.backend.wrappers import Spockspace
-
-from spock.addons.tune.config import AxTunerConfig
-from spock.addons.tune.config import OptunaTunerConfig
-
-from typing import Union
 
 
 class BaseInterface(ABC):
@@ -28,6 +24,7 @@ class BaseInterface(ABC):
         _tuner_namespace: tuner namespace that has attr classes that maps to an underlying library types
 
     """
+
     def __init__(self, tuner_config, tuner_namespace: Spockspace):
         """Base init call that maps a few variables
 
@@ -141,9 +138,7 @@ class BaseInterface(ABC):
 
             dictionary of the attrs config object
         """
-        return {
-            k: v for k, v in attr.asdict(tuner_config).items() if v is not None
-        }
+        return {k: v for k, v in attr.asdict(tuner_config).items() if v is not None}
 
     @staticmethod
     def _to_spockspace(tune_dict: Dict):

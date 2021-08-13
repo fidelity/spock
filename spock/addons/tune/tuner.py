@@ -7,9 +7,8 @@
 
 from typing import Union
 
-from spock.addons.tune.config import AxTunerConfig
 from spock.addons.tune.ax import AxInterface
-from spock.addons.tune.config import OptunaTunerConfig
+from spock.addons.tune.config import AxTunerConfig, OptunaTunerConfig
 from spock.addons.tune.optuna import OptunaInterface
 from spock.backend.wrappers import Spockspace
 

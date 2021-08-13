@@ -25,14 +25,14 @@ class AxTunerStatus(TypedDict):
         trial_index: current trial index
 
     """
+
     client: AxClient
     trial_index: int
 
 
 class AxInterface(BaseInterface):
-    """Specific override to support the Ax backend -- supports the service style API from Ax
+    """Specific override to support the Ax backend -- supports the service style API from Ax"""
 
-    """
     def __init__(self, tuner_config: AxTunerConfig, tuner_namespace):
         """AxInterface init call that maps variables, creates a map to fnc calls, and constructs the necessary
         underlying objects
@@ -47,7 +47,7 @@ class AxInterface(BaseInterface):
             generation_strategy=self._tuner_config.generation_strategy,
             enforce_sequential_optimization=self._tuner_config.enforce_sequential_optimization,
             random_seed=self._tuner_config.random_seed,
-            verbose_logging=self._tuner_config.verbose_logging
+            verbose_logging=self._tuner_config.verbose_logging,
         )
         # Some variables to use later
         self._trial_index = None
@@ -78,7 +78,7 @@ class AxInterface(BaseInterface):
             overwrite_existing_experiment=self._tuner_config.overwrite_existing_experiment,
             tracking_metric_names=self._tuner_config.tracking_metric_names,
             immutable_search_space_and_opt_config=self._tuner_config.immutable_search_space_and_opt_config,
-            is_test=self._tuner_config.is_test
+            is_test=self._tuner_config.is_test,
         )
 
     @property
@@ -91,7 +91,7 @@ class AxInterface(BaseInterface):
         rollup_dict, _ = self._sample_rollup(best_obj[0])
         return (
             self._gen_spockspace(rollup_dict),
-            best_obj[1][0][self._tuner_obj.objective_name]
+            best_obj[1][0][self._tuner_obj.objective_name],
         )
 
     @property
@@ -134,7 +134,7 @@ class AxInterface(BaseInterface):
             "type": "range",
             "bounds": [low, high],
             "value_type": val.type,
-            "log_scale": val.log_scale
+            "log_scale": val.log_scale,
         }
 
     def _ax_choice(self, name, val):
@@ -155,5 +155,5 @@ class AxInterface(BaseInterface):
             "name": name,
             "type": "choice",
             "values": val.choices,
-            "value_type": val.type
+            "value_type": val.type,
         }

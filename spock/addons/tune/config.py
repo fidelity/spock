@@ -6,13 +6,13 @@
 """Creates the spock config interface that wraps attr -- tune version for hyper-parameters"""
 import sys
 from typing import List, Optional, Sequence, Tuple, Union
+from uuid import uuid4
 
 import attr
 import optuna
 from ax.modelbridge.generation_strategy import GenerationStrategy
 
 from spock.backend.config import _base_attr
-from uuid import uuid4
 
 
 @attr.s(auto_attribs=True)
