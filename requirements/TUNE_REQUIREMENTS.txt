@@ -2,4 +2,5 @@ mypy_extensions==0.4.3; python_version < '3.8'
 optuna==2.9.1
 torchvision==0.9.1
 torch==1.8.1
-ax-platform==0.2.0
+ax-platform==0.1.9; python_version < '3.7'
+ax-platform==0.2.0; python_version >= '3.7'
