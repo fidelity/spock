@@ -60,6 +60,7 @@ setuptools.setup(
         "machine learning",
         "deep learning",
         "reproducibility",
+        "hyper-parameter tuning"
     ],
     packages=setuptools.find_packages(
         exclude=["*.tests", "*.tests.*", "tests.*", "tests"]

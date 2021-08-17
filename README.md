@@ -66,6 +66,9 @@ Example `spock` usage is located [here](https://github.com/fidelity/spock/blob/m
 
 See [Releases](https://github.com/fidelity/spock/releases) for more information.
 
+#### August 17, 2021
+* Added hyper-parameter tuning backend support for Ax via Service API
+
 #### July 21, 2021
 * Added hyper-parameter tuning support with `pip install spock-config[tune]`
 * Hyper-parameter tuning backend support for Optuna define-and-run API (WIP for Ax)
@@ -75,13 +78,8 @@ See [Releases](https://github.com/fidelity/spock/releases) for more information.
 * S3 addon supports automatically handling loading/saving from paths defined with `s3://` URI(s) by passing in an
 active `boto3.Session`
 
-#### March 18th, 2021
 
-* Support for Google docstring style annotation of `spock` class (and Enums) and attributes
-* Added in ability to print docstring annotated help information to command line with `--help` argument
-
-
-### Original Implementation
+## Original Implementation
 
 [Nicholas Cilfone](https://github.com/ncilfone), [Siddharth Narayanan](https://github.com/sidnarayanan)
 ___
