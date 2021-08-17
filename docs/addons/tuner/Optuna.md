@@ -44,7 +44,7 @@ optuna_config = OptunaTunerConfig(
 attrs_obj = ConfigArgBuilder(
     LogisticRegressionHP,
     BasicParams,
-    desc="Example Logistic Regression Hyper-Parameter Tuning",
+    desc="Example Logistic Regression Hyper-Parameter Tuning -- Optuna Backend",
 ).tuner(tuner_config=optuna_config)
 
 ```

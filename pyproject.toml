@@ -77,6 +77,8 @@ Motivation = "docs/Motivation.md"
         [[tool.portray.mkdocs.nav."Addons"."Hyper-Parameter Tuning"]]
         "Basics" = "docs/addons/tuner/Basics.md"
         [[tool.portray.mkdocs.nav."Addons"."Hyper-Parameter Tuning"]]
+        "Ax" = "docs/addons/tuner/Axmd"
+        [[tool.portray.mkdocs.nav."Addons"."Hyper-Parameter Tuning"]]
         "Optuna" = "docs/addons/tuner/Optuna.md"
         [[tool.portray.mkdocs.nav."Addons"."Hyper-Parameter Tuning"]]
         "Saving" = "docs/addons/tuner/Saving.md"
