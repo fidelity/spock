@@ -9,6 +9,7 @@ Spock is a framework that helps manage complex parameter configurations for Pyth
 Please refer to the documentation provided in the README.md
 """
 from spock.addons.tune.config import (
+    AxTunerConfig,
     ChoiceHyperParameter,
     OptunaTunerConfig,
     RangeHyperParameter,
@@ -19,6 +20,7 @@ __all__ = [
     "builder",
     "config",
     "spockTuner",
+    "AxTunerConfig",
     "RangeHyperParameter",
     "ChoiceHyperParameter",
     "OptunaTunerConfig",

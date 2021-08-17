@@ -9,7 +9,7 @@ All examples can be found [here](https://github.com/fidelity/spock/blob/master/e
 
 ### Installing
 
-Install `spock` with the extra hyper-parameter tuning related dependencies.
+Install `spock` with the extra hyper-parameter tuning related dependencies. Requires Python 3.7+ due to ax-platform
 
 ```bash
 pip install spock-config[tune]
@@ -17,6 +17,4 @@ pip install spock-config[tune]
 
 ### Supported Backends
 * [Optuna](https://optuna.readthedocs.io/en/stable/index.html)
-
-### WIP/Planned Backends
 * [Ax](https://ax.dev/)

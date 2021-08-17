@@ -31,7 +31,7 @@ class AllTypes:
 class SampleTypes:
     def test_sampling(self, arg_builder):
         # Draw 100 random samples and make sure all fall within all of the bounds or sets
-        for _ in range(100):
+        for _ in range(25):
             hp_attrs = arg_builder.sample()
             assert 10 <= hp_attrs.HPOne.hp_int <= 100
             assert isinstance(hp_attrs.HPOne.hp_int, int) is True

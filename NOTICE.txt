@@ -17,8 +17,12 @@ This product relies on the following works (and the dependencies thereof), insta
 
 
 Optional extensions rely on the following works (and the dependencies thereof), installed separately:
+- ax-platform | https://github.com/facebook/Ax | MIT License
 - boto3 | https://github.com/boto/boto3 | Apache License 2.0
 - botocore | https://github.com/boto/botocore | Apache License 2.0
 - hurry.filesize | https://pypi.org/project/hurry.filesize/ | ZPL 2.1
+- mypy_extensions | https://github.com/python/mypy_extensions | MIT License
 - optuna | https://optuna.org/ | MIT License
 - s3transfer | https://github.com/boto/s3transfer | Apache License 2.0
+- torch | https://github.com/pytorch/pytorch | BSD License
+- torchvision | https://github.com/pytorch/vision | BSD 3-Clause License

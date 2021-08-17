@@ -2,9 +2,9 @@
 
 ### Requirements
 
-* Python: 3.6+
+* Python: 3.6+ (`[tune]` extension requires 3.7+)
 * Base Dependencies: attrs, GitPython, PyYAML, toml
-* Tested OS: Unix (Ubuntu 16.04, Ubuntu 18.04), OSX (10.14.6)
+* Tested OS: Ubuntu (16.04, 18.04), OSX (10.14.6, 11.3.1)
 
 ### Install/Upgrade
 
@@ -23,7 +23,9 @@ pip install spock-config[s3]
 
 #### w/ Hyper-Parameter Tuner Extension
 
-Extra Dependencies: optuna
+Requires Python 3.7+
+
+Extra Dependencies: optuna, ax-platform, torch, torchvision, mypy_extensions (Python < 3.8)
 
 ```bash
 pip install spock-config[tune]

@@ -6,11 +6,31 @@
 """Creates the spock config interface that wraps attr -- tune version for hyper-parameters"""
 import sys
 from typing import List, Optional, Sequence, Tuple, Union
+from uuid import uuid4
 
 import attr
 import optuna
+from ax.modelbridge.generation_strategy import GenerationStrategy
 
 from spock.backend.config import _base_attr
+
+
+@attr.s(auto_attribs=True)
+class AxTunerConfig:
+    objective_name: str
+    tracking_metric_names: Optional[List[str]] = None
+    name: Optional[str] = f"spock_ax_{uuid4()}"
+    minimize: bool = True
+    parameter_constraints: Optional[List[str]] = None
+    outcome_constraints: Optional[List[str]] = None
+    support_intermediate_data: bool = False
+    overwrite_existing_experiment: bool = False
+    immutable_search_space_and_opt_config: bool = True
+    is_test: bool = False
+    generation_strategy: Optional[GenerationStrategy] = None
+    enforce_sequential_optimization: bool = True
+    random_seed: Optional[int] = None
+    verbose_logging: bool = True
 
 
 @attr.s(auto_attribs=True)
@@ -18,7 +38,7 @@ class OptunaTunerConfig:
     storage: Optional[Union[str, optuna.storages.BaseStorage]] = None
     sampler: Optional[optuna.samplers.BaseSampler] = None
     pruner: Optional[optuna.pruners.BasePruner] = None
-    study_name: Optional[str] = None
+    study_name: Optional[str] = f"spock_optuna_{uuid4()}"
     direction: Optional[Union[str, optuna.study.StudyDirection]] = None
     load_if_exists: bool = False
     directions: Optional[Sequence[Union[str, optuna.study.StudyDirection]]] = None

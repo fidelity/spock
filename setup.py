@@ -22,6 +22,7 @@ with open("./requirements/S3_REQUIREMENTS.txt", "r") as fid:
 with open("./requirements/TUNE_REQUIREMENTS.txt", "r") as fid:
     tune_reqs = [str(req) for req in parse_requirements(fid)]
 
+
 setuptools.setup(
     name="spock-config",
     description="Spock is a framework designed to help manage complex parameter configurations for Python applications",
@@ -59,6 +60,7 @@ setuptools.setup(
         "machine learning",
         "deep learning",
         "reproducibility",
+        "hyper-parameter tuning",
     ],
     packages=setuptools.find_packages(
         exclude=["*.tests", "*.tests.*", "tests.*", "tests"]
