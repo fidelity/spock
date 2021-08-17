@@ -9,7 +9,7 @@ All examples can be found [here](https://github.com/fidelity/spock/blob/master/e
 
 ### Installing
 
-Install `spock` with the extra hyper-parameter tuning related dependencies.
+Install `spock` with the extra hyper-parameter tuning related dependencies. Requires Python 3.7+
 
 ```bash
 pip install spock-config[tune]

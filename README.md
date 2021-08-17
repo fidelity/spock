@@ -48,7 +48,7 @@ hierarchical configuration by composition.
 
 ## Quick Install
 
-Requires Python 3.6+
+The basic install and `[s3]` extension require Python 3.6+ while the `[tune]` extension requires Python 3.7+
 
 | Base | w/ S3 Extension | w/ Hyper-Parameter Tuner |
 |------|-----------------|--------------------------|
