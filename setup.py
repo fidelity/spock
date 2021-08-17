@@ -6,8 +6,6 @@
 """Spock Setup"""
 
 import setuptools
-import sys
-from platform import python_version
 from pkg_resources import parse_requirements
 
 import versioneer
@@ -23,14 +21,6 @@ with open("./requirements/S3_REQUIREMENTS.txt", "r") as fid:
 
 with open("./requirements/TUNE_REQUIREMENTS.txt", "r") as fid:
     tune_reqs = [str(req) for req in parse_requirements(fid)]
-
-
-def _get_tune_reqs():
-    if sys.version_info.minor >= 7:
-        with open("./requirements/TUNE_REQUIREMENTS.txt", "r") as fid:
-            return [str(req) for req in parse_requirements(fid)]
-    else:
-        raise RuntimeError(f'Installation of the [tune] add-on requires Python 3.7+ -- current Python version is {python_version()}')
 
 
 setuptools.setup(
@@ -76,5 +66,5 @@ setuptools.setup(
     ),
     python_requires=">=3.6",
     install_requires=install_reqs,
-    extras_require={"s3": s3_reqs, "tune": _get_tune_reqs()},
+    extras_require={"s3": s3_reqs, "tune": tune_reqs},
 )
