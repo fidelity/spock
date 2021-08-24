@@ -41,7 +41,7 @@ hierarchical configuration by composition.
   prior runtime configurations.
 * [Hyper-Parameter Tuner Addon](https://fidelity.github.io/spock/docs/addons/tuner/About.html): Provides a unified
   interface for defining hyper-parameters (via `@spockTuner` decorator) that supports various tuning/algorithm 
-  backends (Optuna, WIP: Ax)
+  backends (currently: Optuna, Ax)
 * [S3 Addon](https://fidelity.github.io/spock/docs/addons/S3/): Automatically detects `s3://` URI(s) and handles loading 
   and saving `spock` configuration files when an active `boto3.Session` is passed in (plus any additional 
   `S3Transfer` configurations)
