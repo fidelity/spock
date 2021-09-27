@@ -1,8 +1,8 @@
-black==21.8b0
+black==21.9b0
 coveralls==3.2.0
 coverage==5.5
 isort==5.9.3
-moto==2.2.7
+moto==2.2.8
 portray==1.7.0
 pytest==6.2.5
 pytest-cov==2.12.1
