@@ -5,5 +5,5 @@ isort==5.9.3
 moto==2.2.8
 portray==1.7.0
 pytest==6.2.5
-pytest-cov==2.12.1
+pytest-cov==3.0.0
 pylint==2.11.1
