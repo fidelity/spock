@@ -39,7 +39,7 @@ hierarchical configuration by composition.
   parameter configuration to YAML, TOML, or JSON with a single chained command (with extra runtime info such as Git info, 
   Python version, machine FQDN, etc). The saved markdown file can be used as the configuration input to reproduce 
   prior runtime configurations.
-* [Hyper-Parameter Tuner Addon](https://fidelity.github.io/spock/docs/addons/tuner/About.html): Provides a unified
+* [Hyper-Parameter Tuner Addon](https://fidelity.github.io/spock/docs/addons/tuner/About): Provides a unified
   interface for defining hyper-parameters (via `@spockTuner` decorator) that supports various tuning/algorithm 
   backends (currently: Optuna, Ax)
 * [S3 Addon](https://fidelity.github.io/spock/docs/addons/S3/): Automatically detects `s3://` URI(s) and handles loading 
