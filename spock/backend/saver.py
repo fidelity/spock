@@ -30,6 +30,21 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
     def __init__(self, s3_config=None):
         super(BaseSaver, self).__init__(s3_config=s3_config)
 
+    def dict_payload(self, payload):
+        """Clean up the config payload so it can be returned as a dict representation
+
+        *Args*:
+
+            payload: dirty payload
+
+        *Returns*:
+
+            clean_dict: cleaned output payload
+
+        """
+        # Fix up values -- parameters
+        return self._clean_up_values(payload)
+
     def save(
         self,
         payload,
@@ -69,7 +84,7 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
         fname = "" if file_name is None else f"{file_name}."
         name = f"{fname}{uuid_str}.spock.cfg{file_extension}"
         # Fix up values -- parameters
-        out_dict = self._clean_up_values(payload, file_extension)
+        out_dict = self._clean_up_values(payload)
         # Fix up the tuner values if present
         tuner_dict = (
             self._clean_tuner_values(tuner_payload)
@@ -94,14 +109,12 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
             raise e
 
     @abstractmethod
-    def _clean_up_values(self, payload, file_extension):
+    def _clean_up_values(self, payload):
         """Clean up the config payload so it can be written to file
 
         *Args*:
 
             payload: dirty payload
-            extra_info: boolean to add extra info
-            file_extension: type of file to write
 
         *Returns*:
 
@@ -210,7 +223,7 @@ class AttrSaver(BaseSaver):
     def __call__(self, *args, **kwargs):
         return AttrSaver(*args, **kwargs)
 
-    def _clean_up_values(self, payload, file_extension):
+    def _clean_up_values(self, payload):
         # Dictionary to recursively write to
         out_dict = {}
         # All of the classes are defined at the top level

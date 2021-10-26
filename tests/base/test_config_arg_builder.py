@@ -18,6 +18,15 @@ class TestBasic(AllTypes):
             return config.generate()
 
 
+class TestConfigDict:
+    def test_config_2_dict(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, 'argv', ['', '--config',
+                                    './tests/conf/yaml/test.yaml'])
+            config_dict = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig).config_2_dict
+            assert isinstance(config_dict, dict) is True
+
+
 class TestNoCmdLineKwarg(AllTypes):
     """Testing to see that the kwarg no cmd line works"""
     @staticmethod

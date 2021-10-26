@@ -580,3 +580,10 @@ class ConfigArgBuilder:
             file_extension,
             fixed_uuid=self._fixed_uuid,
         )
+
+        return self
+
+    @property
+    def config_2_dict(self):
+        """Dictionary representation of the arg payload"""
+        return self._saver_obj.dict_payload(self._arg_namespace)
