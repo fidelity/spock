@@ -22,6 +22,7 @@ standard library while `Enum` is within the `enum` standard library):
 | List[type] | Optional[List[type]] | Basic list type parameter of base types such as int, float, etc. (e.g. [10.0, 2.0]) |
 | Tuple[type] | Optional[Tuple[type]] | Basic tuple type parameter of base types such as int, float, etc. Length enforced unlike List. (e.g. (10, 2)) |
 | Enum | Optional[Enum] | Parameter that must be from a defined set of values of base types such as int, float, etc. |
+| @spock decorated Class | Optional[Class] | Parameter that is a reference to another @spock decorated class |
 
 Use `List` types when the length of the `Iterable` is not fixed and `Tuple` when length needs to be strictly enforced.
 

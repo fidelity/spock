@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from spock.addons.tune import spockTuner
-from spock.addons.tune import ChoiceHyperParameter
-from spock.addons.tune import RangeHyperParameter
+from spock.addons.tune import ChoiceHyperParameter, RangeHyperParameter, spockTuner
 
 
 @spockTuner

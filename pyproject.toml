@@ -1,5 +1,17 @@
 [tool.isort]
 profile = "black"
+extend_skip = ["debug", "tests", "examples"]
+
+[tool.black]
+target-version = ['py36', 'py37', 'py38', 'py39']
+exclude = '''
+/(
+  | debug
+  | docs
+  | examples
+  | tests
+)/
+'''
 
 [tool.portray]
 extra_dirs = ["resources"]

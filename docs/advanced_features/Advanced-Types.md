@@ -25,7 +25,13 @@ class StrChoice(Enum):
 
 @spock
 class TypeConfig:
-    list_choice_p_str: List[StrChoice] # YAML -- list_choice_p_str: ['option_1', 'option_2']
+    list_choice_p_str: List[StrChoice]
+```
+
+With YAML definitions:
+
+```yaml
+list_choice_p_str: ['option_1', 'option_2']
 ```
 
 ### List/Tuple of Repeated `@spock` Classes 
@@ -67,30 +73,40 @@ from spock.config import spock
 
 
 @spock
-class NestedStuff:
+class ClassOne:
     one: int
     two: str
 
 
 @spock
-class NestedListStuff:
+class ClassTwo:
     one: int
     two: str
 
 
 class ClassChoice(Enum):
-    class_nested_stuff = NestedStuff
-    class_nested_list_stuff = NestedListStuff
+    class_one = ClassOne
+    class_two = ClassTwo
+
+@spock
+class TypeConfig:
+    param: ClassChoice
+
 ```
 
 With YAML definitions:
 
 ```yaml
 # Nested List configuration
-nested_list: NestedListStuff
-NestedListStuff:
-    - one: 10
-      two: hello
-    - one: 20
-      two: bye
+TypeConfig:
+  param: ClassTwo
+
+ClassOne:
+    one: 20
+    two: bye
+
+ClassTwo:
+    one: 10
+    two: hello
+
 ```
