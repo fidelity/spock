@@ -4,20 +4,19 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from enum import Enum
+from typing import List, Optional, Tuple
+
 from spock.args import SavePath
 from spock.config import spock
-from typing import List
-from typing import Optional
-from typing import Tuple
 
 
 class StrChoice(Enum):
-    option_1 = 'option_1'
-    option_2 = 'option_2'
+    option_1 = "option_1"
+    option_2 = "option_2"
 
 
 class FailedEnum(Enum):
-    str_type = 'hello'
+    str_type = "hello"
     float_type = 10.0
 
 
@@ -51,6 +50,7 @@ class ClassChoice(Enum):
 @spock
 class ChoiceFail:
     """This creates a test config to fail on an out of set choice"""
+
     # Required choice -- Str
     choice_p_str: StrChoice
 
@@ -58,6 +58,7 @@ class ChoiceFail:
 @spock
 class TypeConfig:
     """This creates a test Spock config of all supported variable types as required parameters"""
+
     # Special Type -- Saves Generated Configs to this path
     save_path: SavePath
     # Boolean - Set
@@ -115,6 +116,7 @@ class TypeConfig:
 @spock
 class TypeOptConfig:
     """This creates a test Spock config of all supported variable types as optional parameters"""
+
     # DEFAULTS NOT SET #
     # Optional Int default not set
     int_p_opt_no_def: Optional[int]
@@ -156,15 +158,16 @@ class TypeOptConfig:
 
 @spock
 class NestedStuffDefault:
-    away: str = 'arsenal'
+    away: str = "arsenal"
     goals: int = 0
 
 
 @spock
 class TypeDefaultConfig:
     """This creates a test Spock config of all supported variable types as required parameters and falls back
-        to defaults
+    to defaults
     """
+
     # Boolean - Set
     bool_p_set_def: bool = True
     # Required Int
@@ -172,13 +175,13 @@ class TypeDefaultConfig:
     # Required Float
     float_p_def: float = 10.0
     # Required String
-    string_p_def: str = 'Spock'
+    string_p_def: str = "Spock"
     # Required List -- Float
     list_p_float_def: List[float] = [10.0, 20.0]
     # Required List -- Int
     list_p_int_def: List[int] = [10, 20]
     # Required List -- Str
-    list_p_str_def: List[str] = ['Spock', 'Package']
+    list_p_str_def: List[str] = ["Spock", "Package"]
     # Required List -- Bool
     list_p_bool_def: List[bool] = [True, False]
     # Required Tuple -- Float
@@ -186,15 +189,15 @@ class TypeDefaultConfig:
     # Required Tuple -- Int
     tuple_p_int_def: Tuple[int] = (10, 20)
     # Required Tuple -- Str
-    tuple_p_str_def: Tuple[str] = ('Spock', 'Package')
+    tuple_p_str_def: Tuple[str] = ("Spock", "Package")
     # Required Tuple -- Bool
     tuple_p_bool_def: Tuple[bool] = (True, False)
     # Required choice
-    choice_p_str_def: StrChoice = 'option_2'
+    choice_p_str_def: StrChoice = "option_2"
     # Required list of choice -- Str
-    list_choice_p_str_def: List[StrChoice] = ['option_1']
+    list_choice_p_str_def: List[StrChoice] = ["option_1"]
     # Required list of list of choice -- Str
-    list_list_choice_p_str_def: List[List[StrChoice]] = [['option_1'], ['option_1']]
+    list_list_choice_p_str_def: List[List[StrChoice]] = [["option_1"], ["option_1"]]
     # Nested configuration
     nested_def: NestedStuff = NestedStuff
     # Nested configuration with no config
@@ -208,13 +211,14 @@ class TypeDefaultConfig:
 @spock
 class TypeDefaultOptConfig:
     """This creates a test Spock config of all supported variable types as optional parameters"""
+
     # DEFAULTS SET #
     # Optional Int default set
     int_p_opt_def: Optional[int] = 10
     # Optional Int default set
     float_p_opt_def: Optional[float] = 10.0
     # Optional String default set
-    string_p_opt_def: Optional[str] = 'Spock'
+    string_p_opt_def: Optional[str] = "Spock"
     # Optional List default set
     list_p_opt_def_float: Optional[List[float]] = [10.0, 20.0]
     # Optional List default set
@@ -222,21 +226,24 @@ class TypeDefaultOptConfig:
     # Optional List default set
     list_p_opt_def_bool: Optional[List[bool]] = [True, False]
     # Optional List default set
-    list_p_opt_def_str: Optional[List[str]] = ['Spock', 'Package']
+    list_p_opt_def_str: Optional[List[str]] = ["Spock", "Package"]
     # Optional Tuple default set
     tuple_p_opt_def_float: Optional[Tuple[float]] = (10.0, 20.0)
     # Optional Tuple default set
     tuple_p_opt_def_int: Optional[Tuple[int]] = (10, 20)
     # Optional Tuple default set
-    tuple_p_opt_def_str: Optional[Tuple[str]] = ('Spock', 'Package')
+    tuple_p_opt_def_str: Optional[Tuple[str]] = ("Spock", "Package")
     # Optional Tuple default set
     tuple_p_opt_def_bool: Optional[Tuple[bool]] = (True, False)
     # Optional choice
-    choice_p_str_opt_def: Optional[StrChoice] = 'option_2'
+    choice_p_str_opt_def: Optional[StrChoice] = "option_2"
     # Optional list of choice -- Str
-    list_choice_p_str_opt_def: Optional[List[StrChoice]] = ['option_1']
+    list_choice_p_str_opt_def: Optional[List[StrChoice]] = ["option_1"]
     # Optional list of list of choice -- Str
-    list_list_choice_p_str_opt_def: Optional[List[List[StrChoice]]] = [['option_1'], ['option_1']]
+    list_list_choice_p_str_opt_def: Optional[List[List[StrChoice]]] = [
+        ["option_1"],
+        ["option_1"],
+    ]
     # Nested configuration
     nested_opt_def: Optional[NestedStuff] = NestedStuff
     # Nested list configuration
@@ -248,4 +255,5 @@ class TypeDefaultOptConfig:
 @spock
 class TypeInherited(TypeConfig, TypeDefaultOptConfig):
     """This tests inheritance with mixed default and non-default arguments"""
+
     ...

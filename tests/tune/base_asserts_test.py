@@ -5,27 +5,41 @@ from math import log10
 class AllTypes:
     def test_hp_one(self, arg_builder):
         assert arg_builder._tune_namespace.HPOne.hp_int.bounds == (10, 100)
-        assert arg_builder._tune_namespace.HPOne.hp_int.type == 'int'
+        assert arg_builder._tune_namespace.HPOne.hp_int.type == "int"
         assert arg_builder._tune_namespace.HPOne.hp_int.log_scale is False
         assert arg_builder._tune_namespace.HPOne.hp_int_log.bounds == (10, 100)
-        assert arg_builder._tune_namespace.HPOne.hp_int_log.type == 'int'
+        assert arg_builder._tune_namespace.HPOne.hp_int_log.type == "int"
         assert arg_builder._tune_namespace.HPOne.hp_int_log.log_scale is True
         assert arg_builder._tune_namespace.HPOne.hp_float.bounds == (10.0, 100.0)
-        assert arg_builder._tune_namespace.HPOne.hp_float.type == 'float'
+        assert arg_builder._tune_namespace.HPOne.hp_float.type == "float"
         assert arg_builder._tune_namespace.HPOne.hp_float.log_scale is False
         assert arg_builder._tune_namespace.HPOne.hp_float_log.bounds == (10.0, 100.0)
-        assert arg_builder._tune_namespace.HPOne.hp_float_log.type == 'float'
+        assert arg_builder._tune_namespace.HPOne.hp_float_log.type == "float"
         assert arg_builder._tune_namespace.HPOne.hp_float_log.log_scale is True
 
     def test_hp_two(self, arg_builder):
-        assert arg_builder._tune_namespace.HPTwo.hp_choice_int.type == 'int'
-        assert arg_builder._tune_namespace.HPTwo.hp_choice_int.choices == [10, 20, 40, 80]
-        assert arg_builder._tune_namespace.HPTwo.hp_choice_float.type == 'float'
-        assert arg_builder._tune_namespace.HPTwo.hp_choice_float.choices == [10.0, 20.0, 40.0, 80.0]
-        assert arg_builder._tune_namespace.HPTwo.hp_choice_bool.type == 'bool'
+        assert arg_builder._tune_namespace.HPTwo.hp_choice_int.type == "int"
+        assert arg_builder._tune_namespace.HPTwo.hp_choice_int.choices == [
+            10,
+            20,
+            40,
+            80,
+        ]
+        assert arg_builder._tune_namespace.HPTwo.hp_choice_float.type == "float"
+        assert arg_builder._tune_namespace.HPTwo.hp_choice_float.choices == [
+            10.0,
+            20.0,
+            40.0,
+            80.0,
+        ]
+        assert arg_builder._tune_namespace.HPTwo.hp_choice_bool.type == "bool"
         assert arg_builder._tune_namespace.HPTwo.hp_choice_bool.choices == [True, False]
-        assert arg_builder._tune_namespace.HPTwo.hp_choice_str.type == 'str'
-        assert arg_builder._tune_namespace.HPTwo.hp_choice_str.choices == ["hello", "ciao", "bonjour"]
+        assert arg_builder._tune_namespace.HPTwo.hp_choice_str.type == "str"
+        assert arg_builder._tune_namespace.HPTwo.hp_choice_str.choices == [
+            "hello",
+            "ciao",
+            "bonjour",
+        ]
 
 
 class SampleTypes:

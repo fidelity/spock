@@ -1,41 +1,61 @@
 # -*- coding: utf-8 -*-
-from attr.exceptions import FrozenInstanceError
+import sys
+
 import pytest
+from attr.exceptions import FrozenInstanceError
+
 from spock.builder import ConfigArgBuilder
 from tests.base.attr_configs_test import *
-import sys
 
 
 class TestHelp:
     def test_help(self, monkeypatch):
         with monkeypatch.context() as m:
-            m.setattr(sys, 'argv', ['', '--config',
-                                    './tests/conf/yaml/test.yaml', '--help'])
+            m.setattr(
+                sys, "argv", ["", "--config", "./tests/conf/yaml/test.yaml", "--help"]
+            )
             with pytest.raises(SystemExit):
-                config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder')
+                config = ConfigArgBuilder(
+                    TypeConfig,
+                    NestedStuff,
+                    NestedListStuff,
+                    TypeOptConfig,
+                    desc="Test Builder",
+                )
                 return config.generate()
 
 
 class TestSpockspaceRepr:
     def test_repr(self, monkeypatch, capsys):
         with monkeypatch.context() as m:
-            m.setattr(sys, 'argv', ['', '--config',
-                                    './tests/conf/yaml/test.yaml'])
-            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder')
+            m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test.yaml"])
+            config = ConfigArgBuilder(
+                TypeConfig,
+                NestedStuff,
+                NestedListStuff,
+                TypeOptConfig,
+                desc="Test Builder",
+            )
             print(config.generate())
             out, _ = capsys.readouterr()
-            assert ('NestedListStuff' in out) and 'TypeConfig' in out
+            assert ("NestedListStuff" in out) and "TypeConfig" in out
 
 
 class TestFrozen:
     """Testing the frozen state of the spock config object"""
+
     @staticmethod
     @pytest.fixture
     def arg_builder(monkeypatch):
         with monkeypatch.context() as m:
-            m.setattr(sys, 'argv', ['', '--config',
-                                    './tests/conf/yaml/test.yaml'])
-            config = ConfigArgBuilder(TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, desc='Test Builder')
+            m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test.yaml"])
+            config = ConfigArgBuilder(
+                TypeConfig,
+                NestedStuff,
+                NestedListStuff,
+                TypeOptConfig,
+                desc="Test Builder",
+            )
             return config.generate()
 
     # Check frozen state works
