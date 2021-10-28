@@ -21,6 +21,9 @@ class TestDefaultWriter:
                 NestedStuff,
                 NestedListStuff,
                 TypeOptConfig,
+                SingleNestedConfig,
+                FirstDoubleNestedConfig,
+                SecondDoubleNestedConfig,
                 desc="Test Builder",
             )
             # Test the chained version
@@ -38,6 +41,9 @@ class TestYAMLWriter:
                 NestedStuff,
                 NestedListStuff,
                 TypeOptConfig,
+                SingleNestedConfig,
+                FirstDoubleNestedConfig,
+                SecondDoubleNestedConfig,
                 desc="Test Builder",
             )
             # Test the chained version
@@ -59,6 +65,9 @@ class TestYAMLWriterCreate:
                 NestedStuff,
                 NestedListStuff,
                 TypeOptConfig,
+                SingleNestedConfig,
+                FirstDoubleNestedConfig,
+                SecondDoubleNestedConfig,
                 desc="Test Builder",
             )
             # Test the chained version
@@ -86,6 +95,9 @@ class TestYAMLWriterSavePath:
                 NestedStuff,
                 NestedListStuff,
                 TypeOptConfig,
+                SingleNestedConfig,
+                FirstDoubleNestedConfig,
+                SecondDoubleNestedConfig,
                 desc="Test Builder",
             )
             # Test the chained version
@@ -124,6 +136,9 @@ class TestYAMLWriterNoPath:
                     NestedStuff,
                     NestedListStuff,
                     TypeOptConfig,
+                    SingleNestedConfig,
+                    FirstDoubleNestedConfig,
+                    SecondDoubleNestedConfig,
                     desc="Test Builder",
                 )
                 # Test the chained version
@@ -140,6 +155,9 @@ class TestWritePathRaise:
                 NestedStuff,
                 NestedListStuff,
                 TypeOptConfig,
+                SingleNestedConfig,
+                FirstDoubleNestedConfig,
+                SecondDoubleNestedConfig,
                 desc="Test Builder",
             )
             # Test the chained version
@@ -161,6 +179,9 @@ class TestInvalidExtensionTypeRaise:
                 NestedStuff,
                 NestedListStuff,
                 TypeOptConfig,
+                SingleNestedConfig,
+                FirstDoubleNestedConfig,
+                SecondDoubleNestedConfig,
                 desc="Test Builder",
             )
             # Test the chained version
@@ -181,6 +202,9 @@ class TestTOMLWriter:
                 NestedStuff,
                 NestedListStuff,
                 TypeOptConfig,
+                SingleNestedConfig,
+                FirstDoubleNestedConfig,
+                SecondDoubleNestedConfig,
                 desc="Test Builder",
             )
             # Test the chained version
@@ -202,6 +226,9 @@ class TestJSONWriter:
                 NestedStuff,
                 NestedListStuff,
                 TypeOptConfig,
+                SingleNestedConfig,
+                FirstDoubleNestedConfig,
+                SecondDoubleNestedConfig,
                 desc="Test Builder",
             )
             # Test the chained version

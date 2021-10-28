@@ -108,6 +108,7 @@ class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
             base_payload = self._supported_extensions.get(config_extension)().load(
                 path, s3_config=self._s3_config
             )
+            base_payload = {} if base_payload is None else base_payload
             # Check and? update the dependencies
             deps = self._handle_dependencies(deps, path, root)
             if "config" in base_payload:

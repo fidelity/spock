@@ -71,12 +71,3 @@ class TestEnumClassMissing:
                 ConfigArgBuilder(
                     TypeConfig, NestedStuff, NestedListStuff, desc="Test Builder"
                 )
-
-
-# class TestMixedGeneric:
-#     def test_mixed_generic(self, monkeypatch):
-#         with monkeypatch.context() as m:
-#             with pytest.raises(TypeError):
-#                 @spock
-#                 class GenericFail:
-#                     generic_fail: Tuple[List[int], List[int], int]

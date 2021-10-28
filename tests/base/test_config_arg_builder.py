@@ -17,7 +17,8 @@ class TestBasic(AllTypes):
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test.yaml"])
             config = ConfigArgBuilder(
-                TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig
+                TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, SingleNestedConfig,
+                FirstDoubleNestedConfig, SecondDoubleNestedConfig
             )
             return config.generate()
 
@@ -27,7 +28,8 @@ class TestConfigDict:
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test.yaml"])
             config_dict = ConfigArgBuilder(
-                TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig
+                TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, SingleNestedConfig,
+                FirstDoubleNestedConfig, SecondDoubleNestedConfig
             ).config_2_dict
             assert isinstance(config_dict, dict) is True
 
@@ -44,6 +46,9 @@ class TestNoCmdLineKwarg(AllTypes):
                 NestedStuff,
                 NestedListStuff,
                 TypeOptConfig,
+                SingleNestedConfig,
+                FirstDoubleNestedConfig,
+                SecondDoubleNestedConfig,
                 no_cmd_line=True,
                 configs=["./tests/conf/yaml/test.yaml"],
             )
@@ -61,6 +66,9 @@ class TestNoCmdLineKwargRaise:
                     NestedStuff,
                     NestedListStuff,
                     TypeOptConfig,
+                    SingleNestedConfig,
+                    FirstDoubleNestedConfig,
+                    SecondDoubleNestedConfig,
                     no_cmd_line=True,
                     configs="./tests/conf/yaml/test.yaml",
                 )
@@ -78,6 +86,9 @@ class TestNoCmdLineRaise:
                     NestedStuff,
                     NestedListStuff,
                     TypeOptConfig,
+                    SingleNestedConfig,
+                    FirstDoubleNestedConfig,
+                    SecondDoubleNestedConfig,
                     no_cmd_line=True,
                 )
 
@@ -95,6 +106,9 @@ class TestConfigKwarg(AllTypes):
                 NestedStuff,
                 NestedListStuff,
                 TypeOptConfig,
+                SingleNestedConfig,
+                FirstDoubleNestedConfig,
+                SecondDoubleNestedConfig,
                 desc="Test Builder",
                 configs=["./tests/conf/yaml/test.yaml"],
             )
@@ -124,6 +138,9 @@ class TestNonAttrs:
                     NestedStuff,
                     NestedListStuff,
                     TypeOptConfig,
+                    SingleNestedConfig,
+                    FirstDoubleNestedConfig,
+                    SecondDoubleNestedConfig,
                     AttrFail,
                     configs=["./tests/conf/yaml/test.yaml"],
                 )
@@ -142,6 +159,9 @@ class TestRaiseWrongInputType:
                     NestedStuff,
                     NestedListStuff,
                     TypeOptConfig,
+                    SingleNestedConfig,
+                    FirstDoubleNestedConfig,
+                    SecondDoubleNestedConfig,
                     desc="Test Builder",
                 )
                 return config.generate()
@@ -155,7 +175,8 @@ class TestUnknownArg:
             )
             with pytest.raises(ValueError):
                 ConfigArgBuilder(
-                    TypeConfig, NestedStuff, NestedListStuff, desc="Test Builder"
+                    TypeConfig, NestedStuff, NestedListStuff, SingleNestedConfig,
+                    FirstDoubleNestedConfig, SecondDoubleNestedConfig, desc="Test Builder"
                 )
 
 
@@ -169,7 +190,8 @@ class TestUnknownClassParameterArg:
             )
             with pytest.raises(ValueError):
                 ConfigArgBuilder(
-                    TypeConfig, NestedStuff, NestedListStuff, desc="Test Builder"
+                    TypeConfig, NestedStuff, NestedListStuff, SingleNestedConfig,
+                    FirstDoubleNestedConfig, SecondDoubleNestedConfig, desc="Test Builder"
                 )
 
 
@@ -183,7 +205,8 @@ class TestUnknownClassArg:
             )
             with pytest.raises(ValueError):
                 ConfigArgBuilder(
-                    TypeConfig, NestedStuff, NestedListStuff, desc="Test Builder"
+                    TypeConfig, NestedStuff, NestedListStuff, SingleNestedConfig,
+                    FirstDoubleNestedConfig, SecondDoubleNestedConfig, desc="Test Builder"
                 )
 
 
@@ -201,5 +224,6 @@ class TestWrongRepeatedClass:
             )
             with pytest.raises(ValueError):
                 ConfigArgBuilder(
-                    TypeConfig, NestedStuff, NestedListStuff, desc="Test Builder"
+                    TypeConfig, NestedStuff, NestedListStuff, SingleNestedConfig,
+                    FirstDoubleNestedConfig, SecondDoubleNestedConfig, desc="Test Builder"
                 )

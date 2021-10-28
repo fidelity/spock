@@ -1,7 +1,7 @@
 # conf file for all YAML tests
 ### Required or Boolean Base Types ###
 # Boolean - Set
---bool_p_set
+bool_p_set: true
 # Required Int
 int_p: 10
 # Required Float
@@ -56,3 +56,11 @@ NestedListStuff:
       two: bye
 # Class Enum
 class_enum: NestedStuff
+# Nested classes
+high_config: SingleNestedConfig
+SingleNestedConfig:
+  double_nested_config: FirstDoubleNestedConfig
+FirstDoubleNestedConfig:
+  h_factor: 0.99
+  v_factor: 0.90
+

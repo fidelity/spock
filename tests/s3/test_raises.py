@@ -31,6 +31,9 @@ class TestAllTypesFromS3MockYAMLMissingS3:
                     NestedStuff,
                     NestedListStuff,
                     TypeOptConfig,
+                    SingleNestedConfig,
+                    FirstDoubleNestedConfig,
+                    SecondDoubleNestedConfig,
                     desc="Test Builder",
                 )
 
@@ -55,6 +58,9 @@ class TestAllTypesFromS3MockYAMLNoObject:
                     NestedStuff,
                     NestedListStuff,
                     TypeOptConfig,
+                    SingleNestedConfig,
+                    FirstDoubleNestedConfig,
+                    SecondDoubleNestedConfig,
                     s3_config=S3Config(session=aws_session, s3_session=s3_client),
                     desc="Test Builder",
                 )
@@ -71,6 +77,9 @@ class TestS3MockYAMLWriterMissingS3:
                 NestedStuff,
                 NestedListStuff,
                 TypeOptConfig,
+                SingleNestedConfig,
+                FirstDoubleNestedConfig,
+                SecondDoubleNestedConfig,
                 desc="Test Builder",
             )
             # Mock a S3 bucket and object
@@ -101,6 +110,9 @@ class TestS3MockYAMLWriterNoBucket:
                 NestedStuff,
                 NestedListStuff,
                 TypeOptConfig,
+                SingleNestedConfig,
+                FirstDoubleNestedConfig,
+                SecondDoubleNestedConfig,
                 desc="Test Builder",
             )
             # Mock a S3 bucket and object
