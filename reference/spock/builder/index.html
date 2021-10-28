@@ -1,0 +1,4352 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      <link rel="icon" href="../../../resources/images/logo_small.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.0">
+    
+    
+      
+        <title>Builder - spock</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.8b42a75e.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.3f5d1f46.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#546d78">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="blue-grey" data-md-color-accent="pink">
+  
+    
+    <script>function __prefix(e){return new URL("../../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#module-spockbuilder" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="spock" class="md-header__button md-logo" aria-label="spock" data-md-component="logo">
+      
+  <img src="../../../resources/images/logo_small.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            spock
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Builder
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/fidelity/spock/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    spock
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="spock" class="md-nav__button md-logo" aria-label="spock" data-md-component="logo">
+      
+  <img src="../../../resources/images/logo_small.png" alt="logo">
+
+    </a>
+    spock
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/fidelity/spock/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    spock
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/Installation/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/Motivation/" class="md-nav__link">
+        Motivation
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/Quick-Start/" class="md-nav__link">
+        Quick Start
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/ArgParser-Replacement/" class="md-nav__link">
+        argparse Replacement
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6">
+          Basic Tutorial
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Basic Tutorial" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          Basic Tutorial
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/basic_tutorial/About/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/basic_tutorial/Define/" class="md-nav__link">
+        Define
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/basic_tutorial/Building/" class="md-nav__link">
+        Building
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/basic_tutorial/Configuration-Files/" class="md-nav__link">
+        Configuration Files
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/basic_tutorial/Saving/" class="md-nav__link">
+        Saving
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/basic_tutorial/Run/" class="md-nav__link">
+        Running
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_7">
+          Advanced Features
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Advanced Features" data-md-level="1">
+        <label class="md-nav__title" for="__nav_7">
+          <span class="md-nav__icon md-icon"></span>
+          Advanced Features
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/About/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Defaults/" class="md-nav__link">
+        Default Values
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Optional-Parameters/" class="md-nav__link">
+        Optional Parameters
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Parameter-Groups/" class="md-nav__link">
+        Parameter Groups
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Inheritance/" class="md-nav__link">
+        Inheritance
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Advanced-Types/" class="md-nav__link">
+        Advanced Types
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Local-Definitions/" class="md-nav__link">
+        Local Defintions
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Keyword-Configs/" class="md-nav__link">
+        Keyword Configs
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Composition/" class="md-nav__link">
+        Composition
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/advanced_features/Command-Line-Overrides/" class="md-nav__link">
+        Command Line Overrides
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8">
+          Addons
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Addons" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          Addons
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/addons/S3/" class="md-nav__link">
+        S3
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2" type="checkbox" id="__nav_8_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_2">
+          Hyper-Parameter Tuning
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Hyper-Parameter Tuning" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_2">
+          <span class="md-nav__icon md-icon"></span>
+          Hyper-Parameter Tuning
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/addons/tuner/About/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/addons/tuner/Basics/" class="md-nav__link">
+        Basics
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/addons/tuner/Ax/" class="md-nav__link">
+        Ax
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/addons/tuner/Optuna/" class="md-nav__link">
+        Optuna
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs/addons/tuner/Saving/" class="md-nav__link">
+        Saving
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../CONTRIBUTING/" class="md-nav__link">
+        Contributing
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10" type="checkbox" id="__nav_10" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10">
+          Reference
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Reference" data-md-level="1">
+        <label class="md-nav__title" for="__nav_10">
+          <span class="md-nav__icon md-icon"></span>
+          Reference
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_1" type="checkbox" id="__nav_10_1" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_1">
+          Spock
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Spock" data-md-level="2">
+        <label class="md-nav__title" for="__nav_10_1">
+          <span class="md-nav__icon md-icon"></span>
+          Spock
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../args/" class="md-nav__link">
+        Args
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Builder
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Builder
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#classes" class="md-nav__link">
+    Classes
+  </a>
+  
+    <nav class="md-nav" aria-label="Classes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configargbuilder" class="md-nav__link">
+    ConfigArgBuilder
+  </a>
+  
+    <nav class="md-nav" aria-label="ConfigArgBuilder">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#instance-variables" class="md-nav__link">
+    Instance variables
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    Methods
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generate" class="md-nav__link">
+    generate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sample" class="md-nav__link">
+    sample
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#save" class="md-nav__link">
+    save
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#save_best" class="md-nav__link">
+    save_best
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tuner" class="md-nav__link">
+    tuner
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../config/" class="md-nav__link">
+        Config
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../handlers/" class="md-nav__link">
+        Handlers
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utils/" class="md-nav__link">
+        Utils
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_1_7" type="checkbox" id="__nav_10_1_7" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_1_7">
+          Addons
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Addons" data-md-level="3">
+        <label class="md-nav__title" for="__nav_10_1_7">
+          <span class="md-nav__icon md-icon"></span>
+          Addons
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../addons/" class="md-nav__link">
+        Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_1_7_2" type="checkbox" id="__nav_10_1_7_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_1_7_2">
+          S3
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="S3" data-md-level="4">
+        <label class="md-nav__title" for="__nav_10_1_7_2">
+          <span class="md-nav__icon md-icon"></span>
+          S3
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../addons/s3/configs/" class="md-nav__link">
+        Configs
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../addons/s3/" class="md-nav__link">
+        Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../addons/s3/utils/" class="md-nav__link">
+        Utils
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_1_7_3" type="checkbox" id="__nav_10_1_7_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_1_7_3">
+          Tune
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Tune" data-md-level="4">
+        <label class="md-nav__title" for="__nav_10_1_7_3">
+          <span class="md-nav__icon md-icon"></span>
+          Tune
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../addons/tune/ax/" class="md-nav__link">
+        Ax
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../addons/tune/builder/" class="md-nav__link">
+        Builder
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../addons/tune/config/" class="md-nav__link">
+        Config
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../addons/tune/" class="md-nav__link">
+        Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../addons/tune/interface/" class="md-nav__link">
+        Interface
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../addons/tune/optuna/" class="md-nav__link">
+        Optuna
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../addons/tune/payload/" class="md-nav__link">
+        Payload
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../addons/tune/tuner/" class="md-nav__link">
+        Tuner
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_1_8" type="checkbox" id="__nav_10_1_8" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_1_8">
+          Backend
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Backend" data-md-level="3">
+        <label class="md-nav__title" for="__nav_10_1_8">
+          <span class="md-nav__icon md-icon"></span>
+          Backend
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/builder/" class="md-nav__link">
+        Builder
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/config/" class="md-nav__link">
+        Config
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/handler/" class="md-nav__link">
+        Handler
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/" class="md-nav__link">
+        Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/payload/" class="md-nav__link">
+        Payload
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/saver/" class="md-nav__link">
+        Saver
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/typed/" class="md-nav__link">
+        Typed
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/utils/" class="md-nav__link">
+        Utils
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/wrappers/" class="md-nav__link">
+        Wrappers
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#classes" class="md-nav__link">
+    Classes
+  </a>
+  
+    <nav class="md-nav" aria-label="Classes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configargbuilder" class="md-nav__link">
+    ConfigArgBuilder
+  </a>
+  
+    <nav class="md-nav" aria-label="ConfigArgBuilder">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#instance-variables" class="md-nav__link">
+    Instance variables
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    Methods
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generate" class="md-nav__link">
+    generate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sample" class="md-nav__link">
+    sample
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#save" class="md-nav__link">
+    save
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#save_best" class="md-nav__link">
+    save_best
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tuner" class="md-nav__link">
+    tuner
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/fidelity/spock/edit/main/reference/spock/builder.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                <h1 id="module-spockbuilder">Module spock.builder</h1>
+<p>Handles the building/saving of the configurations from the Spock config classes</p>
+<p>None</p>
+<p>??? example "View Source"
+        # -<em>- coding: utf-8 -</em>-</p>
+<div class="highlight"><pre><span></span><code>    # Copyright FMR LLC &lt;opensource@fidelity.com&gt;
+
+    # SPDX-License-Identifier: Apache-2.0
+
+
+
+    &quot;&quot;&quot;Handles the building/saving of the configurations from the Spock config classes&quot;&quot;&quot;
+
+
+
+    import argparse
+
+    import sys
+
+    import typing
+
+    from pathlib import Path
+
+    from uuid import uuid4
+
+
+
+    import attr
+
+
+
+    from spock.backend.builder import AttrBuilder
+
+    from spock.backend.payload import AttrPayload
+
+    from spock.backend.saver import AttrSaver
+
+    from spock.backend.wrappers import Spockspace
+
+    from spock.utils import check_payload_overwrite, deep_payload_update
+
+
+
+
+
+    class ConfigArgBuilder:
+
+        &quot;&quot;&quot;Automatically generates dataclass instances from config file(s)
+
+
+
+        This class builds out necessary arguments from *args classes, reads
+
+        the arguments from specified config file(s), and subsequently (via chained
+
+        call to generate) generates each class instance based on the necessary
+
+        field values for each backend class instance
+
+
+
+        *Attributes*:
+
+
+
+            _args: all command line args
+
+            _arg_namespace: generated argument namespace
+
+            _builder_obj: instance of a BaseBuilder class
+
+            _dict_args: dictionary args from the command line
+
+            _payload_obj: instance of a BasePayload class
+
+            _saver_obj: instance of a BaseSaver class
+
+            _tune_payload_obj: payload for tuner related objects -- instance of TunerPayload class
+
+            _tune_obj: instance of TunerBuilder class
+
+            _tuner_interface: interface that handles the underlying library for sampling -- instance of TunerInterface
+
+            _tuner_state: current state of the hyper-parameter sampler
+
+            _tune_namespace: namespace that hold the generated tuner related parameters
+
+            _sample_count: current call to the sample function
+
+            _fixed_uuid: fixed uuid to write the best file to the same path
+
+
+
+        &quot;&quot;&quot;
+
+
+
+        def __init__(
+
+            self,
+
+            *args,
+
+            configs: typing.Optional[typing.List] = None,
+
+            desc: str = &quot;&quot;,
+
+            no_cmd_line: bool = False,
+
+            s3_config=None,
+
+            **kwargs,
+
+        ):
+
+            &quot;&quot;&quot;Init call for ConfigArgBuilder
+
+
+
+            *Args*:
+
+
+
+                *args: tuple of spock decorated classes to process
+
+                configs: list of config paths
+
+                desc: description for help
+
+                no_cmd_line: turn off cmd line args
+
+                s3_config: s3Config object for S3 support
+
+                **kwargs: keyword args
+
+
+
+            &quot;&quot;&quot;
+
+            # Do some verification first
+
+            self._verify_attr(args)
+
+            self._configs = configs
+
+            self._no_cmd_line = no_cmd_line
+
+            self._desc = desc
+
+            # Build the payload and saver objects
+
+            self._payload_obj = AttrPayload(s3_config=s3_config)
+
+            self._saver_obj = AttrSaver(s3_config=s3_config)
+
+            # Split the fixed parameters from the tuneable ones (if present)
+
+            fixed_args, tune_args = self._strip_tune_parameters(args)
+
+            # The fixed parameter builder
+
+            self._builder_obj = AttrBuilder(*fixed_args, **kwargs)
+
+            # The possible tunable parameter builder -- might return None
+
+            self._tune_obj, self._tune_payload_obj = self._handle_tuner_objects(
+
+                tune_args, s3_config, kwargs
+
+            )
+
+            self._tuner_interface = None
+
+            self._tuner_state = None
+
+            self._tuner_status = None
+
+            self._sample_count = 0
+
+            self._fixed_uuid = str(uuid4())
+
+            try:
+
+                # Get all cmd line args and build overrides
+
+                self._args = self._handle_cmd_line()
+
+                # Get the actual payload from the config files -- fixed configs
+
+                self._dict_args = self._get_payload(
+
+                    payload_obj=self._payload_obj,
+
+                    input_classes=self._builder_obj.input_classes,
+
+                    ignore_args=tune_args,
+
+                )
+
+                # Build the Spockspace from the payload and the classes
+
+                # Fixed configs
+
+                self._arg_namespace = self._builder_obj.generate(self._dict_args)
+
+                # Get the payload from the config files -- hyper-parameters -- only if the obj is not None
+
+                if self._tune_obj is not None:
+
+                    self._tune_args = self._get_payload(
+
+                        payload_obj=self._tune_payload_obj,
+
+                        input_classes=self._tune_obj.input_classes,
+
+                        ignore_args=fixed_args,
+
+                    )
+
+                    # Build the Spockspace from the payload and the classes
+
+                    # Tuneable parameters
+
+                    self._tune_namespace = self._tune_obj.generate(self._tune_args)
+
+            except Exception as e:
+
+                self._print_usage_and_exit(str(e), sys_exit=False)
+
+                raise ValueError(e)
+
+
+
+        def __call__(self, *args, **kwargs):
+
+            &quot;&quot;&quot;Call to self to allow chaining
+
+
+
+            *Args*:
+
+
+
+                *args: non-keyword args
+
+                **kwargs: keyword args
+
+
+
+            *Returns*:
+
+
+
+                ConfigArgBuilder: self instance
+
+            &quot;&quot;&quot;
+
+            return ConfigArgBuilder(*args, **kwargs)
+
+
+
+        def generate(self):
+
+            &quot;&quot;&quot;Generate method that returns the actual argument namespace
+
+
+
+
+
+            *Returns*:
+
+
+
+                argument namespace consisting of all config classes
+
+
+
+            &quot;&quot;&quot;
+
+            return self._arg_namespace
+
+
+
+        @property
+
+        def tuner_status(self):
+
+            &quot;&quot;&quot;Returns a dictionary of all the necessary underlying tuner internals to report the result&quot;&quot;&quot;
+
+            return self._tuner_status
+
+
+
+        @property
+
+        def best(self):
+
+            &quot;&quot;&quot;Returns a Spockspace of the best hyper-parameter config and the associated metric value&quot;&quot;&quot;
+
+            return self._tuner_interface.best
+
+
+
+        def sample(self):
+
+            &quot;&quot;&quot;Sample method that constructs a namespace from the fixed parameters and samples from the tuner space to
+
+            generate a Spockspace derived from both
+
+
+
+            *Returns*:
+
+
+
+                argument namespace(s) -- fixed + drawn sample from tuner backend
+
+
+
+            &quot;&quot;&quot;
+
+            if self._tune_obj is None:
+
+                raise ValueError(
+
+                    f&quot;Called sample method without passing any @spockTuner decorated classes&quot;
+
+                )
+
+            if self._tuner_interface is None:
+
+                raise ValueError(
+
+                    f&quot;Called sample method without first calling the tuner method that initializes the &quot;
+
+                    f&quot;backend library&quot;
+
+                )
+
+            return_tuple = self._tuner_state
+
+            self._tuner_status = self._tuner_interface.tuner_status
+
+            self._tuner_state = self._tuner_interface.sample()
+
+            self._sample_count += 1
+
+            return return_tuple
+
+
+
+        def tuner(self, tuner_config):
+
+            &quot;&quot;&quot;Chained call that builds the tuner interface for either optuna or ax depending upon the type of the tuner_obj
+
+
+
+            *Args*:
+
+
+
+                tuner_config: a class of type optuna.study.Study or AX****
+
+
+
+            *Returns*:
+
+
+
+                self so that functions can be chained
+
+
+
+            &quot;&quot;&quot;
+
+            if self._tune_obj is None:
+
+                raise ValueError(
+
+                    f&quot;Called tuner method without passing any @spockTuner decorated classes&quot;
+
+                )
+
+            try:
+
+                from spock.addons.tune.tuner import TunerInterface
+
+
+
+                self._tuner_interface = TunerInterface(
+
+                    tuner_config=tuner_config,
+
+                    tuner_namespace=self._tune_namespace,
+
+                    fixed_namespace=self._arg_namespace,
+
+                )
+
+                self._tuner_state = self._tuner_interface.sample()
+
+            except ImportError:
+
+                print(
+
+                    &quot;Missing libraries to support tune functionality. Please re-install with the extra tune &quot;
+
+                    &quot;dependencies -- pip install spock-config[tune]&quot;
+
+                )
+
+            return self
+
+
+
+        def _print_usage_and_exit(self, msg=None, sys_exit=True, exit_code=1):
+
+            &quot;&quot;&quot;Prints the help message and exits
+
+
+
+            *Args*:
+
+
+
+                msg: message to print pre exit
+
+
+
+            *Returns*:
+
+
+
+                None
+
+
+
+            &quot;&quot;&quot;
+
+            print(f&quot;usage: {sys.argv[0]} -c [--config] config1 [config2, config3, ...]&quot;)
+
+            print(f&#39;\n{self._desc if self._desc != &quot;&quot; else &quot;&quot;}\n&#39;)
+
+            print(&quot;configuration(s):\n&quot;)
+
+            # Call the fixed parameter help info
+
+            self._builder_obj.handle_help_info()
+
+            if self._tune_obj is not None:
+
+                self._tune_obj.handle_help_info()
+
+            if msg is not None:
+
+                print(msg)
+
+            if sys_exit:
+
+                sys.exit(exit_code)
+
+
+
+        @staticmethod
+
+        def _handle_tuner_objects(tune_args, s3_config, kwargs):
+
+            &quot;&quot;&quot;Handles creating the tuner builder object if @spockTuner classes were passed in
+
+
+
+            *Args*:
+
+
+
+                tune_args: list of tuner classes
+
+                s3_config: s3Config object for S3 support
+
+                kwargs: optional keyword args
+
+
+
+            *Returns*:
+
+
+
+                tuner builder object or None
+
+
+
+            &quot;&quot;&quot;
+
+            if len(tune_args) &gt; 0:
+
+                try:
+
+                    from spock.addons.tune.builder import TunerBuilder
+
+                    from spock.addons.tune.payload import TunerPayload
+
+
+
+                    tuner_builder = TunerBuilder(*tune_args, **kwargs)
+
+                    tuner_payload = TunerPayload(s3_config=s3_config)
+
+                    return tuner_builder, tuner_payload
+
+                except ImportError:
+
+                    print(
+
+                        &quot;Missing libraries to support tune functionality. Please re-install with the extra tune &quot;
+
+                        &quot;dependencies -- pip install spock-config[tune]&quot;
+
+                    )
+
+            else:
+
+                return None, None
+
+
+
+        @staticmethod
+
+        def _verify_attr(args: typing.Tuple):
+
+            &quot;&quot;&quot;Verifies that all the input classes are attr based
+
+
+
+            *Args*:
+
+
+
+                args: tuple of classes passed to the builder
+
+
+
+            *Returns*:
+
+
+
+                None
+
+
+
+            &quot;&quot;&quot;
+
+            # Gather if all attr backend
+
+            type_attrs = all([attr.has(arg) for arg in args])
+
+            if not type_attrs:
+
+                which_idx = [attr.has(arg) for arg in args].index(False)
+
+                if hasattr(args[which_idx], &quot;__name__&quot;):
+
+                    raise TypeError(
+
+                        f&quot;*args must be of all attrs backend -- missing a @spock decorator on class &quot;
+
+                        f&quot;{args[which_idx].__name__}&quot;
+
+                    )
+
+                else:
+
+                    raise TypeError(
+
+                        f&quot;*args must be of all attrs backend -- invalid type &quot;
+
+                        f&quot;{type(args[which_idx])}&quot;
+
+                    )
+
+
+
+        @staticmethod
+
+        def _strip_tune_parameters(args: typing.Tuple):
+
+            &quot;&quot;&quot;Separates the fixed arguments from any hyper-parameter arguments
+
+
+
+            *Args*:
+
+
+
+                args: tuple of classes passed to the builder
+
+
+
+            *Returns*:
+
+
+
+                fixed_args: list of fixed args
+
+                tune_args: list of args destined for a tuner backend
+
+
+
+            &quot;&quot;&quot;
+
+            fixed_args = []
+
+            tune_args = []
+
+            for arg in args:
+
+                if arg.__module__ == &quot;spock.backend.config&quot;:
+
+                    fixed_args.append(arg)
+
+                elif arg.__module__ == &quot;spock.addons.tune.config&quot;:
+
+                    tune_args.append(arg)
+
+            return fixed_args, tune_args
+
+
+
+        def _handle_cmd_line(self):
+
+            &quot;&quot;&quot;Handle all cmd line related tasks
+
+
+
+            Config paths can enter from either the command line or be added in the class init call
+
+            as a kwarg (configs=[]) -- also trigger the building of the cmd line overrides for each fixed and
+
+            tunable objects
+
+
+
+            *Returns*:
+
+
+
+                args: namespace of args
+
+
+
+            &quot;&quot;&quot;
+
+            # Need to hold an overarching parser here that just gets appended to for both fixed and tunable objects
+
+            # Check if the no_cmd_line is not flagged and if the configs are not empty
+
+            if self._no_cmd_line and (self._configs is None):
+
+                raise ValueError(
+
+                    &quot;Flag set for preventing command line read but no paths were passed to the config kwarg&quot;
+
+                )
+
+            # If cmd_line is flagged then build the parsers if not make any empty Namespace
+
+            args = (
+
+                self._build_override_parsers(desc=self._desc)
+
+                if not self._no_cmd_line
+
+                else argparse.Namespace(config=[], help=False)
+
+            )
+
+            # If configs are present from the init call then roll these into the namespace
+
+            if self._configs is not None:
+
+                args = self._get_from_kwargs(args, self._configs)
+
+            return args
+
+
+
+        def _build_override_parsers(self, desc):
+
+            &quot;&quot;&quot;Creates parsers for command-line overrides
+
+
+
+            Builds the basic command line parser for configs and help then iterates through each attr instance to make
+
+            namespace specific cmd line override parsers -- handles calling both the fixed and tunable objects
+
+
+
+            *Args*:
+
+
+
+                desc: argparser description
+
+
+
+            *Returns*:
+
+
+
+                args: argument namespace
+
+
+
+            &quot;&quot;&quot;
+
+            # Highest level parser object
+
+            parser = argparse.ArgumentParser(description=desc, add_help=False)
+
+            parser.add_argument(&quot;-c&quot;, &quot;--config&quot;, required=False, nargs=&quot;+&quot;, default=[])
+
+            parser.add_argument(&quot;-h&quot;, &quot;--help&quot;, action=&quot;store_true&quot;)
+
+            # Handle the builder obj
+
+            parser = self._builder_obj.build_override_parsers(parser=parser)
+
+            if self._tune_obj is not None:
+
+                parser = self._tune_obj.build_override_parsers(parser=parser)
+
+            args = parser.parse_args()
+
+            return args
+
+
+
+        @staticmethod
+
+        def _get_from_kwargs(args, configs):
+
+            &quot;&quot;&quot;Get configs from the configs kwarg
+
+
+
+            *Args*:
+
+
+
+                args: argument namespace
+
+                configs: config kwarg
+
+
+
+            *Returns*:
+
+
+
+                args: arg namespace
+
+
+
+            &quot;&quot;&quot;
+
+            if isinstance(configs, list):
+
+                args.config.extend(configs)
+
+            else:
+
+                raise TypeError(
+
+                    f&quot;configs kwarg must be of type list -- given {type(configs)}&quot;
+
+                )
+
+            return args
+
+
+
+        def _get_payload(self, payload_obj, input_classes, ignore_args: typing.List):
+
+            &quot;&quot;&quot;Get the parameter payload from the config file(s)
+
+
+
+            Calls the various ways to get configs and then parses to retrieve the parameter payload - make sure to call
+
+            deep update so as to not lose some parameters when only partially updating the payload
+
+
+
+            *Args*:
+
+
+
+                payload_obj: current payload object to call
+
+                input_classes: classes to use to get payload
+
+                ignore_args: args that were decorated for hyper-parameter tuning
+
+
+
+            *Returns*:
+
+
+
+                payload: dictionary of parameter values
+
+
+
+            &quot;&quot;&quot;
+
+            if self._args.help:
+
+                # Call sys exit with a clean code as this is the help call which is not unexpected behavior
+
+                self._print_usage_and_exit(sys_exit=True, exit_code=0)
+
+            payload = {}
+
+            dependencies = {&quot;paths&quot;: [], &quot;rel_paths&quot;: [], &quot;roots&quot;: []}
+
+            if payload_obj is not None:
+
+                # Make sure we are actually trying to map to input classes
+
+                if len(input_classes) &gt; 0:
+
+                    # If configs are present then iterate through them and deal with the payload
+
+                    if len(self._args.config) &gt; 0:
+
+                        for configs in self._args.config:
+
+                            payload_update = payload_obj.payload(
+
+                                input_classes,
+
+                                ignore_args,
+
+                                configs,
+
+                                self._args,
+
+                                dependencies,
+
+                            )
+
+                            check_payload_overwrite(payload, payload_update, configs)
+
+                            deep_payload_update(payload, payload_update)
+
+                    # If there are no configs present we have to fall back only on cmd line args to fill out the necessary
+
+                    # data -- this is essentially using spock as a drop in replacement of arg-parser
+
+                    else:
+
+                        payload_update = payload_obj.payload(
+
+                            input_classes, ignore_args, None, self._args, dependencies
+
+                        )
+
+                        check_payload_overwrite(payload, payload_update, None)
+
+                        deep_payload_update(payload, payload_update)
+
+            return payload
+
+
+
+        def _save(
+
+            self,
+
+            payload,
+
+            file_name: str = None,
+
+            user_specified_path: str = None,
+
+            create_save_path: bool = True,
+
+            extra_info: bool = True,
+
+            file_extension: str = &quot;.yaml&quot;,
+
+            tuner_payload=None,
+
+            fixed_uuid=None,
+
+        ):
+
+            &quot;&quot;&quot;Private interface -- saves the current config setup to file with a UUID
+
+
+
+            *Args*:
+
+
+
+                payload: Spockspace to save
+
+                file_name: name of file (will be appended with .spock.cfg.file_extension) -- falls back to just uuid if None
+
+                user_specified_path: if user provides a path it will be used as the path to write
+
+                create_save_path: bool to create the path to save if called
+
+                extra_info: additional info to write to saved config (run date and git info)
+
+                file_extension: file type to write (default: yaml)
+
+                tuner_payload: tuner level payload (unsampled)
+
+                fixed_uuid: fixed uuid to allow for file overwrite
+
+
+
+            *Returns*:
+
+
+
+                self so that functions can be chained
+
+            &quot;&quot;&quot;
+
+            if user_specified_path is not None:
+
+                save_path = Path(user_specified_path)
+
+            elif self._builder_obj.save_path is not None:
+
+                save_path = Path(self._builder_obj.save_path)
+
+            else:
+
+                raise ValueError(
+
+                    &quot;Save did not receive a valid path from: (1) markup file(s) or (2) &quot;
+
+                    &quot;the keyword arg user_specified_path&quot;
+
+                )
+
+            # Call the saver class and save function
+
+            self._saver_obj.save(
+
+                payload,
+
+                save_path,
+
+                file_name,
+
+                create_save_path,
+
+                extra_info,
+
+                file_extension,
+
+                tuner_payload,
+
+                fixed_uuid,
+
+            )
+
+            return self
+
+
+
+        def save(
+
+            self,
+
+            file_name: str = None,
+
+            user_specified_path: str = None,
+
+            create_save_path: bool = True,
+
+            extra_info: bool = True,
+
+            file_extension: str = &quot;.yaml&quot;,
+
+            add_tuner_sample: bool = False,
+
+        ):
+
+            &quot;&quot;&quot;Saves the current config setup to file with a UUID
+
+
+
+            *Args*:
+
+
+
+                file_name: name of file (will be appended with .spock.cfg.file_extension) -- falls back to just uuid if None
+
+                user_specified_path: if user provides a path it will be used as the path to write
+
+                create_save_path: bool to create the path to save if called
+
+                extra_info: additional info to write to saved config (run date and git info)
+
+                file_extension: file type to write (default: yaml)
+
+                append_tuner_state: save the current tuner sample to the payload
+
+
+
+            *Returns*:
+
+
+
+                self so that functions can be chained
+
+            &quot;&quot;&quot;
+
+            if add_tuner_sample:
+
+                if self._tune_obj is None:
+
+                    raise ValueError(
+
+                        f&quot;Called save method with add_tuner_sample as {add_tuner_sample} without passing any @spockTuner &quot;
+
+                        f&quot;decorated classes -- please use the add_tuner_sample flag for saving only hyper-parameter tuning &quot;
+
+                        f&quot;runs&quot;
+
+                    )
+
+                file_name = (
+
+                    f&quot;hp.sample.{self._sample_count+1}&quot;
+
+                    if file_name is None
+
+                    else f&quot;{file_name}.hp.sample.{self._sample_count+1}&quot;
+
+                )
+
+                self._save(
+
+                    self._tuner_state,
+
+                    file_name,
+
+                    user_specified_path,
+
+                    create_save_path,
+
+                    extra_info,
+
+                    file_extension,
+
+                )
+
+            else:
+
+                self._save(
+
+                    self._arg_namespace,
+
+                    file_name,
+
+                    user_specified_path,
+
+                    create_save_path,
+
+                    extra_info,
+
+                    file_extension,
+
+                    tuner_payload=self._tune_namespace
+
+                    if self._tune_obj is not None
+
+                    else None,
+
+                )
+
+            return self
+
+
+
+        def save_best(
+
+            self,
+
+            file_name: str = None,
+
+            user_specified_path: str = None,
+
+            create_save_path: bool = True,
+
+            extra_info: bool = True,
+
+            file_extension: str = &quot;.yaml&quot;,
+
+        ):
+
+            &quot;&quot;&quot;Saves the current best config setup to file
+
+
+
+            *Args*:
+
+
+
+                file_name: name of file (will be appended with .spock.cfg.file_extension) -- falls back to just uuid if None
+
+                user_specified_path: if user provides a path it will be used as the path to write
+
+                create_save_path: bool to create the path to save if called
+
+                extra_info: additional info to write to saved config (run date and git info)
+
+                file_extension: file type to write (default: yaml)
+
+
+
+            *Returns*:
+
+
+
+                self so that functions can be chained
+
+            &quot;&quot;&quot;
+
+            if self._tune_obj is None:
+
+                raise ValueError(
+
+                    f&quot;Called save_best method without passing any @spockTuner decorated classes -- please use the save()&quot;
+
+                    f&quot; method for saving non hyper-parameter tuning runs&quot;
+
+                )
+
+            file_name = f&quot;hp.best&quot; if file_name is None else f&quot;{file_name}.hp.best&quot;
+
+            self._save(
+
+                Spockspace(**vars(self._arg_namespace), **vars(self.best[0])),
+
+                file_name,
+
+                user_specified_path,
+
+                create_save_path,
+
+                extra_info,
+
+                file_extension,
+
+                fixed_uuid=self._fixed_uuid,
+
+            )
+
+
+
+            return self
+
+
+
+        @property
+
+        def config_2_dict(self):
+
+            &quot;&quot;&quot;Dictionary representation of the arg payload&quot;&quot;&quot;
+
+            return self._saver_obj.dict_payload(self._arg_namespace)
+</code></pre></div>
+<h2 id="classes">Classes</h2>
+<h3 id="configargbuilder">ConfigArgBuilder</h3>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ConfigArgBuilder</span><span class="p">(</span>
+    <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+    <span class="n">configs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">NoneType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">desc</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+    <span class="n">no_cmd_line</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">s3_config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>??? example "View Source"
+        class ConfigArgBuilder:</p>
+<div class="highlight"><pre><span></span><code>        &quot;&quot;&quot;Automatically generates dataclass instances from config file(s)
+
+
+
+        This class builds out necessary arguments from *args classes, reads
+
+        the arguments from specified config file(s), and subsequently (via chained
+
+        call to generate) generates each class instance based on the necessary
+
+        field values for each backend class instance
+
+
+
+        *Attributes*:
+
+
+
+            _args: all command line args
+
+            _arg_namespace: generated argument namespace
+
+            _builder_obj: instance of a BaseBuilder class
+
+            _dict_args: dictionary args from the command line
+
+            _payload_obj: instance of a BasePayload class
+
+            _saver_obj: instance of a BaseSaver class
+
+            _tune_payload_obj: payload for tuner related objects -- instance of TunerPayload class
+
+            _tune_obj: instance of TunerBuilder class
+
+            _tuner_interface: interface that handles the underlying library for sampling -- instance of TunerInterface
+
+            _tuner_state: current state of the hyper-parameter sampler
+
+            _tune_namespace: namespace that hold the generated tuner related parameters
+
+            _sample_count: current call to the sample function
+
+            _fixed_uuid: fixed uuid to write the best file to the same path
+
+
+
+        &quot;&quot;&quot;
+
+
+
+        def __init__(
+
+            self,
+
+            *args,
+
+            configs: typing.Optional[typing.List] = None,
+
+            desc: str = &quot;&quot;,
+
+            no_cmd_line: bool = False,
+
+            s3_config=None,
+
+            **kwargs,
+
+        ):
+
+            &quot;&quot;&quot;Init call for ConfigArgBuilder
+
+
+
+            *Args*:
+
+
+
+                *args: tuple of spock decorated classes to process
+
+                configs: list of config paths
+
+                desc: description for help
+
+                no_cmd_line: turn off cmd line args
+
+                s3_config: s3Config object for S3 support
+
+                **kwargs: keyword args
+
+
+
+            &quot;&quot;&quot;
+
+            # Do some verification first
+
+            self._verify_attr(args)
+
+            self._configs = configs
+
+            self._no_cmd_line = no_cmd_line
+
+            self._desc = desc
+
+            # Build the payload and saver objects
+
+            self._payload_obj = AttrPayload(s3_config=s3_config)
+
+            self._saver_obj = AttrSaver(s3_config=s3_config)
+
+            # Split the fixed parameters from the tuneable ones (if present)
+
+            fixed_args, tune_args = self._strip_tune_parameters(args)
+
+            # The fixed parameter builder
+
+            self._builder_obj = AttrBuilder(*fixed_args, **kwargs)
+
+            # The possible tunable parameter builder -- might return None
+
+            self._tune_obj, self._tune_payload_obj = self._handle_tuner_objects(
+
+                tune_args, s3_config, kwargs
+
+            )
+
+            self._tuner_interface = None
+
+            self._tuner_state = None
+
+            self._tuner_status = None
+
+            self._sample_count = 0
+
+            self._fixed_uuid = str(uuid4())
+
+            try:
+
+                # Get all cmd line args and build overrides
+
+                self._args = self._handle_cmd_line()
+
+                # Get the actual payload from the config files -- fixed configs
+
+                self._dict_args = self._get_payload(
+
+                    payload_obj=self._payload_obj,
+
+                    input_classes=self._builder_obj.input_classes,
+
+                    ignore_args=tune_args,
+
+                )
+
+                # Build the Spockspace from the payload and the classes
+
+                # Fixed configs
+
+                self._arg_namespace = self._builder_obj.generate(self._dict_args)
+
+                # Get the payload from the config files -- hyper-parameters -- only if the obj is not None
+
+                if self._tune_obj is not None:
+
+                    self._tune_args = self._get_payload(
+
+                        payload_obj=self._tune_payload_obj,
+
+                        input_classes=self._tune_obj.input_classes,
+
+                        ignore_args=fixed_args,
+
+                    )
+
+                    # Build the Spockspace from the payload and the classes
+
+                    # Tuneable parameters
+
+                    self._tune_namespace = self._tune_obj.generate(self._tune_args)
+
+            except Exception as e:
+
+                self._print_usage_and_exit(str(e), sys_exit=False)
+
+                raise ValueError(e)
+
+
+
+        def __call__(self, *args, **kwargs):
+
+            &quot;&quot;&quot;Call to self to allow chaining
+
+
+
+            *Args*:
+
+
+
+                *args: non-keyword args
+
+                **kwargs: keyword args
+
+
+
+            *Returns*:
+
+
+
+                ConfigArgBuilder: self instance
+
+            &quot;&quot;&quot;
+
+            return ConfigArgBuilder(*args, **kwargs)
+
+
+
+        def generate(self):
+
+            &quot;&quot;&quot;Generate method that returns the actual argument namespace
+
+
+
+
+
+            *Returns*:
+
+
+
+                argument namespace consisting of all config classes
+
+
+
+            &quot;&quot;&quot;
+
+            return self._arg_namespace
+
+
+
+        @property
+
+        def tuner_status(self):
+
+            &quot;&quot;&quot;Returns a dictionary of all the necessary underlying tuner internals to report the result&quot;&quot;&quot;
+
+            return self._tuner_status
+
+
+
+        @property
+
+        def best(self):
+
+            &quot;&quot;&quot;Returns a Spockspace of the best hyper-parameter config and the associated metric value&quot;&quot;&quot;
+
+            return self._tuner_interface.best
+
+
+
+        def sample(self):
+
+            &quot;&quot;&quot;Sample method that constructs a namespace from the fixed parameters and samples from the tuner space to
+
+            generate a Spockspace derived from both
+
+
+
+            *Returns*:
+
+
+
+                argument namespace(s) -- fixed + drawn sample from tuner backend
+
+
+
+            &quot;&quot;&quot;
+
+            if self._tune_obj is None:
+
+                raise ValueError(
+
+                    f&quot;Called sample method without passing any @spockTuner decorated classes&quot;
+
+                )
+
+            if self._tuner_interface is None:
+
+                raise ValueError(
+
+                    f&quot;Called sample method without first calling the tuner method that initializes the &quot;
+
+                    f&quot;backend library&quot;
+
+                )
+
+            return_tuple = self._tuner_state
+
+            self._tuner_status = self._tuner_interface.tuner_status
+
+            self._tuner_state = self._tuner_interface.sample()
+
+            self._sample_count += 1
+
+            return return_tuple
+
+
+
+        def tuner(self, tuner_config):
+
+            &quot;&quot;&quot;Chained call that builds the tuner interface for either optuna or ax depending upon the type of the tuner_obj
+
+
+
+            *Args*:
+
+
+
+                tuner_config: a class of type optuna.study.Study or AX****
+
+
+
+            *Returns*:
+
+
+
+                self so that functions can be chained
+
+
+
+            &quot;&quot;&quot;
+
+            if self._tune_obj is None:
+
+                raise ValueError(
+
+                    f&quot;Called tuner method without passing any @spockTuner decorated classes&quot;
+
+                )
+
+            try:
+
+                from spock.addons.tune.tuner import TunerInterface
+
+
+
+                self._tuner_interface = TunerInterface(
+
+                    tuner_config=tuner_config,
+
+                    tuner_namespace=self._tune_namespace,
+
+                    fixed_namespace=self._arg_namespace,
+
+                )
+
+                self._tuner_state = self._tuner_interface.sample()
+
+            except ImportError:
+
+                print(
+
+                    &quot;Missing libraries to support tune functionality. Please re-install with the extra tune &quot;
+
+                    &quot;dependencies -- pip install spock-config[tune]&quot;
+
+                )
+
+            return self
+
+
+
+        def _print_usage_and_exit(self, msg=None, sys_exit=True, exit_code=1):
+
+            &quot;&quot;&quot;Prints the help message and exits
+
+
+
+            *Args*:
+
+
+
+                msg: message to print pre exit
+
+
+
+            *Returns*:
+
+
+
+                None
+
+
+
+            &quot;&quot;&quot;
+
+            print(f&quot;usage: {sys.argv[0]} -c [--config] config1 [config2, config3, ...]&quot;)
+
+            print(f&#39;\n{self._desc if self._desc != &quot;&quot; else &quot;&quot;}\n&#39;)
+
+            print(&quot;configuration(s):\n&quot;)
+
+            # Call the fixed parameter help info
+
+            self._builder_obj.handle_help_info()
+
+            if self._tune_obj is not None:
+
+                self._tune_obj.handle_help_info()
+
+            if msg is not None:
+
+                print(msg)
+
+            if sys_exit:
+
+                sys.exit(exit_code)
+
+
+
+        @staticmethod
+
+        def _handle_tuner_objects(tune_args, s3_config, kwargs):
+
+            &quot;&quot;&quot;Handles creating the tuner builder object if @spockTuner classes were passed in
+
+
+
+            *Args*:
+
+
+
+                tune_args: list of tuner classes
+
+                s3_config: s3Config object for S3 support
+
+                kwargs: optional keyword args
+
+
+
+            *Returns*:
+
+
+
+                tuner builder object or None
+
+
+
+            &quot;&quot;&quot;
+
+            if len(tune_args) &gt; 0:
+
+                try:
+
+                    from spock.addons.tune.builder import TunerBuilder
+
+                    from spock.addons.tune.payload import TunerPayload
+
+
+
+                    tuner_builder = TunerBuilder(*tune_args, **kwargs)
+
+                    tuner_payload = TunerPayload(s3_config=s3_config)
+
+                    return tuner_builder, tuner_payload
+
+                except ImportError:
+
+                    print(
+
+                        &quot;Missing libraries to support tune functionality. Please re-install with the extra tune &quot;
+
+                        &quot;dependencies -- pip install spock-config[tune]&quot;
+
+                    )
+
+            else:
+
+                return None, None
+
+
+
+        @staticmethod
+
+        def _verify_attr(args: typing.Tuple):
+
+            &quot;&quot;&quot;Verifies that all the input classes are attr based
+
+
+
+            *Args*:
+
+
+
+                args: tuple of classes passed to the builder
+
+
+
+            *Returns*:
+
+
+
+                None
+
+
+
+            &quot;&quot;&quot;
+
+            # Gather if all attr backend
+
+            type_attrs = all([attr.has(arg) for arg in args])
+
+            if not type_attrs:
+
+                which_idx = [attr.has(arg) for arg in args].index(False)
+
+                if hasattr(args[which_idx], &quot;__name__&quot;):
+
+                    raise TypeError(
+
+                        f&quot;*args must be of all attrs backend -- missing a @spock decorator on class &quot;
+
+                        f&quot;{args[which_idx].__name__}&quot;
+
+                    )
+
+                else:
+
+                    raise TypeError(
+
+                        f&quot;*args must be of all attrs backend -- invalid type &quot;
+
+                        f&quot;{type(args[which_idx])}&quot;
+
+                    )
+
+
+
+        @staticmethod
+
+        def _strip_tune_parameters(args: typing.Tuple):
+
+            &quot;&quot;&quot;Separates the fixed arguments from any hyper-parameter arguments
+
+
+
+            *Args*:
+
+
+
+                args: tuple of classes passed to the builder
+
+
+
+            *Returns*:
+
+
+
+                fixed_args: list of fixed args
+
+                tune_args: list of args destined for a tuner backend
+
+
+
+            &quot;&quot;&quot;
+
+            fixed_args = []
+
+            tune_args = []
+
+            for arg in args:
+
+                if arg.__module__ == &quot;spock.backend.config&quot;:
+
+                    fixed_args.append(arg)
+
+                elif arg.__module__ == &quot;spock.addons.tune.config&quot;:
+
+                    tune_args.append(arg)
+
+            return fixed_args, tune_args
+
+
+
+        def _handle_cmd_line(self):
+
+            &quot;&quot;&quot;Handle all cmd line related tasks
+
+
+
+            Config paths can enter from either the command line or be added in the class init call
+
+            as a kwarg (configs=[]) -- also trigger the building of the cmd line overrides for each fixed and
+
+            tunable objects
+
+
+
+            *Returns*:
+
+
+
+                args: namespace of args
+
+
+
+            &quot;&quot;&quot;
+
+            # Need to hold an overarching parser here that just gets appended to for both fixed and tunable objects
+
+            # Check if the no_cmd_line is not flagged and if the configs are not empty
+
+            if self._no_cmd_line and (self._configs is None):
+
+                raise ValueError(
+
+                    &quot;Flag set for preventing command line read but no paths were passed to the config kwarg&quot;
+
+                )
+
+            # If cmd_line is flagged then build the parsers if not make any empty Namespace
+
+            args = (
+
+                self._build_override_parsers(desc=self._desc)
+
+                if not self._no_cmd_line
+
+                else argparse.Namespace(config=[], help=False)
+
+            )
+
+            # If configs are present from the init call then roll these into the namespace
+
+            if self._configs is not None:
+
+                args = self._get_from_kwargs(args, self._configs)
+
+            return args
+
+
+
+        def _build_override_parsers(self, desc):
+
+            &quot;&quot;&quot;Creates parsers for command-line overrides
+
+
+
+            Builds the basic command line parser for configs and help then iterates through each attr instance to make
+
+            namespace specific cmd line override parsers -- handles calling both the fixed and tunable objects
+
+
+
+            *Args*:
+
+
+
+                desc: argparser description
+
+
+
+            *Returns*:
+
+
+
+                args: argument namespace
+
+
+
+            &quot;&quot;&quot;
+
+            # Highest level parser object
+
+            parser = argparse.ArgumentParser(description=desc, add_help=False)
+
+            parser.add_argument(&quot;-c&quot;, &quot;--config&quot;, required=False, nargs=&quot;+&quot;, default=[])
+
+            parser.add_argument(&quot;-h&quot;, &quot;--help&quot;, action=&quot;store_true&quot;)
+
+            # Handle the builder obj
+
+            parser = self._builder_obj.build_override_parsers(parser=parser)
+
+            if self._tune_obj is not None:
+
+                parser = self._tune_obj.build_override_parsers(parser=parser)
+
+            args = parser.parse_args()
+
+            return args
+
+
+
+        @staticmethod
+
+        def _get_from_kwargs(args, configs):
+
+            &quot;&quot;&quot;Get configs from the configs kwarg
+
+
+
+            *Args*:
+
+
+
+                args: argument namespace
+
+                configs: config kwarg
+
+
+
+            *Returns*:
+
+
+
+                args: arg namespace
+
+
+
+            &quot;&quot;&quot;
+
+            if isinstance(configs, list):
+
+                args.config.extend(configs)
+
+            else:
+
+                raise TypeError(
+
+                    f&quot;configs kwarg must be of type list -- given {type(configs)}&quot;
+
+                )
+
+            return args
+
+
+
+        def _get_payload(self, payload_obj, input_classes, ignore_args: typing.List):
+
+            &quot;&quot;&quot;Get the parameter payload from the config file(s)
+
+
+
+            Calls the various ways to get configs and then parses to retrieve the parameter payload - make sure to call
+
+            deep update so as to not lose some parameters when only partially updating the payload
+
+
+
+            *Args*:
+
+
+
+                payload_obj: current payload object to call
+
+                input_classes: classes to use to get payload
+
+                ignore_args: args that were decorated for hyper-parameter tuning
+
+
+
+            *Returns*:
+
+
+
+                payload: dictionary of parameter values
+
+
+
+            &quot;&quot;&quot;
+
+            if self._args.help:
+
+                # Call sys exit with a clean code as this is the help call which is not unexpected behavior
+
+                self._print_usage_and_exit(sys_exit=True, exit_code=0)
+
+            payload = {}
+
+            dependencies = {&quot;paths&quot;: [], &quot;rel_paths&quot;: [], &quot;roots&quot;: []}
+
+            if payload_obj is not None:
+
+                # Make sure we are actually trying to map to input classes
+
+                if len(input_classes) &gt; 0:
+
+                    # If configs are present then iterate through them and deal with the payload
+
+                    if len(self._args.config) &gt; 0:
+
+                        for configs in self._args.config:
+
+                            payload_update = payload_obj.payload(
+
+                                input_classes,
+
+                                ignore_args,
+
+                                configs,
+
+                                self._args,
+
+                                dependencies,
+
+                            )
+
+                            check_payload_overwrite(payload, payload_update, configs)
+
+                            deep_payload_update(payload, payload_update)
+
+                    # If there are no configs present we have to fall back only on cmd line args to fill out the necessary
+
+                    # data -- this is essentially using spock as a drop in replacement of arg-parser
+
+                    else:
+
+                        payload_update = payload_obj.payload(
+
+                            input_classes, ignore_args, None, self._args, dependencies
+
+                        )
+
+                        check_payload_overwrite(payload, payload_update, None)
+
+                        deep_payload_update(payload, payload_update)
+
+            return payload
+
+
+
+        def _save(
+
+            self,
+
+            payload,
+
+            file_name: str = None,
+
+            user_specified_path: str = None,
+
+            create_save_path: bool = True,
+
+            extra_info: bool = True,
+
+            file_extension: str = &quot;.yaml&quot;,
+
+            tuner_payload=None,
+
+            fixed_uuid=None,
+
+        ):
+
+            &quot;&quot;&quot;Private interface -- saves the current config setup to file with a UUID
+
+
+
+            *Args*:
+
+
+
+                payload: Spockspace to save
+
+                file_name: name of file (will be appended with .spock.cfg.file_extension) -- falls back to just uuid if None
+
+                user_specified_path: if user provides a path it will be used as the path to write
+
+                create_save_path: bool to create the path to save if called
+
+                extra_info: additional info to write to saved config (run date and git info)
+
+                file_extension: file type to write (default: yaml)
+
+                tuner_payload: tuner level payload (unsampled)
+
+                fixed_uuid: fixed uuid to allow for file overwrite
+
+
+
+            *Returns*:
+
+
+
+                self so that functions can be chained
+
+            &quot;&quot;&quot;
+
+            if user_specified_path is not None:
+
+                save_path = Path(user_specified_path)
+
+            elif self._builder_obj.save_path is not None:
+
+                save_path = Path(self._builder_obj.save_path)
+
+            else:
+
+                raise ValueError(
+
+                    &quot;Save did not receive a valid path from: (1) markup file(s) or (2) &quot;
+
+                    &quot;the keyword arg user_specified_path&quot;
+
+                )
+
+            # Call the saver class and save function
+
+            self._saver_obj.save(
+
+                payload,
+
+                save_path,
+
+                file_name,
+
+                create_save_path,
+
+                extra_info,
+
+                file_extension,
+
+                tuner_payload,
+
+                fixed_uuid,
+
+            )
+
+            return self
+
+
+
+        def save(
+
+            self,
+
+            file_name: str = None,
+
+            user_specified_path: str = None,
+
+            create_save_path: bool = True,
+
+            extra_info: bool = True,
+
+            file_extension: str = &quot;.yaml&quot;,
+
+            add_tuner_sample: bool = False,
+
+        ):
+
+            &quot;&quot;&quot;Saves the current config setup to file with a UUID
+
+
+
+            *Args*:
+
+
+
+                file_name: name of file (will be appended with .spock.cfg.file_extension) -- falls back to just uuid if None
+
+                user_specified_path: if user provides a path it will be used as the path to write
+
+                create_save_path: bool to create the path to save if called
+
+                extra_info: additional info to write to saved config (run date and git info)
+
+                file_extension: file type to write (default: yaml)
+
+                append_tuner_state: save the current tuner sample to the payload
+
+
+
+            *Returns*:
+
+
+
+                self so that functions can be chained
+
+            &quot;&quot;&quot;
+
+            if add_tuner_sample:
+
+                if self._tune_obj is None:
+
+                    raise ValueError(
+
+                        f&quot;Called save method with add_tuner_sample as {add_tuner_sample} without passing any @spockTuner &quot;
+
+                        f&quot;decorated classes -- please use the add_tuner_sample flag for saving only hyper-parameter tuning &quot;
+
+                        f&quot;runs&quot;
+
+                    )
+
+                file_name = (
+
+                    f&quot;hp.sample.{self._sample_count+1}&quot;
+
+                    if file_name is None
+
+                    else f&quot;{file_name}.hp.sample.{self._sample_count+1}&quot;
+
+                )
+
+                self._save(
+
+                    self._tuner_state,
+
+                    file_name,
+
+                    user_specified_path,
+
+                    create_save_path,
+
+                    extra_info,
+
+                    file_extension,
+
+                )
+
+            else:
+
+                self._save(
+
+                    self._arg_namespace,
+
+                    file_name,
+
+                    user_specified_path,
+
+                    create_save_path,
+
+                    extra_info,
+
+                    file_extension,
+
+                    tuner_payload=self._tune_namespace
+
+                    if self._tune_obj is not None
+
+                    else None,
+
+                )
+
+            return self
+
+
+
+        def save_best(
+
+            self,
+
+            file_name: str = None,
+
+            user_specified_path: str = None,
+
+            create_save_path: bool = True,
+
+            extra_info: bool = True,
+
+            file_extension: str = &quot;.yaml&quot;,
+
+        ):
+
+            &quot;&quot;&quot;Saves the current best config setup to file
+
+
+
+            *Args*:
+
+
+
+                file_name: name of file (will be appended with .spock.cfg.file_extension) -- falls back to just uuid if None
+
+                user_specified_path: if user provides a path it will be used as the path to write
+
+                create_save_path: bool to create the path to save if called
+
+                extra_info: additional info to write to saved config (run date and git info)
+
+                file_extension: file type to write (default: yaml)
+
+
+
+            *Returns*:
+
+
+
+                self so that functions can be chained
+
+            &quot;&quot;&quot;
+
+            if self._tune_obj is None:
+
+                raise ValueError(
+
+                    f&quot;Called save_best method without passing any @spockTuner decorated classes -- please use the save()&quot;
+
+                    f&quot; method for saving non hyper-parameter tuning runs&quot;
+
+                )
+
+            file_name = f&quot;hp.best&quot; if file_name is None else f&quot;{file_name}.hp.best&quot;
+
+            self._save(
+
+                Spockspace(**vars(self._arg_namespace), **vars(self.best[0])),
+
+                file_name,
+
+                user_specified_path,
+
+                create_save_path,
+
+                extra_info,
+
+                file_extension,
+
+                fixed_uuid=self._fixed_uuid,
+
+            )
+
+
+
+            return self
+
+
+
+        @property
+
+        def config_2_dict(self):
+
+            &quot;&quot;&quot;Dictionary representation of the arg payload&quot;&quot;&quot;
+
+            return self._saver_obj.dict_payload(self._arg_namespace)
+</code></pre></div>
+<hr />
+<h4 id="instance-variables">Instance variables</h4>
+<div class="highlight"><pre><span></span><code><span class="n">best</span>
+</code></pre></div>
+<p>Returns a Spockspace of the best hyper-parameter config and the associated metric value</p>
+<div class="highlight"><pre><span></span><code><span class="n">config_2_dict</span>
+</code></pre></div>
+<p>Dictionary representation of the arg payload</p>
+<div class="highlight"><pre><span></span><code><span class="n">tuner_status</span>
+</code></pre></div>
+<p>Returns a dictionary of all the necessary underlying tuner internals to report the result</p>
+<h4 id="methods">Methods</h4>
+<h4 id="generate">generate</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">generate</span><span class="p">(</span>
+    <span class="bp">self</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Generate method that returns the actual argument namespace</p>
+<p><em>Returns</em>:</p>
+<div class="highlight"><pre><span></span><code>argument namespace consisting of all config classes
+</code></pre></div>
+<p>??? example "View Source"
+            def generate(self):</p>
+<div class="highlight"><pre><span></span><code>            &quot;&quot;&quot;Generate method that returns the actual argument namespace
+
+
+
+
+
+            *Returns*:
+
+
+
+                argument namespace consisting of all config classes
+
+
+
+            &quot;&quot;&quot;
+
+            return self._arg_namespace
+</code></pre></div>
+<h4 id="sample">sample</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">sample</span><span class="p">(</span>
+    <span class="bp">self</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Sample method that constructs a namespace from the fixed parameters and samples from the tuner space to</p>
+<p>generate a Spockspace derived from both</p>
+<p><em>Returns</em>:</p>
+<div class="highlight"><pre><span></span><code>argument namespace(s) -- fixed + drawn sample from tuner backend
+</code></pre></div>
+<p>??? example "View Source"
+            def sample(self):</p>
+<div class="highlight"><pre><span></span><code>            &quot;&quot;&quot;Sample method that constructs a namespace from the fixed parameters and samples from the tuner space to
+
+            generate a Spockspace derived from both
+
+
+
+            *Returns*:
+
+
+
+                argument namespace(s) -- fixed + drawn sample from tuner backend
+
+
+
+            &quot;&quot;&quot;
+
+            if self._tune_obj is None:
+
+                raise ValueError(
+
+                    f&quot;Called sample method without passing any @spockTuner decorated classes&quot;
+
+                )
+
+            if self._tuner_interface is None:
+
+                raise ValueError(
+
+                    f&quot;Called sample method without first calling the tuner method that initializes the &quot;
+
+                    f&quot;backend library&quot;
+
+                )
+
+            return_tuple = self._tuner_state
+
+            self._tuner_status = self._tuner_interface.tuner_status
+
+            self._tuner_state = self._tuner_interface.sample()
+
+            self._sample_count += 1
+
+            return return_tuple
+</code></pre></div>
+<h4 id="save">save</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">save</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">user_specified_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">create_save_path</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">extra_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">file_extension</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;.yaml&#39;</span><span class="p">,</span>
+    <span class="n">add_tuner_sample</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Saves the current config setup to file with a UUID</p>
+<p><em>Args</em>:</p>
+<div class="highlight"><pre><span></span><code>file_name: name of file (will be appended with .spock.cfg.file_extension) -- falls back to just uuid if None
+user_specified_path: if user provides a path it will be used as the path to write
+create_save_path: bool to create the path to save if called
+extra_info: additional info to write to saved config (run date and git info)
+file_extension: file type to write (default: yaml)
+append_tuner_state: save the current tuner sample to the payload
+</code></pre></div>
+<p><em>Returns</em>:</p>
+<div class="highlight"><pre><span></span><code>self so that functions can be chained
+</code></pre></div>
+<p>??? example "View Source"
+            def save(</p>
+<div class="highlight"><pre><span></span><code>            self,
+
+            file_name: str = None,
+
+            user_specified_path: str = None,
+
+            create_save_path: bool = True,
+
+            extra_info: bool = True,
+
+            file_extension: str = &quot;.yaml&quot;,
+
+            add_tuner_sample: bool = False,
+
+        ):
+
+            &quot;&quot;&quot;Saves the current config setup to file with a UUID
+
+
+
+            *Args*:
+
+
+
+                file_name: name of file (will be appended with .spock.cfg.file_extension) -- falls back to just uuid if None
+
+                user_specified_path: if user provides a path it will be used as the path to write
+
+                create_save_path: bool to create the path to save if called
+
+                extra_info: additional info to write to saved config (run date and git info)
+
+                file_extension: file type to write (default: yaml)
+
+                append_tuner_state: save the current tuner sample to the payload
+
+
+
+            *Returns*:
+
+
+
+                self so that functions can be chained
+
+            &quot;&quot;&quot;
+
+            if add_tuner_sample:
+
+                if self._tune_obj is None:
+
+                    raise ValueError(
+
+                        f&quot;Called save method with add_tuner_sample as {add_tuner_sample} without passing any @spockTuner &quot;
+
+                        f&quot;decorated classes -- please use the add_tuner_sample flag for saving only hyper-parameter tuning &quot;
+
+                        f&quot;runs&quot;
+
+                    )
+
+                file_name = (
+
+                    f&quot;hp.sample.{self._sample_count+1}&quot;
+
+                    if file_name is None
+
+                    else f&quot;{file_name}.hp.sample.{self._sample_count+1}&quot;
+
+                )
+
+                self._save(
+
+                    self._tuner_state,
+
+                    file_name,
+
+                    user_specified_path,
+
+                    create_save_path,
+
+                    extra_info,
+
+                    file_extension,
+
+                )
+
+            else:
+
+                self._save(
+
+                    self._arg_namespace,
+
+                    file_name,
+
+                    user_specified_path,
+
+                    create_save_path,
+
+                    extra_info,
+
+                    file_extension,
+
+                    tuner_payload=self._tune_namespace
+
+                    if self._tune_obj is not None
+
+                    else None,
+
+                )
+
+            return self
+</code></pre></div>
+<h4 id="save_best">save_best</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">save_best</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">user_specified_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">create_save_path</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">extra_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">file_extension</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;.yaml&#39;</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Saves the current best config setup to file</p>
+<p><em>Args</em>:</p>
+<div class="highlight"><pre><span></span><code>file_name: name of file (will be appended with .spock.cfg.file_extension) -- falls back to just uuid if None
+user_specified_path: if user provides a path it will be used as the path to write
+create_save_path: bool to create the path to save if called
+extra_info: additional info to write to saved config (run date and git info)
+file_extension: file type to write (default: yaml)
+</code></pre></div>
+<p><em>Returns</em>:</p>
+<div class="highlight"><pre><span></span><code>self so that functions can be chained
+</code></pre></div>
+<p>??? example "View Source"
+            def save_best(</p>
+<div class="highlight"><pre><span></span><code>            self,
+
+            file_name: str = None,
+
+            user_specified_path: str = None,
+
+            create_save_path: bool = True,
+
+            extra_info: bool = True,
+
+            file_extension: str = &quot;.yaml&quot;,
+
+        ):
+
+            &quot;&quot;&quot;Saves the current best config setup to file
+
+
+
+            *Args*:
+
+
+
+                file_name: name of file (will be appended with .spock.cfg.file_extension) -- falls back to just uuid if None
+
+                user_specified_path: if user provides a path it will be used as the path to write
+
+                create_save_path: bool to create the path to save if called
+
+                extra_info: additional info to write to saved config (run date and git info)
+
+                file_extension: file type to write (default: yaml)
+
+
+
+            *Returns*:
+
+
+
+                self so that functions can be chained
+
+            &quot;&quot;&quot;
+
+            if self._tune_obj is None:
+
+                raise ValueError(
+
+                    f&quot;Called save_best method without passing any @spockTuner decorated classes -- please use the save()&quot;
+
+                    f&quot; method for saving non hyper-parameter tuning runs&quot;
+
+                )
+
+            file_name = f&quot;hp.best&quot; if file_name is None else f&quot;{file_name}.hp.best&quot;
+
+            self._save(
+
+                Spockspace(**vars(self._arg_namespace), **vars(self.best[0])),
+
+                file_name,
+
+                user_specified_path,
+
+                create_save_path,
+
+                extra_info,
+
+                file_extension,
+
+                fixed_uuid=self._fixed_uuid,
+
+            )
+
+
+
+            return self
+</code></pre></div>
+<h4 id="tuner">tuner</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">tuner</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">tuner_config</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Chained call that builds the tuner interface for either optuna or ax depending upon the type of the tuner_obj</p>
+<p><em>Args</em>:</p>
+<div class="highlight"><pre><span></span><code>tuner_config: a class of type optuna.study.Study or AX****
+</code></pre></div>
+<p><em>Returns</em>:</p>
+<div class="highlight"><pre><span></span><code>self so that functions can be chained
+</code></pre></div>
+<p>??? example "View Source"
+            def tuner(self, tuner_config):</p>
+<div class="highlight"><pre><span></span><code>            &quot;&quot;&quot;Chained call that builds the tuner interface for either optuna or ax depending upon the type of the tuner_obj
+
+
+
+            *Args*:
+
+
+
+                tuner_config: a class of type optuna.study.Study or AX****
+
+
+
+            *Returns*:
+
+
+
+                self so that functions can be chained
+
+
+
+            &quot;&quot;&quot;
+
+            if self._tune_obj is None:
+
+                raise ValueError(
+
+                    f&quot;Called tuner method without passing any @spockTuner decorated classes&quot;
+
+                )
+
+            try:
+
+                from spock.addons.tune.tuner import TunerInterface
+
+
+
+                self._tuner_interface = TunerInterface(
+
+                    tuner_config=tuner_config,
+
+                    tuner_namespace=self._tune_namespace,
+
+                    fixed_namespace=self._arg_namespace,
+
+                )
+
+                self._tuner_state = self._tuner_interface.sample()
+
+            except ImportError:
+
+                print(
+
+                    &quot;Missing libraries to support tune functionality. Please re-install with the extra tune &quot;
+
+                    &quot;dependencies -- pip install spock-config[tune]&quot;
+
+                )
+
+            return self
+</code></pre></div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../args/" title="Args" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Args
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../config/" title="Config" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Config
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Powered by
+        <a href="http://timothycrosley.github.io/portray">portray.</a>
+        You too can
+        <a href="http://timothycrosley.github.io/portray">
+          portray</a>
+        your Python project well using automatic documentation.
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.f8263e09.min.js", "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.4fc53ad4.min.js"></script>
+      
+    
+  </body>
+</html>

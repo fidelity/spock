@@ -1,0 +1,3706 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      <link rel="icon" href="../../../../resources/images/logo_small.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.0">
+    
+    
+      
+        <title>Payload - spock</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.8b42a75e.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.3f5d1f46.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#546d78">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="blue-grey" data-md-color-accent="pink">
+  
+    
+    <script>function __prefix(e){return new URL("../../../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#module-spockbackendpayload" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../.." title="spock" class="md-header__button md-logo" aria-label="spock" data-md-component="logo">
+      
+  <img src="../../../../resources/images/logo_small.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            spock
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Payload
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/fidelity/spock/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    spock
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="spock" class="md-nav__button md-logo" aria-label="spock" data-md-component="logo">
+      
+  <img src="../../../../resources/images/logo_small.png" alt="logo">
+
+    </a>
+    spock
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/fidelity/spock/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    spock
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/Installation/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/Motivation/" class="md-nav__link">
+        Motivation
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/Quick-Start/" class="md-nav__link">
+        Quick Start
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/ArgParser-Replacement/" class="md-nav__link">
+        argparse Replacement
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6">
+          Basic Tutorial
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Basic Tutorial" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          Basic Tutorial
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/basic_tutorial/About/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/basic_tutorial/Define/" class="md-nav__link">
+        Define
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/basic_tutorial/Building/" class="md-nav__link">
+        Building
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/basic_tutorial/Configuration-Files/" class="md-nav__link">
+        Configuration Files
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/basic_tutorial/Saving/" class="md-nav__link">
+        Saving
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/basic_tutorial/Run/" class="md-nav__link">
+        Running
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_7">
+          Advanced Features
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Advanced Features" data-md-level="1">
+        <label class="md-nav__title" for="__nav_7">
+          <span class="md-nav__icon md-icon"></span>
+          Advanced Features
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/advanced_features/About/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/advanced_features/Defaults/" class="md-nav__link">
+        Default Values
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/advanced_features/Optional-Parameters/" class="md-nav__link">
+        Optional Parameters
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/advanced_features/Parameter-Groups/" class="md-nav__link">
+        Parameter Groups
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/advanced_features/Inheritance/" class="md-nav__link">
+        Inheritance
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/advanced_features/Advanced-Types/" class="md-nav__link">
+        Advanced Types
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/advanced_features/Local-Definitions/" class="md-nav__link">
+        Local Defintions
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/advanced_features/Keyword-Configs/" class="md-nav__link">
+        Keyword Configs
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/advanced_features/Composition/" class="md-nav__link">
+        Composition
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/advanced_features/Command-Line-Overrides/" class="md-nav__link">
+        Command Line Overrides
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8">
+          Addons
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Addons" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          Addons
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/addons/S3/" class="md-nav__link">
+        S3
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2" type="checkbox" id="__nav_8_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_2">
+          Hyper-Parameter Tuning
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Hyper-Parameter Tuning" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_2">
+          <span class="md-nav__icon md-icon"></span>
+          Hyper-Parameter Tuning
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/addons/tuner/About/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/addons/tuner/Basics/" class="md-nav__link">
+        Basics
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/addons/tuner/Ax/" class="md-nav__link">
+        Ax
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/addons/tuner/Optuna/" class="md-nav__link">
+        Optuna
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/addons/tuner/Saving/" class="md-nav__link">
+        Saving
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../CONTRIBUTING/" class="md-nav__link">
+        Contributing
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10" type="checkbox" id="__nav_10" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10">
+          Reference
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Reference" data-md-level="1">
+        <label class="md-nav__title" for="__nav_10">
+          <span class="md-nav__icon md-icon"></span>
+          Reference
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_1" type="checkbox" id="__nav_10_1" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_1">
+          Spock
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Spock" data-md-level="2">
+        <label class="md-nav__title" for="__nav_10_1">
+          <span class="md-nav__icon md-icon"></span>
+          Spock
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../args/" class="md-nav__link">
+        Args
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../builder/" class="md-nav__link">
+        Builder
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../config/" class="md-nav__link">
+        Config
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../handlers/" class="md-nav__link">
+        Handlers
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/" class="md-nav__link">
+        Utils
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_1_7" type="checkbox" id="__nav_10_1_7" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_1_7">
+          Addons
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Addons" data-md-level="3">
+        <label class="md-nav__title" for="__nav_10_1_7">
+          <span class="md-nav__icon md-icon"></span>
+          Addons
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../addons/" class="md-nav__link">
+        Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_1_7_2" type="checkbox" id="__nav_10_1_7_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_1_7_2">
+          S3
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="S3" data-md-level="4">
+        <label class="md-nav__title" for="__nav_10_1_7_2">
+          <span class="md-nav__icon md-icon"></span>
+          S3
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../addons/s3/configs/" class="md-nav__link">
+        Configs
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../addons/s3/" class="md-nav__link">
+        Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../addons/s3/utils/" class="md-nav__link">
+        Utils
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_1_7_3" type="checkbox" id="__nav_10_1_7_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_1_7_3">
+          Tune
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Tune" data-md-level="4">
+        <label class="md-nav__title" for="__nav_10_1_7_3">
+          <span class="md-nav__icon md-icon"></span>
+          Tune
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../addons/tune/ax/" class="md-nav__link">
+        Ax
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../addons/tune/builder/" class="md-nav__link">
+        Builder
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../addons/tune/config/" class="md-nav__link">
+        Config
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../addons/tune/" class="md-nav__link">
+        Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../addons/tune/interface/" class="md-nav__link">
+        Interface
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../addons/tune/optuna/" class="md-nav__link">
+        Optuna
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../addons/tune/payload/" class="md-nav__link">
+        Payload
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../addons/tune/tuner/" class="md-nav__link">
+        Tuner
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_1_8" type="checkbox" id="__nav_10_1_8" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_1_8">
+          Backend
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Backend" data-md-level="3">
+        <label class="md-nav__title" for="__nav_10_1_8">
+          <span class="md-nav__icon md-icon"></span>
+          Backend
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../builder/" class="md-nav__link">
+        Builder
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../config/" class="md-nav__link">
+        Config
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../handler/" class="md-nav__link">
+        Handler
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Payload
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Payload
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#classes" class="md-nav__link">
+    Classes
+  </a>
+  
+    <nav class="md-nav" aria-label="Classes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#attrpayload" class="md-nav__link">
+    AttrPayload
+  </a>
+  
+    <nav class="md-nav" aria-label="AttrPayload">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    Methods
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#payload" class="md-nav__link">
+    payload
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#basepayload" class="md-nav__link">
+    BasePayload
+  </a>
+  
+    <nav class="md-nav" aria-label="BasePayload">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_1" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#descendants" class="md-nav__link">
+    Descendants
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_1" class="md-nav__link">
+    Methods
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#payload_1" class="md-nav__link">
+    payload
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../saver/" class="md-nav__link">
+        Saver
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../typed/" class="md-nav__link">
+        Typed
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utils/" class="md-nav__link">
+        Utils
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wrappers/" class="md-nav__link">
+        Wrappers
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#classes" class="md-nav__link">
+    Classes
+  </a>
+  
+    <nav class="md-nav" aria-label="Classes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#attrpayload" class="md-nav__link">
+    AttrPayload
+  </a>
+  
+    <nav class="md-nav" aria-label="AttrPayload">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    Methods
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#payload" class="md-nav__link">
+    payload
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#basepayload" class="md-nav__link">
+    BasePayload
+  </a>
+  
+    <nav class="md-nav" aria-label="BasePayload">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_1" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#descendants" class="md-nav__link">
+    Descendants
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_1" class="md-nav__link">
+    Methods
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#payload_1" class="md-nav__link">
+    payload
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/fidelity/spock/edit/main/reference/spock/backend/payload.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                <h1 id="module-spockbackendpayload">Module spock.backend.payload</h1>
+<p>Handles payloads from markup files</p>
+<p>None</p>
+<p>??? example "View Source"
+        # -<em>- coding: utf-8 -</em>-</p>
+<div class="highlight"><pre><span></span><code>    # Copyright FMR LLC &lt;opensource@fidelity.com&gt;
+
+    # SPDX-License-Identifier: Apache-2.0
+
+
+
+    &quot;&quot;&quot;Handles payloads from markup files&quot;&quot;&quot;
+
+
+
+    import os
+
+    import sys
+
+    from abc import abstractmethod
+
+    from itertools import chain
+
+    from pathlib import Path
+
+
+
+    from spock.backend.handler import BaseHandler
+
+    from spock.backend.utils import (
+
+        convert_to_tuples,
+
+        deep_update,
+
+        get_attr_fields,
+
+        get_type_fields,
+
+    )
+
+    from spock.utils import check_path_s3
+
+
+
+
+
+    class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
+
+        &quot;&quot;&quot;Handles building the payload for config file(s)
+
+
+
+        This class builds out the payload from config files of multiple types. It handles various
+
+        file types and also composition of config files via recursive calls
+
+
+
+        *Attributes*:
+
+
+
+            _loaders: maps of each file extension to the loader class
+
+            __s3_config: optional S3Config object to handle s3 access
+
+
+
+        &quot;&quot;&quot;
+
+
+
+        def __init__(self, s3_config=None):
+
+            super(BasePayload, self).__init__(s3_config=s3_config)
+
+
+
+        @staticmethod
+
+        @abstractmethod
+
+        def _update_payload(base_payload, input_classes, ignore_classes, payload):
+
+            &quot;&quot;&quot;Updates the payload
+
+
+
+            Checks the parameters defined in the config files against the provided classes and if
+
+            passable adds them to the payload
+
+
+
+            *Args*:
+
+
+
+                base_payload: current payload
+
+                input_classes: class to roll into
+
+                ignore_classes: list of classes to ignore
+
+                payload: total payload
+
+
+
+            *Returns*:
+
+
+
+                payload: updated payload
+
+
+
+            &quot;&quot;&quot;
+
+
+
+        def payload(self, input_classes, ignore_classes, path, cmd_args, deps):
+
+            &quot;&quot;&quot;Builds the payload from config files
+
+
+
+            Public exposed call to build the payload and set any command line overrides
+
+
+
+            *Args*:
+
+
+
+                input_classes: list of backend classes
+
+                ignore_classes: list of classes to ignore
+
+                path: path to config file(s)
+
+                cmd_args: command line overrides
+
+                deps: dictionary of config dependencies
+
+
+
+            *Returns*:
+
+
+
+                payload: dictionary of all mapped parameters
+
+
+
+            &quot;&quot;&quot;
+
+            payload = self._payload(input_classes, ignore_classes, path, deps, root=True)
+
+            payload = self._handle_overrides(payload, ignore_classes, cmd_args)
+
+            return payload
+
+
+
+        def _payload(self, input_classes, ignore_classes, path, deps, root=False):
+
+            &quot;&quot;&quot;Private call to construct the payload
+
+
+
+            Main function call that builds out the payload from config files of multiple types. It handles
+
+            various file types and also composition of config files via a recursive calls
+
+
+
+            *Args*:
+
+                input_classes: list of backend classes
+
+                ignore_classes: list of classes to ignore
+
+                path: path to config file(s)
+
+                deps: dictionary of config dependencies
+
+
+
+            *Returns*:
+
+
+
+                payload: dictionary of all mapped parameters
+
+
+
+            &quot;&quot;&quot;
+
+            # empty payload
+
+            payload = {}
+
+            if path is not None:
+
+                # Match to loader based on file-extension
+
+                config_extension = Path(path).suffix.lower()
+
+                # Verify extension
+
+                self._check_extension(file_extension=config_extension)
+
+                # Load from file
+
+                base_payload = self._supported_extensions.get(config_extension)().load(
+
+                    path, s3_config=self._s3_config
+
+                )
+
+                base_payload = {} if base_payload is None else base_payload
+
+                # Check and? update the dependencies
+
+                deps = self._handle_dependencies(deps, path, root)
+
+                if &quot;config&quot; in base_payload:
+
+                    payload = self._handle_includes(
+
+                        base_payload,
+
+                        config_extension,
+
+                        input_classes,
+
+                        ignore_classes,
+
+                        path,
+
+                        payload,
+
+                        deps,
+
+                    )
+
+                payload = self._update_payload(
+
+                    base_payload, input_classes, ignore_classes, payload
+
+                )
+
+            return payload
+
+
+
+        @staticmethod
+
+        def _handle_dependencies(deps, path, root):
+
+            &quot;&quot;&quot;Handles config file dependencies
+
+
+
+            Checks to see if the config path (full or relative) has already been encountered. Essentially a DFS for graph
+
+            cycles
+
+
+
+            *Args*:
+
+
+
+                deps: dictionary of config dependencies
+
+                path: current config path
+
+                root: boolean if root
+
+
+
+            *Returns*:
+
+
+
+                deps: updated dependencies
+
+
+
+            &quot;&quot;&quot;
+
+            if root and path in deps.get(&quot;paths&quot;):
+
+                raise ValueError(
+
+                    f&quot;Duplicate Read -- Config file {path} has already been encountered. &quot;
+
+                    f&quot;Please remove duplicate reads of config files.&quot;
+
+                )
+
+            elif path in deps.get(&quot;paths&quot;) or path in deps.get(&quot;rel_paths&quot;):
+
+                raise ValueError(
+
+                    f&quot;Cyclical Dependency -- Config file {path} has already been encountered. &quot;
+
+                    f&quot;Please remove cyclical dependencies between config files.&quot;
+
+                )
+
+            else:
+
+                # Update the dependency lists
+
+                deps.get(&quot;paths&quot;).append(path)
+
+                deps.get(&quot;rel_paths&quot;).append(os.path.basename(path))
+
+                if root:
+
+                    deps.get(&quot;roots&quot;).append(path)
+
+            return deps
+
+
+
+        def _handle_includes(
+
+            self,
+
+            base_payload,
+
+            config_extension,
+
+            input_classes,
+
+            ignore_classes,
+
+            path,
+
+            payload,
+
+            deps,
+
+        ):  # pylint: disable=too-many-arguments
+
+            &quot;&quot;&quot;Handles config composition
+
+
+
+            For all of the config tags in the config file this function will recursively call the payload function
+
+            with the composition path to get the additional payload(s) from the composed file(s) -- checks for file
+
+            validity or if it is an S3 URI via regex
+
+
+
+            *Args*:
+
+
+
+                base_payload: base payload that has a config kwarg
+
+                config_extension: file type
+
+                input_classes: defined backend classes
+
+                ignore_classes: list of classes to ignore
+
+                path: path to base file
+
+                payload: payload pulled from composed files
+
+                deps: dictionary of config dependencies
+
+
+
+            *Returns*:
+
+
+
+                payload: payload update from composed files
+
+
+
+            &quot;&quot;&quot;
+
+            included_params = {}
+
+            for inc_path in base_payload[&quot;config&quot;]:
+
+                if check_path_s3(inc_path):
+
+                    use_path = inc_path
+
+                elif os.path.exists(inc_path):
+
+                    use_path = inc_path
+
+                elif os.path.join(os.path.dirname(path), inc_path):
+
+                    use_path = os.path.join(os.path.dirname(path), inc_path)
+
+                else:
+
+                    raise RuntimeError(
+
+                        f&quot;Could not find included {config_extension} file {inc_path} or is not an S3 URI!&quot;
+
+                    )
+
+                included_params.update(
+
+                    self._payload(input_classes, ignore_classes, use_path, deps)
+
+                )
+
+            payload.update(included_params)
+
+            return payload
+
+
+
+        def _handle_overrides(self, payload, ignore_classes, args):
+
+            &quot;&quot;&quot;Handle command line overrides
+
+
+
+            Iterate through the command line override values, determine at what level to set them, and set them if possible
+
+
+
+            *Args*:
+
+
+
+                payload: current payload dictionary
+
+                args: command line override args
+
+
+
+            *Returns*:
+
+
+
+                payload: updated payload dictionary with override values set
+
+
+
+            &quot;&quot;&quot;
+
+            skip_keys = [&quot;config&quot;, &quot;help&quot;]
+
+            pruned_args = self._prune_args(args, ignore_classes)
+
+            for k, v in pruned_args.items():
+
+                if k not in skip_keys and v is not None:
+
+                    payload = self._handle_payload_override(payload, k, v)
+
+            return payload
+
+
+
+        @staticmethod
+
+        def _prune_args(args, ignore_classes):
+
+            &quot;&quot;&quot;Prunes ignored class names from the cmd line args list to prevent incorrect access
+
+
+
+            *Args*:
+
+
+
+                args: current cmd line args
+
+                ignore_classes: list of class names to ignore
+
+
+
+            *Returns*:
+
+
+
+                dictionary of pruned cmd line args
+
+
+
+            &quot;&quot;&quot;
+
+            ignored_stems = [val.__name__ for val in ignore_classes]
+
+            return {
+
+                k: v for k, v in vars(args).items() if k.split(&quot;.&quot;)[0] not in ignored_stems
+
+            }
+
+
+
+        @staticmethod
+
+        @abstractmethod
+
+        def _handle_payload_override(payload, key, value):
+
+            &quot;&quot;&quot;Handles the complex logic needed for List[spock class] overrides
+
+
+
+            Messy logic that sets overrides for the various different types. The hardest being List[spock class] since str
+
+            names have to be mapped backed to sys.modules and can be set at either the general or class level.
+
+
+
+            *Args*:
+
+
+
+                payload: current payload dictionary
+
+                key: current arg key
+
+                value: value at current arg key
+
+
+
+            *Returns*:
+
+
+
+                payload: modified payload with overrides
+
+
+
+            &quot;&quot;&quot;
+
+
+
+
+
+    class AttrPayload(BasePayload):
+
+        &quot;&quot;&quot;Handles building the payload for attrs backend
+
+
+
+        This class builds out the payload from config files of multiple types. It handles various
+
+        file types and also composition of config files via a recursive calls
+
+
+
+        *Attributes*:
+
+
+
+            _loaders: maps of each file extension to the loader class
+
+
+
+        &quot;&quot;&quot;
+
+
+
+        def __init__(self, s3_config=None):
+
+            &quot;&quot;&quot;Init for AttrPayload
+
+
+
+            *Args*:
+
+
+
+                s3_config: optional S3 config object
+
+
+
+            &quot;&quot;&quot;
+
+            super().__init__(s3_config=s3_config)
+
+
+
+        def __call__(self, *args, **kwargs):
+
+            &quot;&quot;&quot;Call to allow self chaining
+
+
+
+            *Args*:
+
+
+
+                *args:
+
+                **kwargs:
+
+
+
+            *Returns*:
+
+
+
+                Payload: instance of self
+
+
+
+            &quot;&quot;&quot;
+
+            return AttrPayload(*args, **kwargs)
+
+
+
+        @staticmethod
+
+        def _update_payload(base_payload, input_classes, ignore_classes, payload):
+
+            # Get basic args
+
+            attr_fields = get_attr_fields(input_classes=input_classes)
+
+            # Get the ignore fields
+
+            ignore_fields = get_attr_fields(input_classes=ignore_classes)
+
+            # Class names
+
+            class_names = [val.__name__ for val in input_classes]
+
+            # Parse out the types if generic
+
+            type_fields = get_type_fields(input_classes)
+
+            for keys, values in base_payload.items():
+
+                if keys not in ignore_fields:
+
+                    # check if the keys, value pair is expected by the attr class
+
+                    if keys != &quot;config&quot;:
+
+                        # Dict infers that we are overriding a global setting in a specific config
+
+                        if isinstance(values, dict):
+
+                            # we&#39;re in a namespace
+
+                            # Check for incorrect specific override of global def
+
+                            if keys not in attr_fields:
+
+                                raise TypeError(
+
+                                    f&quot;Referring to a class space {keys} that is undefined&quot;
+
+                                )
+
+                            for i_keys in values.keys():
+
+                                if i_keys not in attr_fields[keys]:
+
+                                    raise ValueError(
+
+                                        f&quot;Provided an unknown argument named {keys}.{i_keys}&quot;
+
+                                    )
+
+                        else:
+
+                            # Check if the key is actually a reference to another class
+
+                            if keys in class_names:
+
+                                if isinstance(values, list):
+
+                                    # Check for incorrect specific override of global def
+
+                                    if keys not in attr_fields:
+
+                                        raise ValueError(
+
+                                            f&quot;Referring to a class space {keys} that is undefined&quot;
+
+                                        )
+
+                                    # We are in a repeated class def
+
+                                    # Raise if the key set is different from the defined set (i.e. incorrect arguments)
+
+                                    key_set = set(
+
+                                        list(chain(*[list(val.keys()) for val in values]))
+
+                                    )
+
+                                    for i_keys in key_set:
+
+                                        if i_keys not in attr_fields[keys]:
+
+                                            raise ValueError(
+
+                                                f&quot;Provided an unknown argument named {keys}.{i_keys}&quot;
+
+                                            )
+
+                                # Chain all the values from multiple spock classes into one list
+
+                                elif keys not in list(chain(*attr_fields.values())):
+
+                                    raise ValueError(
+
+                                        f&quot;Provided an unknown argument named {keys}&quot;
+
+                                    )
+
+                            # Chain all the values from multiple spock classes into one list
+
+                            elif keys not in list(chain(*attr_fields.values())):
+
+                                raise ValueError(
+
+                                    f&quot;Provided an unknown argument named {keys}&quot;
+
+                                )
+
+                    if keys in payload and isinstance(values, dict):
+
+                        payload[keys].update(values)
+
+                    else:
+
+                        payload[keys] = values
+
+            tuple_payload = convert_to_tuples(payload, type_fields, class_names)
+
+            payload = deep_update(payload, tuple_payload)
+
+            return payload
+
+
+
+        @staticmethod
+
+        def _handle_payload_override(payload, key, value):
+
+            &quot;&quot;&quot;Handles the complex logic needed for List[spock class] overrides
+
+
+
+            Messy logic that sets overrides for the various different types. The hardest being List[spock class] since str
+
+            names have to be mapped backed to sys.modules and can be set at either the general or class level.
+
+
+
+            *Args*:
+
+
+
+                payload: current payload dictionary
+
+                key: current arg key
+
+                value: value at current arg key
+
+
+
+            *Returns*:
+
+
+
+                payload: modified payload with overrides
+
+
+
+            &quot;&quot;&quot;
+
+            key_split = key.split(&quot;.&quot;)
+
+            curr_ref = payload
+
+            # Handle non existing parts of the payload for specific cases
+
+            root_classes = [
+
+                idx
+
+                for idx, val in enumerate(key_split)
+
+                if hasattr(sys.modules[&quot;spock&quot;].backend.config, val)
+
+            ]
+
+            # Verify any classes have roots in the payload dict
+
+            for idx in root_classes:
+
+                # Update all root classes if not present
+
+                if key_split[idx] not in payload:
+
+                    payload.update({key_split[idx]: {}})
+
+                # If not updating the root then it is a reference to another class which might not be in the payload
+
+                # Make sure it&#39;s there by setting it -- since this is an override setting is fine as these should be the
+
+                # final say in the param values so don&#39;t worry about clashing
+
+                if idx != 0:
+
+                    payload[key_split[0]][key_split[idx - 1]] = key_split[idx]
+
+                    # Check also for repeated classes -- value will be a list when the type is not
+
+                    var = getattr(
+
+                        getattr(
+
+                            sys.modules[&quot;spock&quot;].backend.config, key_split[idx]
+
+                        ).__attrs_attrs__,
+
+                        key_split[-1],
+
+                    )
+
+                    if isinstance(value, list) and var.type != list:
+
+                        # If the dict is blank we need to handle the creation of the list of dicts
+
+                        if len(payload[key_split[idx]]) == 0:
+
+                            payload.update(
+
+                                {
+
+                                    key_split[idx]: [
+
+                                        {key_split[-1]: None} for _ in range(len(value))
+
+                                    ]
+
+                                }
+
+                            )
+
+                        # If it&#39;s already partially filled we need to update not overwrite
+
+                        else:
+
+                            for val in payload[key_split[idx]]:
+
+                                val.update({key_split[-1]: None})
+
+
+
+            for idx, split in enumerate(key_split):
+
+                # Check for curr_ref switch over -- verify by checking the sys modules names
+
+                if (
+
+                    idx != 0
+
+                    and (split in payload)
+
+                    and (isinstance(curr_ref, str))
+
+                    and (hasattr(sys.modules[&quot;spock&quot;].backend.config, split))
+
+                ):
+
+                    curr_ref = payload[split]
+
+                    # Look ahead to check if the next value exists in the dictionary
+
+                elif (
+
+                    idx != 0
+
+                    and (split in payload)
+
+                    and (isinstance(payload[split], str))
+
+                    and (hasattr(sys.modules[&quot;spock&quot;].backend.config, payload[split]))
+
+                ):
+
+                    curr_ref = payload[split]
+
+                # elif check if it&#39;s the last value and figure out the override
+
+                elif idx == (len(key_split) - 1):
+
+                    # Handle bool(s) a bit differently as they are store_true
+
+                    if isinstance(curr_ref, dict) and isinstance(value, bool):
+
+                        if value is not False:
+
+                            curr_ref[split] = value
+
+                    # If we are at the dictionary level we should be able to just payload override
+
+                    elif isinstance(curr_ref, dict) and not isinstance(value, bool):
+
+                        curr_ref[split] = value
+
+                    # If we are at a list level it must be some form of repeated class since this is the end of the class
+
+                    # tree -- check the instance type but also make sure the cmd-line override is the correct len
+
+                    elif isinstance(curr_ref, list) and len(value) == len(curr_ref):
+
+                        # Walk the list and check for the key
+
+                        for ref_idx, val in enumerate(curr_ref):
+
+                            if split in val:
+
+                                val[split] = value[ref_idx]
+
+                            else:
+
+                                raise ValueError(
+
+                                    f&quot;cmd-line override failed for {key} -- &quot;
+
+                                    f&quot;Failed to find key {split} within lowest level List[Dict]&quot;
+
+                                )
+
+                    elif isinstance(curr_ref, list) and len(value) != len(curr_ref):
+
+                        raise ValueError(
+
+                            f&quot;cmd-line override failed for {key} -- &quot;
+
+                            f&quot;Specified key {split} with len {len(value)} does not match len {len(curr_ref)} &quot;
+
+                            f&quot;of List[Dict]&quot;
+
+                        )
+
+                    else:
+
+                        raise ValueError(
+
+                            f&quot;cmd-line override failed for {key} -- &quot;
+
+                            f&quot;Failed to find key {split} within lowest level Dict&quot;
+
+                        )
+
+                # If it&#39;s not keep walking the current payload
+
+                else:
+
+                    curr_ref = curr_ref[split]
+
+            return payload
+</code></pre></div>
+<h2 id="classes">Classes</h2>
+<h3 id="attrpayload">AttrPayload</h3>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">AttrPayload</span><span class="p">(</span>
+    <span class="n">s3_config</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>??? example "View Source"
+        class AttrPayload(BasePayload):</p>
+<div class="highlight"><pre><span></span><code>        &quot;&quot;&quot;Handles building the payload for attrs backend
+
+
+
+        This class builds out the payload from config files of multiple types. It handles various
+
+        file types and also composition of config files via a recursive calls
+
+
+
+        *Attributes*:
+
+
+
+            _loaders: maps of each file extension to the loader class
+
+
+
+        &quot;&quot;&quot;
+
+
+
+        def __init__(self, s3_config=None):
+
+            &quot;&quot;&quot;Init for AttrPayload
+
+
+
+            *Args*:
+
+
+
+                s3_config: optional S3 config object
+
+
+
+            &quot;&quot;&quot;
+
+            super().__init__(s3_config=s3_config)
+
+
+
+        def __call__(self, *args, **kwargs):
+
+            &quot;&quot;&quot;Call to allow self chaining
+
+
+
+            *Args*:
+
+
+
+                *args:
+
+                **kwargs:
+
+
+
+            *Returns*:
+
+
+
+                Payload: instance of self
+
+
+
+            &quot;&quot;&quot;
+
+            return AttrPayload(*args, **kwargs)
+
+
+
+        @staticmethod
+
+        def _update_payload(base_payload, input_classes, ignore_classes, payload):
+
+            # Get basic args
+
+            attr_fields = get_attr_fields(input_classes=input_classes)
+
+            # Get the ignore fields
+
+            ignore_fields = get_attr_fields(input_classes=ignore_classes)
+
+            # Class names
+
+            class_names = [val.__name__ for val in input_classes]
+
+            # Parse out the types if generic
+
+            type_fields = get_type_fields(input_classes)
+
+            for keys, values in base_payload.items():
+
+                if keys not in ignore_fields:
+
+                    # check if the keys, value pair is expected by the attr class
+
+                    if keys != &quot;config&quot;:
+
+                        # Dict infers that we are overriding a global setting in a specific config
+
+                        if isinstance(values, dict):
+
+                            # we&#39;re in a namespace
+
+                            # Check for incorrect specific override of global def
+
+                            if keys not in attr_fields:
+
+                                raise TypeError(
+
+                                    f&quot;Referring to a class space {keys} that is undefined&quot;
+
+                                )
+
+                            for i_keys in values.keys():
+
+                                if i_keys not in attr_fields[keys]:
+
+                                    raise ValueError(
+
+                                        f&quot;Provided an unknown argument named {keys}.{i_keys}&quot;
+
+                                    )
+
+                        else:
+
+                            # Check if the key is actually a reference to another class
+
+                            if keys in class_names:
+
+                                if isinstance(values, list):
+
+                                    # Check for incorrect specific override of global def
+
+                                    if keys not in attr_fields:
+
+                                        raise ValueError(
+
+                                            f&quot;Referring to a class space {keys} that is undefined&quot;
+
+                                        )
+
+                                    # We are in a repeated class def
+
+                                    # Raise if the key set is different from the defined set (i.e. incorrect arguments)
+
+                                    key_set = set(
+
+                                        list(chain(*[list(val.keys()) for val in values]))
+
+                                    )
+
+                                    for i_keys in key_set:
+
+                                        if i_keys not in attr_fields[keys]:
+
+                                            raise ValueError(
+
+                                                f&quot;Provided an unknown argument named {keys}.{i_keys}&quot;
+
+                                            )
+
+                                # Chain all the values from multiple spock classes into one list
+
+                                elif keys not in list(chain(*attr_fields.values())):
+
+                                    raise ValueError(
+
+                                        f&quot;Provided an unknown argument named {keys}&quot;
+
+                                    )
+
+                            # Chain all the values from multiple spock classes into one list
+
+                            elif keys not in list(chain(*attr_fields.values())):
+
+                                raise ValueError(
+
+                                    f&quot;Provided an unknown argument named {keys}&quot;
+
+                                )
+
+                    if keys in payload and isinstance(values, dict):
+
+                        payload[keys].update(values)
+
+                    else:
+
+                        payload[keys] = values
+
+            tuple_payload = convert_to_tuples(payload, type_fields, class_names)
+
+            payload = deep_update(payload, tuple_payload)
+
+            return payload
+
+
+
+        @staticmethod
+
+        def _handle_payload_override(payload, key, value):
+
+            &quot;&quot;&quot;Handles the complex logic needed for List[spock class] overrides
+
+
+
+            Messy logic that sets overrides for the various different types. The hardest being List[spock class] since str
+
+            names have to be mapped backed to sys.modules and can be set at either the general or class level.
+
+
+
+            *Args*:
+
+
+
+                payload: current payload dictionary
+
+                key: current arg key
+
+                value: value at current arg key
+
+
+
+            *Returns*:
+
+
+
+                payload: modified payload with overrides
+
+
+
+            &quot;&quot;&quot;
+
+            key_split = key.split(&quot;.&quot;)
+
+            curr_ref = payload
+
+            # Handle non existing parts of the payload for specific cases
+
+            root_classes = [
+
+                idx
+
+                for idx, val in enumerate(key_split)
+
+                if hasattr(sys.modules[&quot;spock&quot;].backend.config, val)
+
+            ]
+
+            # Verify any classes have roots in the payload dict
+
+            for idx in root_classes:
+
+                # Update all root classes if not present
+
+                if key_split[idx] not in payload:
+
+                    payload.update({key_split[idx]: {}})
+
+                # If not updating the root then it is a reference to another class which might not be in the payload
+
+                # Make sure it&#39;s there by setting it -- since this is an override setting is fine as these should be the
+
+                # final say in the param values so don&#39;t worry about clashing
+
+                if idx != 0:
+
+                    payload[key_split[0]][key_split[idx - 1]] = key_split[idx]
+
+                    # Check also for repeated classes -- value will be a list when the type is not
+
+                    var = getattr(
+
+                        getattr(
+
+                            sys.modules[&quot;spock&quot;].backend.config, key_split[idx]
+
+                        ).__attrs_attrs__,
+
+                        key_split[-1],
+
+                    )
+
+                    if isinstance(value, list) and var.type != list:
+
+                        # If the dict is blank we need to handle the creation of the list of dicts
+
+                        if len(payload[key_split[idx]]) == 0:
+
+                            payload.update(
+
+                                {
+
+                                    key_split[idx]: [
+
+                                        {key_split[-1]: None} for _ in range(len(value))
+
+                                    ]
+
+                                }
+
+                            )
+
+                        # If it&#39;s already partially filled we need to update not overwrite
+
+                        else:
+
+                            for val in payload[key_split[idx]]:
+
+                                val.update({key_split[-1]: None})
+
+
+
+            for idx, split in enumerate(key_split):
+
+                # Check for curr_ref switch over -- verify by checking the sys modules names
+
+                if (
+
+                    idx != 0
+
+                    and (split in payload)
+
+                    and (isinstance(curr_ref, str))
+
+                    and (hasattr(sys.modules[&quot;spock&quot;].backend.config, split))
+
+                ):
+
+                    curr_ref = payload[split]
+
+                    # Look ahead to check if the next value exists in the dictionary
+
+                elif (
+
+                    idx != 0
+
+                    and (split in payload)
+
+                    and (isinstance(payload[split], str))
+
+                    and (hasattr(sys.modules[&quot;spock&quot;].backend.config, payload[split]))
+
+                ):
+
+                    curr_ref = payload[split]
+
+                # elif check if it&#39;s the last value and figure out the override
+
+                elif idx == (len(key_split) - 1):
+
+                    # Handle bool(s) a bit differently as they are store_true
+
+                    if isinstance(curr_ref, dict) and isinstance(value, bool):
+
+                        if value is not False:
+
+                            curr_ref[split] = value
+
+                    # If we are at the dictionary level we should be able to just payload override
+
+                    elif isinstance(curr_ref, dict) and not isinstance(value, bool):
+
+                        curr_ref[split] = value
+
+                    # If we are at a list level it must be some form of repeated class since this is the end of the class
+
+                    # tree -- check the instance type but also make sure the cmd-line override is the correct len
+
+                    elif isinstance(curr_ref, list) and len(value) == len(curr_ref):
+
+                        # Walk the list and check for the key
+
+                        for ref_idx, val in enumerate(curr_ref):
+
+                            if split in val:
+
+                                val[split] = value[ref_idx]
+
+                            else:
+
+                                raise ValueError(
+
+                                    f&quot;cmd-line override failed for {key} -- &quot;
+
+                                    f&quot;Failed to find key {split} within lowest level List[Dict]&quot;
+
+                                )
+
+                    elif isinstance(curr_ref, list) and len(value) != len(curr_ref):
+
+                        raise ValueError(
+
+                            f&quot;cmd-line override failed for {key} -- &quot;
+
+                            f&quot;Specified key {split} with len {len(value)} does not match len {len(curr_ref)} &quot;
+
+                            f&quot;of List[Dict]&quot;
+
+                        )
+
+                    else:
+
+                        raise ValueError(
+
+                            f&quot;cmd-line override failed for {key} -- &quot;
+
+                            f&quot;Failed to find key {split} within lowest level Dict&quot;
+
+                        )
+
+                # If it&#39;s not keep walking the current payload
+
+                else:
+
+                    curr_ref = curr_ref[split]
+
+            return payload
+</code></pre></div>
+<hr />
+<h4 id="ancestors-in-mro">Ancestors (in MRO)</h4>
+<ul>
+<li>spock.backend.payload.BasePayload</li>
+<li>spock.backend.handler.BaseHandler</li>
+<li>abc.ABC</li>
+</ul>
+<h4 id="methods">Methods</h4>
+<h4 id="payload">payload</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">payload</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">input_classes</span><span class="p">,</span>
+    <span class="n">ignore_classes</span><span class="p">,</span>
+    <span class="n">path</span><span class="p">,</span>
+    <span class="n">cmd_args</span><span class="p">,</span>
+    <span class="n">deps</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Builds the payload from config files</p>
+<p>Public exposed call to build the payload and set any command line overrides</p>
+<p><em>Args</em>:</p>
+<div class="highlight"><pre><span></span><code>input_classes: list of backend classes
+ignore_classes: list of classes to ignore
+path: path to config file(s)
+cmd_args: command line overrides
+deps: dictionary of config dependencies
+</code></pre></div>
+<p><em>Returns</em>:</p>
+<div class="highlight"><pre><span></span><code>payload: dictionary of all mapped parameters
+</code></pre></div>
+<p>??? example "View Source"
+            def payload(self, input_classes, ignore_classes, path, cmd_args, deps):</p>
+<div class="highlight"><pre><span></span><code>            &quot;&quot;&quot;Builds the payload from config files
+
+
+
+            Public exposed call to build the payload and set any command line overrides
+
+
+
+            *Args*:
+
+
+
+                input_classes: list of backend classes
+
+                ignore_classes: list of classes to ignore
+
+                path: path to config file(s)
+
+                cmd_args: command line overrides
+
+                deps: dictionary of config dependencies
+
+
+
+            *Returns*:
+
+
+
+                payload: dictionary of all mapped parameters
+
+
+
+            &quot;&quot;&quot;
+
+            payload = self._payload(input_classes, ignore_classes, path, deps, root=True)
+
+            payload = self._handle_overrides(payload, ignore_classes, cmd_args)
+
+            return payload
+</code></pre></div>
+<h3 id="basepayload">BasePayload</h3>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">BasePayload</span><span class="p">(</span>
+    <span class="n">s3_config</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>??? example "View Source"
+        class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods</p>
+<div class="highlight"><pre><span></span><code>        &quot;&quot;&quot;Handles building the payload for config file(s)
+
+
+
+        This class builds out the payload from config files of multiple types. It handles various
+
+        file types and also composition of config files via recursive calls
+
+
+
+        *Attributes*:
+
+
+
+            _loaders: maps of each file extension to the loader class
+
+            __s3_config: optional S3Config object to handle s3 access
+
+
+
+        &quot;&quot;&quot;
+
+
+
+        def __init__(self, s3_config=None):
+
+            super(BasePayload, self).__init__(s3_config=s3_config)
+
+
+
+        @staticmethod
+
+        @abstractmethod
+
+        def _update_payload(base_payload, input_classes, ignore_classes, payload):
+
+            &quot;&quot;&quot;Updates the payload
+
+
+
+            Checks the parameters defined in the config files against the provided classes and if
+
+            passable adds them to the payload
+
+
+
+            *Args*:
+
+
+
+                base_payload: current payload
+
+                input_classes: class to roll into
+
+                ignore_classes: list of classes to ignore
+
+                payload: total payload
+
+
+
+            *Returns*:
+
+
+
+                payload: updated payload
+
+
+
+            &quot;&quot;&quot;
+
+
+
+        def payload(self, input_classes, ignore_classes, path, cmd_args, deps):
+
+            &quot;&quot;&quot;Builds the payload from config files
+
+
+
+            Public exposed call to build the payload and set any command line overrides
+
+
+
+            *Args*:
+
+
+
+                input_classes: list of backend classes
+
+                ignore_classes: list of classes to ignore
+
+                path: path to config file(s)
+
+                cmd_args: command line overrides
+
+                deps: dictionary of config dependencies
+
+
+
+            *Returns*:
+
+
+
+                payload: dictionary of all mapped parameters
+
+
+
+            &quot;&quot;&quot;
+
+            payload = self._payload(input_classes, ignore_classes, path, deps, root=True)
+
+            payload = self._handle_overrides(payload, ignore_classes, cmd_args)
+
+            return payload
+
+
+
+        def _payload(self, input_classes, ignore_classes, path, deps, root=False):
+
+            &quot;&quot;&quot;Private call to construct the payload
+
+
+
+            Main function call that builds out the payload from config files of multiple types. It handles
+
+            various file types and also composition of config files via a recursive calls
+
+
+
+            *Args*:
+
+                input_classes: list of backend classes
+
+                ignore_classes: list of classes to ignore
+
+                path: path to config file(s)
+
+                deps: dictionary of config dependencies
+
+
+
+            *Returns*:
+
+
+
+                payload: dictionary of all mapped parameters
+
+
+
+            &quot;&quot;&quot;
+
+            # empty payload
+
+            payload = {}
+
+            if path is not None:
+
+                # Match to loader based on file-extension
+
+                config_extension = Path(path).suffix.lower()
+
+                # Verify extension
+
+                self._check_extension(file_extension=config_extension)
+
+                # Load from file
+
+                base_payload = self._supported_extensions.get(config_extension)().load(
+
+                    path, s3_config=self._s3_config
+
+                )
+
+                base_payload = {} if base_payload is None else base_payload
+
+                # Check and? update the dependencies
+
+                deps = self._handle_dependencies(deps, path, root)
+
+                if &quot;config&quot; in base_payload:
+
+                    payload = self._handle_includes(
+
+                        base_payload,
+
+                        config_extension,
+
+                        input_classes,
+
+                        ignore_classes,
+
+                        path,
+
+                        payload,
+
+                        deps,
+
+                    )
+
+                payload = self._update_payload(
+
+                    base_payload, input_classes, ignore_classes, payload
+
+                )
+
+            return payload
+
+
+
+        @staticmethod
+
+        def _handle_dependencies(deps, path, root):
+
+            &quot;&quot;&quot;Handles config file dependencies
+
+
+
+            Checks to see if the config path (full or relative) has already been encountered. Essentially a DFS for graph
+
+            cycles
+
+
+
+            *Args*:
+
+
+
+                deps: dictionary of config dependencies
+
+                path: current config path
+
+                root: boolean if root
+
+
+
+            *Returns*:
+
+
+
+                deps: updated dependencies
+
+
+
+            &quot;&quot;&quot;
+
+            if root and path in deps.get(&quot;paths&quot;):
+
+                raise ValueError(
+
+                    f&quot;Duplicate Read -- Config file {path} has already been encountered. &quot;
+
+                    f&quot;Please remove duplicate reads of config files.&quot;
+
+                )
+
+            elif path in deps.get(&quot;paths&quot;) or path in deps.get(&quot;rel_paths&quot;):
+
+                raise ValueError(
+
+                    f&quot;Cyclical Dependency -- Config file {path} has already been encountered. &quot;
+
+                    f&quot;Please remove cyclical dependencies between config files.&quot;
+
+                )
+
+            else:
+
+                # Update the dependency lists
+
+                deps.get(&quot;paths&quot;).append(path)
+
+                deps.get(&quot;rel_paths&quot;).append(os.path.basename(path))
+
+                if root:
+
+                    deps.get(&quot;roots&quot;).append(path)
+
+            return deps
+
+
+
+        def _handle_includes(
+
+            self,
+
+            base_payload,
+
+            config_extension,
+
+            input_classes,
+
+            ignore_classes,
+
+            path,
+
+            payload,
+
+            deps,
+
+        ):  # pylint: disable=too-many-arguments
+
+            &quot;&quot;&quot;Handles config composition
+
+
+
+            For all of the config tags in the config file this function will recursively call the payload function
+
+            with the composition path to get the additional payload(s) from the composed file(s) -- checks for file
+
+            validity or if it is an S3 URI via regex
+
+
+
+            *Args*:
+
+
+
+                base_payload: base payload that has a config kwarg
+
+                config_extension: file type
+
+                input_classes: defined backend classes
+
+                ignore_classes: list of classes to ignore
+
+                path: path to base file
+
+                payload: payload pulled from composed files
+
+                deps: dictionary of config dependencies
+
+
+
+            *Returns*:
+
+
+
+                payload: payload update from composed files
+
+
+
+            &quot;&quot;&quot;
+
+            included_params = {}
+
+            for inc_path in base_payload[&quot;config&quot;]:
+
+                if check_path_s3(inc_path):
+
+                    use_path = inc_path
+
+                elif os.path.exists(inc_path):
+
+                    use_path = inc_path
+
+                elif os.path.join(os.path.dirname(path), inc_path):
+
+                    use_path = os.path.join(os.path.dirname(path), inc_path)
+
+                else:
+
+                    raise RuntimeError(
+
+                        f&quot;Could not find included {config_extension} file {inc_path} or is not an S3 URI!&quot;
+
+                    )
+
+                included_params.update(
+
+                    self._payload(input_classes, ignore_classes, use_path, deps)
+
+                )
+
+            payload.update(included_params)
+
+            return payload
+
+
+
+        def _handle_overrides(self, payload, ignore_classes, args):
+
+            &quot;&quot;&quot;Handle command line overrides
+
+
+
+            Iterate through the command line override values, determine at what level to set them, and set them if possible
+
+
+
+            *Args*:
+
+
+
+                payload: current payload dictionary
+
+                args: command line override args
+
+
+
+            *Returns*:
+
+
+
+                payload: updated payload dictionary with override values set
+
+
+
+            &quot;&quot;&quot;
+
+            skip_keys = [&quot;config&quot;, &quot;help&quot;]
+
+            pruned_args = self._prune_args(args, ignore_classes)
+
+            for k, v in pruned_args.items():
+
+                if k not in skip_keys and v is not None:
+
+                    payload = self._handle_payload_override(payload, k, v)
+
+            return payload
+
+
+
+        @staticmethod
+
+        def _prune_args(args, ignore_classes):
+
+            &quot;&quot;&quot;Prunes ignored class names from the cmd line args list to prevent incorrect access
+
+
+
+            *Args*:
+
+
+
+                args: current cmd line args
+
+                ignore_classes: list of class names to ignore
+
+
+
+            *Returns*:
+
+
+
+                dictionary of pruned cmd line args
+
+
+
+            &quot;&quot;&quot;
+
+            ignored_stems = [val.__name__ for val in ignore_classes]
+
+            return {
+
+                k: v for k, v in vars(args).items() if k.split(&quot;.&quot;)[0] not in ignored_stems
+
+            }
+
+
+
+        @staticmethod
+
+        @abstractmethod
+
+        def _handle_payload_override(payload, key, value):
+
+            &quot;&quot;&quot;Handles the complex logic needed for List[spock class] overrides
+
+
+
+            Messy logic that sets overrides for the various different types. The hardest being List[spock class] since str
+
+            names have to be mapped backed to sys.modules and can be set at either the general or class level.
+
+
+
+            *Args*:
+
+
+
+                payload: current payload dictionary
+
+                key: current arg key
+
+                value: value at current arg key
+
+
+
+            *Returns*:
+
+
+
+                payload: modified payload with overrides
+
+
+
+            &quot;&quot;&quot;
+</code></pre></div>
+<hr />
+<h4 id="ancestors-in-mro_1">Ancestors (in MRO)</h4>
+<ul>
+<li>spock.backend.handler.BaseHandler</li>
+<li>abc.ABC</li>
+</ul>
+<h4 id="descendants">Descendants</h4>
+<ul>
+<li>spock.backend.payload.AttrPayload</li>
+<li>spock.addons.tune.payload.TunerPayload</li>
+</ul>
+<h4 id="methods_1">Methods</h4>
+<h4 id="payload_1">payload</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">payload</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">input_classes</span><span class="p">,</span>
+    <span class="n">ignore_classes</span><span class="p">,</span>
+    <span class="n">path</span><span class="p">,</span>
+    <span class="n">cmd_args</span><span class="p">,</span>
+    <span class="n">deps</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Builds the payload from config files</p>
+<p>Public exposed call to build the payload and set any command line overrides</p>
+<p><em>Args</em>:</p>
+<div class="highlight"><pre><span></span><code>input_classes: list of backend classes
+ignore_classes: list of classes to ignore
+path: path to config file(s)
+cmd_args: command line overrides
+deps: dictionary of config dependencies
+</code></pre></div>
+<p><em>Returns</em>:</p>
+<div class="highlight"><pre><span></span><code>payload: dictionary of all mapped parameters
+</code></pre></div>
+<p>??? example "View Source"
+            def payload(self, input_classes, ignore_classes, path, cmd_args, deps):</p>
+<div class="highlight"><pre><span></span><code>            &quot;&quot;&quot;Builds the payload from config files
+
+
+
+            Public exposed call to build the payload and set any command line overrides
+
+
+
+            *Args*:
+
+
+
+                input_classes: list of backend classes
+
+                ignore_classes: list of classes to ignore
+
+                path: path to config file(s)
+
+                cmd_args: command line overrides
+
+                deps: dictionary of config dependencies
+
+
+
+            *Returns*:
+
+
+
+                payload: dictionary of all mapped parameters
+
+
+
+            &quot;&quot;&quot;
+
+            payload = self._payload(input_classes, ignore_classes, path, deps, root=True)
+
+            payload = self._handle_overrides(payload, ignore_classes, cmd_args)
+
+            return payload
+</code></pre></div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../" title="Index" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Index
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../saver/" title="Saver" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Saver
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Powered by
+        <a href="http://timothycrosley.github.io/portray">portray.</a>
+        You too can
+        <a href="http://timothycrosley.github.io/portray">
+          portray</a>
+        your Python project well using automatic documentation.
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../../assets/javascripts/workers/search.f8263e09.min.js", "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.4fc53ad4.min.js"></script>
+      
+    
+  </body>
+</html>

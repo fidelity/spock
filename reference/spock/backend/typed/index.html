@@ -1,0 +1,3819 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      <link rel="icon" href="../../../../resources/images/logo_small.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.0">
+    
+    
+      
+        <title>Typed - spock</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.8b42a75e.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.3f5d1f46.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#546d78">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="blue-grey" data-md-color-accent="pink">
+  
+    
+    <script>function __prefix(e){return new URL("../../../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#module-spockbackendtyped" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../.." title="spock" class="md-header__button md-logo" aria-label="spock" data-md-component="logo">
+      
+  <img src="../../../../resources/images/logo_small.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            spock
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Typed
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/fidelity/spock/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    spock
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="spock" class="md-nav__button md-logo" aria-label="spock" data-md-component="logo">
+      
+  <img src="../../../../resources/images/logo_small.png" alt="logo">
+
+    </a>
+    spock
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/fidelity/spock/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    spock
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/Installation/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/Motivation/" class="md-nav__link">
+        Motivation
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/Quick-Start/" class="md-nav__link">
+        Quick Start
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/ArgParser-Replacement/" class="md-nav__link">
+        argparse Replacement
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6">
+          Basic Tutorial
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Basic Tutorial" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          Basic Tutorial
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/basic_tutorial/About/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/basic_tutorial/Define/" class="md-nav__link">
+        Define
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/basic_tutorial/Building/" class="md-nav__link">
+        Building
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/basic_tutorial/Configuration-Files/" class="md-nav__link">
+        Configuration Files
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/basic_tutorial/Saving/" class="md-nav__link">
+        Saving
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/basic_tutorial/Run/" class="md-nav__link">
+        Running
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_7">
+          Advanced Features
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Advanced Features" data-md-level="1">
+        <label class="md-nav__title" for="__nav_7">
+          <span class="md-nav__icon md-icon"></span>
+          Advanced Features
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/advanced_features/About/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/advanced_features/Defaults/" class="md-nav__link">
+        Default Values
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/advanced_features/Optional-Parameters/" class="md-nav__link">
+        Optional Parameters
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/advanced_features/Parameter-Groups/" class="md-nav__link">
+        Parameter Groups
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/advanced_features/Inheritance/" class="md-nav__link">
+        Inheritance
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/advanced_features/Advanced-Types/" class="md-nav__link">
+        Advanced Types
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/advanced_features/Local-Definitions/" class="md-nav__link">
+        Local Defintions
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/advanced_features/Keyword-Configs/" class="md-nav__link">
+        Keyword Configs
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/advanced_features/Composition/" class="md-nav__link">
+        Composition
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/advanced_features/Command-Line-Overrides/" class="md-nav__link">
+        Command Line Overrides
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8">
+          Addons
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Addons" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          Addons
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/addons/S3/" class="md-nav__link">
+        S3
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2" type="checkbox" id="__nav_8_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_2">
+          Hyper-Parameter Tuning
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Hyper-Parameter Tuning" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_2">
+          <span class="md-nav__icon md-icon"></span>
+          Hyper-Parameter Tuning
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/addons/tuner/About/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/addons/tuner/Basics/" class="md-nav__link">
+        Basics
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/addons/tuner/Ax/" class="md-nav__link">
+        Ax
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/addons/tuner/Optuna/" class="md-nav__link">
+        Optuna
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/addons/tuner/Saving/" class="md-nav__link">
+        Saving
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../CONTRIBUTING/" class="md-nav__link">
+        Contributing
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10" type="checkbox" id="__nav_10" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10">
+          Reference
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Reference" data-md-level="1">
+        <label class="md-nav__title" for="__nav_10">
+          <span class="md-nav__icon md-icon"></span>
+          Reference
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_1" type="checkbox" id="__nav_10_1" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_1">
+          Spock
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Spock" data-md-level="2">
+        <label class="md-nav__title" for="__nav_10_1">
+          <span class="md-nav__icon md-icon"></span>
+          Spock
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../args/" class="md-nav__link">
+        Args
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../builder/" class="md-nav__link">
+        Builder
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../config/" class="md-nav__link">
+        Config
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../handlers/" class="md-nav__link">
+        Handlers
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/" class="md-nav__link">
+        Utils
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_1_7" type="checkbox" id="__nav_10_1_7" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_1_7">
+          Addons
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Addons" data-md-level="3">
+        <label class="md-nav__title" for="__nav_10_1_7">
+          <span class="md-nav__icon md-icon"></span>
+          Addons
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../addons/" class="md-nav__link">
+        Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_1_7_2" type="checkbox" id="__nav_10_1_7_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_1_7_2">
+          S3
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="S3" data-md-level="4">
+        <label class="md-nav__title" for="__nav_10_1_7_2">
+          <span class="md-nav__icon md-icon"></span>
+          S3
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../addons/s3/configs/" class="md-nav__link">
+        Configs
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../addons/s3/" class="md-nav__link">
+        Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../addons/s3/utils/" class="md-nav__link">
+        Utils
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_1_7_3" type="checkbox" id="__nav_10_1_7_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_1_7_3">
+          Tune
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Tune" data-md-level="4">
+        <label class="md-nav__title" for="__nav_10_1_7_3">
+          <span class="md-nav__icon md-icon"></span>
+          Tune
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../addons/tune/ax/" class="md-nav__link">
+        Ax
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../addons/tune/builder/" class="md-nav__link">
+        Builder
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../addons/tune/config/" class="md-nav__link">
+        Config
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../addons/tune/" class="md-nav__link">
+        Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../addons/tune/interface/" class="md-nav__link">
+        Interface
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../addons/tune/optuna/" class="md-nav__link">
+        Optuna
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../addons/tune/payload/" class="md-nav__link">
+        Payload
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../addons/tune/tuner/" class="md-nav__link">
+        Tuner
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_1_8" type="checkbox" id="__nav_10_1_8" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_1_8">
+          Backend
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Backend" data-md-level="3">
+        <label class="md-nav__title" for="__nav_10_1_8">
+          <span class="md-nav__icon md-icon"></span>
+          Backend
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../builder/" class="md-nav__link">
+        Builder
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../config/" class="md-nav__link">
+        Config
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../handler/" class="md-nav__link">
+        Handler
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../payload/" class="md-nav__link">
+        Payload
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../saver/" class="md-nav__link">
+        Saver
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Typed
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Typed
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#variables" class="md-nav__link">
+    Variables
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#functions" class="md-nav__link">
+    Functions
+  </a>
+  
+    <nav class="md-nav" aria-label="Functions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#katra" class="md-nav__link">
+    katra
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#classes" class="md-nav__link">
+    Classes
+  </a>
+  
+    <nav class="md-nav" aria-label="Classes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#savepath" class="md-nav__link">
+    SavePath
+  </a>
+  
+    <nav class="md-nav" aria-label="SavePath">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#static-methods" class="md-nav__link">
+    Static methods
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#maketrans" class="md-nav__link">
+    maketrans
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    Methods
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#capitalize" class="md-nav__link">
+    capitalize
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#casefold" class="md-nav__link">
+    casefold
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#center" class="md-nav__link">
+    center
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#count" class="md-nav__link">
+    count
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#encode" class="md-nav__link">
+    encode
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#endswith" class="md-nav__link">
+    endswith
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#expandtabs" class="md-nav__link">
+    expandtabs
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#find" class="md-nav__link">
+    find
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#format" class="md-nav__link">
+    format
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#format_map" class="md-nav__link">
+    format_map
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#index" class="md-nav__link">
+    index
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#isalnum" class="md-nav__link">
+    isalnum
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#isalpha" class="md-nav__link">
+    isalpha
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#isascii" class="md-nav__link">
+    isascii
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#isdecimal" class="md-nav__link">
+    isdecimal
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#isdigit" class="md-nav__link">
+    isdigit
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#isidentifier" class="md-nav__link">
+    isidentifier
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#islower" class="md-nav__link">
+    islower
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#isnumeric" class="md-nav__link">
+    isnumeric
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#isprintable" class="md-nav__link">
+    isprintable
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#isspace" class="md-nav__link">
+    isspace
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#istitle" class="md-nav__link">
+    istitle
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#isupper" class="md-nav__link">
+    isupper
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#join" class="md-nav__link">
+    join
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ljust" class="md-nav__link">
+    ljust
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lower" class="md-nav__link">
+    lower
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lstrip" class="md-nav__link">
+    lstrip
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#partition" class="md-nav__link">
+    partition
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#replace" class="md-nav__link">
+    replace
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rfind" class="md-nav__link">
+    rfind
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rindex" class="md-nav__link">
+    rindex
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rjust" class="md-nav__link">
+    rjust
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rpartition" class="md-nav__link">
+    rpartition
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rsplit" class="md-nav__link">
+    rsplit
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rstrip" class="md-nav__link">
+    rstrip
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#split" class="md-nav__link">
+    split
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#splitlines" class="md-nav__link">
+    splitlines
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#startswith" class="md-nav__link">
+    startswith
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#strip" class="md-nav__link">
+    strip
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#swapcase" class="md-nav__link">
+    swapcase
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#title" class="md-nav__link">
+    title
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#translate" class="md-nav__link">
+    translate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#upper" class="md-nav__link">
+    upper
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zfill" class="md-nav__link">
+    zfill
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utils/" class="md-nav__link">
+        Utils
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wrappers/" class="md-nav__link">
+        Wrappers
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#variables" class="md-nav__link">
+    Variables
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#functions" class="md-nav__link">
+    Functions
+  </a>
+  
+    <nav class="md-nav" aria-label="Functions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#katra" class="md-nav__link">
+    katra
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#classes" class="md-nav__link">
+    Classes
+  </a>
+  
+    <nav class="md-nav" aria-label="Classes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#savepath" class="md-nav__link">
+    SavePath
+  </a>
+  
+    <nav class="md-nav" aria-label="SavePath">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#static-methods" class="md-nav__link">
+    Static methods
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#maketrans" class="md-nav__link">
+    maketrans
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    Methods
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#capitalize" class="md-nav__link">
+    capitalize
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#casefold" class="md-nav__link">
+    casefold
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#center" class="md-nav__link">
+    center
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#count" class="md-nav__link">
+    count
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#encode" class="md-nav__link">
+    encode
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#endswith" class="md-nav__link">
+    endswith
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#expandtabs" class="md-nav__link">
+    expandtabs
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#find" class="md-nav__link">
+    find
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#format" class="md-nav__link">
+    format
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#format_map" class="md-nav__link">
+    format_map
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#index" class="md-nav__link">
+    index
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#isalnum" class="md-nav__link">
+    isalnum
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#isalpha" class="md-nav__link">
+    isalpha
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#isascii" class="md-nav__link">
+    isascii
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#isdecimal" class="md-nav__link">
+    isdecimal
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#isdigit" class="md-nav__link">
+    isdigit
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#isidentifier" class="md-nav__link">
+    isidentifier
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#islower" class="md-nav__link">
+    islower
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#isnumeric" class="md-nav__link">
+    isnumeric
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#isprintable" class="md-nav__link">
+    isprintable
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#isspace" class="md-nav__link">
+    isspace
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#istitle" class="md-nav__link">
+    istitle
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#isupper" class="md-nav__link">
+    isupper
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#join" class="md-nav__link">
+    join
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ljust" class="md-nav__link">
+    ljust
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lower" class="md-nav__link">
+    lower
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lstrip" class="md-nav__link">
+    lstrip
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#partition" class="md-nav__link">
+    partition
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#replace" class="md-nav__link">
+    replace
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rfind" class="md-nav__link">
+    rfind
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rindex" class="md-nav__link">
+    rindex
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rjust" class="md-nav__link">
+    rjust
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rpartition" class="md-nav__link">
+    rpartition
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rsplit" class="md-nav__link">
+    rsplit
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rstrip" class="md-nav__link">
+    rstrip
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#split" class="md-nav__link">
+    split
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#splitlines" class="md-nav__link">
+    splitlines
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#startswith" class="md-nav__link">
+    startswith
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#strip" class="md-nav__link">
+    strip
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#swapcase" class="md-nav__link">
+    swapcase
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#title" class="md-nav__link">
+    title
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#translate" class="md-nav__link">
+    translate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#upper" class="md-nav__link">
+    upper
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zfill" class="md-nav__link">
+    zfill
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/fidelity/spock/edit/main/reference/spock/backend/typed.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                <h1 id="module-spockbackendtyped">Module spock.backend.typed</h1>
+<p>Handles the definitions of arguments types for Spock (backend: attrs)</p>
+<p>None</p>
+<p>??? example "View Source"
+        # -<em>- coding: utf-8 -</em>-</p>
+<div class="highlight"><pre><span></span><code>    # Copyright FMR LLC &lt;opensource@fidelity.com&gt;
+
+    # SPDX-License-Identifier: Apache-2.0
+
+
+
+    &quot;&quot;&quot;Handles the definitions of arguments types for Spock (backend: attrs)&quot;&quot;&quot;
+
+
+
+    import sys
+
+    from enum import EnumMeta
+
+    from functools import partial
+
+    from typing import TypeVar, Union
+
+
+
+    import attr
+
+
+
+    minor = sys.version_info.minor
+
+    if minor &lt; 7:
+
+        from typing import GenericMeta as _GenericAlias
+
+    else:
+
+        from typing import _GenericAlias
+
+
+
+
+
+    class SavePath(str):
+
+        &quot;&quot;&quot;Spock special key for saving the Spock config to file
+
+
+
+        Defines a special key use to save the current Spock config to file
+
+
+
+        &quot;&quot;&quot;
+
+
+
+        def __new__(cls, x):
+
+            return super().__new__(cls, x)
+
+
+
+
+
+    def _get_name_py_version(typed):
+
+        &quot;&quot;&quot;Gets the name of the type depending on the python version
+
+
+
+        *Args*:
+
+
+
+            typed: the type of the parameter
+
+
+
+        *Returns*:
+
+
+
+            name of the type
+
+
+
+        &quot;&quot;&quot;
+
+        return typed._name if hasattr(typed, &quot;_name&quot;) else typed.__name__
+
+
+
+
+
+    def _extract_base_type(typed):
+
+        &quot;&quot;&quot;Extracts the name of the type from a _GenericAlias
+
+
+
+        Assumes that the derived types are only of length 1 as the __args__ are [0] recursed... this is not true for
+
+        tuples
+
+
+
+        *Args*:
+
+
+
+            typed: the type of the parameter
+
+
+
+        *Returns*:
+
+
+
+            name of type
+
+        &quot;&quot;&quot;
+
+        if hasattr(typed, &quot;__args__&quot;):
+
+            name = _get_name_py_version(typed=typed)
+
+            bracket_val = f&quot;{name}[{_extract_base_type(typed.__args__[0])}]&quot;
+
+            return bracket_val
+
+        else:
+
+            bracket_value = typed.__name__
+
+        return bracket_value
+
+
+
+
+
+    def _recursive_generic_validator(typed):
+
+        &quot;&quot;&quot;Recursively assembles the validators for nested generic types
+
+
+
+        Walks through the nested type structure and determines whether to recurse all the way to a base type. Once it
+
+        hits the base type it bubbles up the correct validator that is nested within the upper validator
+
+
+
+        *Args*:
+
+
+
+            typed: input type
+
+
+
+        *Returns*:
+
+
+
+            return_type: recursively built deep_iterable validators
+
+
+
+        &quot;&quot;&quot;
+
+        if hasattr(typed, &quot;__args__&quot;):
+
+            # If there are more __args__ then we still need to recurse as it is still a GenericAlias
+
+            # Iterate through since there might be multiple types?
+
+            if len(typed.__args__) &gt; 1:
+
+                return_type = attr.validators.deep_iterable(
+
+                    member_validator=_recursive_generic_validator(typed.__args__),
+
+                    iterable_validator=attr.validators.instance_of(typed.__origin__),
+
+                )
+
+            else:
+
+                return_type = attr.validators.deep_iterable(
+
+                    member_validator=_recursive_generic_validator(typed.__args__[0]),
+
+                    iterable_validator=attr.validators.instance_of(typed.__origin__),
+
+                )
+
+            return return_type
+
+        else:
+
+            # If no more __args__ then we are to the base type and need to bubble up the type
+
+            # But we need to check against base types and enums
+
+            if isinstance(typed, EnumMeta):
+
+                base_type, allowed = _check_enum_props(typed)
+
+                return_type = attr.validators.and_(
+
+                    attr.validators.instance_of(base_type), attr.validators.in_(allowed)
+
+                )
+
+            else:
+
+                return_type = attr.validators.instance_of(typed)
+
+        return return_type
+
+
+
+
+
+    def _generic_alias_katra(typed, default=None, optional=False):
+
+        &quot;&quot;&quot;Private interface to create a subscripted generic_alias katra
+
+
+
+        A &#39;katra&#39; is the basic functional unit of `spock`. It defines a parameter using attrs as the backend, type checks
+
+        both simple types and subscripted GenericAlias types (e.g. lists and tuples), handles setting default parameters,
+
+        and deals with parameter optionality
+
+
+
+        Handles: List[type] and Tuple[type]
+
+
+
+        *Args*:
+
+
+
+            typed: the type of the parameter to define
+
+            default: the default value to assign if given
+
+            optional: whether to make the parameter optional or not (thus allowing None)
+
+
+
+        *Returns*:
+
+
+
+            x: Attribute from attrs
+
+
+
+        &quot;&quot;&quot;
+
+        # base python class from which a GenericAlias is derived
+
+        base_typed = typed.__origin__
+
+        if default is not None:
+
+            x = attr.ib(
+
+                validator=_recursive_generic_validator(typed),
+
+                default=default,
+
+                type=base_typed,
+
+                metadata={&quot;base&quot;: _extract_base_type(typed), &quot;type&quot;: typed},
+
+            )
+
+            # x = attr.ib(validator=_recursive_generic_iterator(typed), default=default, type=base_typed,
+
+            #             metadata={&#39;base&#39;: _extract_base_type(typed)})
+
+        elif optional:
+
+            # if there&#39;s no default, but marked as optional, then set the default to None
+
+            x = attr.ib(
+
+                validator=attr.validators.optional(_recursive_generic_validator(typed)),
+
+                type=base_typed,
+
+                default=default,
+
+                metadata={
+
+                    &quot;optional&quot;: True,
+
+                    &quot;base&quot;: _extract_base_type(typed),
+
+                    &quot;type&quot;: typed,
+
+                },
+
+            )
+
+            # x = attr.ib(validator=attr.validators.optional(_recursive_generic_iterator(typed)), type=base_typed,
+
+            #             default=default, metadata={&#39;optional&#39;: True, &#39;base&#39;: _extract_base_type(typed)})
+
+        else:
+
+            x = attr.ib(
+
+                validator=_recursive_generic_validator(typed),
+
+                type=base_typed,
+
+                metadata={&quot;base&quot;: _extract_base_type(typed), &quot;type&quot;: typed},
+
+            )
+
+            # x = attr.ib(validator=_recursive_generic_iterator(typed), type=base_typed,
+
+            #             metadata={&#39;base&#39;: _extract_base_type(typed)})
+
+        return x
+
+
+
+
+
+    def _check_enum_props(typed):
+
+        &quot;&quot;&quot;Handles properties of enums
+
+
+
+        Checks if all types of the enum are the same and assembles a list of allowed values
+
+
+
+        *Args*:
+
+
+
+            typed: the type of parameter (Enum)
+
+
+
+        *Returns*:
+
+
+
+            base_type: the base type of the Enum
+
+            allowed: List of allowed values of the Enum
+
+
+
+        &quot;&quot;&quot;
+
+        # First check if the types of Enum are the same
+
+        type_set = {type(val.value) for val in typed}
+
+        if len(type_set) &gt; 1:
+
+            raise TypeError(f&quot;Enum cannot be defined with multiple types: {type_set}&quot;)
+
+        base_type = list(type_set)[-1]
+
+        allowed = [val.value for val in typed]
+
+        return base_type, allowed
+
+
+
+
+
+    def _enum_katra(typed, default=None, optional=False):
+
+        &quot;&quot;&quot;Private interface to create a Enum typed katra
+
+
+
+        A &#39;katra&#39; is the basic functional unit of `spock`. It defines a parameter using attrs as the backend, type checks
+
+        both simple types and subscripted GenericAlias types (e.g. lists and tuples), handles setting default parameters,
+
+        and deals with parameter optionality
+
+
+
+        *Args*:
+
+
+
+            typed: the type of the parameter to define
+
+            default: the default value to assign if given
+
+            optional: whether to make the parameter optional or not (thus allowing None)
+
+
+
+        *Returns*:
+
+
+
+            x: Attribute from attrs
+
+
+
+        &quot;&quot;&quot;
+
+        # First check if the types of Enum are the same
+
+        base_type, allowed = _check_enum_props(typed)
+
+        if base_type.__name__ == &quot;type&quot;:
+
+            x = _enum_class_katra(
+
+                typed=typed, allowed=allowed, default=default, optional=optional
+
+            )
+
+        else:
+
+            x = _enum_base_katra(
+
+                typed=typed,
+
+                base_type=base_type,
+
+                allowed=allowed,
+
+                default=default,
+
+                optional=optional,
+
+            )
+
+        return x
+
+
+
+
+
+    def _enum_base_katra(typed, base_type, allowed, default=None, optional=False):
+
+        &quot;&quot;&quot;Private interface to create a base Enum typed katra
+
+
+
+        Here we handle the base types of enums that allows us to force a type check on the instance
+
+
+
+        A &#39;katra&#39; is the basic functional unit of `spock`. It defines a parameter using attrs as the backend, type checks
+
+        both simple types and subscripted GenericAlias types (e.g. lists and tuples), handles setting default parameters,
+
+        and deals with parameter optionality
+
+
+
+        *Args*:
+
+            typed: the type of the parameter to define
+
+            base_type: underlying base type
+
+            allowed: set of allowed values
+
+            default: the default value to assign if given
+
+            optional: whether to make the parameter optional or not (thus allowing None)
+
+
+
+        *Returns*:
+
+
+
+            x: Attribute from attrs
+
+
+
+        &quot;&quot;&quot;
+
+        if default is not None:
+
+            x = attr.ib(
+
+                validator=[
+
+                    attr.validators.instance_of(base_type),
+
+                    attr.validators.in_(allowed),
+
+                ],
+
+                default=default,
+
+                type=typed,
+
+                metadata={&quot;base&quot;: typed.__name__},
+
+            )
+
+        elif optional:
+
+            x = attr.ib(
+
+                validator=attr.validators.optional(
+
+                    [attr.validators.instance_of(base_type), attr.validators.in_(allowed)]
+
+                ),
+
+                default=default,
+
+                type=typed,
+
+                metadata={&quot;base&quot;: typed.__name__, &quot;optional&quot;: True},
+
+            )
+
+        else:
+
+            x = attr.ib(
+
+                validator=[
+
+                    attr.validators.instance_of(base_type),
+
+                    attr.validators.in_(allowed),
+
+                ],
+
+                type=typed,
+
+                metadata={&quot;base&quot;: typed.__name__},
+
+            )
+
+        return x
+
+
+
+
+
+    def _in_type(instance, attribute, value, options):
+
+        &quot;&quot;&quot;attrs validator for class type enum
+
+
+
+        Checks if the type of the class (e.g. value) is in the specified set of types provided
+
+
+
+        *Args*:
+
+
+
+            instance: current object instance
+
+            attribute: current attribute instance
+
+            value: current value trying to be set in the attrs instance
+
+            options: list, tuple, or enum of allowed options
+
+
+
+        *Returns*:
+
+
+
+        &quot;&quot;&quot;
+
+        if type(value) not in options:
+
+            raise ValueError(f&quot;{attribute.name} must be in {options}&quot;)
+
+
+
+
+
+    def _enum_class_katra(typed, allowed, default=None, optional=False):
+
+        &quot;&quot;&quot;Private interface to create a base Enum typed katra
+
+
+
+        Here we handle the class based types of enums. Seeing as these classes are generated dynamically we cannot
+
+        force type checking of a specific instance however the in_ validator will catch an incorrect instance type
+
+
+
+        A &#39;katra&#39; is the basic functional unit of `spock`. It defines a parameter using attrs as the backend, type checks
+
+        both simple types and subscripted GenericAlias types (e.g. lists and tuples), handles setting default parameters,
+
+        and deals with parameter optionality
+
+
+
+        *Args*:
+
+
+
+            typed: the type of the parameter to define
+
+            allowed: set of allowed values
+
+            default: the default value to assign if given
+
+            optional: whether to make the parameter optional or not (thus allowing None)
+
+
+
+        *Returns*:
+
+
+
+            x: Attribute from attrs
+
+
+
+        &quot;&quot;&quot;
+
+        if default is not None:
+
+            x = attr.ib(
+
+                validator=[partial(_in_type, options=allowed)],
+
+                default=default,
+
+                type=typed,
+
+                metadata={&quot;base&quot;: typed.__name__},
+
+            )
+
+        elif optional:
+
+            x = attr.ib(
+
+                validator=attr.validators.optional([partial(_in_type, options=allowed)]),
+
+                default=default,
+
+                type=typed,
+
+                metadata={&quot;base&quot;: typed.__name__, &quot;optional&quot;: True},
+
+            )
+
+        else:
+
+            x = attr.ib(
+
+                validator=[partial(_in_type, options=allowed)],
+
+                type=typed,
+
+                metadata={&quot;base&quot;: typed.__name__},
+
+            )
+
+        return x
+
+
+
+
+
+    def _type_katra(typed, default=None, optional=False):
+
+        &quot;&quot;&quot;Private interface to create a simple typed katra
+
+
+
+        A &#39;katra&#39; is the basic functional unit of `spock`. It defines a parameter using attrs as the backend, type checks
+
+        both simple types and subscripted GenericAlias types (e.g. lists and tuples), handles setting default parameters,
+
+        and deals with parameter optionality
+
+
+
+        Handles: bool, string, float, int, List, and Tuple
+
+
+
+        *Args*:
+
+
+
+            typed: the type of the parameter to define
+
+            default: the default value to assign if given
+
+            optional: whether to make the parameter optional or not (thus allowing None)
+
+
+
+        *Returns*:
+
+
+
+            x: Attribute from attrs
+
+
+
+        &quot;&quot;&quot;
+
+        # Grab the name first based on if it is a base type or GenericAlias
+
+        if isinstance(typed, type):
+
+            name = typed.__name__
+
+        elif isinstance(typed, _GenericAlias):
+
+            name = _get_name_py_version(typed=typed)
+
+        else:
+
+            raise TypeError(&quot;Encountered an unexpected type in _type_katra&quot;)
+
+        special_key = None
+
+        # Default booleans to false and optional due to the nature of a boolean
+
+        if isinstance(typed, type) and name == &quot;bool&quot;:
+
+            optional = True
+
+            if default is not True:
+
+                default = False
+
+        # For the save path type we need to swap the type back to it&#39;s base class (str)
+
+        elif isinstance(typed, type) and name == &quot;SavePath&quot;:
+
+            optional = True
+
+            special_key = name
+
+            typed = str
+
+        if default is not None:
+
+            # if a default is provided, that takes precedence
+
+            x = attr.ib(
+
+                validator=attr.validators.instance_of(typed),
+
+                default=default,
+
+                type=typed,
+
+                metadata={&quot;base&quot;: name, &quot;special_key&quot;: special_key},
+
+            )
+
+        elif optional:
+
+            x = attr.ib(
+
+                validator=attr.validators.optional(attr.validators.instance_of(typed)),
+
+                default=default,
+
+                type=typed,
+
+                metadata={&quot;optional&quot;: True, &quot;base&quot;: name, &quot;special_key&quot;: special_key},
+
+            )
+
+        else:
+
+            x = attr.ib(
+
+                validator=attr.validators.instance_of(typed),
+
+                type=typed,
+
+                metadata={&quot;base&quot;: name, &quot;special_key&quot;: special_key},
+
+            )
+
+        return x
+
+
+
+
+
+    def _handle_optional_typing(typed):
+
+        &quot;&quot;&quot;Handles when a type hint is Optional
+
+
+
+        Handles Optional[type] typing and strips out the base type to pass back to the creation of a katra which needs base
+
+        typing
+
+
+
+        *Args*:
+
+
+
+            typed: type
+
+
+
+        *Returns*:
+
+
+
+            typed: type (modified if Optional)
+
+            optional: boolean for katra creation
+
+        &quot;&quot;&quot;
+
+        # Set optional to false
+
+        optional = False
+
+        # Check if it has __args__ to look for optionality as it is a GenericAlias
+
+        if hasattr(typed, &quot;__args__&quot;):
+
+            # If it is more than one than it is most likely optional but check against NoneType in the tuple to verify
+
+            # Check the length of type __args__
+
+            type_args = typed.__args__
+
+            # Optional[X] has type_args = (X, None) and is equal to Union[X, None]
+
+            if (len(type_args) == 2) and (typed == Union[type_args[0], None]):
+
+                typed = type_args[0]
+
+                # Set the optional flag to true
+
+                optional = True
+
+        return typed, optional
+
+
+
+
+
+    def _check_generic_recursive_single_type(typed):
+
+        &quot;&quot;&quot;Checks generics for the single types -- mixed types of generics are not allowed
+
+
+
+        DEPRECATED -- NOW SUPPORTS MIXED TYPES OF TUPLES
+
+
+
+        *Args*:
+
+
+
+            typed: type
+
+
+
+        *Returns*:
+
+
+
+        &quot;&quot;&quot;
+
+        # Check if it has __args__ to look for optionality as it is a GenericAlias
+
+        # if hasattr(typed, &#39;__args__&#39;):
+
+        #     if len(set(typed.__args__)) &gt; 1:
+
+        #         type_list = [str(val) for val in typed.__args__]
+
+        #         raise TypeError(f&quot;Passing multiple different subscript types to GenericAlias is not supported: {type_list}&quot;)
+
+        #     else:
+
+        #         for val in typed.__args__:
+
+        #             _check_generic_recursive_single_type(typed=val)
+
+        pass
+
+
+
+
+
+    def katra(typed, default=None):
+
+        &quot;&quot;&quot;Public interface to create a katra
+
+
+
+        A &#39;katra&#39; is the basic functional unit of `spock`. It defines a parameter using attrs as the backend, type checks
+
+        both simple types and subscripted GenericAlias types (e.g. lists and tuples), handles setting default parameters,
+
+        and deals with parameter optionality
+
+
+
+        *Args*:
+
+
+
+            typed: the type of the parameter to define
+
+            default: the default value to assign if given
+
+            optional: whether to make the parameter optional or not (thus allowing None)
+
+
+
+        Returns:
+
+
+
+            x: Attribute from attrs
+
+
+
+        &quot;&quot;&quot;
+
+        # Handle optionals
+
+        typed, optional = _handle_optional_typing(typed)
+
+        # Check generic types for consistent types
+
+        _check_generic_recursive_single_type(typed)
+
+        # We need to check if the type is a _GenericAlias so that we can handle subscripted general types
+
+        # If it is subscript typed it will not be T which python uses as a generic type name
+
+        if isinstance(typed, _GenericAlias) and (
+
+            not isinstance(typed.__args__[0], TypeVar)
+
+        ):
+
+            x = _generic_alias_katra(typed=typed, default=default, optional=optional)
+
+        elif isinstance(typed, EnumMeta):
+
+            x = _enum_katra(typed=typed, default=default, optional=optional)
+
+        else:
+
+            x = _type_katra(typed=typed, default=default, optional=optional)
+
+        return x
+</code></pre></div>
+<h2 id="variables">Variables</h2>
+<div class="highlight"><pre><span></span><code><span class="n">minor</span>
+</code></pre></div>
+<h2 id="functions">Functions</h2>
+<h3 id="katra">katra</h3>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">katra</span><span class="p">(</span>
+    <span class="n">typed</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Public interface to create a katra</p>
+<p>A 'katra' is the basic functional unit of <code>spock</code>. It defines a parameter using attrs as the backend, type checks
+both simple types and subscripted GenericAlias types (e.g. lists and tuples), handles setting default parameters,
+and deals with parameter optionality</p>
+<p><em>Args</em>:</p>
+<div class="highlight"><pre><span></span><code>typed: the type of the parameter to define
+default: the default value to assign if given
+optional: whether to make the parameter optional or not (thus allowing None)
+</code></pre></div>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>x</td>
+<td>Attribute from attrs</td>
+</tr>
+</tbody>
+</table>
+<p>??? example "View Source"
+        def katra(typed, default=None):</p>
+<div class="highlight"><pre><span></span><code>        &quot;&quot;&quot;Public interface to create a katra
+
+
+
+        A &#39;katra&#39; is the basic functional unit of `spock`. It defines a parameter using attrs as the backend, type checks
+
+        both simple types and subscripted GenericAlias types (e.g. lists and tuples), handles setting default parameters,
+
+        and deals with parameter optionality
+
+
+
+        *Args*:
+
+
+
+            typed: the type of the parameter to define
+
+            default: the default value to assign if given
+
+            optional: whether to make the parameter optional or not (thus allowing None)
+
+
+
+        Returns:
+
+
+
+            x: Attribute from attrs
+
+
+
+        &quot;&quot;&quot;
+
+        # Handle optionals
+
+        typed, optional = _handle_optional_typing(typed)
+
+        # Check generic types for consistent types
+
+        _check_generic_recursive_single_type(typed)
+
+        # We need to check if the type is a _GenericAlias so that we can handle subscripted general types
+
+        # If it is subscript typed it will not be T which python uses as a generic type name
+
+        if isinstance(typed, _GenericAlias) and (
+
+            not isinstance(typed.__args__[0], TypeVar)
+
+        ):
+
+            x = _generic_alias_katra(typed=typed, default=default, optional=optional)
+
+        elif isinstance(typed, EnumMeta):
+
+            x = _enum_katra(typed=typed, default=default, optional=optional)
+
+        else:
+
+            x = _type_katra(typed=typed, default=default, optional=optional)
+
+        return x
+</code></pre></div>
+<h2 id="classes">Classes</h2>
+<h3 id="savepath">SavePath</h3>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">SavePath</span><span class="p">(</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>??? example "View Source"
+        class SavePath(str):</p>
+<div class="highlight"><pre><span></span><code>        &quot;&quot;&quot;Spock special key for saving the Spock config to file
+
+
+
+        Defines a special key use to save the current Spock config to file
+
+
+
+        &quot;&quot;&quot;
+
+
+
+        def __new__(cls, x):
+
+            return super().__new__(cls, x)
+</code></pre></div>
+<hr />
+<h4 id="ancestors-in-mro">Ancestors (in MRO)</h4>
+<ul>
+<li>builtins.str</li>
+</ul>
+<h4 id="static-methods">Static methods</h4>
+<h4 id="maketrans">maketrans</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">maketrans</span><span class="p">(</span>
+    <span class="o">...</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Return a translation table usable for str.translate().</p>
+<p>If there is only one argument, it must be a dictionary mapping Unicode
+ordinals (integers) or characters to Unicode ordinals, strings or None.
+Character keys will be then converted to ordinals.
+If there are two arguments, they must be strings of equal length, and
+in the resulting dictionary, each character in x will be mapped to the
+character at the same position in y. If there is a third argument, it
+must be a string, whose characters will be mapped to None in the result.</p>
+<h4 id="methods">Methods</h4>
+<h4 id="capitalize">capitalize</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">capitalize</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="o">/</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Return a capitalized version of the string.</p>
+<p>More specifically, make the first character have upper case and the rest lower
+case.</p>
+<h4 id="casefold">casefold</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">casefold</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="o">/</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Return a version of the string suitable for caseless comparisons.</p>
+<h4 id="center">center</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">center</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">width</span><span class="p">,</span>
+    <span class="n">fillchar</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">,</span>
+    <span class="o">/</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Return a centered string of length width.</p>
+<p>Padding is done using the specified fill character (default is a space).</p>
+<h4 id="count">count</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">count</span><span class="p">(</span>
+    <span class="o">...</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>S.count(sub[, start[, end]]) -&gt; int</p>
+<p>Return the number of non-overlapping occurrences of substring sub in
+string S[start:end].  Optional arguments start and end are
+interpreted as in slice notation.</p>
+<h4 id="encode">encode</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">encode</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">,</span>
+    <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;strict&#39;</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Encode the string using the codec registered for encoding.</p>
+<p>encoding
+  The encoding in which to encode the string.
+errors
+  The error handling scheme to use for encoding errors.
+  The default is 'strict' meaning that encoding errors raise a
+  UnicodeEncodeError.  Other possible values are 'ignore', 'replace' and
+  'xmlcharrefreplace' as well as any other name registered with
+  codecs.register_error that can handle UnicodeEncodeErrors.</p>
+<h4 id="endswith">endswith</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">endswith</span><span class="p">(</span>
+    <span class="o">...</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>S.endswith(suffix[, start[, end]]) -&gt; bool</p>
+<p>Return True if S ends with the specified suffix, False otherwise.
+With optional start, test S beginning at that position.
+With optional end, stop comparing S at that position.
+suffix can also be a tuple of strings to try.</p>
+<h4 id="expandtabs">expandtabs</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">expandtabs</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="n">tabsize</span><span class="o">=</span><span class="mi">8</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Return a copy where all tab characters are expanded using spaces.</p>
+<p>If tabsize is not given, a tab size of 8 characters is assumed.</p>
+<h4 id="find">find</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">find</span><span class="p">(</span>
+    <span class="o">...</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>S.find(sub[, start[, end]]) -&gt; int</p>
+<p>Return the lowest index in S where substring sub is found,
+such that sub is contained within S[start:end].  Optional
+arguments start and end are interpreted as in slice notation.</p>
+<p>Return -1 on failure.</p>
+<h4 id="format">format</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">format</span><span class="p">(</span>
+    <span class="o">...</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>S.format(<em>args, </em>*kwargs) -&gt; str</p>
+<p>Return a formatted version of S, using substitutions from args and kwargs.
+The substitutions are identified by braces ('{' and '}').</p>
+<h4 id="format_map">format_map</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">format_map</span><span class="p">(</span>
+    <span class="o">...</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>S.format_map(mapping) -&gt; str</p>
+<p>Return a formatted version of S, using substitutions from mapping.
+The substitutions are identified by braces ('{' and '}').</p>
+<h4 id="index">index</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">index</span><span class="p">(</span>
+    <span class="o">...</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>S.index(sub[, start[, end]]) -&gt; int</p>
+<p>Return the lowest index in S where substring sub is found,
+such that sub is contained within S[start:end].  Optional
+arguments start and end are interpreted as in slice notation.</p>
+<p>Raises ValueError when the substring is not found.</p>
+<h4 id="isalnum">isalnum</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">isalnum</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="o">/</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Return True if the string is an alpha-numeric string, False otherwise.</p>
+<p>A string is alpha-numeric if all characters in the string are alpha-numeric and
+there is at least one character in the string.</p>
+<h4 id="isalpha">isalpha</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">isalpha</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="o">/</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Return True if the string is an alphabetic string, False otherwise.</p>
+<p>A string is alphabetic if all characters in the string are alphabetic and there
+is at least one character in the string.</p>
+<h4 id="isascii">isascii</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">isascii</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="o">/</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Return True if all characters in the string are ASCII, False otherwise.</p>
+<p>ASCII characters have code points in the range U+0000-U+007F.
+Empty string is ASCII too.</p>
+<h4 id="isdecimal">isdecimal</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">isdecimal</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="o">/</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Return True if the string is a decimal string, False otherwise.</p>
+<p>A string is a decimal string if all characters in the string are decimal and
+there is at least one character in the string.</p>
+<h4 id="isdigit">isdigit</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">isdigit</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="o">/</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Return True if the string is a digit string, False otherwise.</p>
+<p>A string is a digit string if all characters in the string are digits and there
+is at least one character in the string.</p>
+<h4 id="isidentifier">isidentifier</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">isidentifier</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="o">/</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Return True if the string is a valid Python identifier, False otherwise.</p>
+<p>Call keyword.iskeyword(s) to test whether string s is a reserved identifier,
+such as "def" or "class".</p>
+<h4 id="islower">islower</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">islower</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="o">/</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Return True if the string is a lowercase string, False otherwise.</p>
+<p>A string is lowercase if all cased characters in the string are lowercase and
+there is at least one cased character in the string.</p>
+<h4 id="isnumeric">isnumeric</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">isnumeric</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="o">/</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Return True if the string is a numeric string, False otherwise.</p>
+<p>A string is numeric if all characters in the string are numeric and there is at
+least one character in the string.</p>
+<h4 id="isprintable">isprintable</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">isprintable</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="o">/</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Return True if the string is printable, False otherwise.</p>
+<p>A string is printable if all of its characters are considered printable in
+repr() or if it is empty.</p>
+<h4 id="isspace">isspace</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">isspace</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="o">/</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Return True if the string is a whitespace string, False otherwise.</p>
+<p>A string is whitespace if all characters in the string are whitespace and there
+is at least one character in the string.</p>
+<h4 id="istitle">istitle</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">istitle</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="o">/</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Return True if the string is a title-cased string, False otherwise.</p>
+<p>In a title-cased string, upper- and title-case characters may only
+follow uncased characters and lowercase characters only cased ones.</p>
+<h4 id="isupper">isupper</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">isupper</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="o">/</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Return True if the string is an uppercase string, False otherwise.</p>
+<p>A string is uppercase if all cased characters in the string are uppercase and
+there is at least one cased character in the string.</p>
+<h4 id="join">join</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">join</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">iterable</span><span class="p">,</span>
+    <span class="o">/</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Concatenate any number of strings.</p>
+<p>The string whose method is called is inserted in between each given string.
+The result is returned as a new string.</p>
+<p>Example: '.'.join(['ab', 'pq', 'rs']) -&gt; 'ab.pq.rs'</p>
+<h4 id="ljust">ljust</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">ljust</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">width</span><span class="p">,</span>
+    <span class="n">fillchar</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">,</span>
+    <span class="o">/</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Return a left-justified string of length width.</p>
+<p>Padding is done using the specified fill character (default is a space).</p>
+<h4 id="lower">lower</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">lower</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="o">/</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Return a copy of the string converted to lowercase.</p>
+<h4 id="lstrip">lstrip</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">lstrip</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">chars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="o">/</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Return a copy of the string with leading whitespace removed.</p>
+<p>If chars is given and not None, remove characters in chars instead.</p>
+<h4 id="partition">partition</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">partition</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">sep</span><span class="p">,</span>
+    <span class="o">/</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Partition the string into three parts using the given separator.</p>
+<p>This will search for the separator in the string.  If the separator is found,
+returns a 3-tuple containing the part before the separator, the separator
+itself, and the part after it.</p>
+<p>If the separator is not found, returns a 3-tuple containing the original string
+and two empty strings.</p>
+<h4 id="replace">replace</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">replace</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">old</span><span class="p">,</span>
+    <span class="n">new</span><span class="p">,</span>
+    <span class="n">count</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="o">/</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Return a copy with all occurrences of substring old replaced by new.</p>
+<p>count
+    Maximum number of occurrences to replace.
+    -1 (the default value) means replace all occurrences.</p>
+<p>If the optional argument count is given, only the first count occurrences are
+replaced.</p>
+<h4 id="rfind">rfind</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">rfind</span><span class="p">(</span>
+    <span class="o">...</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>S.rfind(sub[, start[, end]]) -&gt; int</p>
+<p>Return the highest index in S where substring sub is found,
+such that sub is contained within S[start:end].  Optional
+arguments start and end are interpreted as in slice notation.</p>
+<p>Return -1 on failure.</p>
+<h4 id="rindex">rindex</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">rindex</span><span class="p">(</span>
+    <span class="o">...</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>S.rindex(sub[, start[, end]]) -&gt; int</p>
+<p>Return the highest index in S where substring sub is found,
+such that sub is contained within S[start:end].  Optional
+arguments start and end are interpreted as in slice notation.</p>
+<p>Raises ValueError when the substring is not found.</p>
+<h4 id="rjust">rjust</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">rjust</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">width</span><span class="p">,</span>
+    <span class="n">fillchar</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">,</span>
+    <span class="o">/</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Return a right-justified string of length width.</p>
+<p>Padding is done using the specified fill character (default is a space).</p>
+<h4 id="rpartition">rpartition</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">rpartition</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">sep</span><span class="p">,</span>
+    <span class="o">/</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Partition the string into three parts using the given separator.</p>
+<p>This will search for the separator in the string, starting at the end. If
+the separator is found, returns a 3-tuple containing the part before the
+separator, the separator itself, and the part after it.</p>
+<p>If the separator is not found, returns a 3-tuple containing two empty strings
+and the original string.</p>
+<h4 id="rsplit">rsplit</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">rsplit</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="n">sep</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">maxsplit</span><span class="o">=-</span><span class="mi">1</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Return a list of the words in the string, using sep as the delimiter string.</p>
+<p>sep
+    The delimiter according which to split the string.
+    None (the default value) means split according to any whitespace,
+    and discard empty strings from the result.
+  maxsplit
+    Maximum number of splits to do.
+    -1 (the default value) means no limit.</p>
+<p>Splits are done starting at the end of the string and working to the front.</p>
+<h4 id="rstrip">rstrip</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">rstrip</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">chars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="o">/</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Return a copy of the string with trailing whitespace removed.</p>
+<p>If chars is given and not None, remove characters in chars instead.</p>
+<h4 id="split">split</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">split</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="n">sep</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">maxsplit</span><span class="o">=-</span><span class="mi">1</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Return a list of the words in the string, using sep as the delimiter string.</p>
+<p>sep
+  The delimiter according which to split the string.
+  None (the default value) means split according to any whitespace,
+  and discard empty strings from the result.
+maxsplit
+  Maximum number of splits to do.
+  -1 (the default value) means no limit.</p>
+<h4 id="splitlines">splitlines</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">splitlines</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="n">keepends</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Return a list of the lines in the string, breaking at line boundaries.</p>
+<p>Line breaks are not included in the resulting list unless keepends is given and
+true.</p>
+<h4 id="startswith">startswith</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">startswith</span><span class="p">(</span>
+    <span class="o">...</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>S.startswith(prefix[, start[, end]]) -&gt; bool</p>
+<p>Return True if S starts with the specified prefix, False otherwise.
+With optional start, test S beginning at that position.
+With optional end, stop comparing S at that position.
+prefix can also be a tuple of strings to try.</p>
+<h4 id="strip">strip</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">strip</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">chars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="o">/</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Return a copy of the string with leading and trailing whitespace removed.</p>
+<p>If chars is given and not None, remove characters in chars instead.</p>
+<h4 id="swapcase">swapcase</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">swapcase</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="o">/</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Convert uppercase characters to lowercase and lowercase characters to uppercase.</p>
+<h4 id="title">title</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">title</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="o">/</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Return a version of the string where each word is titlecased.</p>
+<p>More specifically, words start with uppercased characters and all remaining
+cased characters have lower case.</p>
+<h4 id="translate">translate</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">translate</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">table</span><span class="p">,</span>
+    <span class="o">/</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Replace each character in the string using the given translation table.</p>
+<p>table
+    Translation table, which must be a mapping of Unicode ordinals to
+    Unicode ordinals, strings, or None.</p>
+<p>The table must implement lookup/indexing via <strong>getitem</strong>, for instance a
+dictionary or list.  If this operation raises LookupError, the character is
+left untouched.  Characters mapped to None are deleted.</p>
+<h4 id="upper">upper</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">upper</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="o">/</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Return a copy of the string converted to uppercase.</p>
+<h4 id="zfill">zfill</h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">zfill</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">width</span><span class="p">,</span>
+    <span class="o">/</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Pad a numeric string with zeros on the left, to fill a field of the given width.</p>
+<p>The string is never truncated.</p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../saver/" title="Saver" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Saver
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../utils/" title="Utils" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Utils
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Powered by
+        <a href="http://timothycrosley.github.io/portray">portray.</a>
+        You too can
+        <a href="http://timothycrosley.github.io/portray">
+          portray</a>
+        your Python project well using automatic documentation.
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../../assets/javascripts/workers/search.f8263e09.min.js", "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.4fc53ad4.min.js"></script>
+      
+    
+  </body>
+</html>
