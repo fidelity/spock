@@ -49,6 +49,12 @@ nested_list = 'NestedListStuff'
 NestedListStuff = [{one = 10, two = 'hello'}, {one = 20, two = 'bye'}]
 # Class Enum
 class_enum = 'NestedStuff'
+high_config = 'SingleNestedConfig'
+[SingleNestedConfig]
+    double_nested_config = 'FirstDoubleNestedConfig'
+[FirstDoubleNestedConfig]
+    h_factor = 0.99
+    v_factor = 0.90
 # Overrride general definition
 [TypeConfig]
     float_p = 12.0

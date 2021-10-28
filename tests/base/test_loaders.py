@@ -22,6 +22,9 @@ class TestAllTypesYAML(AllTypes):
                 NestedStuff,
                 NestedListStuff,
                 TypeOptConfig,
+                SingleNestedConfig,
+                FirstDoubleNestedConfig,
+                SecondDoubleNestedConfig,
                 desc="Test Builder",
             )
             return config.generate()
@@ -40,9 +43,11 @@ class TestAllDefaultsYAML(AllDefaults):
                 NestedStuff,
                 NestedListStuff,
                 NestedStuffDefault,
-                TypeOptConfig,
                 TypeDefaultConfig,
                 TypeDefaultOptConfig,
+                SingleNestedConfig,
+                FirstDoubleNestedConfig,
+                SecondDoubleNestedConfig,
                 desc="Test Builder",
             )
             return config.generate()
@@ -57,7 +62,8 @@ class TestInheritance(AllInherited):
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/inherited.yaml"])
             config = ConfigArgBuilder(
-                TypeInherited, NestedStuff, NestedListStuff, desc="Test Builder"
+                TypeInherited, NestedStuff, NestedListStuff, SingleNestedConfig,
+                FirstDoubleNestedConfig, SecondDoubleNestedConfig, desc="Test Builder"
             )
             return config.generate()
 
@@ -76,6 +82,9 @@ class TestAllTypesTOML(AllTypes):
                 NestedStuff,
                 NestedListStuff,
                 TypeOptConfig,
+                SingleNestedConfig,
+                FirstDoubleNestedConfig,
+                SecondDoubleNestedConfig,
                 desc="Test Builder",
             )
             return config.generate()
@@ -97,6 +106,9 @@ class TestAllDefaultsTOML(AllDefaults):
                 TypeOptConfig,
                 TypeDefaultConfig,
                 TypeDefaultOptConfig,
+                SingleNestedConfig,
+                FirstDoubleNestedConfig,
+                SecondDoubleNestedConfig,
                 desc="Test Builder",
             )
             return config.generate()
@@ -116,6 +128,9 @@ class TestAllTypesJSON(AllTypes):
                 NestedStuff,
                 NestedListStuff,
                 TypeOptConfig,
+                SingleNestedConfig,
+                FirstDoubleNestedConfig,
+                SecondDoubleNestedConfig,
                 desc="Test Builder",
             )
             return config.generate()
@@ -137,6 +152,9 @@ class TestAllDefaultsJSON(AllDefaults):
                 TypeOptConfig,
                 TypeDefaultConfig,
                 TypeDefaultOptConfig,
+                SingleNestedConfig,
+                FirstDoubleNestedConfig,
+                SecondDoubleNestedConfig,
                 desc="Test Builder",
             )
             return config.generate()
@@ -157,6 +175,9 @@ class TestComposition:
                 NestedStuff,
                 NestedListStuff,
                 TypeOptConfig,
+                SingleNestedConfig,
+                FirstDoubleNestedConfig,
+                SecondDoubleNestedConfig,
                 desc="Test Builder",
             )
             return config.generate()
@@ -175,7 +196,8 @@ class TestConfigCycles:
             )
             with pytest.raises(ValueError):
                 ConfigArgBuilder(
-                    TypeConfig, NestedStuff, NestedListStuff, desc="Test Builder"
+                    TypeConfig, NestedStuff, NestedListStuff, SingleNestedConfig,
+                    FirstDoubleNestedConfig, SecondDoubleNestedConfig, desc="Test Builder"
                 )
 
 
@@ -191,7 +213,8 @@ class TestConfigIncludeRaise:
             )
             with pytest.raises(ValueError):
                 ConfigArgBuilder(
-                    TypeConfig, NestedStuff, NestedListStuff, desc="Test Builder"
+                    TypeConfig, NestedStuff, NestedListStuff, SingleNestedConfig,
+                    FirstDoubleNestedConfig, SecondDoubleNestedConfig, desc="Test Builder"
                 )
 
 
@@ -212,5 +235,6 @@ class TestConfigDuplicate:
             )
             with pytest.raises(ValueError):
                 ConfigArgBuilder(
-                    TypeConfig, NestedStuff, NestedListStuff, desc="Test Builder"
+                    TypeConfig, NestedStuff, NestedListStuff, SingleNestedConfig,
+                    FirstDoubleNestedConfig, SecondDoubleNestedConfig, desc="Test Builder"
                 )

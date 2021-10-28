@@ -56,6 +56,37 @@ class ChoiceFail:
 
 
 @spock
+class BaseDoubleNestedConfig:
+    morph_kernels_thickness: int = 1
+
+
+@spock
+class FirstDoubleNestedConfig(BaseDoubleNestedConfig):
+    h_factor: float = 0.95
+    v_factor: float = 0.95
+
+
+@spock
+class SecondDoubleNestedConfig(BaseDoubleNestedConfig):
+    morph_tolerance: float = 0.1
+
+
+class DoubleNestedEnum(Enum):
+    first = FirstDoubleNestedConfig
+    second = SecondDoubleNestedConfig
+
+
+@spock
+class SingleNestedConfig:
+    """Configuration for image based ops
+
+    Attributes:
+        kernel_config: MorphKernelConfig object
+    """
+    double_nested_config: DoubleNestedEnum = SecondDoubleNestedConfig()
+
+
+@spock
 class TypeConfig:
     """This creates a test Spock config of all supported variable types as required parameters"""
 
@@ -111,6 +142,8 @@ class TypeConfig:
     nested_list: List[NestedListStuff]
     # Class Enum
     class_enum: ClassChoice
+    # Double Nested class ref
+    high_config: SingleNestedConfig
 
 
 @spock
@@ -206,6 +239,8 @@ class TypeDefaultConfig:
     nested_list_def: List[NestedListStuff] = NestedListStuff
     # Class Enum
     class_enum_def: ClassChoice = NestedStuff
+    # Double Nested class ref
+    high_config_def: SingleNestedConfig = SingleNestedConfig()
 
 
 @spock

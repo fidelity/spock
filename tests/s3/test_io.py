@@ -34,6 +34,9 @@ class TestAllTypesFromS3MockYAML(AllTypes):
                 NestedStuff,
                 NestedListStuff,
                 TypeOptConfig,
+                SingleNestedConfig,
+                FirstDoubleNestedConfig,
+                SecondDoubleNestedConfig,
                 s3_config=S3Config(session=aws_session, s3_session=s3_client),
                 desc="Test Builder",
             )
@@ -51,6 +54,9 @@ class TestS3MockYAMLWriter:
                 NestedStuff,
                 NestedListStuff,
                 TypeOptConfig,
+                SingleNestedConfig,
+                FirstDoubleNestedConfig,
+                SecondDoubleNestedConfig,
                 s3_config=S3Config(session=aws_session, s3_session=s3_client),
                 desc="Test Builder",
             )

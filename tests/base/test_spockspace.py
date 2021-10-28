@@ -34,6 +34,9 @@ class TestSpockspaceRepr:
                 NestedStuff,
                 NestedListStuff,
                 TypeOptConfig,
+                SingleNestedConfig,
+                FirstDoubleNestedConfig,
+                SecondDoubleNestedConfig,
                 desc="Test Builder",
             )
             print(config.generate())
@@ -54,6 +57,9 @@ class TestFrozen:
                 NestedStuff,
                 NestedListStuff,
                 TypeOptConfig,
+                SingleNestedConfig,
+                FirstDoubleNestedConfig,
+                SecondDoubleNestedConfig,
                 desc="Test Builder",
             )
             return config.generate()

@@ -47,6 +47,12 @@ TypeConfig:
   nested_list: NestedListStuff
   # Class Enum
   class_enum: NestedListStuff
+  high_config: SingleNestedConfig
+SingleNestedConfig:
+  double_nested_config: FirstDoubleNestedConfig
+FirstDoubleNestedConfig:
+  h_factor: 0.99
+  v_factor: 0.90
 NestedListStuff:
     - one: 10
       two: hello

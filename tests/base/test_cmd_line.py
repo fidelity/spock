@@ -72,10 +72,17 @@ class TestClassCmdLineOverride:
                     "[11, 21]",
                     "--TypeConfig.nested_list.NestedListStuff.two",
                     "['Hooray', 'Working']",
+                    "--TypeConfig.high_config",
+                    "SingleNestedConfig",
+                    "--SingleNestedConfig.double_nested_config",
+                    "SecondDoubleNestedConfig",
+                    "--SecondDoubleNestedConfig.morph_tolerance",
+                    "0.2"
                 ],
             )
             config = ConfigArgBuilder(
-                TypeConfig, NestedStuff, NestedListStuff, desc="Test Builder"
+                TypeConfig, NestedStuff, NestedListStuff, SingleNestedConfig,
+                FirstDoubleNestedConfig, SecondDoubleNestedConfig,desc="Test Builder"
             )
             return config.generate()
 
@@ -110,6 +117,8 @@ class TestClassCmdLineOverride:
         assert arg_builder.NestedListStuff[0].two == "Hooray"
         assert arg_builder.NestedListStuff[1].one == 21
         assert arg_builder.NestedListStuff[1].two == "Working"
+        assert isinstance(arg_builder.SingleNestedConfig.double_nested_config, SecondDoubleNestedConfig) is True
+        assert arg_builder.SecondDoubleNestedConfig.morph_tolerance == 0.2
 
 
 class TestClassOnlyCmdLine:
@@ -177,10 +186,13 @@ class TestClassOnlyCmdLine:
                     "[11, 21]",
                     "--TypeConfig.nested_list.NestedListStuff.two",
                     "['Hooray', 'Working']",
+                    "--TypeConfig.high_config",
+                    "SingleNestedConfig"
                 ],
             )
             config = ConfigArgBuilder(
-                TypeConfig, NestedStuff, NestedListStuff, desc="Test Builder"
+                TypeConfig, NestedStuff, NestedListStuff, SingleNestedConfig,
+                FirstDoubleNestedConfig, SecondDoubleNestedConfig, desc="Test Builder"
             )
             return config.generate()
 
@@ -211,6 +223,10 @@ class TestClassOnlyCmdLine:
         assert arg_builder.TypeConfig.list_choice_p_float == [20.0]
         assert arg_builder.TypeConfig.class_enum.one == 12
         assert arg_builder.TypeConfig.class_enum.two == "ancora"
+        assert isinstance(arg_builder.TypeConfig.high_config.double_nested_config,
+                          SecondDoubleNestedConfig) is True
+        assert arg_builder.TypeConfig.high_config.double_nested_config.morph_kernels_thickness == 1
+        assert arg_builder.TypeConfig.high_config.double_nested_config.morph_tolerance == 0.1
         assert arg_builder.NestedListStuff[0].one == 11
         assert arg_builder.NestedListStuff[0].two == "Hooray"
         assert arg_builder.NestedListStuff[1].one == 21
@@ -235,7 +251,8 @@ class TestRaiseCmdLineNoKey:
             )
             with pytest.raises(SystemExit):
                 config = ConfigArgBuilder(
-                    TypeConfig, NestedStuff, NestedListStuff, desc="Test Builder"
+                    TypeConfig, NestedStuff, NestedListStuff, SingleNestedConfig,
+                    FirstDoubleNestedConfig, SecondDoubleNestedConfig, desc="Test Builder"
                 )
                 return config.generate()
 
@@ -258,6 +275,7 @@ class TestRaiseCmdLineListLen:
             )
             with pytest.raises(ValueError):
                 config = ConfigArgBuilder(
-                    TypeConfig, NestedStuff, NestedListStuff, desc="Test Builder"
+                    TypeConfig, NestedStuff, NestedListStuff, SingleNestedConfig,
+                    FirstDoubleNestedConfig, SecondDoubleNestedConfig, desc="Test Builder"
                 )
                 return config.generate()
