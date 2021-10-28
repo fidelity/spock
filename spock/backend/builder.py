@@ -297,7 +297,9 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
                     # This handles basics and references to other classes -- here we need to recurse to grab any nested
                     # defs since classes are passed as strings to the config but are defined via Enums (handled #139)
                     else:
-                        recurse_args = self._handle_recursive_defaults(args.get(default_name), args, class_names)
+                        recurse_args = self._handle_recursive_defaults(
+                            args.get(default_name), args, class_names
+                        )
                         default_value = self.input_classes[
                             class_names.index(default_name)
                         ](**recurse_args)
@@ -324,8 +326,12 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
             if v in class_names:
                 # Recurse only if in the all_args dict (from the config file)
                 if v in all_args:
-                    bubbled_dict = self._handle_recursive_defaults(all_args.get(v), all_args, class_names)
-                    out_dict.update({k: self.input_classes[class_names.index(v)](**bubbled_dict)})
+                    bubbled_dict = self._handle_recursive_defaults(
+                        all_args.get(v), all_args, class_names
+                    )
+                    out_dict.update(
+                        {k: self.input_classes[class_names.index(v)](**bubbled_dict)}
+                    )
                 # Else fall back on default instantiation
                 else:
                     out_dict.update({k: self.input_classes[class_names.index(v)]()})
@@ -854,7 +860,9 @@ class AttrBuilder(BaseBuilder):
                     "Match error -- multiple classes with the same name definition"
                 )
             else:
-                if (args.get(self.input_classes[match_idx[0]].__name__) is None) and (check_value not in class_names):
+                if (args.get(self.input_classes[match_idx[0]].__name__) is None) and (
+                    check_value not in class_names
+                ):
                     raise ValueError(
                         f"Cannot map a definition for the referenced class "
                         f"{self.input_classes[match_idx[0]].__name__}"
@@ -865,10 +873,14 @@ class AttrBuilder(BaseBuilder):
                         self.input_classes[match_idx[0]](**val) for val in current_arg
                     ]
                 else:
-                    recurse_args = self._handle_recursive_defaults(args.get(check_value), args, class_names) if check_value in args else {}
-                    class_value = self.input_classes[
-                        match_idx[0]
-                    ](**recurse_args)
+                    recurse_args = (
+                        self._handle_recursive_defaults(
+                            args.get(check_value), args, class_names
+                        )
+                        if check_value in args
+                        else {}
+                    )
+                    class_value = self.input_classes[match_idx[0]](**recurse_args)
             return_value = class_value
         # else return the expected value
         else:
