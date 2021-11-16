@@ -1,5 +1,5 @@
 black==21.10b0
-coveralls==3.3.0
+coveralls==3.3.1
 coverage==5.5
 isort==5.10.1
 moto==2.2.13
