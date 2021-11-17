@@ -15,7 +15,7 @@ import attr
 from attr import NOTHING
 
 from spock.backend.wrappers import Spockspace
-from spock.utils import make_argument
+from spock.utils import _is_spock_instance, make_argument
 
 
 class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
@@ -281,9 +281,11 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
                         default_name = type(default_attr).__name__
                 # Skip if in the exclude list
                 else:
+                    default_attr = None
                     default_name = None
-                # if we need to fall back onto the default and ff it's in the arg_list then we have a
-                # definition coming in from the config file
+                # if we need to fall back onto the default and if it's in the arg_list then we have a
+                # definition coming in from the config file -- grab the default and then recurse to get other defaults
+                # and map to possibly other config defined values
                 if default_name is not None and default_name in arg_list:
                     # This handles lists of class type repeats -- these cannot be nested as the logic would be too
                     # confusing to map to
@@ -304,7 +306,51 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
                             class_names.index(default_name)
                         ](**recurse_args)
                     fields.update({val: default_value})
+                # If we fall back on default but don't define it within the config file we still need to check
+                # for references to other classes that might be set from config files -- we have to do this
+                # slightly differently due to the default value being an attr object
+                elif (default_name is not None) and (default_attr is not None):
+                    recurse_args = self._handle_recursive_non_args_defaults(
+                        default_attr, args, class_names
+                    )
+                    default_value = self.input_classes[class_names.index(default_name)](
+                        **recurse_args
+                    )
+                    fields.update({val: default_value})
         return fields
+
+    def _handle_recursive_non_args_defaults(self, default_attr, all_args, class_names):
+        """Recurses through the default attrs object to determine if it can map to a definition from the config read
+
+        *Args*:
+
+            default_attr: default attr object
+            all_args: all argument dictionary
+            class_names: list of class names
+
+        *Returns*:
+
+            out_dict: recursively mapped dictionary of attributes
+
+        """
+        out_dict = {}
+        dict_attr = attr.asdict(default_attr, recurse=False)
+        for k, v in dict_attr.items():
+            if _is_spock_instance(v) and (type(v).__name__ in all_args):
+                attr_name = type(v).__name__
+                bubbled_dict = self._handle_recursive_non_args_defaults(
+                    v, all_args[attr_name], class_names
+                )
+                out_dict.update(
+                    {
+                        k: self.input_classes[class_names.index(attr_name)](
+                            **bubbled_dict
+                        )
+                    }
+                )
+            else:
+                out_dict.update({k: all_args[k] if k in all_args else v})
+        return out_dict
 
     def _handle_recursive_defaults(self, curr_arg, all_args, class_names):
         """Recurses through the args from the config read to determine if it can map to a definition

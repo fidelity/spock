@@ -60,7 +60,7 @@ def _is_spock_instance(__obj: object):
         bool
 
     """
-    return (__obj.__module__ == "spock.backend.config") and attr.has(__obj)
+    return attr.has(__obj) and (__obj.__module__ == "spock.backend.config")
 
 
 def make_argument(arg_name, arg_type, parser):
