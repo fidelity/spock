@@ -286,7 +286,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
                 # if we need to fall back onto the default and if it's in the arg_list then we have a
                 # definition coming in from the config file -- grab the default and then recurse to get other defaults
                 # and map to possibly other config defined values
-                if default_name is not None and default_name in arg_list:
+                if default_name is not None and (default_name in arg_list) and (len(args[default_name]) > 0):
                     # This handles lists of class type repeats -- these cannot be nested as the logic would be too
                     # confusing to map to
                     if isinstance(args.get(default_name), list):
@@ -302,6 +302,12 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
                         recurse_args = self._handle_recursive_defaults(
                             args.get(default_name), args, class_names
                         )
+                        if type(default_attr).__name__ != 'type':
+                            more_recurse_args = self._handle_recursive_non_args_defaults(
+                                default_attr, args, class_names, check_self=True
+                            )
+                            more_recurse_args.update(recurse_args)
+                            recurse_args = more_recurse_args
                         default_value = self.input_classes[
                             class_names.index(default_name)
                         ](**recurse_args)
@@ -319,7 +325,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
                     fields.update({val: default_value})
         return fields
 
-    def _handle_recursive_non_args_defaults(self, default_attr, all_args, class_names):
+    def _handle_recursive_non_args_defaults(self, default_attr, all_args, class_names, check_self=False):
         """Recurses through the default attrs object to determine if it can map to a definition from the config read
 
         *Args*:
@@ -350,6 +356,11 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
                 )
             else:
                 out_dict.update({k: all_args[k] if k in all_args else v})
+        default_name = type(default_attr).__name__
+        if check_self and (default_name in all_args):
+            for k, v in dict_attr.items():
+                if k in all_args[default_name]:
+                    out_dict.update({k: all_args[default_name][k]})
         return out_dict
 
     def _handle_recursive_defaults(self, curr_arg, all_args, class_names):
