@@ -78,11 +78,6 @@ class DoubleNestedEnum(Enum):
 
 @spock
 class SingleNestedConfig:
-    """Configuration for image based ops
-
-    Attributes:
-        kernel_config: MorphKernelConfig object
-    """
     double_nested_config: DoubleNestedEnum = SecondDoubleNestedConfig()
 
 

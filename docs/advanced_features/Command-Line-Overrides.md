@@ -128,6 +128,51 @@ though they have the same parameter name (due to the different class names).
 $ python tutorial.py --config tutorial.yaml --DataConfig.cache_path /tmp/trash
 ```
 
+### Overriding Nested `@spock` Classes
+
+When `@spock` decorated classes are nested within other `@spock` classes they can be overridden still **ONLY** at the 
+class specific level. `spock` will internally handle mapping of definitions within a class to nested classes.
+
+For instance, let's create a complex set of nested classes and Enums:
+
+```python
+@spock
+class BaseDoubleNestedConfig:
+    param_base: int = 1
+
+
+@spock
+class FirstDoubleNestedConfig(BaseDoubleNestedConfig):
+    h_factor: float = 0.95
+    v_factor: float = 0.95
+
+
+@spock
+class SecondDoubleNestedConfig(BaseDoubleNestedConfig):
+    morph_param: float = 0.1
+
+
+class DoubleNestedEnum(Enum):
+    first = FirstDoubleNestedConfig
+    second = SecondDoubleNestedConfig
+
+
+@spock
+class SingleNestedConfig:
+    double_nested_config: DoubleNestedEnum = SecondDoubleNestedConfig()
+
+```
+
+To override the `morph_param` of the `SecondDoubleNestedConfig` class we would use the following argument at the 
+command line, `--SecondDoubleNestedConfig.morph_param MY_VALUE`, even though the use of the `SecondDoubleNestedConfig` 
+class is nested within another `@spock` decorated class, `SingleNestedConfig`. `spock` knows how to map these nested 
+classes and handles all of that internally. Another example, we want to change `double_nested_config` within the 
+`SingleNestedConfig` class and then override the `h_factor` parameter within the `FirstDoubleNestedConfig` class. Here,
+we would use `--SingleNestedConfig.double_nested_config FirstDoubleNestedConfig` and 
+`FirstDoubleNestedConfig.h_factor MY_VALUE`. Notice how you don't need to reference the nesting of the classes, as this
+could get very verbose, but simply reference the value within the class only.
+
+
 ### Overriding List/Tuple of Repeated `@spock` Classes 
 
 For `List` of Repeated `@spock` Classes the syntax is slightly different to allow for the repeated nature of the type.

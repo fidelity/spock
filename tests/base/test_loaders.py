@@ -4,6 +4,7 @@ import sys
 import pytest
 
 from spock.builder import ConfigArgBuilder
+from spock.config import spock
 from tests.base.attr_configs_test import *
 from tests.base.base_asserts_test import *
 
@@ -238,3 +239,34 @@ class TestConfigDuplicate:
                     TypeConfig, NestedStuff, NestedListStuff, SingleNestedConfig,
                     FirstDoubleNestedConfig, SecondDoubleNestedConfig, desc="Test Builder"
                 )
+
+
+@spock
+class AnotherNested:
+    something: int = 5
+
+
+@spock
+class TrainProcess:
+    epochs: int = 100
+    nest: AnotherNested = AnotherNested()
+
+
+@spock
+class Train:
+    train_process: TrainProcess = TrainProcess()
+
+
+class TestNestedDefaultFromConfig:
+    @staticmethod
+    @pytest.fixture
+    def arg_builder(monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test_nested.yaml"])
+            config = ConfigArgBuilder(
+                Train, TrainProcess, AnotherNested, desc="Test Builder"
+            )
+            return config.generate()
+
+    def test_default_nesting(self, arg_builder):
+        assert arg_builder.Train.train_process.nest.something == 1
