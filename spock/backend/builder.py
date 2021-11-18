@@ -914,7 +914,8 @@ class AttrBuilder(BaseBuilder):
                         fields[val.name] = auto_dict[val.default.__name__]
                 # If in the auto dict then map it over to meet dep reqs
                 elif _is_spock_instance(val.type):
-                    if val.type.__name__ in args or ((val.default is not None) and (val.metadata['optional'] != False)):
+                    base_cond = val.type.__name__ in args and (attr_name in args) and (val.name in args[attr_name])
+                    if base_cond or val.default is not None:
                         fields[val.name] = auto_dict[val.type.__name__]
                     else:
                         fields[val.name] = None
