@@ -22,7 +22,7 @@ class TunerBuilder(BaseBuilder):
         """
         super().__init__(*args, module_name="spock.addons.tune.config", **kwargs)
 
-    def _handle_arguments(self, args, class_obj):
+    def _handle_arguments(self, args, class_obj, auto_dict):
         """Ovverides base -- Handles all argument mapping
 
         Creates a dictionary of named parameters that are mapped to the final type of object

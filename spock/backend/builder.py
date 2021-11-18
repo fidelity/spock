@@ -75,7 +75,8 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         """
         self._attrs_help(self.input_classes, self._module_name)
 
-    def _handle_arguments(self, args, class_obj):
+    @abstractmethod
+    def _handle_arguments(self, args, class_obj, auto_dict):
         """Handles all argument mapping
 
         Creates a dictionary of named parameters that are mapped to the final type of object
@@ -90,39 +91,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
             fields: dictionary of mapped parameters
 
         """
-        attr_name = class_obj.__name__
-        class_names = [val.__name__ for val in self.input_classes]
-        # Handle repeated classes
-        if (
-            attr_name in class_names
-            and attr_name in args
-            and isinstance(args[attr_name], list)
-        ):
-            fields = self._handle_repeated(args[attr_name], attr_name, class_names)
-        # Handle non-repeated classes
-        else:
-            fields = {}
-            for val in class_obj.__attrs_attrs__:
-                # Check if namespace is named and then check for key -- checking for local class def
-                if attr_name in args and val.name in args[attr_name]:
-                    fields[val.name] = self._handle_nested_class(
-                        args, args[attr_name][val.name], class_names
-                    )
-                # If not named then just check for keys -- checking for global def
-                elif val.name in args:
-                    fields[val.name] = self._handle_nested_class(
-                        args, args[val.name], class_names
-                    )
-                # Check for special keys to set
-                if (
-                    "special_key" in val.metadata
-                    and val.metadata["special_key"] is not None
-                ):
-                    if val.name in args:
-                        self.save_path = args[val.name]
-                    elif val.default is not None:
-                        self.save_path = val.default
-        return fields
+        pass
 
     def _handle_repeated(self, args, check_value, class_names):
         """Handles repeated classes as lists
