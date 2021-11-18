@@ -63,6 +63,10 @@ def _is_spock_instance(__obj: object):
     return attr.has(__obj) and (__obj.__module__ == "spock.backend.config")
 
 
+def _check_iterable(iter_obj):
+    return any([_is_spock_instance(v.value) for v in iter_obj])
+
+
 def make_argument(arg_name, arg_type, parser):
     """Make argparser argument based on type
 
