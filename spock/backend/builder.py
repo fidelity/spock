@@ -864,7 +864,8 @@ class AttrBuilder(BaseBuilder):
                 # Catch the nested list first since it will also meet other args conditions -- order is ok since
                 # the deps are sorted via the DAG
                 if val.type.__name__ == 'list' and _is_spock_instance(val.metadata["type"].__args__[0]):
-                    if ((attr_name in args) and (val.name in args[attr_name])) or (val.name in args) or (val.default is not None and (val.metadata['optional'] != False)):
+                    if ((attr_name in args) and (val.name in args[attr_name])) or (val.name in args) or \
+                            (val.default is not None and ('optional' not in val.metadata or (not val.metadata['optional']))):
                         fields[val.name] = auto_dict[val.metadata["type"].__args__[0].__name__]
                     else:
                         fields[val.name] = None
@@ -880,7 +881,14 @@ class AttrBuilder(BaseBuilder):
                     fields[val.name] = self._handle_nested_class(auto_dict, args[val.name], class_names)
                 elif isinstance(val.type, EnumMeta) and _check_iterable(val.type):
                     if (val.default is not None) and _is_spock_instance(val.default):
-                        fields[val.name] = auto_dict[val.default.__name__]
+                        # If default is a spock class definition
+                        if isinstance(val.default, type):
+                            cls_name = val.default.__name__
+                        # If default is an instance of a spock class
+                        else:
+                            cls_name = type(val.default).__name__
+                        fields[val.name] = auto_dict[cls_name]
+
                 # If in the auto dict then map it over to meet dep reqs
                 elif _is_spock_instance(val.type):
                     base_cond = val.type.__name__ in args and (attr_name in args) and (val.name in args[attr_name])
