@@ -12,11 +12,20 @@ from enum import EnumMeta
 from typing import List
 
 import attr
+import networkx
 from attr import NOTHING
 
 from spock.backend.wrappers import Spockspace
 from spock.utils import _is_spock_instance, make_argument, _check_iterable
 from spock.graph import Graph
+from dataclasses import dataclass
+
+
+@dataclass
+class BuilderState:
+    spock_space: dict
+    arguments: dict
+    graph: networkx.DiGraph
 
 
 class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
@@ -76,7 +85,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         self._attrs_help(self.input_classes, self._module_name)
 
     @abstractmethod
-    def _handle_arguments(self, args, class_obj, auto_dict):
+    def _handle_arguments(self, args, class_obj, auto_dict, children):
         """Handles all argument mapping
 
         Creates a dictionary of named parameters that are mapped to the final type of object
@@ -195,21 +204,83 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
 
             namespace containing automatically generated instances of the classes
         """
-        auto_dict = {}
-        # Re-order the input-classes based on dependency graph
-        order = Graph(input_classes=self.input_classes).class_order
-        class_names = [val.__name__ for val in self.input_classes]
-        self.input_classes = [self.input_classes[class_names.index(v)] for v in order]
-        for attr_classes in self.input_classes:
-            attr_build = self._auto_generate(dict_args, attr_classes, auto_dict)
-            if isinstance(attr_build, list):
-                class_name = list({type(val).__name__ for val in attr_build})
-                if len(class_name) > 1:
-                    raise ValueError("Repeated class has more than one unique name")
-                auto_dict.update({class_name[0]: attr_build})
+        graph = Graph(input_classes=self.input_classes)
+
+        spock_space_kwargs = self.resolve_spock_space_kwargs(graph, dict_args)
+
+        return Spockspace(**spock_space_kwargs)
+
+    def resolve_spock_space_kwargs(self, graph: Graph, dict_args: dict) -> dict:
+
+        spock_space = {}
+        builder_state = BuilderState(
+            graph=graph, arguments=dict_args, spock_space=spock_space
+        )
+
+        for spock_cls in graph.roots:
+            self._recurse_generate(spock_cls, builder_state)
+
+        return spock_space
+
+    def _process_list(self, spock_cls, builder_state: BuilderState):
+
+        return [
+            spock_cls(**fields)
+            for fields in builder_state.arguments[spock_cls.__name__]
+        ]
+
+    def _process_enum(self, val, current_cls_args, builder_state: BuilderState):
+        possible_classes = {c.value.__name__: c.value for c in val.type}
+        cls_name = current_cls_args[val.name]
+        return possible_classes[cls_name](**builder_state.arguments[cls_name])
+
+    def _recurse_generate(self, spock_cls, builder_state: BuilderState):
+        children = set(e[1] for e in builder_state.graph.out_edges(spock_cls))
+
+        fields = {}
+        current_cls_args = builder_state.arguments[spock_cls.__name__]
+        for val in spock_cls.__attrs_attrs__:
+            if val.type is list and _is_spock_instance(
+                val.metadata["type"].__args__[0]
+            ):
+                fields[val.name] = self._process_list(
+                    val.metadata["type"].__args__[0], builder_state
+                )
+            if isinstance(val.type, EnumMeta) and _check_iterable(val.type):
+                fields[val.name] = self._process_enum(
+                    val, current_cls_args, builder_state
+                )
+            elif val.type in children:
+                fields[val.name] = self._recurse_generate(val.type, builder_state)
             else:
-                auto_dict.update({type(attr_build).__name__: attr_build})
-        return Spockspace(**auto_dict)
+                if "optional" not in val.metadata or val.metadata["optional"]:
+                    fields[val.name] = current_cls_args.get(val.name, val.default)
+                else:
+                    try:
+                        fields[val.name] = current_cls_args[val.name]
+                    except KeyError:
+                        raise SpockNotOptionalError(
+                            f"{spock_cls.__name__}.{val.name} is not an optional parameter and MUST be provided."
+                        )
+                if (
+                    "special_key" in val.metadata
+                    and val.metadata["special_key"] is not None
+                ):
+                    if val.name in current_cls_args:
+                        self.save_path = current_cls_args[val.name]
+                    elif val.default is not None:
+                        self.save_path = val.default
+
+        # attr_build = self._auto_generate(dict_args, attr_classes, auto_dict)
+        # if isinstance(attr_build, list):
+        #     class_name = list({type(val).__name__ for val in attr_build})
+        #     if len(class_name) > 1:
+        #         raise ValueError("Repeated class has more than one unique name")
+        #     auto_dict.update({class_name[0]: attr_build})
+        # else:
+        #     auto_dict.update({type(attr_build).__name__: attr_build})
+
+        return spock_cls(**fields)
 
     def _auto_generate(self, args, input_class, auto_dict):
         """Builds an instance of an attr class
@@ -291,7 +362,11 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
                 # if we need to fall back onto the default and if it's in the arg_list then we have a
                 # definition coming in from the config file -- grab the default and then recurse to get other defaults
                 # and map to possibly other config defined values
-                if default_name is not None and (default_name in arg_list) and (len(args[default_name]) > 0):
+                if (
+                    default_name is not None
+                    and (default_name in arg_list)
+                    and (len(args[default_name]) > 0)
+                ):
                     # This handles lists of class type repeats -- these cannot be nested as the logic would be too
                     # confusing to map to
                     if isinstance(args.get(default_name), list):
@@ -307,7 +382,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
                         recurse_args = self._handle_recursive_defaults(
                             args.get(default_name), args, class_names
                         )
-                        if type(default_attr).__name__ != 'type':
+                        if type(default_attr).__name__ != "type":
                             more_recurse_args = self._handle_recursive_non_args_defaults(
                                 default_attr, args, class_names, check_self=True
                             )
@@ -330,7 +405,9 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
                     fields.update({val: default_value})
         return fields
 
-    def _handle_recursive_non_args_defaults(self, default_attr, all_args, class_names, check_self=False):
+    def _handle_recursive_non_args_defaults(
+        self, default_attr, all_args, class_names, check_self=False
+    ):
         """Recurses through the default attrs object to determine if it can map to a definition from the config read
 
         *Args*:
@@ -847,64 +924,118 @@ class AttrBuilder(BaseBuilder):
                 group_parser = make_argument(arg_name, val_type, group_parser)
         return parser
 
-    def _handle_arguments(self, args, class_obj, auto_dict):
+    def _handle_arguments(self, args, class_obj, auto_dict, children):
         attr_name = class_obj.__name__
         class_names = [val.__name__ for val in self.input_classes]
         # Handle repeated classes
-        if (
-            attr_name in class_names
-            and attr_name in args
-            and isinstance(args[attr_name], list)
-        ):
-            fields = self._handle_repeated(args[attr_name], attr_name, class_names)
-        else:
+        # if (
+        #     attr_name in class_names
+        #     and attr_name in args
+        #     and isinstance(args[attr_name], list)
+        # ):
+        #     fields = self._handle_repeated(args[attr_name], attr_name, class_names)
+        # else:
 
-            fields = {}
-            for val in class_obj.__attrs_attrs__:
+        fields = {}
+        current_cls_args = args[class_obj.__name__]
+        for val in class_obj.__attrs_attrs__:
+            if val.name in children:
+                recursive_state.recurse(RecursiveState(parent))
+            else:
                 # Catch the nested list first since it will also meet other args conditions -- order is ok since
                 # the deps are sorted via the DAG
-                if val.type.__name__ == 'list' and _is_spock_instance(val.metadata["type"].__args__[0]):
-                    if ((attr_name in args) and (val.name in args[attr_name])) or (val.name in args) or \
-                            (val.default is not None and ('optional' not in val.metadata or (not val.metadata['optional']))):
-                        fields[val.name] = auto_dict[val.metadata["type"].__args__[0].__name__]
-                    else:
-                        fields[val.name] = None
-                # Check if namespace is named and then check for key -- checking for local class def
-                elif (attr_name in args) and (val.name in args[attr_name]):
-                    # if isinstance(val.type, EnumMeta) and _check_iterable(val.type):
-                    fields[val.name] = self._handle_nested_class(
-                        auto_dict, args[attr_name][val.name], class_names
-                    )
-                # If not named then just check for keys -- checking for global def
-                elif val.name in args:
-                    # if isinstance(val.type, EnumMeta) and _check_iterable(val.type):
-                    fields[val.name] = self._handle_nested_class(auto_dict, args[val.name], class_names)
-                elif isinstance(val.type, EnumMeta) and _check_iterable(val.type):
-                    if (val.default is not None) and _is_spock_instance(val.default):
-                        # If default is a spock class definition
-                        if isinstance(val.default, type):
-                            cls_name = val.default.__name__
-                        # If default is an instance of a spock class
-                        else:
-                            cls_name = type(val.default).__name__
-                        fields[val.name] = auto_dict[cls_name]
-
-                # If in the auto dict then map it over to meet dep reqs
-                elif _is_spock_instance(val.type):
-                    base_cond = val.type.__name__ in args and (attr_name in args) and (val.name in args[attr_name])
-                    if base_cond or val.default is not None:
-                        fields[val.name] = auto_dict[val.type.__name__]
-                    else:
-                        fields[val.name] = None
-                # Check for special keys to set
-                if (
-                        "special_key" in val.metadata
-                        and val.metadata["special_key"] is not None
+                if val.type.__name__ == "list" and _is_spock_instance(
+                    val.metadata["type"].__args__[0]
                 ):
-                    if val.name in args:
-                        self.save_path = args[val.name]
+                    if (
+                        ((attr_name in args) and (val.name in args[attr_name]))
+                        or (val.name in args)
+                        or (
+                            val.default is not None
+                            and (
+                                "optional" not in val.metadata
+                                or (not val.metadata["optional"])
+                            )
+                        )
+                    ):
+                        fields[val.name] = auto_dict[
+                            val.metadata["type"].__args__[0].__name__
+                        ]
+                    else:
+                        fields[val.name] = None
+                if "optional" not in val.metadata or val.metadata["optional"]:
+                    fields[val.name] = current_cls_args.get(val.name, val.default)
+                else:
+                    try:
+                        fields[val.name] = current_cls_args[val.name]
+                    except KeyError:
+                        raise SpockNotOptionalError(
+                            f"{class_obj.__name__}.{val.name} is not an optional parameter and MUST be provided."
+                        )
+                if (
+                    "special_key" in val.metadata
+                    and val.metadata["special_key"] is not None
+                ):
+                    if val.name in current_cls_args:
+                        self.save_path = current_cls_args[val.name]
                     elif val.default is not None:
                         self.save_path = val.default
+                # Catch the nested list first since it will also meet other args conditions -- order is ok since
+                # the deps are sorted via the DAG
+                # if val.type.__name__ == "list" and _is_spock_instance(
+                #     val.metadata["type"].__args__[0]
+                # ):
+                #     if (
+                #         ((attr_name in args) and (val.name in args[attr_name]))
+                #         or (val.name in args)
+                #         or (
+                #             val.default is not None
+                #             and (
+                #                 "optional" not in val.metadata
+                #                 or (not val.metadata["optional"])
+                #             )
+                #         )
+                #     ):
+                #         fields[val.name] = auto_dict[
+                #             val.metadata["type"].__args__[0].__name__
+                #         ]
+                #     else:
+                #         fields[val.name] = None
+                # Check if namespace is named and then check for key -- checking for local class def
+                # elif (attr_name in args) and (val.name in args[attr_name]):
+                #     # if isinstance(val.type, EnumMeta) and _check_iterable(val.type):
+                #     fields[val.name] = self._handle_nested_class(
+                #         auto_dict, args[attr_name][val.name], class_names
+                #     )
+                # If not named then just check for keys -- checking for global def
+                # elif val.name in args:
+                #     # if isinstance(val.type, EnumMeta) and _check_iterable(val.type):
+                #     fields[val.name] = self._handle_nested_class(
+                #         auto_dict, args[val.name], class_names
+                #     )
+                # elif isinstance(val.type, EnumMeta) and _check_iterable(val.type):
+                #     if (val.default is not None) and _is_spock_instance(val.default):
+                #         # If default is a spock class definition
+                #         if isinstance(val.default, type):
+                #             cls_name = val.default.__name__
+                #         # If default is an instance of a spock class
+                #         else:
+                #             cls_name = type(val.default).__name__
+                #         fields[val.name] = auto_dict[cls_name]
+
+                # If in the auto dict then map it over to meet dep reqs
+                # elif _is_spock_instance(val.type):
+                #     base_cond = (
+                #         val.type.__name__ in args
+                #         and (attr_name in args)
+                #         and (val.name in args[attr_name])
+                #     )
+                #     if base_cond or val.default is not None:
+                #         fields[val.name] = auto_dict[val.type.__name__]
+                #     else:
+                #         fields[val.name] = None
+                # Check for special keys to set
+
         return fields
 
     # def _handle_arguments(self, args, class_obj):
@@ -985,7 +1116,6 @@ class AttrBuilder(BaseBuilder):
             raise ValueError(
                 "Match error -- multiple classes with the same name definition"
             )
-
 
         else:
             return args[check_value]
