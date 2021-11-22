@@ -28,6 +28,10 @@ class BuilderState:
     graph: networkx.DiGraph
 
 
+class SpockNotOptionalError(Exception):
+    pass
+
+
 class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
     """Base class for building the backend specific builders
 
@@ -218,7 +222,8 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         )
 
         for spock_cls in graph.roots:
-            self._recurse_generate(spock_cls, builder_state)
+            spock_instance = self._recurse_generate(spock_cls, builder_state)
+            builder_state.spock_space[spock_cls.__name__] = spock_instance
 
         return spock_space
 
@@ -231,27 +236,42 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
 
     def _process_enum(self, val, current_cls_args, builder_state: BuilderState):
         possible_classes = {c.value.__name__: c.value for c in val.type}
-        cls_name = current_cls_args[val.name]
-        return possible_classes[cls_name](**builder_state.arguments[cls_name])
+        cls_name = current_cls_args.get(val.name)
+        if cls_name is None:
+            return val.default
+        else:
+            return possible_classes[cls_name](**builder_state.arguments[cls_name])
+
+
 
     def _recurse_generate(self, spock_cls, builder_state: BuilderState):
         children = set(e[1] for e in builder_state.graph.out_edges(spock_cls))
 
         fields = {}
-        current_cls_args = builder_state.arguments[spock_cls.__name__]
+        current_cls_args = builder_state.arguments.get(spock_cls.__name__, {})
+
         for val in spock_cls.__attrs_attrs__:
+
             if val.type is list and _is_spock_instance(
                 val.metadata["type"].__args__[0]
             ):
+
                 fields[val.name] = self._process_list(
                     val.metadata["type"].__args__[0], builder_state
                 )
-            if isinstance(val.type, EnumMeta) and _check_iterable(val.type):
+                builder_state.spock_space[
+                    val.metadata["type"].__args__[0].__name__
+                ] = fields[val.name]
+            elif isinstance(val.type, EnumMeta) and _check_iterable(val.type):
                 fields[val.name] = self._process_enum(
                     val, current_cls_args, builder_state
                 )
+                builder_state.spock_space[type(fields[val.name]).__name__] = fields[
+                    val.name
+                ]
             elif val.type in children:
                 fields[val.name] = self._recurse_generate(val.type, builder_state)
+                builder_state.spock_space[val.type.__name__] = fields[val.name]
             else:
                 if "optional" not in val.metadata or val.metadata["optional"]:
                     fields[val.name] = current_cls_args.get(val.name, val.default)
@@ -271,16 +291,9 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
                     elif val.default is not None:
                         self.save_path = val.default
 
-        # attr_build = self._auto_generate(dict_args, attr_classes, auto_dict)
-        # if isinstance(attr_build, list):
-        #     class_name = list({type(val).__name__ for val in attr_build})
-        #     if len(class_name) > 1:
-        #         raise ValueError("Repeated class has more than one unique name")
-        #     auto_dict.update({class_name[0]: attr_build})
-        # else:
-        #     auto_dict.update({type(attr_build).__name__: attr_build})
+        spock_instance = spock_cls(**fields)
 
-        return spock_cls(**fields)
+        return spock_instance
 
     def _auto_generate(self, args, input_class, auto_dict):
         """Builds an instance of an attr class
