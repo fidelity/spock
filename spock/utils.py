@@ -76,6 +76,23 @@ def _is_spock_instance(__obj: object):
     return attr.has(__obj) and (__obj.__module__ == "spock.backend.config")
 
 
+def _is_spock_tune_instance(__obj: object):
+    """Checks if the object is a @spock decorated class
+
+    Private interface that checks to see if the object passed in is registered within the spock module tune addon and also
+    is a class with attrs attributes (__attrs_attrs__)
+
+    *Args*:
+
+        __obj: class to inspect
+
+    *Returns*:
+
+        bool
+
+    """
+    return attr.has(__obj) and (__obj.__module__ == "spock.addons.tune.config")
+
 def _check_iterable(iter_obj):
     return any([_is_spock_instance(v.value) for v in iter_obj])
 

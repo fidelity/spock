@@ -198,10 +198,11 @@ class ConfigArgBuilder:
                 fixed_namespace=self._arg_namespace,
             )
             self._tuner_state = self._tuner_interface.sample()
-        except ImportError:
+        except ImportError as e:
             print(
                 "Missing libraries to support tune functionality. Please re-install with the extra tune "
-                "dependencies -- pip install spock-config[tune]"
+                "dependencies -- pip install spock-config[tune]."
+                f"Error: {e}"
             )
         return self
 

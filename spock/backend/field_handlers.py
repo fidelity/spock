@@ -5,7 +5,7 @@ from attr import NOTHING
 from spock.backend.spaces import AttributeSpace, ConfigSpace, BuilderSpace
 from spock.args import SpockArguments
 from enum import EnumMeta
-from spock.utils import _is_spock_instance, _check_iterable
+from spock.utils import _is_spock_instance, _check_iterable, _is_spock_tune_instance
 
 
 class SpockNotOptionalError(Exception):
@@ -157,6 +157,32 @@ class RegisterSimpleField(RegisterFieldTemplate):
                 self.special_keys["save_path"] = attr_space.field
 
 
+class RegisterTuneCls(RegisterFieldTemplate):
+    @staticmethod
+    def _attr_type(attr_space: AttributeSpace):
+        return attr_space.attribute.type
+
+    def handle_attribute_from_config(
+        self, attr_space: AttributeSpace, builder_state: BuilderSpace
+    ):
+        attr_type = self._attr_type(attr_space)
+        attr_space.field = attr_type(
+            **builder_state.arguments[attr_space.config_space.name][
+                attr_space.attribute.name
+            ]
+        )
+
+    def handle_optional_attribute_value(
+        self, attr_space: AttributeSpace, builder_state: BuilderSpace
+    ):
+        raise SpockNotOptionalError()
+
+    def handle_optional_attribute_type(
+        self, attr_space: AttributeSpace, builder_state: BuilderSpace
+    ):
+        raise SpockNotOptionalError()
+
+
 class RegisterSpockCls(RegisterFieldTemplate):
     @staticmethod
     def _attr_type(attr_space: AttributeSpace):
@@ -196,7 +222,7 @@ class RegisterSpockCls(RegisterFieldTemplate):
 
     @classmethod
     def recurse_generate(cls, spock_cls, builder_state: BuilderSpace):
-        children = set(e[1] for e in builder_state.graph.out_edges(spock_cls))
+
         special_keys, fields = {}, {}
         config_space = ConfigSpace(spock_cls, fields)
 
@@ -211,8 +237,10 @@ class RegisterSpockCls(RegisterFieldTemplate):
                 attribute.type
             ):
                 handler = RegisterEnum()
-            elif attribute.type in children:
+            elif _is_spock_instance(attribute.type):
                 handler = RegisterSpockCls()
+            elif _is_spock_tune_instance(attribute.type):
+                handler = RegisterTuneCls()
             else:
                 handler = RegisterSimpleField()
 

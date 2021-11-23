@@ -107,7 +107,9 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         )
 
         for spock_cls in graph.roots:
-            spock_instance, special_keys = RegisterSpockCls.recurse_generate(spock_cls, builder_state)
+            spock_instance, special_keys = RegisterSpockCls.recurse_generate(
+                spock_cls, builder_state
+            )
             builder_state.spock_space[spock_cls.__name__] = spock_instance
 
             for special_key, value in special_keys.items():
