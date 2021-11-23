@@ -227,15 +227,15 @@ class TypeDefaultConfig:
     # Required list of list of choice -- Str
     list_list_choice_p_str_def: List[List[StrChoice]] = [["option_1"], ["option_1"]]
     # Nested configuration
-    nested_def: NestedStuff = NestedStuff
+    nested_def: NestedStuff = NestedStuff #TODO: why is this valid??
     # Nested configuration with no config
     nested_no_conf_def: NestedStuffDefault = NestedStuffDefault()
     # Nested list configuration
-    nested_list_def: List[NestedListStuff] = NestedListStuff
+    nested_list_def: List[NestedListStuff] = NestedListStuff #TODO: why is this valid??
     # Class Enum
     class_enum_def: ClassChoice = NestedStuff
     # Double Nested class ref
-    high_config_def: SingleNestedConfig = SingleNestedConfig()
+    high_config_def: SingleNestedConfig = SingleNestedConfig
 
 
 @spock

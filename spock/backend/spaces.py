@@ -23,6 +23,7 @@ class AttributeSpace:
     def field(self):
         return self.config_space.fields[self.attribute.name]
 
+
     @field.setter
     def field(self, value):
         if isinstance(self.attribute.name, str):

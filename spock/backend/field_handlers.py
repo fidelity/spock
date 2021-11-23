@@ -20,7 +20,10 @@ class RegisterFieldTemplate(ABC):
         if self._is_attribute_in_config_arguments(attr_space, builder_state.arguments):
             self.handle_attribute_from_config(attr_space, builder_state)
         elif self._is_attribute_optional(attr_space.attribute):
-            self.handle_optional_attribute(attr_space, builder_state)
+            if isinstance(attr_space.attribute.default, type):
+                self.handle_optional_attribute_type(attr_space, builder_state)
+            else:
+                self.handle_optional_attribute_value(attr_space, builder_state)
         else:
             self.other(attr_space, builder_state)
 
@@ -45,10 +48,15 @@ class RegisterFieldTemplate(ABC):
             f"config arguments and is not optional."
         )
 
-    def handle_optional_attribute(
+    def handle_optional_attribute_value(
         self, attr_space: AttributeSpace, builder_state: BuilderSpace
     ):
         attr_space.field = attr_space.attribute.default
+
+    def handle_optional_attribute_type(
+        self, attr_space: AttributeSpace, builder_state: BuilderSpace
+    ):
+        raise NotImplementedError
 
     @abstractmethod
     def handle_attribute_from_config(
@@ -74,6 +82,21 @@ class RegisterList(RegisterFieldTemplate):
             for fields in builder_state.arguments[spock_cls.__name__]
         ]
 
+    def handle_optional_attribute_type(
+        self, attr_space: AttributeSpace, builder_state: BuilderSpace
+    ):
+        list_item_spock_class = attr_space.attribute.default
+        attr_space.field = self._process_list(list_item_spock_class, builder_state)
+        builder_state.spock_space[list_item_spock_class.__name__] = attr_space.field
+
+    def handle_optional_attribute_value(
+        self, attr_space: AttributeSpace, builder_state: BuilderSpace
+    ):
+        super().handle_optional_attribute_value(attr_space, builder_state)
+        if attr_space.field is not None:
+            list_item_spock_class = attr_space.field
+            builder_state.spock_space[list_item_spock_class.__name__] = attr_space.field
+
 
 class RegisterEnum(RegisterFieldTemplate):
     def handle_attribute_from_config(
@@ -88,9 +111,25 @@ class RegisterEnum(RegisterFieldTemplate):
             attr_space.attribute.name
         ]
         enum_cls = possible_enum_classes[enum_cls_name]
-        # TODO: recurse?
-        attr_space.field = enum_cls(**builder_state.arguments[enum_cls_name])
-        builder_state.spock_space[enum_cls_name] = attr_space.field
+
+        self._handle_and_register_enum(enum_cls, attr_space, builder_state)
+
+    def handle_optional_attribute_type(
+        self, attr_space: AttributeSpace, builder_state: BuilderSpace
+    ):
+
+        self._handle_and_register_enum(
+            attr_space.attribute.default, attr_space, builder_state
+        )
+
+    def _handle_and_register_enum(
+        self, enum_cls, attr_space: AttributeSpace, builder_state: BuilderSpace
+    ):
+        attr_space.field, special_keys = RegisterSpockCls.recurse_generate(
+            enum_cls, builder_state
+        )
+        self.special_keys.update(special_keys)
+        builder_state.spock_space[enum_cls.__name__] = attr_space.field
 
 
 class RegisterSimpleField(RegisterFieldTemplate):
@@ -103,10 +142,10 @@ class RegisterSimpleField(RegisterFieldTemplate):
 
         self.register_special_key(attr_space)
 
-    def handle_optional_attribute(
+    def handle_optional_attribute_value(
         self, attr_space: AttributeSpace, builder_state: BuilderSpace
     ):
-        super().handle_optional_attribute(attr_space, builder_state)
+        super().handle_optional_attribute_value(attr_space, builder_state)
         self.register_special_key(attr_space)
 
     def register_special_key(self, attr_space: AttributeSpace):
@@ -131,15 +170,29 @@ class RegisterSpockCls(RegisterFieldTemplate):
         builder_state.spock_space[attr_type.__name__] = attr_space.field
         self.special_keys.update(special_keys)
 
-    def handle_optional_attribute(
+    def handle_optional_attribute_value(
         self, attr_space: AttributeSpace, builder_state: BuilderSpace
     ):
-        super().handle_optional_attribute(attr_space, builder_state)
+        super().handle_optional_attribute_value(attr_space, builder_state)
 
-        if attr_space.field is not None:
-            builder_state.spock_space[
-                self._attr_type(attr_space).__name__
-            ] = attr_space.field
+        if attr_space.field is None:
+            return
+
+        builder_state.spock_space[
+            self._attr_type(attr_space).__name__
+        ] = attr_space.field
+
+    def handle_optional_attribute_type(
+        self, attr_space: AttributeSpace, builder_state: BuilderSpace
+    ):
+        attr_space.field, special_keys = RegisterSpockCls.recurse_generate(
+            self._attr_type(attr_space), builder_state
+        )
+        self.special_keys.update(special_keys)
+
+        builder_state.spock_space[
+            self._attr_type(attr_space).__name__
+        ] = attr_space.field
 
     @classmethod
     def recurse_generate(cls, spock_cls, builder_state: BuilderSpace):
@@ -147,16 +200,18 @@ class RegisterSpockCls(RegisterFieldTemplate):
         special_keys, fields = {}, {}
         config_space = ConfigSpace(spock_cls, fields)
 
-        for val in spock_cls.__attrs_attrs__:
-            attr_space = AttributeSpace(val, config_space)
+        for attribute in spock_cls.__attrs_attrs__:
+            attr_space = AttributeSpace(attribute, config_space)
 
-            if val.type is list and _is_spock_instance(
-                val.metadata["type"].__args__[0]
+            if attribute.type is list and _is_spock_instance(
+                attribute.metadata["type"].__args__[0]
             ):
                 handler = RegisterList()
-            elif isinstance(val.type, EnumMeta) and _check_iterable(val.type):
+            elif isinstance(attribute.type, EnumMeta) and _check_iterable(
+                attribute.type
+            ):
                 handler = RegisterEnum()
-            elif val.type in children:
+            elif attribute.type in children:
                 handler = RegisterSpockCls()
             else:
                 handler = RegisterSimpleField()
