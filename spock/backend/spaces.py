@@ -36,4 +36,3 @@ class AttributeSpace:
 class BuilderSpace:
     spock_space: dict
     arguments: SpockArguments
-    graph: Graph

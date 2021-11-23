@@ -102,9 +102,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
 
         spock_space = {}
         arguments = SpockArguments(dict_args, graph)
-        builder_state = BuilderSpace(
-            graph=graph, arguments=arguments, spock_space=spock_space
-        )
+        builder_state = BuilderSpace(arguments=arguments, spock_space=spock_space)
 
         for spock_cls in graph.roots:
             spock_instance, special_keys = RegisterSpockCls.recurse_generate(

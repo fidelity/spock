@@ -9,7 +9,6 @@
 from _warnings import warn
 
 from spock.graph import Graph
-from copy import deepcopy
 
 
 class SpockArguments:
