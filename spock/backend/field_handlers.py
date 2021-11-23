@@ -16,16 +16,16 @@ class RegisterFieldTemplate(ABC):
     def __init__(self):
         self.special_keys = {}
 
-    def __call__(self, attr_space: AttributeSpace, builder_state: BuilderSpace):
-        if self._is_attribute_in_config_arguments(attr_space, builder_state.arguments):
-            self.handle_attribute_from_config(attr_space, builder_state)
+    def __call__(self, attr_space: AttributeSpace, builder_space: BuilderSpace):
+        if self._is_attribute_in_config_arguments(attr_space, builder_space.arguments):
+            self.handle_attribute_from_config(attr_space, builder_space)
         elif self._is_attribute_optional(attr_space.attribute):
             if isinstance(attr_space.attribute.default, type):
-                self.handle_optional_attribute_type(attr_space, builder_state)
+                self.handle_optional_attribute_type(attr_space, builder_space)
             else:
-                self.handle_optional_attribute_value(attr_space, builder_state)
+                self.handle_optional_attribute_value(attr_space, builder_space)
         else:
-            self.other(attr_space, builder_state)
+            self.other(attr_space, builder_space)
 
     @staticmethod
     def _is_attribute_in_config_arguments(
@@ -42,110 +42,110 @@ class RegisterFieldTemplate(ABC):
             "optional" not in attribute.metadata and not attribute.default is NOTHING
         ) or ("optional" in attribute.metadata and attribute.metadata["optional"])
 
-    def other(self, attr_space: AttributeSpace, builder_state: BuilderSpace):
+    def other(self, attr_space: AttributeSpace, builder_space: BuilderSpace):
         raise SpockNotOptionalError(
             f"Attribute `{attr_space.attribute.name}` is not provided in "
             f"config arguments and is not optional."
         )
 
     def handle_optional_attribute_value(
-        self, attr_space: AttributeSpace, builder_state: BuilderSpace
+        self, attr_space: AttributeSpace, builder_space: BuilderSpace
     ):
         attr_space.field = attr_space.attribute.default
 
     def handle_optional_attribute_type(
-        self, attr_space: AttributeSpace, builder_state: BuilderSpace
+        self, attr_space: AttributeSpace, builder_space: BuilderSpace
     ):
         raise NotImplementedError
 
     @abstractmethod
     def handle_attribute_from_config(
-        self, attr_space: AttributeSpace, builder_state: BuilderSpace
+        self, attr_space: AttributeSpace, builder_space: BuilderSpace
     ):
         pass
 
 
 class RegisterList(RegisterFieldTemplate):
     def handle_attribute_from_config(
-        self, attr_space: AttributeSpace, builder_state: BuilderSpace
+        self, attr_space: AttributeSpace, builder_space: BuilderSpace
     ):
         list_item_spock_class = attr_space.attribute.metadata["type"].__args__[0]
 
-        attr_space.field = self._process_list(list_item_spock_class, builder_state)
+        attr_space.field = self._process_list(list_item_spock_class, builder_space)
 
-        builder_state.spock_space[list_item_spock_class.__name__] = attr_space.field
+        builder_space.spock_space[list_item_spock_class.__name__] = attr_space.field
 
     @staticmethod
-    def _process_list(spock_cls, builder_state: BuilderSpace):
+    def _process_list(spock_cls, builder_space: BuilderSpace):
         return [
             spock_cls(**fields)
-            for fields in builder_state.arguments[spock_cls.__name__]
+            for fields in builder_space.arguments[spock_cls.__name__]
         ]
 
     def handle_optional_attribute_type(
-        self, attr_space: AttributeSpace, builder_state: BuilderSpace
+        self, attr_space: AttributeSpace, builder_space: BuilderSpace
     ):
         list_item_spock_class = attr_space.attribute.default
-        attr_space.field = self._process_list(list_item_spock_class, builder_state)
-        builder_state.spock_space[list_item_spock_class.__name__] = attr_space.field
+        attr_space.field = self._process_list(list_item_spock_class, builder_space)
+        builder_space.spock_space[list_item_spock_class.__name__] = attr_space.field
 
     def handle_optional_attribute_value(
-        self, attr_space: AttributeSpace, builder_state: BuilderSpace
+        self, attr_space: AttributeSpace, builder_space: BuilderSpace
     ):
-        super().handle_optional_attribute_value(attr_space, builder_state)
+        super().handle_optional_attribute_value(attr_space, builder_space)
         if attr_space.field is not None:
             list_item_spock_class = attr_space.field
-            builder_state.spock_space[list_item_spock_class.__name__] = attr_space.field
+            builder_space.spock_space[list_item_spock_class.__name__] = attr_space.field
 
 
 class RegisterEnum(RegisterFieldTemplate):
     def handle_attribute_from_config(
-        self, attr_space: AttributeSpace, builder_state: BuilderSpace
+        self, attr_space: AttributeSpace, builder_space: BuilderSpace
     ):
 
         possible_enum_classes = {
             c.value.__name__: c.value for c in attr_space.attribute.type
         }
 
-        enum_cls_name = builder_state.arguments[attr_space.config_space.name][
+        enum_cls_name = builder_space.arguments[attr_space.config_space.name][
             attr_space.attribute.name
         ]
         enum_cls = possible_enum_classes[enum_cls_name]
 
-        self._handle_and_register_enum(enum_cls, attr_space, builder_state)
+        self._handle_and_register_enum(enum_cls, attr_space, builder_space)
 
     def handle_optional_attribute_type(
-        self, attr_space: AttributeSpace, builder_state: BuilderSpace
+        self, attr_space: AttributeSpace, builder_space: BuilderSpace
     ):
 
         self._handle_and_register_enum(
-            attr_space.attribute.default, attr_space, builder_state
+            attr_space.attribute.default, attr_space, builder_space
         )
 
     def _handle_and_register_enum(
-        self, enum_cls, attr_space: AttributeSpace, builder_state: BuilderSpace
+        self, enum_cls, attr_space: AttributeSpace, builder_space: BuilderSpace
     ):
         attr_space.field, special_keys = RegisterSpockCls.recurse_generate(
-            enum_cls, builder_state
+            enum_cls, builder_space
         )
         self.special_keys.update(special_keys)
-        builder_state.spock_space[enum_cls.__name__] = attr_space.field
+        builder_space.spock_space[enum_cls.__name__] = attr_space.field
 
 
 class RegisterSimpleField(RegisterFieldTemplate):
     def handle_attribute_from_config(
-        self, attr_space: AttributeSpace, builder_state: BuilderSpace
+        self, attr_space: AttributeSpace, builder_space: BuilderSpace
     ):
-        attr_space.field = builder_state.arguments[attr_space.config_space.name][
+        attr_space.field = builder_space.arguments[attr_space.config_space.name][
             attr_space.attribute.name
         ]
 
         self.register_special_key(attr_space)
 
     def handle_optional_attribute_value(
-        self, attr_space: AttributeSpace, builder_state: BuilderSpace
+        self, attr_space: AttributeSpace, builder_space: BuilderSpace
     ):
-        super().handle_optional_attribute_value(attr_space, builder_state)
+        super().handle_optional_attribute_value(attr_space, builder_space)
         self.register_special_key(attr_space)
 
     def register_special_key(self, attr_space: AttributeSpace):
@@ -163,22 +163,22 @@ class RegisterTuneCls(RegisterFieldTemplate):
         return attr_space.attribute.type
 
     def handle_attribute_from_config(
-        self, attr_space: AttributeSpace, builder_state: BuilderSpace
+        self, attr_space: AttributeSpace, builder_space: BuilderSpace
     ):
         attr_type = self._attr_type(attr_space)
         attr_space.field = attr_type(
-            **builder_state.arguments[attr_space.config_space.name][
+            **builder_space.arguments[attr_space.config_space.name][
                 attr_space.attribute.name
             ]
         )
 
     def handle_optional_attribute_value(
-        self, attr_space: AttributeSpace, builder_state: BuilderSpace
+        self, attr_space: AttributeSpace, builder_space: BuilderSpace
     ):
         raise SpockNotOptionalError()
 
     def handle_optional_attribute_type(
-        self, attr_space: AttributeSpace, builder_state: BuilderSpace
+        self, attr_space: AttributeSpace, builder_space: BuilderSpace
     ):
         raise SpockNotOptionalError()
 
@@ -189,39 +189,39 @@ class RegisterSpockCls(RegisterFieldTemplate):
         return attr_space.attribute.type
 
     def handle_attribute_from_config(
-        self, attr_space: AttributeSpace, builder_state: BuilderSpace
+        self, attr_space: AttributeSpace, builder_space: BuilderSpace
     ):
         attr_type = self._attr_type(attr_space)
-        attr_space.field, special_keys = self.recurse_generate(attr_type, builder_state)
-        builder_state.spock_space[attr_type.__name__] = attr_space.field
+        attr_space.field, special_keys = self.recurse_generate(attr_type, builder_space)
+        builder_space.spock_space[attr_type.__name__] = attr_space.field
         self.special_keys.update(special_keys)
 
     def handle_optional_attribute_value(
-        self, attr_space: AttributeSpace, builder_state: BuilderSpace
+        self, attr_space: AttributeSpace, builder_space: BuilderSpace
     ):
-        super().handle_optional_attribute_value(attr_space, builder_state)
+        super().handle_optional_attribute_value(attr_space, builder_space)
 
         if attr_space.field is None:
             return
 
-        builder_state.spock_space[
+        builder_space.spock_space[
             self._attr_type(attr_space).__name__
         ] = attr_space.field
 
     def handle_optional_attribute_type(
-        self, attr_space: AttributeSpace, builder_state: BuilderSpace
+        self, attr_space: AttributeSpace, builder_space: BuilderSpace
     ):
         attr_space.field, special_keys = RegisterSpockCls.recurse_generate(
-            self._attr_type(attr_space), builder_state
+            self._attr_type(attr_space), builder_space
         )
         self.special_keys.update(special_keys)
 
-        builder_state.spock_space[
+        builder_space.spock_space[
             self._attr_type(attr_space).__name__
         ] = attr_space.field
 
     @classmethod
-    def recurse_generate(cls, spock_cls, builder_state: BuilderSpace):
+    def recurse_generate(cls, spock_cls, builder_space: BuilderSpace):
 
         special_keys, fields = {}, {}
         config_space = ConfigSpace(spock_cls, fields)
@@ -244,7 +244,7 @@ class RegisterSpockCls(RegisterFieldTemplate):
             else:
                 handler = RegisterSimpleField()
 
-            handler(attr_space, builder_state)
+            handler(attr_space, builder_space)
             special_keys.update(handler.special_keys)
 
         spock_instance = spock_cls(**fields)

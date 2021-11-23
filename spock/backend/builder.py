@@ -99,16 +99,28 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         return Spockspace(**spock_space_kwargs)
 
     def resolve_spock_space_kwargs(self, graph: Graph, dict_args: dict) -> dict:
+        """
+        Build the dictionary that will define the spock space.
+
+        *Args*:
+
+            graph: Dependency graph of nested spock configurations
+            dict_args: dictionary of arguments from the configs
+
+        *Returns*:
+
+            dictionary containing automatically generated instances of the classes
+        """
 
         spock_space = {}
         arguments = SpockArguments(dict_args, graph)
-        builder_state = BuilderSpace(arguments=arguments, spock_space=spock_space)
+        builder_space = BuilderSpace(arguments=arguments, spock_space=spock_space)
 
         for spock_cls in graph.roots:
             spock_instance, special_keys = RegisterSpockCls.recurse_generate(
-                spock_cls, builder_state
+                spock_cls, builder_space
             )
-            builder_state.spock_space[spock_cls.__name__] = spock_instance
+            builder_space.spock_space[spock_cls.__name__] = spock_instance
 
             for special_key, value in special_keys.items():
                 setattr(self, special_key, value)
