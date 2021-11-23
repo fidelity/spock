@@ -5,10 +5,9 @@
 
 """Handles import aliases to allow backwards compat with backends"""
 
-# from spock.backend.dataclass.args import *
+
 from _warnings import warn
 
-from spock.backend.typed import SavePath
 from spock.graph import Graph
 
 

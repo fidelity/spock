@@ -19,7 +19,7 @@ from spock.backend.wrappers import Spockspace
 from spock.utils import make_argument
 from spock.graph import Graph
 from abc import abstractmethod, ABC
-from spock.backend.fields_handler import RegisterSpockCls
+from spock.backend.field_handlers import RegisterSpockCls
 
 
 class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods

@@ -88,7 +88,7 @@ class RegisterEnum(RegisterFieldTemplate):
             attr_space.attribute.name
         ]
         enum_cls = possible_enum_classes[enum_cls_name]
-
+        # TODO: recurse?
         attr_space.field = enum_cls(**builder_state.arguments[enum_cls_name])
         builder_state.spock_space[enum_cls_name] = attr_space.field
 
@@ -135,9 +135,11 @@ class RegisterSpockCls(RegisterFieldTemplate):
         self, attr_space: AttributeSpace, builder_state: BuilderSpace
     ):
         super().handle_optional_attribute(attr_space, builder_state)
-        builder_state.spock_space[
-            self._attr_type(attr_space).__name__
-        ] = attr_space.field
+
+        if attr_space.field is not None:
+            builder_state.spock_space[
+                self._attr_type(attr_space).__name__
+            ] = attr_space.field
 
     @classmethod
     def recurse_generate(cls, spock_cls, builder_state: BuilderSpace):

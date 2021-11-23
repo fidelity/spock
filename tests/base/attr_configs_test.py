@@ -6,7 +6,7 @@
 from enum import Enum
 from typing import List, Optional, Tuple
 
-from spock.args import SavePath
+from spock.backend.typed import SavePath
 from spock.config import spock
 
 
