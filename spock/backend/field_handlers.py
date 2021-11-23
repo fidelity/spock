@@ -75,13 +75,6 @@ class RegisterList(RegisterFieldTemplate):
 
         builder_space.spock_space[list_item_spock_class.__name__] = attr_space.field
 
-    @staticmethod
-    def _process_list(spock_cls, builder_space: BuilderSpace):
-        return [
-            spock_cls(**fields)
-            for fields in builder_space.arguments[spock_cls.__name__]
-        ]
-
     def handle_optional_attribute_type(
         self, attr_space: AttributeSpace, builder_space: BuilderSpace
     ):
@@ -96,6 +89,13 @@ class RegisterList(RegisterFieldTemplate):
         if attr_space.field is not None:
             list_item_spock_class = attr_space.field
             builder_space.spock_space[list_item_spock_class.__name__] = attr_space.field
+
+    @staticmethod
+    def _process_list(spock_cls, builder_space: BuilderSpace):
+        return [
+            spock_cls(**fields)
+            for fields in builder_space.arguments[spock_cls.__name__]
+        ]
 
 
 class RegisterEnum(RegisterFieldTemplate):
@@ -133,6 +133,7 @@ class RegisterEnum(RegisterFieldTemplate):
 
 
 class RegisterSimpleField(RegisterFieldTemplate):
+    
     def handle_attribute_from_config(
         self, attr_space: AttributeSpace, builder_space: BuilderSpace
     ):
