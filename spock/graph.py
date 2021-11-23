@@ -28,12 +28,12 @@ class Graph(object):
         return Graph(*args, **kwargs)
 
     @property
-    def roots(self):
-        return [n for n, d in self._dag.in_degree() if d==0]
+    def nodes(self):
+        return self._input_classes
 
     @property
-    def class_order(self):
-        return self._class_order
+    def roots(self):
+        return [n for n, d in self._dag.in_degree() if d==0]
 
     def out_edges(self, source):
         return self._dag.out_edges(source)

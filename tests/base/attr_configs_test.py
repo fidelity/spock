@@ -181,7 +181,7 @@ class TypeOptConfig:
     # Class Enum
     class_enum_opt_no_def: Optional[ClassChoice]
     # Additional dummy argument
-    int_p: Optional[int]
+    int_p_2: Optional[int]
 
 
 @spock

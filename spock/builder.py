@@ -112,7 +112,7 @@ class ConfigArgBuilder:
                 self._tune_namespace = self._tune_obj.generate(self._tune_args)
         except Exception as e:
             self._print_usage_and_exit(str(e), sys_exit=False)
-            raise ValueError(e)
+            raise e
 
     def __call__(self, *args, **kwargs):
         """Call to self to allow chaining
