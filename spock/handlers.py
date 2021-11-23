@@ -41,7 +41,7 @@ class Handler(ABC):
             dictionary of read file
 
         """
-        path = self._handle_possible_s3_load_path(path=path, s3_config=s3_config)
+        path = self._handle_possible_s3_load_path(path=str(path), s3_config=s3_config)
         return self._load(path=path)
 
     @abstractmethod
@@ -86,7 +86,7 @@ class Handler(ABC):
 
         """
         write_path, is_s3 = self._handle_possible_s3_save_path(
-            path=path, name=name, create_path=create_path, s3_config=s3_config
+            path=str(path), name=name, create_path=create_path, s3_config=s3_config
         )
         write_path = self._save(out_dict=out_dict, info_dict=info_dict, path=write_path)
         # After write check if it needs to be pushed to S3
@@ -95,7 +95,7 @@ class Handler(ABC):
                 from spock.addons.s3.utils import handle_s3_save_path
 
                 handle_s3_save_path(
-                    temp_path=write_path, s3_path=path, name=name, s3_config=s3_config
+                    temp_path=write_path, s3_path=str(path), name=name, s3_config=s3_config
                 )
             except ImportError:
                 print("Error importing spock s3 utils after detecting s3:// save path")

@@ -49,6 +49,7 @@ class Graph(object):
 
     def _recurse_spock_class(self, dag, spock_cls):
         dep_classes = self._find_all_spock_classes(spock_cls)
+        dag.add_node(spock_cls)
         for dependency in dep_classes:
             dep_in_dag = dependency in dag
 

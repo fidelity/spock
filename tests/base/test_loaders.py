@@ -212,7 +212,7 @@ class TestConfigIncludeRaise:
                 "argv",
                 ["", "--config", "./tests/conf/yaml/test_include_fail.yaml"],
             )
-            with pytest.raises(ValueError):
+            with pytest.raises(FileNotFoundError):
                 ConfigArgBuilder(
                     TypeConfig, NestedStuff, NestedListStuff, SingleNestedConfig,
                     FirstDoubleNestedConfig, SecondDoubleNestedConfig, desc="Test Builder"
@@ -249,12 +249,12 @@ class AnotherNested:
 @spock
 class TrainProcess:
     epochs: int = 100
-    nest: AnotherNested = AnotherNested()
+    nest: AnotherNested = AnotherNested
 
 
 @spock
 class Train:
-    train_process: TrainProcess = TrainProcess()
+    train_process: TrainProcess = TrainProcess
 
 
 class TestNestedDefaultFromConfig:
@@ -287,7 +287,7 @@ class AnotherNestedConfig:
 class NestedConfig:
     integer: int = 1
     my_enum: MyEnum = "value_1"
-    other_nest: AnotherNestedConfig = AnotherNestedConfig()
+    other_nest: AnotherNestedConfig = AnotherNestedConfig
 
 
 @spock
@@ -299,13 +299,13 @@ class DuplicatedConfig:
 class MakeDatasetConfig:
     flag1: bool = False
     flag_2: bool = False
-    nested_config: NestedConfig = NestedConfig()
-    duplicated_config: DuplicatedConfig = DuplicatedConfig()
+    nested_config: NestedConfig = NestedConfig
+    duplicated_config: DuplicatedConfig = DuplicatedConfig
 
 
 @spock
 class BuildFeatureConfig:
-    duplicated_config: DuplicatedConfig = DuplicatedConfig()
+    duplicated_config: DuplicatedConfig = DuplicatedConfig
 
 
 class TestTripleNestedDefaultFromConfig:

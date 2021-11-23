@@ -23,7 +23,7 @@ class TestTupleRaises:
     def test_tuple_raise(self, monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/tuple.yaml"])
-            with pytest.raises(ValueError):
+            with pytest.raises(TypeError):
                 ConfigArgBuilder(TypeConfig, desc="Test Builder")
 
 
@@ -33,7 +33,7 @@ class TestOverrideRaise:
     def test_override_raise(self, monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test.yaml"])
-            with pytest.raises(ValueError):
+            with pytest.raises(TypeError):
                 ConfigArgBuilder(
                     TypeInherited, NestedStuff, NestedListStuff, desc="Test Builder"
                 )
@@ -67,7 +67,7 @@ class TestEnumClassMissing:
                 "argv",
                 ["", "--config", "./tests/conf/yaml/test_wrong_class_enum.yaml"],
             )
-            with pytest.raises(ValueError):
+            with pytest.raises(TypeError):
                 ConfigArgBuilder(
                     TypeConfig, NestedStuff, NestedListStuff, desc="Test Builder"
                 )

@@ -9,6 +9,7 @@
 from _warnings import warn
 
 from spock.graph import Graph
+from copy import deepcopy
 
 
 class SpockArguments:
@@ -94,7 +95,7 @@ class SpockArguments:
                         SyntaxWarning,
                     )
             else:
-                self._arguments[config_name] = {arg, value}
+                self._arguments[config_name] = {arg: value}
 
     @staticmethod
     def _clean_arguments(arguments: dict, general_arguments: dict):
