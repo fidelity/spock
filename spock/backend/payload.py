@@ -195,7 +195,7 @@ class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
         """
         included_params = {}
         for inc_path in base_payload["config"]:
-            if check_path_s3(str(inc_path)):
+            if check_path_s3(inc_path):
                 use_path = inc_path
             elif os.path.exists(inc_path):
                 use_path = inc_path

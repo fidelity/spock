@@ -69,7 +69,7 @@ class ConfigArgBuilder:
         """
         # Do some verification first
         self._verify_attr(args)
-        self._configs = configs
+        self._configs = configs if configs is None else [Path(c) for c in configs]
         self._no_cmd_line = no_cmd_line
         self._desc = desc
         # Build the payload and saver objects
@@ -440,7 +440,7 @@ class ConfigArgBuilder:
         self,
         payload,
         file_name: str = None,
-        user_specified_path: str = None,
+        user_specified_path: Path = None,
         create_save_path: bool = True,
         extra_info: bool = True,
         file_extension: str = ".yaml",
@@ -489,7 +489,7 @@ class ConfigArgBuilder:
     def save(
         self,
         file_name: str = None,
-        user_specified_path: str = None,
+        user_specified_path: typing.Union[Path, str] = None,
         create_save_path: bool = True,
         extra_info: bool = True,
         file_extension: str = ".yaml",
@@ -510,6 +510,8 @@ class ConfigArgBuilder:
 
             self so that functions can be chained
         """
+        if user_specified_path is not None:
+            user_specified_path = Path(user_specified_path)
         if add_tuner_sample:
             if self._tune_obj is None:
                 raise ValueError(
@@ -547,7 +549,7 @@ class ConfigArgBuilder:
     def save_best(
         self,
         file_name: str = None,
-        user_specified_path: str = None,
+        user_specified_path: Path = None,
         create_save_path: bool = True,
         extra_info: bool = True,
         file_extension: str = ".yaml",

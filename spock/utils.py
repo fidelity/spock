@@ -25,9 +25,25 @@ else:
     from typing import _GenericAlias
 
 from typing import Union
+from pathlib import Path
 
 
-def check_path_s3(path: str) -> bool:
+def path_object_to_s3path(path: Path) -> str:
+    """Convert a path object into a string s3 path
+
+    *Args*:
+
+        path: a spock config path
+
+    *Returns*:
+
+        string of s3 path
+
+    """
+    return path.parts[0] + "//" + "/".join(path.parts[1:])
+
+
+def check_path_s3(path: Path) -> bool:
     """Checks the given path to see if it matches the s3:// regex
 
     *Args*:
@@ -39,10 +55,7 @@ def check_path_s3(path: str) -> bool:
         boolean of regex match
 
     """
-    # Make a case insensitive s3 regex with single or double forward slash (due to posix stripping)
-    s3_regex = re.compile(r"(?i)^s3://?").search(path)
-    # If it returns an object then the path is an s3 style reference
-    return s3_regex is not None
+    return len(path.parts) > 1 and path.parts[0] == "s3:"
 
 
 def _is_spock_instance(__obj: object):
