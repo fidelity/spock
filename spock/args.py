@@ -14,7 +14,7 @@ from spock.graph import Graph
 class SpockArguments:
     def __init__(self, arguments: dict, config_dag: Graph):
 
-        general_arguments = self._get_arguments_to_infer(arguments, config_dag)
+        general_arguments = self._get_general_arguments(arguments, config_dag)
         attribute_name_to_config_name_mapping = self._attribute_name_to_config_name_mapping(
             config_dag, general_arguments
         )
@@ -43,10 +43,12 @@ class SpockArguments:
         return self._arguments.get(*args, **kwargs)
 
     @staticmethod
-    def _get_arguments_to_infer(arguments: dict, config_dag: Graph):
+    def _get_general_arguments(arguments: dict, config_dag: Graph):
         config_names = {n.__name__ for n in config_dag.nodes}
         return {
-            key: value for key, value in arguments.items() if key not in config_names
+            key: value
+            for key, value in arguments.items()
+            if key not in config_names and key != "config"
         }
 
     def _attribute_name_to_config_name_mapping(
