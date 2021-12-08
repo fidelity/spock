@@ -15,8 +15,8 @@ class SpockArguments:
     def __init__(self, arguments: dict, config_dag: Graph):
 
         general_arguments = self._get_general_arguments(arguments, config_dag)
-        attribute_name_to_config_name_mapping = self._attribute_name_to_config_name_mapping(
-            config_dag, general_arguments
+        attribute_name_to_config_name_mapping = (
+            self._attribute_name_to_config_name_mapping(config_dag, general_arguments)
         )
         self._arguments = self._clean_arguments(arguments, general_arguments)
         self._assign_general_arguments_to_config(

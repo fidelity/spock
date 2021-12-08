@@ -5,9 +5,11 @@
 
 """Handles creation and ops for DAGs"""
 
-import attr
-from spock.utils import _is_spock_instance, _check_iterable
 from enum import EnumMeta
+
+import attr
+
+from spock.utils import _check_iterable, _is_spock_instance
 
 
 class Graph(object):

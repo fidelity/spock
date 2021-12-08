@@ -24,8 +24,8 @@ if minor < 7:
 else:
     from typing import _GenericAlias
 
-from typing import Union
 from pathlib import Path
+from typing import Union
 
 
 def path_object_to_s3path(path: Path) -> str:
@@ -92,6 +92,7 @@ def _is_spock_tune_instance(__obj: object):
 
     """
     return attr.has(__obj) and (__obj.__module__ == "spock.addons.tune.config")
+
 
 def _check_iterable(iter_obj):
     return any([_is_spock_instance(v.value) for v in iter_obj])

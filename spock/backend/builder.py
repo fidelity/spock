@@ -7,6 +7,7 @@
 
 import re
 import sys
+from abc import ABC, abstractmethod
 from enum import EnumMeta
 from typing import List
 
@@ -14,12 +15,11 @@ import attr
 from attr import NOTHING
 
 from spock.args import SpockArguments
+from spock.backend.field_handlers import RegisterSpockCls
 from spock.backend.spaces import BuilderSpace
 from spock.backend.wrappers import Spockspace
-from spock.utils import make_argument
 from spock.graph import Graph
-from abc import abstractmethod, ABC
-from spock.backend.field_handlers import RegisterSpockCls
+from spock.utils import make_argument
 
 
 class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods

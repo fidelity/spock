@@ -11,8 +11,8 @@ import pathlib
 import re
 import typing
 from abc import ABC, abstractmethod
-from warnings import warn
 from pathlib import Path, PurePosixPath
+from warnings import warn
 
 import pytomlpp
 import yaml
@@ -55,7 +55,6 @@ class Handler(ABC):
             payload["config"] = [Path(c) for c in payload["config"]]
 
         return payload
-
 
     @abstractmethod
     def _load(self, path: str) -> typing.Dict:

@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 
 from spock.args import SpockArguments
-from spock.graph import Graph
 
 
 class ConfigSpace:
@@ -22,7 +21,6 @@ class AttributeSpace:
     @property
     def field(self):
         return self.config_space.fields[self.attribute.name]
-
 
     @field.setter
     def field(self, value):

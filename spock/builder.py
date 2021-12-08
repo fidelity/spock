@@ -358,7 +358,9 @@ class ConfigArgBuilder:
         """
         # Highest level parser object
         parser = argparse.ArgumentParser(description=desc, add_help=False)
-        parser.add_argument("-c", "--config", required=False, nargs="+", default=[], type=Path)
+        parser.add_argument(
+            "-c", "--config", required=False, nargs="+", default=[], type=Path
+        )
         parser.add_argument("-h", "--help", action="store_true")
         # Handle the builder obj
         parser = self._builder_obj.build_override_parsers(parser=parser)

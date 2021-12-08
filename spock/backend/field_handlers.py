@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
+from enum import EnumMeta
 
 from attr import NOTHING
 
-from spock.backend.spaces import AttributeSpace, ConfigSpace, BuilderSpace
 from spock.args import SpockArguments
-from enum import EnumMeta
-from spock.utils import _is_spock_instance, _check_iterable, _is_spock_tune_instance
+from spock.backend.spaces import AttributeSpace, BuilderSpace, ConfigSpace
+from spock.utils import _check_iterable, _is_spock_instance, _is_spock_tune_instance
 
 
 class SpockNotOptionalError(Exception):
@@ -133,7 +133,6 @@ class RegisterEnum(RegisterFieldTemplate):
 
 
 class RegisterSimpleField(RegisterFieldTemplate):
-    
     def handle_attribute_from_config(
         self, attr_space: AttributeSpace, builder_space: BuilderSpace
     ):
