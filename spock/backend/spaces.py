@@ -1,6 +1,11 @@
-from dataclasses import dataclass
+# -*- coding: utf-8 -*-
 
-from spock.args import SpockArguments
+# Copyright FMR LLC <opensource@fidelity.com>
+# SPDX-License-Identifier: Apache-2.0
+
+"""Handles classes/named tuples for holding class, field, and attribute value"""
+
+from collections import namedtuple
 
 
 class ConfigSpace:
@@ -30,7 +35,4 @@ class AttributeSpace:
             raise ValueError
 
 
-@dataclass
-class BuilderSpace:
-    spock_space: dict
-    arguments: SpockArguments
+BuilderSpace = namedtuple("BuilderSpace", ["arguments", "spock_space"])

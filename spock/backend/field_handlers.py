@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+
+# Copyright FMR LLC <opensource@fidelity.com>
+# SPDX-License-Identifier: Apache-2.0
+
+"""Handles registering field attributes for spock classes -- deals with the recursive nature of dependencies"""
+
 from abc import ABC, abstractmethod
 from enum import EnumMeta
 

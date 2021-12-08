@@ -3,7 +3,7 @@
 # Copyright FMR LLC <opensource@fidelity.com>
 # SPDX-License-Identifier: Apache-2.0
 
-"""Handles import aliases to allow backwards compat with backends"""
+"""Handles mapping config arguments to a payload with both general and class specific sets"""
 
 
 from _warnings import warn
