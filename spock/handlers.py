@@ -7,7 +7,6 @@
 
 import json
 import os
-import pathlib
 import re
 import typing
 from abc import ABC, abstractmethod
@@ -368,7 +367,6 @@ class JSONHandler(Handler):
             warn(
                 "JSON does not support comments and thus cannot save extra info to file... removing extra info"
             )
-            info_dict = None
         with open(path, "a") as json_fid:
             json.dump(out_dict, json_fid, indent=4, separators=(",", ": "))
         return path

@@ -74,18 +74,16 @@ class SpockArguments:
         """Returns an iterator for the values of the _arguments dictionary"""
         return self._arguments.values()
 
-    def get(self, *args, **kwargs):
-        return self._arguments.get(*args, **kwargs)
-
     @staticmethod
     def _get_general_arguments(arguments: dict, config_dag: Graph):
-        """
+        """Creates a dictionary of config file parameters that are defined at the general level (not class specific)
 
         Args:
             arguments: dictionary of parameters from the config file(s)
             config_dag: graph of the dependencies between spock classes
 
         Returns:
+            dictionary of
 
         """
         config_names = {n.__name__ for n in config_dag.nodes}
