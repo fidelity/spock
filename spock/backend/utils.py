@@ -104,7 +104,7 @@ def convert_to_tuples(input_dict, named_type_dict, class_names):
                     if updated:
                         updated_dict.update({k: updated})
             elif all_typed_dict[k] is not None:
-                updated = _recursive_list_to_tuple(v, all_typed_dict[k], class_names)
+                updated = _recursive_list_to_tuple(k, v, all_typed_dict[k], class_names)
                 updated_dict.update({k: updated})
     return updated_dict
 
@@ -135,7 +135,7 @@ def deep_update(source, updates):
     return source
 
 
-def _recursive_list_to_tuple(value, typed, class_names):
+def _recursive_list_to_tuple(key, value, typed, class_names):
     """Recursively turn lists into tuples
 
     Recursively looks through a pair of value and type and sets any of the possibly nested type of value to tuple
@@ -143,8 +143,10 @@ def _recursive_list_to_tuple(value, typed, class_names):
 
     *Args*:
 
+        key: name of parameter
         value: value to check and set typ if necessary
         typed: type of the generic alias to check against
+        class_names: list of all spock class names
 
     *Returns*:
 
@@ -163,13 +165,13 @@ def _recursive_list_to_tuple(value, typed, class_names):
             typed.__args__
         ):
             raise ValueError(
-                f"Tuple(s) use a fixed/defined length -- Length of the provided argument ({len(value)}) "
-                f"does not match the length of the defined argument ({len(typed.__args__)})"
+                f"Tuple(s) are of a defined length -- For parameter {key} the length of the provided argument "
+                f"({len(value)}) does not match the length of the defined argument ({len(typed.__args__)})"
             )
         # need to recurse before casting as we can't set values in a tuple with idx
         # Since it's generic it should be iterable to recurse and check it's children
         for idx, val in enumerate(value):
-            value[idx] = _recursive_list_to_tuple(val, typed.__args__[0], class_names)
+            value[idx] = _recursive_list_to_tuple(key, val, typed.__args__[0], class_names)
         # First check if list and then swap to tuple if the origin is tuple
         if isinstance(value, list) and typed.__origin__.__name__.lower() == "tuple":
             value = tuple(value)

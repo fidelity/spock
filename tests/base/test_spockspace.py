@@ -20,6 +20,9 @@ class TestHelp:
                     NestedStuff,
                     NestedListStuff,
                     TypeOptConfig,
+                    SingleNestedConfig,
+                    FirstDoubleNestedConfig,
+                    SecondDoubleNestedConfig,
                     desc="Test Builder",
                 )
                 return config.generate()

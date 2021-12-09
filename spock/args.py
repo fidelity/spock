@@ -12,8 +12,22 @@ from spock.graph import Graph
 
 
 class SpockArguments:
-    def __init__(self, arguments: dict, config_dag: Graph):
+    """Class that handles mapping the read parameter dictionary to general or class level arguments
 
+    Attributes:
+        _arguments: dictionary of arguments
+
+    """
+    def __init__(self, arguments: dict, config_dag: Graph):
+        """Init call for SpockArguments class
+
+        Handles creating a clean arguments dictionary that can be cleanly mapped to spock classes
+
+        Args:
+            arguments: dictionary of parameters from the config file(s)
+            config_dag: graph of the dependencies between spock classes
+
+        """
         general_arguments = self._get_general_arguments(arguments, config_dag)
         attribute_name_to_config_name_mapping = (
             self._attribute_name_to_config_name_mapping(config_dag, general_arguments)
@@ -23,20 +37,41 @@ class SpockArguments:
             general_arguments, attribute_name_to_config_name_mapping
         )
 
-    def __getitem__(self, item):
+    def __getitem__(self, item: int):
+        """Gets value at idx from the _arguments dictionary
+
+        Args:
+            item: idx
+
+        Returns:
+            argument at the specified index
+
+        """
         return self._arguments[item]
 
     def __iter__(self):
+        """Returns the next value of the keys within the _arguments dictionary
+
+        Returns:
+            current key for the _arguments dictionary
+
+        """
         for key in self._arguments:
             yield key
 
+    @property
     def items(self):
+        """Returns the k,v tuple iterator for the _arguments dictionary"""
         return self._arguments.items()
 
+    @property
     def keys(self):
+        """Returns an iterator for the keys of the _arguments dictionary"""
         return self._arguments.keys()
 
+    @property
     def values(self):
+        """Returns an iterator for the values of the _arguments dictionary"""
         return self._arguments.values()
 
     def get(self, *args, **kwargs):
@@ -44,6 +79,15 @@ class SpockArguments:
 
     @staticmethod
     def _get_general_arguments(arguments: dict, config_dag: Graph):
+        """
+
+        Args:
+            arguments: dictionary of parameters from the config file(s)
+            config_dag: graph of the dependencies between spock classes
+
+        Returns:
+
+        """
         config_names = {n.__name__ for n in config_dag.nodes}
         return {
             key: value

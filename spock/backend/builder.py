@@ -30,20 +30,33 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
 
     *Attributes*
 
-        input_classes: list of input classes that link to a backend
-        _configs: None or List of configs to read from
-        _desc: description for the arg parser
-        _no_cmd_line: flag to force no command line reads
+        _input_classes: list of input classes that link to a backend
+        _graph: Graph, graph of the dependencies between spock classes
         _max_indent: maximum to indent between help prints
+        _module_name: module name to register in the spock module space
         save_path: list of path(s) to save the configs to
 
     """
 
-    def __init__(self, *args, max_indent=4, module_name, **kwargs):
-        self.input_classes = args
+    def __init__(self, *args, max_indent: int = 4, module_name: str, **kwargs):
+        """Init call for BaseBuilder
+
+        Args:
+            *args: iterable of @spock decorated classes
+            max_indent: max indent for pretty print of help
+            module_name: module name to register in the spock module space
+            **kwargs: keyword args
+        """
+        self._input_classes = args
+        self._graph = Graph(input_classes=self.input_classes)
         self._module_name = module_name
         self._max_indent = max_indent
         self.save_path = None
+
+    @property
+    def input_classes(self):
+        """Returns the graph of dependencies between spock classes"""
+        return self._input_classes
 
     @staticmethod
     @abstractmethod
@@ -93,14 +106,11 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
             namespace containing automatically generated instances of the classes
         """
         graph = Graph(input_classes=self.input_classes)
-
         spock_space_kwargs = self.resolve_spock_space_kwargs(graph, dict_args)
-
         return Spockspace(**spock_space_kwargs)
 
     def resolve_spock_space_kwargs(self, graph: Graph, dict_args: dict) -> dict:
-        """
-        Build the dictionary that will define the spock space.
+        """Build the dictionary that will define the spock space.
 
         *Args*:
 
@@ -397,7 +407,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         return list(set(other_list) - covered_set)
 
     def _handle_help_enums(self, other_list, module_name):
-        """handles any extra enums from non main args
+        """Handles any extra enums from non main args
 
         *Args*:
 
@@ -496,9 +506,6 @@ class AttrBuilder(BaseBuilder):
 
         Args:
             *args: list of input classes that link to a backend
-            configs: None or List of configs to read from
-            desc: description for the arg parser
-            no_cmd_line: flag to force no command line reads
             **kwargs: any extra keyword args
         """
         super().__init__(*args, module_name="spock.backend.config", **kwargs)
