@@ -11,9 +11,23 @@ import attr
 
 from spock.utils import _check_iterable, _is_spock_instance
 
+from typing import Type, Union
 
-class Graph(object):
+
+class Graph:
+    """Class that holds graph methods for determining dependencies between spock classes
+
+    Attributes:
+        _input_classes: list of input classes that link to a backend
+        _dag: graph of the dependencies between spock classes
+
+    """
     def __init__(self, input_classes):
+        """Init call for Graph class
+
+        Args:
+            input_classes: list of input classes that link to a backend
+        """
         self._input_classes = input_classes
         # Build
         self._dag = self._build()
@@ -26,13 +40,21 @@ class Graph(object):
 
     @property
     def nodes(self):
+        """Returns the node names/input_classes"""
         return self._input_classes
 
     @property
     def roots(self):
+        """Returns the roots of the dependency graph"""
         return [k for k, v in self._dag.items() if len(v) == 0]
 
     def _build(self):
+        """Builds a dictionary of nodes and their edges (essentially builds the DAG)
+
+        Returns:
+            dictionary of nodes and their edges
+
+        """
         # Build a dictionary of all nodes (base spock classes)
         nodes = {val: [] for val in self._input_classes}
         # Iterate thorough all of the base spock classes to get the dependencies and reverse dependencies
@@ -43,17 +65,16 @@ class Graph(object):
         nodes = {key: set(val) for key, val in nodes.items()}
         return nodes
 
-    def _recurse_spock_class(self, dag, spock_cls):
-        dep_classes = self._find_all_spock_classes(spock_cls)
-        dag.add_node(spock_cls)
-        for dependency in dep_classes:
-            dep_in_dag = dependency in dag
+    def _find_all_spock_classes(self, attr_class: Type):
+        """Within a spock class determine if there are any references to other spock classes
 
-            dag.add_edge(spock_cls, dependency)
-            if not dep_in_dag:
-                self._recurse_spock_class(dag, spock_cls)
+        Args:
+            attr_class: a class with attrs attributes
 
-    def _find_all_spock_classes(self, attr_class):
+        Returns:
+            list of dependent spock classes
+
+        """
         # Get the top level dict
         dict_attr = attr.fields_dict(attr_class)
         # Dependent classes
@@ -73,14 +94,38 @@ class Graph(object):
         return dep_classes
 
     @staticmethod
-    def _check_4_spock_iterable(iter_obj):
+    def _check_4_spock_iterable(iter_obj: Union[tuple, list]):
+        """Checks if an iterable type contains a spock class
+
+        Args:
+            iter_obj: iterable type
+
+        Returns:
+            boolean if the iterable contains at least one spock class
+
+        """
         return _check_iterable(iter_obj=iter_obj)
 
     @staticmethod
-    def _get_enum_classes(enum_obj):
+    def _get_enum_classes(enum_obj: EnumMeta):
+        """Checks if any of the values of an enum are spock classes and adds to a list
+
+        Args:
+            enum_obj: enum class
+
+        Returns:
+            list of enum values that are spock classes
+
+        """
         return [v.value for v in enum_obj if _is_spock_instance(v.value)]
 
     def _has_cycles(self):
+        """Uses DFS to check for cycles within the spock dependency graph
+
+        Returns:
+            boolean if a cycle is found
+
+        """
         # DFS w/ recursion stack for DAG cycle detection
         visited = {key: False for key in self._dag.keys()}
         all_nodes = list(visited.keys())
@@ -93,7 +138,18 @@ class Graph(object):
                     return True
         return False
 
-    def _cycle_dfs(self, node, visited, recursion_stack):
+    def _cycle_dfs(self, node: Type, visited: dict, recursion_stack: dict):
+        """DFS via a recursion stack for cycles
+
+        Args:
+            node: current graph node (spock class type)
+            visited: dictionary of visited nodes
+            recursion_stack: dictionary that is the recursion stack that is used to find cycles
+
+        Returns:
+            boolean if a cycle is found
+
+        """
         # Update the visited nodes
         visited.update({node: True})
         # Update recursion stack

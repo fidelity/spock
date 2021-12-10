@@ -4,6 +4,7 @@ import sys
 import pytest
 
 from spock.builder import ConfigArgBuilder
+from spock.backend.field_handlers import SpockNotOptionalError
 from tests.base.attr_configs_test import *
 
 
@@ -13,7 +14,7 @@ class TestChoiceRaises:
     def test_choice_raise(self, monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/choice.yaml"])
-            with pytest.raises(ValueError):
+            with pytest.raises(SpockNotOptionalError):
                 ConfigArgBuilder(ChoiceFail, desc="Test Builder")
 
 

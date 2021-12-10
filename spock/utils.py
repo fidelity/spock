@@ -94,7 +94,16 @@ def _is_spock_tune_instance(__obj: object):
     return attr.has(__obj) and (__obj.__module__ == "spock.addons.tune.config")
 
 
-def _check_iterable(iter_obj):
+def _check_iterable(iter_obj: Union[tuple, list, EnumMeta]):
+    """Check if an iterable type contains a spock class
+
+    Args:
+        iter_obj: iterable type
+
+    Returns:
+        boolean if the iterable contains at least one spock class
+
+    """
     return any([_is_spock_instance(v.value) for v in iter_obj])
 
 

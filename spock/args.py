@@ -37,17 +37,17 @@ class SpockArguments:
             general_arguments, attribute_name_to_config_name_mapping
         )
 
-    def __getitem__(self, item: int):
-        """Gets value at idx from the _arguments dictionary
+    def __getitem__(self, key: str):
+        """Gets value from the _arguments dictionary
 
         Args:
-            item: idx
+            key: dictionary key
 
         Returns:
-            argument at the specified index
+            argument at the specified key
 
         """
-        return self._arguments[item]
+        return self._arguments[key]
 
     def __iter__(self):
         """Returns the next value of the keys within the _arguments dictionary
@@ -83,7 +83,7 @@ class SpockArguments:
             config_dag: graph of the dependencies between spock classes
 
         Returns:
-            dictionary of
+            dictionary of general level parameters
 
         """
         config_names = {n.__name__ for n in config_dag.nodes}
@@ -96,6 +96,16 @@ class SpockArguments:
     def _attribute_name_to_config_name_mapping(
         self, config_dag: Graph, general_arguments: dict
     ):
+        """Returns a mapping of names to spock config class parameter names
+
+        Args:
+            config_dag: graph of the dependencies between spock classes
+            general_arguments: dictionary of arguments at the general level
+
+        Returns:
+            dictionary of parameters mapped to spock classes
+
+        """
         attribute_name_to_config_name_mapping = {}
         for n in config_dag.nodes:
             for attr in n.__attrs_attrs__:
@@ -115,6 +125,17 @@ class SpockArguments:
     def _is_duplicated_key(
         attribute_name_to_config_name_mapping: dict, attr_name: str, config_name: str
     ):
+        """Checks if a duplicated key exists in multiple classes
+
+        Args:
+            attribute_name_to_config_name_mapping: dictionary of class specific name mappings
+            attr_name:
+            config_name:
+
+        Returns:
+            boolean if duplicated
+
+        """
         return (
             attr_name in attribute_name_to_config_name_mapping
             and attribute_name_to_config_name_mapping[attr_name] != config_name
@@ -123,6 +144,16 @@ class SpockArguments:
     def _assign_general_arguments_to_config(
         self, general_arguments: dict, attribute_name_to_config_name_mapping: dict
     ):
+        """Assigns the values from general definitions to values within specific classes if the specific definition
+        doesn't exist
+
+        Args:
+            general_arguments:
+            attribute_name_to_config_name_mapping:
+
+        Returns:
+            None
+        """
         for arg, value in general_arguments.items():
             config_name = attribute_name_to_config_name_mapping[arg]
             if config_name in self._arguments:
@@ -140,6 +171,16 @@ class SpockArguments:
 
     @staticmethod
     def _clean_arguments(arguments: dict, general_arguments: dict):
+        """Sets up a clean dictionary for those not in the general dictionary
+
+        Args:
+            arguments: dictionary of all arguments
+            general_arguments: dictionary of general level arguments
+
+        Returns:
+            clean dictionary of parameters not at the general level
+
+        """
         clean_arguments = {}
         for arg, value in arguments.items():
             if arg not in general_arguments:
@@ -148,4 +189,5 @@ class SpockArguments:
 
 
 class SpockDuplicateArgumentError(Exception):
+    """Custom exception type for duplicated values"""
     pass

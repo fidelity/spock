@@ -5,14 +5,11 @@
 
 """Handles the building/saving of the configurations from the Spock config classes"""
 
-import re
-import sys
 from abc import ABC, abstractmethod
 from enum import EnumMeta
 from typing import List
 
 import attr
-from attr import NOTHING
 
 from spock.args import SpockArguments
 from spock.backend.field_handlers import RegisterSpockCls
@@ -127,12 +124,13 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
 
             dictionary containing automatically generated instances of the classes
         """
-
+        # Empty dictionary that will be mapped to a SpockSpace via spock classes
         spock_space = {}
-        arguments = SpockArguments(dict_args, graph)
-        builder_space = BuilderSpace(arguments=arguments, spock_space=spock_space)
-
+        # Assemble the arguments dictionary and BuilderSpace
+        builder_space = BuilderSpace(arguments=SpockArguments(dict_args, graph), spock_space=spock_space)
+        # For each root recursively step through the definitions
         for spock_cls in graph.roots:
+            # Initial call to the RegisterSpockCls generate function (which will handle recursing if needed)
             spock_instance, special_keys = RegisterSpockCls.recurse_generate(
                 spock_cls, builder_space
             )
