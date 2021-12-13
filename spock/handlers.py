@@ -7,12 +7,11 @@
 
 import json
 import os
-import pathlib
 import re
 import typing
 from abc import ABC, abstractmethod
-from warnings import warn
 from pathlib import Path, PurePosixPath
+from warnings import warn
 
 import pytomlpp
 import yaml
@@ -55,7 +54,6 @@ class Handler(ABC):
             payload["config"] = [Path(c) for c in payload["config"]]
 
         return payload
-
 
     @abstractmethod
     def _load(self, path: str) -> typing.Dict:
@@ -369,7 +367,6 @@ class JSONHandler(Handler):
             warn(
                 "JSON does not support comments and thus cannot save extra info to file... removing extra info"
             )
-            info_dict = None
         with open(path, "a") as json_fid:
             json.dump(out_dict, json_fid, indent=4, separators=(",", ": "))
         return path

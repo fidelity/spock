@@ -24,8 +24,8 @@ if minor < 7:
 else:
     from typing import _GenericAlias
 
-from typing import Union
 from pathlib import Path
+from typing import Union
 
 
 def path_object_to_s3path(path: Path) -> str:
@@ -93,7 +93,17 @@ def _is_spock_tune_instance(__obj: object):
     """
     return attr.has(__obj) and (__obj.__module__ == "spock.addons.tune.config")
 
-def _check_iterable(iter_obj):
+
+def _check_iterable(iter_obj: Union[tuple, list, EnumMeta]):
+    """Check if an iterable type contains a spock class
+
+    Args:
+        iter_obj: iterable type
+
+    Returns:
+        boolean if the iterable contains at least one spock class
+
+    """
     return any([_is_spock_instance(v.value) for v in iter_obj])
 
 
