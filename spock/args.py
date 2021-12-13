@@ -18,6 +18,7 @@ class SpockArguments:
         _arguments: dictionary of arguments
 
     """
+
     def __init__(self, arguments: dict, config_dag: Graph):
         """Init call for SpockArguments class
 
@@ -190,4 +191,5 @@ class SpockArguments:
 
 class SpockDuplicateArgumentError(Exception):
     """Custom exception type for duplicated values"""
+
     pass

@@ -8,10 +8,9 @@
 import re
 import sys
 from enum import EnumMeta
+from typing import Callable, Union
 
 from attr import NOTHING
-
-from typing import Callable, Union
 
 
 def find_attribute_idx(newline_split_docs):
@@ -59,9 +58,7 @@ def split_docs(obj):
     # Find the break between the class docs and the Attribute section -- if this returns -1 then there is no
     # Attributes section
     attr_idx = find_attribute_idx(newline_split_docs)
-    head_docs = (
-        newline_split_docs[:attr_idx] if attr_idx != -1 else newline_split_docs
-    )
+    head_docs = newline_split_docs[:attr_idx] if attr_idx != -1 else newline_split_docs
     attr_docs = newline_split_docs[attr_idx:] if attr_idx != -1 else []
     # Grab only the first contiguous line as everything else will probably be too verbose (e.g. the
     # mid-level docstring that has detailed descriptions
@@ -77,9 +74,7 @@ def split_docs(obj):
     return class_doc, attr_docs
 
 
-def match_attribute_docs(
-    attr_name, attr_docs, attr_type_str, attr_default=NOTHING
-):
+def match_attribute_docs(attr_name, attr_docs, attr_type_str, attr_default=NOTHING):
     """Matches class attributes with attribute docstrings via regex
 
     *Args*:
@@ -199,7 +194,9 @@ def get_from_sys_modules(cls_name):
     return module
 
 
-def handle_help_main(input_classes: list, module_name: str, extract_fnc: Callable, max_indent: int):
+def handle_help_main(
+    input_classes: list, module_name: str, extract_fnc: Callable, max_indent: int
+):
     """Handles the print of the main class types
 
     *Args*:
@@ -235,9 +232,7 @@ def handle_help_main(input_classes: list, module_name: str, extract_fnc: Callabl
             # Get the type represented as a string
             type_string = get_type_string(val, nested_others)
             info_dict.update(
-                match_attribute_docs(
-                    val.name, attr_docs, type_string, val.default
-                )
+                match_attribute_docs(val.name, attr_docs, type_string, val.default)
             )
         # Add to covered so we don't print help twice in the case of some recursive nesting
         covered_set.add(f"{attrs_class.__module__}.{attrs_class.__name__}")
@@ -247,7 +242,9 @@ def handle_help_main(input_classes: list, module_name: str, extract_fnc: Callabl
     return list(set(other_list) - covered_set)
 
 
-def handle_help_enums(other_list: list, module_name: str, extract_fnc: Callable, max_indent: int):
+def handle_help_enums(
+    other_list: list, module_name: str, extract_fnc: Callable, max_indent: int
+):
     """Handles any extra enums from non main args
 
     *Args*:
@@ -268,7 +265,12 @@ def handle_help_enums(other_list: list, module_name: str, extract_fnc: Callable,
         if ".".join(other.split(".")[:-1]) == module_name:
             class_type = get_from_sys_modules(other)
             # Invoke recursive call for the class
-            attrs_help([class_type], module_name, extract_fnc=extract_fnc, max_indent=max_indent)
+            attrs_help(
+                [class_type],
+                module_name,
+                extract_fnc=extract_fnc,
+                max_indent=max_indent,
+            )
         # Fall back to enum style
         else:
             enum = get_from_sys_modules(other)
@@ -287,7 +289,12 @@ def handle_help_enums(other_list: list, module_name: str, extract_fnc: Callable,
             handle_attributes_print(info_dict=info_dict, max_indent=max_indent)
 
 
-def attrs_help(input_classes: Union[list, tuple], module_name: str, extract_fnc: Callable, max_indent: int):
+def attrs_help(
+    input_classes: Union[list, tuple],
+    module_name: str,
+    extract_fnc: Callable,
+    max_indent: int,
+):
     """Handles walking through a list classes to get help info
 
     For each class this function will search __doc__ and attempt to pull out help information for both the class
@@ -308,4 +315,9 @@ def attrs_help(input_classes: Union[list, tuple], module_name: str, extract_fnc:
     """
     # Handle the main loop
     other_list = handle_help_main(input_classes, module_name, extract_fnc, max_indent)
-    handle_help_enums(other_list=other_list, module_name=module_name, extract_fnc=extract_fnc, max_indent=max_indent)
+    handle_help_enums(
+        other_list=other_list,
+        module_name=module_name,
+        extract_fnc=extract_fnc,
+        max_indent=max_indent,
+    )

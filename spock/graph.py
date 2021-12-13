@@ -6,12 +6,11 @@
 """Handles creation and ops for DAGs"""
 
 from enum import EnumMeta
+from typing import Type, Union
 
 import attr
 
 from spock.utils import _check_iterable, _is_spock_instance
-
-from typing import Type, Union
 
 
 class Graph:
@@ -22,6 +21,7 @@ class Graph:
         _dag: graph of the dependencies between spock classes
 
     """
+
     def __init__(self, input_classes):
         """Init call for Graph class
 

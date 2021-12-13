@@ -171,7 +171,9 @@ def _recursive_list_to_tuple(key, value, typed, class_names):
         # need to recurse before casting as we can't set values in a tuple with idx
         # Since it's generic it should be iterable to recurse and check it's children
         for idx, val in enumerate(value):
-            value[idx] = _recursive_list_to_tuple(key, val, typed.__args__[0], class_names)
+            value[idx] = _recursive_list_to_tuple(
+                key, val, typed.__args__[0], class_names
+            )
         # First check if list and then swap to tuple if the origin is tuple
         if isinstance(value, list) and typed.__origin__.__name__.lower() == "tuple":
             value = tuple(value)

@@ -13,9 +13,9 @@ import attr
 
 from spock.args import SpockArguments
 from spock.backend.field_handlers import RegisterSpockCls
+from spock.backend.help import attrs_help
 from spock.backend.spaces import BuilderSpace
 from spock.backend.wrappers import Spockspace
-from spock.backend.help import attrs_help
 from spock.graph import Graph
 from spock.utils import make_argument
 
@@ -91,7 +91,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
             input_classes=self.input_classes,
             module_name=self._module_name,
             extract_fnc=self._extract_fnc,
-            max_indent=self._max_indent
+            max_indent=self._max_indent,
         )
 
     def generate(self, dict_args):
@@ -127,7 +127,9 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         # Empty dictionary that will be mapped to a SpockSpace via spock classes
         spock_space = {}
         # Assemble the arguments dictionary and BuilderSpace
-        builder_space = BuilderSpace(arguments=SpockArguments(dict_args, graph), spock_space=spock_space)
+        builder_space = BuilderSpace(
+            arguments=SpockArguments(dict_args, graph), spock_space=spock_space
+        )
         # For each root recursively step through the definitions
         for spock_cls in graph.roots:
             # Initial call to the RegisterSpockCls generate function (which will handle recursing if needed)

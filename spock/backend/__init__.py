@@ -20,5 +20,5 @@ __all__ = [
     "spaces",
     "typed",
     "utils",
-    "wrappers"
+    "wrappers",
 ]

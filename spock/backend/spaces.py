@@ -5,11 +5,10 @@
 
 """Handles classes/named tuples for holding class, field, and attribute value(s)"""
 
-from attr import Attribute
-
 from collections import namedtuple
-
 from typing import Type
+
+from attr import Attribute
 
 
 class ConfigSpace:
@@ -20,6 +19,7 @@ class ConfigSpace:
         fields: dictionary of the current value of attributes
 
     """
+
     def __init__(self, spock_cls: Type, fields: dict):
         """Init call for ConfigSpace class
 
@@ -45,6 +45,7 @@ class AttributeSpace:
         attribute: current Attribute class
 
     """
+
     def __init__(self, attribute: Type[Attribute], config_space: ConfigSpace):
         """Init call for AttributeSpace class
 

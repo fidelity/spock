@@ -31,6 +31,11 @@ class FloatChoice(Enum):
 
 
 @spock
+class OptionalFail:
+    define_me: int
+
+
+@spock
 class NestedStuff:
     one: int
     two: str
