@@ -212,7 +212,7 @@ class TestConfigIncludeRaise:
                 "argv",
                 ["", "--config", "./tests/conf/yaml/test_include_fail.yaml"],
             )
-            with pytest.raises(FileNotFoundError):
+            with pytest.raises(ValueError):
                 ConfigArgBuilder(
                     TypeConfig, NestedStuff, NestedListStuff, SingleNestedConfig,
                     FirstDoubleNestedConfig, SecondDoubleNestedConfig, desc="Test Builder"
@@ -249,12 +249,12 @@ class AnotherNested:
 @spock
 class TrainProcess:
     epochs: int = 100
-    nest: AnotherNested = AnotherNested
+    nest: AnotherNested = AnotherNested()
 
 
 @spock
 class Train:
-    train_process: TrainProcess = TrainProcess
+    train_process: TrainProcess = TrainProcess()
 
 
 class TestNestedDefaultFromConfig:
@@ -270,63 +270,3 @@ class TestNestedDefaultFromConfig:
 
     def test_default_nesting(self, arg_builder):
         assert arg_builder.Train.train_process.nest.something == 1
-        assert arg_builder.Train.train_process.epochs == 5
-
-
-class MyEnum(Enum):
-    value_1 = "value_1"
-    value_2 = "value_2"
-
-
-@spock
-class AnotherNestedConfig:
-    something: int = 5
-
-
-@spock
-class NestedConfig:
-    integer: int = 1
-    my_enum: MyEnum = "value_1"
-    other_nest: AnotherNestedConfig = AnotherNestedConfig
-
-
-@spock
-class DuplicatedConfig:
-    flag_3: bool = False
-
-
-@spock
-class MakeDatasetConfig:
-    flag1: bool = False
-    flag_2: bool = False
-    nested_config: NestedConfig = NestedConfig
-    duplicated_config: DuplicatedConfig = DuplicatedConfig
-
-
-@spock
-class BuildFeatureConfig:
-    duplicated_config: DuplicatedConfig = DuplicatedConfig
-
-
-class TestTripleNestedDefaultFromConfig:
-    @staticmethod
-    @pytest.fixture
-    def arg_builder(monkeypatch):
-        with monkeypatch.context() as m:
-            m.setattr(
-                sys,
-                "argv",
-                ["", "--config", "./tests/conf/yaml/test_double_nested.yaml"],
-            )
-            config = ConfigArgBuilder(
-                BuildFeatureConfig,
-                MakeDatasetConfig,
-                DuplicatedConfig,
-                NestedConfig,
-                AnotherNestedConfig,
-                desc="",
-            )
-            return config.generate()
-
-    def test_default_nesting(self, arg_builder):
-        assert arg_builder.MakeDatasetConfig.nested_config.other_nest.something == 1

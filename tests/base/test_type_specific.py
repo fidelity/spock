@@ -4,7 +4,6 @@ import sys
 import pytest
 
 from spock.builder import ConfigArgBuilder
-from spock.backend.field_handlers import SpockInstantiationError
 from tests.base.attr_configs_test import *
 
 
@@ -14,17 +13,8 @@ class TestChoiceRaises:
     def test_choice_raise(self, monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/choice.yaml"])
-            with pytest.raises(SpockInstantiationError):
+            with pytest.raises(ValueError):
                 ConfigArgBuilder(ChoiceFail, desc="Test Builder")
-
-
-class TestOptionalRaises:
-    """Check choice raises correctly"""
-    def test_coptional_raise(self, monkeypatch):
-        with monkeypatch.context() as m:
-            # m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/empty.yaml"])
-            with pytest.raises(SpockInstantiationError):
-                ConfigArgBuilder(OptionalFail, desc="Test Builder", configs=[], no_cmd_line=True)
 
 
 class TestTupleRaises:
@@ -34,15 +24,7 @@ class TestTupleRaises:
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/tuple.yaml"])
             with pytest.raises(ValueError):
-                ConfigArgBuilder(
-                    TypeConfig,
-                    NestedStuff,
-                    NestedListStuff,
-                    TypeOptConfig,
-                    SingleNestedConfig,
-                    FirstDoubleNestedConfig,
-                    SecondDoubleNestedConfig,
-                    desc="Test Builder")
+                ConfigArgBuilder(TypeConfig, desc="Test Builder")
 
 
 class TestOverrideRaise:
@@ -51,16 +33,9 @@ class TestOverrideRaise:
     def test_override_raise(self, monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test.yaml"])
-            with pytest.raises(TypeError):
+            with pytest.raises(ValueError):
                 ConfigArgBuilder(
-                    TypeInherited,
-                    NestedStuff,
-                    NestedListStuff,
-                    TypeOptConfig,
-                    SingleNestedConfig,
-                    FirstDoubleNestedConfig,
-                    SecondDoubleNestedConfig,
-                    desc="Test Builder"
+                    TypeInherited, NestedStuff, NestedListStuff, desc="Test Builder"
                 )
 
 
@@ -92,14 +67,7 @@ class TestEnumClassMissing:
                 "argv",
                 ["", "--config", "./tests/conf/yaml/test_wrong_class_enum.yaml"],
             )
-            with pytest.raises(KeyError):
+            with pytest.raises(ValueError):
                 ConfigArgBuilder(
-                    TypeConfig,
-                    NestedStuff,
-                    NestedListStuff,
-                    TypeOptConfig,
-                    SingleNestedConfig,
-                    FirstDoubleNestedConfig,
-                    SecondDoubleNestedConfig,
-                    desc="Test Builder"
+                    TypeConfig, NestedStuff, NestedListStuff, desc="Test Builder"
                 )
