@@ -7,16 +7,19 @@
 
 import re
 import sys
-from abc import ABC, abstractmethod
 from enum import EnumMeta
 from typing import List
 
 import attr
 from attr import NOTHING
 
+from spock.args import SpockArguments
+from spock.backend.spaces import BuilderSpace
 from spock.backend.wrappers import Spockspace
-from spock.utils import _is_spock_instance, make_argument, _check_iterable
+from spock.utils import make_argument
 from spock.graph import Graph
+from abc import abstractmethod, ABC
+from spock.backend.field_handlers import RegisterSpockCls
 
 
 class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
@@ -75,112 +78,6 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         """
         self._attrs_help(self.input_classes, self._module_name)
 
-    @abstractmethod
-    def _handle_arguments(self, args, class_obj, auto_dict):
-        """Handles all argument mapping
-
-        Creates a dictionary of named parameters that are mapped to the final type of object
-
-        *Args*:
-
-            args: read file arguments
-            class_obj: instance of a class obj
-
-        *Returns*:
-
-            fields: dictionary of mapped parameters
-
-        """
-        pass
-
-    def _handle_repeated(self, args, check_value, class_names):
-        """Handles repeated classes as lists
-
-        *Args*:
-
-            args: dictionary of arguments from the configs
-            check_value: value to check classes against
-            class_names: current class names
-
-        *Returns*:
-
-            list of input_class[match)idx[0]] types filled with repeated values
-
-        """
-        # Check to see if the value trying to be set is actually an input class
-        match_idx = [idx for idx, val in enumerate(class_names) if val == check_value]
-        return [self.input_classes[match_idx[0]](**val) for val in args]
-
-    def _handle_nested_class(self, args, check_value, class_names):
-        """Handles passing another class to the field dictionary
-
-        *Args*:
-            args: dictionary of arguments from the configs
-            check_value: value to check classes against
-            class_names: current class names
-
-        *Returns*:
-
-            either the check_value or the necessary class
-
-        """
-        # Check to see if the value trying to be set is actually an input class
-        match_idx = [idx for idx, val in enumerate(class_names) if val == check_value]
-        # If so then create the needed class object by unrolling the args to **kwargs and return it
-        if len(match_idx) > 0:
-            if len(match_idx) > 1:
-                raise ValueError(
-                    "Match error -- multiple classes with the same name definition"
-                )
-            else:
-                if args.get(self.input_classes[match_idx[0]].__name__) is None:
-                    raise ValueError(
-                        f"Missing config file definition for the referenced class "
-                        f"{self.input_classes[match_idx[0]].__name__}"
-                    )
-                current_arg = args.get(self.input_classes[match_idx[0]].__name__)
-                if isinstance(current_arg, list):
-                    class_value = [
-                        self.input_classes[match_idx[0]](**val) for val in current_arg
-                    ]
-                else:
-                    class_value = self.input_classes[match_idx[0]](**current_arg)
-            return_value = class_value
-        # else return the expected value
-        else:
-            return_value = check_value
-        return return_value
-
-    # def generate(self, dict_args):
-    #     """Method to auto-generate the actual class instances from the generated args
-    #
-    #     Based on the generated arguments groups and the args read in from the config file(s)
-    #     this function instantiates the classes with the necessary field or attr values
-    #
-    #     *Args*:
-    #
-    #         dict_args: dictionary of arguments from the configs
-    #
-    #     *Returns*:
-    #
-    #         namespace containing automatically generated instances of the classes
-    #     """
-    #     auto_dict = {}
-    #     # Re-order the input-classes based on dependency graph
-    #     order = Graph(input_classes=self.input_classes).class_order
-    #     class_names = [val.__name__ for val in self.input_classes]
-    #     self.input_classes = [self.input_classes[class_names.index(v)] for v in order]
-    #     for attr_classes in self.input_classes:
-    #         attr_build = self._auto_generate(dict_args, attr_classes)
-    #         if isinstance(attr_build, list):
-    #             class_name = list({type(val).__name__ for val in attr_build})
-    #             if len(class_name) > 1:
-    #                 raise ValueError("Repeated class has more than one unique name")
-    #             auto_dict.update({class_name[0]: attr_build})
-    #         else:
-    #             auto_dict.update({type(attr_build).__name__: attr_build})
-    #     return Spockspace(**auto_dict)
-
     def generate(self, dict_args):
         """Method to auto-generate the actual class instances from the generated args
 
@@ -195,211 +92,40 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
 
             namespace containing automatically generated instances of the classes
         """
-        auto_dict = {}
-        # Re-order the input-classes based on dependency graph
-        order = Graph(input_classes=self.input_classes).class_order
-        class_names = [val.__name__ for val in self.input_classes]
-        self.input_classes = [self.input_classes[class_names.index(v)] for v in order]
-        for attr_classes in self.input_classes:
-            attr_build = self._auto_generate(dict_args, attr_classes, auto_dict)
-            if isinstance(attr_build, list):
-                class_name = list({type(val).__name__ for val in attr_build})
-                if len(class_name) > 1:
-                    raise ValueError("Repeated class has more than one unique name")
-                auto_dict.update({class_name[0]: attr_build})
-            else:
-                auto_dict.update({type(attr_build).__name__: attr_build})
-        return Spockspace(**auto_dict)
+        graph = Graph(input_classes=self.input_classes)
 
-    def _auto_generate(self, args, input_class, auto_dict):
-        """Builds an instance of an attr class
+        spock_space_kwargs = self.resolve_spock_space_kwargs(graph, dict_args)
 
-        Builds an instance with the necessary field values from the argument
-        dictionary read from the config file(s)
+        return Spockspace(**spock_space_kwargs)
+
+    def resolve_spock_space_kwargs(self, graph: Graph, dict_args: dict) -> dict:
+        """
+        Build the dictionary that will define the spock space.
 
         *Args*:
 
-            args: dictionary of arguments read from the config file(s)
-            data_class: data class to build
+            graph: Dependency graph of nested spock configurations
+            dict_args: dictionary of arguments from the configs
 
         *Returns*:
 
-            An instance of data_class with correct values assigned to fields
+            dictionary containing automatically generated instances of the classes
         """
-        # Since we have the input_classes sorted based on the DAG we can just build from the bottom up
-        fields = self._handle_arguments(args, input_class, auto_dict)
-        # Have to catch the return as a list for repeated classes
-        if isinstance(fields, list):
-            return_value = fields
-        # Else handle the basic data types
-        else:
-            return_value = input_class(**fields)
-        return return_value
 
-    def _handle_late_defaults(self, args, fields, input_class):
-        """Handles late defaults when the type is non-standard
+        spock_space = {}
+        arguments = SpockArguments(dict_args, graph)
+        builder_space = BuilderSpace(arguments=arguments, spock_space=spock_space)
 
-        If the default type is not a base python type then we need to catch those defaults here and build the correct
-        values from the input classes while maintaining the optional nature. The trick is to exclude all 'base' types
-        as these defaults are covered by the attr default value
+        for spock_cls in graph.roots:
+            spock_instance, special_keys = RegisterSpockCls.recurse_generate(
+                spock_cls, builder_space
+            )
+            builder_space.spock_space[spock_cls.__name__] = spock_instance
 
-        *Args*:
+            for special_key, value in special_keys.items():
+                setattr(self, special_key, value)
 
-            args: dictionary of arguments read from the config file(s)
-            fields: current fields returned from _handle_arguments
-            input_class: which input class being checked for late defaults
-
-        *Returns*:
-
-            fields: updated field dictionary with late defaults set
-
-        """
-        names = [val.name for val in input_class.__attrs_attrs__]
-        class_names = [val.__name__ for val in self.input_classes]
-        field_list = list(fields.keys())
-        arg_list = list(args.keys())
-        # Exclude all the base types that are supported -- these can be set by attrs
-        exclude_list = [
-            "_Nothing",
-            "NoneType",
-            "bool",
-            "int",
-            "float",
-            "str",
-            "list",
-            "tuple",
-        ]
-        for val in names:
-            if val not in field_list:
-                # Gets the name of the class to default to
-                default_type_name = type(
-                    getattr(input_class.__attrs_attrs__, val).default
-                ).__name__
-                if default_type_name not in exclude_list:
-                    # Gets the default class object
-                    default_attr = getattr(input_class.__attrs_attrs__, val).default
-                    # If the default is given for a class then it's the actual class and not a type -- logic needs
-                    # to deal with both
-                    if type(default_attr).__name__ == "type":
-                        default_name = default_attr.__name__
-                    else:
-                        default_name = type(default_attr).__name__
-                # Skip if in the exclude list
-                else:
-                    default_attr = None
-                    default_name = None
-                # if we need to fall back onto the default and if it's in the arg_list then we have a
-                # definition coming in from the config file -- grab the default and then recurse to get other defaults
-                # and map to possibly other config defined values
-                if default_name is not None and (default_name in arg_list) and (len(args[default_name]) > 0):
-                    # This handles lists of class type repeats -- these cannot be nested as the logic would be too
-                    # confusing to map to
-                    if isinstance(args.get(default_name), list):
-                        default_value = [
-                            self.input_classes[class_names.index(default_name)](
-                                **arg_val
-                            )
-                            for arg_val in args.get(default_name)
-                        ]
-                    # This handles basics and references to other classes -- here we need to recurse to grab any nested
-                    # defs since classes are passed as strings to the config but are defined via Enums (handled #139)
-                    else:
-                        recurse_args = self._handle_recursive_defaults(
-                            args.get(default_name), args, class_names
-                        )
-                        if type(default_attr).__name__ != 'type':
-                            more_recurse_args = self._handle_recursive_non_args_defaults(
-                                default_attr, args, class_names, check_self=True
-                            )
-                            more_recurse_args.update(recurse_args)
-                            recurse_args = more_recurse_args
-                        default_value = self.input_classes[
-                            class_names.index(default_name)
-                        ](**recurse_args)
-                    fields.update({val: default_value})
-                # If we fall back on default but don't define it within the config file we still need to check
-                # for references to other classes that might be set from config files -- we have to do this
-                # slightly differently due to the default value being an attr object
-                elif (default_name is not None) and (default_attr is not None):
-                    recurse_args = self._handle_recursive_non_args_defaults(
-                        default_attr, args, class_names
-                    )
-                    default_value = self.input_classes[class_names.index(default_name)](
-                        **recurse_args
-                    )
-                    fields.update({val: default_value})
-        return fields
-
-    def _handle_recursive_non_args_defaults(self, default_attr, all_args, class_names, check_self=False):
-        """Recurses through the default attrs object to determine if it can map to a definition from the config read
-
-        *Args*:
-
-            default_attr: default attr object
-            all_args: all argument dictionary
-            class_names: list of class names
-
-        *Returns*:
-
-            out_dict: recursively mapped dictionary of attributes
-
-        """
-        out_dict = {}
-        dict_attr = attr.asdict(default_attr, recurse=False)
-        for k, v in dict_attr.items():
-            if _is_spock_instance(v) and (type(v).__name__ in all_args):
-                attr_name = type(v).__name__
-                bubbled_dict = self._handle_recursive_non_args_defaults(
-                    v, all_args[attr_name], class_names
-                )
-                out_dict.update(
-                    {
-                        k: self.input_classes[class_names.index(attr_name)](
-                            **bubbled_dict
-                        )
-                    }
-                )
-            else:
-                out_dict.update({k: all_args[k] if k in all_args else v})
-        default_name = type(default_attr).__name__
-        if check_self and (default_name in all_args):
-            for k, v in dict_attr.items():
-                if k in all_args[default_name]:
-                    out_dict.update({k: all_args[default_name][k]})
-        return out_dict
-
-    def _handle_recursive_defaults(self, curr_arg, all_args, class_names):
-        """Recurses through the args from the config read to determine if it can map to a definition
-
-        *Args*:
-
-            curr_arg: current argument
-            all_args: all argument dictionary
-            class_names: list of class names
-
-        *Returns*:
-
-            out_dict: recursively mapped dictionary of attributes
-
-        """
-        out_dict = {}
-        for k, v in curr_arg.items():
-            # If the value is a reference to another class we need to recurse
-            if v in class_names:
-                # Recurse only if in the all_args dict (from the config file)
-                if v in all_args:
-                    bubbled_dict = self._handle_recursive_defaults(
-                        all_args.get(v), all_args, class_names
-                    )
-                    out_dict.update(
-                        {k: self.input_classes[class_names.index(v)](**bubbled_dict)}
-                    )
-                # Else fall back on default instantiation
-                else:
-                    out_dict.update({k: self.input_classes[class_names.index(v)]()})
-            else:
-                out_dict.update({k: v})
-        return out_dict
+        return spock_space
 
     def build_override_parsers(self, parser):
         """Creates parsers for command-line overrides
@@ -422,28 +148,6 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
                 parser=parser, class_obj=val, class_name=self._module_name
             )
         return parser
-
-    @staticmethod
-    def _get_from_kwargs(args, configs):
-        """Get configs from the configs kwarg
-
-        *Args*:
-
-            args: argument namespace
-            configs: config kwarg
-
-        *Returns*:
-
-            args: arg namespace
-
-        """
-        if isinstance(configs, list):
-            args.config.extend(configs)
-        else:
-            raise TypeError(
-                f"configs kwarg must be of type list -- given {type(configs)}"
-            )
-        return args
 
     @staticmethod
     def _find_attribute_idx(newline_split_docs):
@@ -846,212 +550,6 @@ class AttrBuilder(BaseBuilder):
                 arg_name = f"--{str(attr_name)}.{val.name}"
                 group_parser = make_argument(arg_name, val_type, group_parser)
         return parser
-
-    def _handle_arguments(self, args, class_obj, auto_dict):
-        attr_name = class_obj.__name__
-        class_names = [val.__name__ for val in self.input_classes]
-        # Handle repeated classes
-        if (
-            attr_name in class_names
-            and attr_name in args
-            and isinstance(args[attr_name], list)
-        ):
-            fields = self._handle_repeated(args[attr_name], attr_name, class_names)
-        else:
-
-            fields = {}
-            for val in class_obj.__attrs_attrs__:
-                # Catch the nested list first since it will also meet other args conditions -- order is ok since
-                # the deps are sorted via the DAG
-                if val.type.__name__ == 'list' and _is_spock_instance(val.metadata["type"].__args__[0]):
-                    if ((attr_name in args) and (val.name in args[attr_name])) or (val.name in args) or (val.default is not None and (val.metadata['optional'] != False)):
-                        fields[val.name] = auto_dict[val.metadata["type"].__args__[0].__name__]
-                    else:
-                        fields[val.name] = None
-                # Check if namespace is named and then check for key -- checking for local class def
-                elif (attr_name in args) and (val.name in args[attr_name]):
-                    # if isinstance(val.type, EnumMeta) and _check_iterable(val.type):
-                    fields[val.name] = self._handle_nested_class(
-                        auto_dict, args[attr_name][val.name], class_names
-                    )
-                # If not named then just check for keys -- checking for global def
-                elif val.name in args:
-                    # if isinstance(val.type, EnumMeta) and _check_iterable(val.type):
-                    fields[val.name] = self._handle_nested_class(auto_dict, args[val.name], class_names)
-                elif isinstance(val.type, EnumMeta) and _check_iterable(val.type):
-                    if (val.default is not None) and _is_spock_instance(val.default):
-                        fields[val.name] = auto_dict[val.default.__name__]
-                # If in the auto dict then map it over to meet dep reqs
-                elif _is_spock_instance(val.type):
-                    base_cond = val.type.__name__ in args and (attr_name in args) and (val.name in args[attr_name])
-                    if base_cond or val.default is not None:
-                        fields[val.name] = auto_dict[val.type.__name__]
-                    else:
-                        fields[val.name] = None
-                # Check for special keys to set
-                if (
-                        "special_key" in val.metadata
-                        and val.metadata["special_key"] is not None
-                ):
-                    if val.name in args:
-                        self.save_path = args[val.name]
-                    elif val.default is not None:
-                        self.save_path = val.default
-        return fields
-
-    # def _handle_arguments(self, args, class_obj):
-    #     attr_name = class_obj.__name__
-    #     class_names = [val.__name__ for val in self.input_classes]
-    #     # Handle repeated classes
-    #     if (
-    #         attr_name in class_names
-    #         and attr_name in args
-    #         and isinstance(args[attr_name], list)
-    #     ):
-    #         fields = self._handle_repeated(args[attr_name], attr_name, class_names)
-    #     # Handle non-repeated classes
-    #     else:
-    #         fields = {}
-    #         for val in class_obj.__attrs_attrs__:
-    #             # Check if namespace is named and then check for key -- checking for local class def
-    #             if attr_name in args and val.name in args[attr_name]:
-    #                 fields[val.name] = self._handle_nested_class(
-    #                     args, args[attr_name][val.name], class_names
-    #                 )
-    #             # If not named then just check for keys -- checking for global def
-    #             elif val.name in args:
-    #                 fields[val.name] = self._handle_nested_class(
-    #                     args, args[val.name], class_names
-    #                 )
-    #             # Check for special keys to set
-    #             if (
-    #                 "special_key" in val.metadata
-    #                 and val.metadata["special_key"] is not None
-    #             ):
-    #                 if val.name in args:
-    #                     self.save_path = args[val.name]
-    #                 elif val.default is not None:
-    #                     self.save_path = val.default
-    #     return fields
-
-    def _handle_repeated(self, args, check_value, class_names):
-        """Handles repeated classes as lists
-
-        *Args*:
-
-            args: dictionary of arguments from the configs
-            check_value: value to check classes against
-            class_names: current class names
-
-        *Returns*:
-
-            list of input_class[match)idx[0]] types filled with repeated values
-
-        """
-        # Check to see if the value trying to be set is actually an input class
-        match_idx = [idx for idx, val in enumerate(class_names) if val == check_value]
-        return [self.input_classes[match_idx[0]](**val) for val in args]
-
-    def _handle_enum_spock_class(self, args, check_value, class_names):
-        """Handles passing another class to the field dictionary
-
-        *Args*:
-            args: dictionary of arguments from the configs
-            check_value: value to check classes against
-            class_names: current class names
-
-        *Returns*:
-
-            either the check_value or the necessary class
-
-        """
-        # Check to see if the value trying to be set is actually an input class -- allow multiples to raise
-        match_idx = [idx for idx, val in enumerate(class_names) if val == check_value]
-        # If so then create the needed class object by unrolling the args to **kwargs and return it
-        if check_value not in class_names:
-            raise ValueError(
-                f"Cannot map a definition for the referenced class "
-                f"{self.input_classes[match_idx[0]].__name__}"
-            )
-        elif len(match_idx) != 1:
-            raise ValueError(
-                "Match error -- multiple classes with the same name definition"
-            )
-
-
-        else:
-            return args[check_value]
-
-    def _handle_nested_class(self, args, check_value, class_names):
-        """Handles passing another class to the field dictionary
-
-        *Args*:
-            args: dictionary of arguments from the configs
-            check_value: value to check classes against
-            class_names: current class names
-
-        *Returns*:
-
-            either the check_value or the necessary class
-
-        """
-        # Check to see if the value trying to be set is actually an input class
-        match_idx = [idx for idx, val in enumerate(class_names) if val == check_value]
-        if len(match_idx) > 0:
-            if len(match_idx) > 1:
-                raise ValueError(
-                    "Match error -- multiple classes with the same name definition"
-                )
-            else:
-                return_value = args[check_value]
-        # else return the expected value
-        else:
-            return_value = check_value
-        return return_value
-
-    # def _handle_nested_class(self, args, check_value, class_names):
-    #     """Handles passing another class to the field dictionary
-    #
-    #     *Args*:
-    #         args: dictionary of arguments from the configs
-    #         check_value: value to check classes against
-    #         class_names: current class names
-    #
-    #     *Returns*:
-    #
-    #         either the check_value or the necessary class
-    #
-    #     """
-    #     # Check to see if the value trying to be set is actually an input class
-    #     match_idx = [idx for idx, val in enumerate(class_names) if val == check_value]
-    #     # If so then create the needed class object by unrolling the args to **kwargs and return it
-    #         else:
-    #             if (args.get(self.input_classes[match_idx[0]].__name__) is None) and (
-    #                 check_value not in class_names
-    #             ):
-    #                 raise ValueError(
-    #                     f"Cannot map a definition for the referenced class "
-    #                     f"{self.input_classes[match_idx[0]].__name__}"
-    #                 )
-    #             current_arg = args.get(self.input_classes[match_idx[0]].__name__, {})
-    #             if isinstance(current_arg, list):
-    #                 class_value = [
-    #                     self.input_classes[match_idx[0]](**val) for val in current_arg
-    #                 ]
-    #             else:
-    #                 recurse_args = (
-    #                     self._handle_recursive_defaults(
-    #                         args.get(check_value), args, class_names
-    #                     )
-    #                     if check_value in args
-    #                     else {}
-    #                 )
-    #                 class_value = self.input_classes[match_idx[0]](**recurse_args)
-    #         return_value = class_value
-    #     # else return the expected value
-    #     else:
-    #         return_value = check_value
-    #     return return_value
 
     def _extract_fnc(self, val, module_name):
         """Function that gets the nested lists within classes

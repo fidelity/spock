@@ -2,7 +2,11 @@
 
 # Copyright FMR LLC <opensource@fidelity.com>
 # SPDX-License-Identifier: Apache-2.0
-from tests.base.attr_configs_test import FirstDoubleNestedConfig, SecondDoubleNestedConfig
+from tests.base.attr_configs_test import (
+    FirstDoubleNestedConfig,
+    SecondDoubleNestedConfig,
+)
+
 
 class AllTypes:
     # Required #
@@ -41,7 +45,13 @@ class AllTypes:
         assert arg_builder.TypeConfig.nested_list[1].two == "bye"
         assert arg_builder.TypeConfig.class_enum.one == 11
         assert arg_builder.TypeConfig.class_enum.two == "ciao"
-        assert isinstance(arg_builder.TypeConfig.high_config.double_nested_config, FirstDoubleNestedConfig) is True
+        assert (
+            isinstance(
+                arg_builder.TypeConfig.high_config.double_nested_config,
+                FirstDoubleNestedConfig,
+            )
+            is True
+        )
         assert arg_builder.TypeConfig.high_config.double_nested_config.h_factor == 0.99
         assert arg_builder.TypeConfig.high_config.double_nested_config.v_factor == 0.90
 
@@ -96,10 +106,21 @@ class AllDefaults:
         assert arg_builder.TypeDefaultConfig.nested_list_def[1].two == "bye"
         assert arg_builder.TypeDefaultConfig.class_enum_def.one == 11
         assert arg_builder.TypeDefaultConfig.class_enum_def.two == "ciao"
-        assert isinstance(arg_builder.TypeDefaultConfig.high_config_def.double_nested_config,
-                          FirstDoubleNestedConfig) is True
-        assert arg_builder.TypeDefaultConfig.high_config_def.double_nested_config.h_factor == 0.99
-        assert arg_builder.TypeDefaultConfig.high_config_def.double_nested_config.v_factor == 0.90
+        assert (
+            isinstance(
+                arg_builder.TypeDefaultConfig.high_config_def.double_nested_config,
+                FirstDoubleNestedConfig,
+            )
+            is True
+        )
+        assert (
+            arg_builder.TypeDefaultConfig.high_config_def.double_nested_config.h_factor
+            == 0.99
+        )
+        assert (
+            arg_builder.TypeDefaultConfig.high_config_def.double_nested_config.v_factor
+            == 0.90
+        )
 
         # Optional w/ Defaults #
         assert arg_builder.TypeDefaultOptConfig.int_p_opt_def == 10
@@ -172,10 +193,19 @@ class AllInherited:
         assert arg_builder.TypeInherited.nested_list[1].two == "bye"
         assert arg_builder.TypeInherited.class_enum.one == 11
         assert arg_builder.TypeInherited.class_enum.two == "ciao"
-        assert isinstance(arg_builder.TypeInherited.high_config.double_nested_config,
-                          FirstDoubleNestedConfig) is True
-        assert arg_builder.TypeInherited.high_config.double_nested_config.h_factor == 0.99
-        assert arg_builder.TypeInherited.high_config.double_nested_config.v_factor == 0.90
+        assert (
+            isinstance(
+                arg_builder.TypeInherited.high_config.double_nested_config,
+                FirstDoubleNestedConfig,
+            )
+            is True
+        )
+        assert (
+            arg_builder.TypeInherited.high_config.double_nested_config.h_factor == 0.99
+        )
+        assert (
+            arg_builder.TypeInherited.high_config.double_nested_config.v_factor == 0.90
+        )
 
         # Optional w/ Defaults #
         assert arg_builder.TypeInherited.int_p_opt_def == 10

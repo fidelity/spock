@@ -69,7 +69,7 @@ class ConfigArgBuilder:
         """
         # Do some verification first
         self._verify_attr(args)
-        self._configs = configs
+        self._configs = configs if configs is None else [Path(c) for c in configs]
         self._no_cmd_line = no_cmd_line
         self._desc = desc
         # Build the payload and saver objects
@@ -112,7 +112,7 @@ class ConfigArgBuilder:
                 self._tune_namespace = self._tune_obj.generate(self._tune_args)
         except Exception as e:
             self._print_usage_and_exit(str(e), sys_exit=False)
-            raise ValueError(e)
+            raise e
 
     def __call__(self, *args, **kwargs):
         """Call to self to allow chaining
@@ -198,10 +198,11 @@ class ConfigArgBuilder:
                 fixed_namespace=self._arg_namespace,
             )
             self._tuner_state = self._tuner_interface.sample()
-        except ImportError:
+        except ImportError as e:
             print(
                 "Missing libraries to support tune functionality. Please re-install with the extra tune "
-                "dependencies -- pip install spock-config[tune]"
+                "dependencies -- pip install spock-config[tune]."
+                f"Error: {e}"
             )
         return self
 
@@ -357,13 +358,14 @@ class ConfigArgBuilder:
         """
         # Highest level parser object
         parser = argparse.ArgumentParser(description=desc, add_help=False)
-        parser.add_argument("-c", "--config", required=False, nargs="+", default=[])
+        parser.add_argument("-c", "--config", required=False, nargs="+", default=[], type=Path)
         parser.add_argument("-h", "--help", action="store_true")
         # Handle the builder obj
         parser = self._builder_obj.build_override_parsers(parser=parser)
         if self._tune_obj is not None:
             parser = self._tune_obj.build_override_parsers(parser=parser)
         args = parser.parse_args()
+
         return args
 
     @staticmethod
@@ -439,7 +441,7 @@ class ConfigArgBuilder:
         self,
         payload,
         file_name: str = None,
-        user_specified_path: str = None,
+        user_specified_path: Path = None,
         create_save_path: bool = True,
         extra_info: bool = True,
         file_extension: str = ".yaml",
@@ -488,7 +490,7 @@ class ConfigArgBuilder:
     def save(
         self,
         file_name: str = None,
-        user_specified_path: str = None,
+        user_specified_path: typing.Union[Path, str] = None,
         create_save_path: bool = True,
         extra_info: bool = True,
         file_extension: str = ".yaml",
@@ -509,6 +511,8 @@ class ConfigArgBuilder:
 
             self so that functions can be chained
         """
+        if user_specified_path is not None:
+            user_specified_path = Path(user_specified_path)
         if add_tuner_sample:
             if self._tune_obj is None:
                 raise ValueError(
@@ -546,7 +550,7 @@ class ConfigArgBuilder:
     def save_best(
         self,
         file_name: str = None,
-        user_specified_path: str = None,
+        user_specified_path: Path = None,
         create_save_path: bool = True,
         extra_info: bool = True,
         file_extension: str = ".yaml",
