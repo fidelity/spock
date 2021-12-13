@@ -7,7 +7,7 @@
 
 from abc import ABC, abstractmethod
 from enum import EnumMeta
-from typing import Type
+from typing import List, Type
 
 from attr import NOTHING, Attribute
 
@@ -566,7 +566,7 @@ class RegisterSpockCls(RegisterFieldTemplate):
             attr_space = AttributeSpace(attribute, config_space)
             # Logic to handle the underlying type to call the correct Register* class
             # Lists of repeated values
-            if attribute.type is list and _is_spock_instance(
+            if ((attribute.type is list) or (attribute.type is List)) and _is_spock_instance(
                 attribute.metadata["type"].__args__[0]
             ):
                 handler = RegisterList()

@@ -6,7 +6,7 @@
 """Handles creation and ops for DAGs"""
 
 from enum import EnumMeta
-from typing import Type, Union
+from typing import Type, Union, List
 
 import attr
 
@@ -86,8 +86,8 @@ class Graph:
             # Check for enum of spock/attrs instance
             elif isinstance(v.type, EnumMeta) and self._check_4_spock_iterable(v.type):
                 dep_classes.extend(self._get_enum_classes(v.type))
-            # Check for List[@spock-class]
-            elif v.type.__name__ == "list" and _is_spock_instance(
+            # Check for List[@spock-class] -- needs to be checked against 3.6 typing.List as well
+            elif ((v.type is list) or (v.type is List)) and _is_spock_instance(
                 v.metadata["type"].__args__[0]
             ):
                 dep_classes.append(v.metadata["type"].__args__[0])
