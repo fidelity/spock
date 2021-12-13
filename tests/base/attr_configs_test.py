@@ -6,7 +6,7 @@
 from enum import Enum
 from typing import List, Optional, Tuple
 
-from spock.args import SavePath
+from spock.backend.typed import SavePath
 from spock.config import spock
 
 
@@ -28,6 +28,11 @@ class IntChoice(Enum):
 class FloatChoice(Enum):
     option_1 = 10.0
     option_2 = 20.0
+
+
+@spock
+class OptionalFail:
+    define_me: int
 
 
 @spock
@@ -181,7 +186,7 @@ class TypeOptConfig:
     # Class Enum
     class_enum_opt_no_def: Optional[ClassChoice]
     # Additional dummy argument
-    int_p: Optional[int]
+    int_p_2: Optional[int]
 
 
 @spock
@@ -235,7 +240,7 @@ class TypeDefaultConfig:
     # Class Enum
     class_enum_def: ClassChoice = NestedStuff
     # Double Nested class ref
-    high_config_def: SingleNestedConfig = SingleNestedConfig()
+    high_config_def: SingleNestedConfig = SingleNestedConfig
 
 
 @spock

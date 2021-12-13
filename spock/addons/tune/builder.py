@@ -22,28 +22,6 @@ class TunerBuilder(BaseBuilder):
         """
         super().__init__(*args, module_name="spock.addons.tune.config", **kwargs)
 
-    def _handle_arguments(self, args, class_obj):
-        """Ovverides base -- Handles all argument mapping
-
-        Creates a dictionary of named parameters that are mapped to the final type of object
-
-        *Args*:
-
-            args: read file arguments
-            class_obj: instance of a class obj
-
-        *Returns*:
-
-            fields: dictionary of mapped parameters
-
-        """
-        attr_name = class_obj.__name__
-        fields = {
-            val.name: val.type(**args[attr_name][val.name])
-            for val in class_obj.__attrs_attrs__
-        }
-        return fields
-
     @staticmethod
     def _make_group_override_parser(parser, class_obj, class_name):
         """Makes a name specific override parser for a given class obj

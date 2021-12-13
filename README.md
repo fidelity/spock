@@ -73,15 +73,9 @@ See [Releases](https://github.com/fidelity/spock/releases) for more information.
 * Added hyper-parameter tuning support with `pip install spock-config[tune]`
 * Hyper-parameter tuning backend support for Optuna define-and-run API (WIP for Ax)
 
-#### May 6th, 2021
-* Added S3 support with `pip install spock-config[s3]`
-* S3 addon supports automatically handling loading/saving from paths defined with `s3://` URI(s) by passing in an
-active `boto3.Session`
-
-
 ## Original Implementation
 
 [Nicholas Cilfone](https://github.com/ncilfone), [Siddharth Narayanan](https://github.com/sidnarayanan)
 ___
-`spock` is developed and maintained by the **Artificial Intelligence Center of Excellence at Fidelity Investments**.
+`spock` was originally developed by the **Artificial Intelligence Center of Excellence at Fidelity Investments**.
 

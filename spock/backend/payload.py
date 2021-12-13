@@ -168,7 +168,7 @@ class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
         config_extension,
         input_classes,
         ignore_classes,
-        path,
+        path: Path,
         payload,
         deps,
     ):  # pylint: disable=too-many-arguments
@@ -200,7 +200,7 @@ class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
             elif os.path.exists(inc_path):
                 use_path = inc_path
             elif os.path.join(os.path.dirname(path), inc_path):
-                use_path = os.path.join(os.path.dirname(path), inc_path)
+                use_path = path.parent / inc_path
             else:
                 raise RuntimeError(
                     f"Could not find included {config_extension} file {inc_path} or is not an S3 URI!"
