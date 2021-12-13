@@ -44,7 +44,7 @@ class TestOptunaInvalidCastRange:
             optuna_config = OptunaTunerConfig(
                 study_name="Basic Tests", direction="maximize"
             )
-            with pytest.raises(TypeError):
+            with pytest.raises(ValueError):
                 config = ConfigArgBuilder(HPOne, HPTwo).tuner(optuna_config)
 
 
@@ -78,5 +78,5 @@ class TestAxInvalidCastRange:
                 objective_name="None",
                 verbose_logging=False,
             )
-            with pytest.raises(TypeError):
+            with pytest.raises(ValueError):
                 config = ConfigArgBuilder(HPOne, HPTwo).tuner(ax_config)

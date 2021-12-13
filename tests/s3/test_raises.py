@@ -52,7 +52,7 @@ class TestAllTypesFromS3MockYAMLNoObject:
                 "./tests/conf/yaml/test.yaml", mock_s3_bucket, mock_s3_object
             )
             m.setattr(sys, "argv", ["", "--config", f"s3://foo/bar.yaml"])
-            with pytest.raises(s3_client.exceptions.NoSuchBucket):
+            with pytest.raises(ValueError):
                 config = ConfigArgBuilder(
                     TypeConfig,
                     NestedStuff,

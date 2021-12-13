@@ -1,4 +1,2 @@
-TrainProcess:
-    epochs: 5
 AnotherNested:
     something: 1

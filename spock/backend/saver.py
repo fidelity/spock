@@ -99,7 +99,7 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
             self._supported_extensions.get(file_extension)().save(
                 out_dict=out_dict,
                 info_dict=extra_dict,
-                path=path,
+                path=str(path),
                 name=name,
                 create_path=create_save_path,
                 s3_config=self._s3_config,
