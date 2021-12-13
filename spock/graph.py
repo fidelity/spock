@@ -6,7 +6,7 @@
 """Handles creation and ops for DAGs"""
 
 from enum import EnumMeta
-from typing import Type, Union, List
+from typing import List, Type, Union
 
 import attr
 

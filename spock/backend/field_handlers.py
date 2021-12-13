@@ -566,9 +566,9 @@ class RegisterSpockCls(RegisterFieldTemplate):
             attr_space = AttributeSpace(attribute, config_space)
             # Logic to handle the underlying type to call the correct Register* class
             # Lists of repeated values
-            if ((attribute.type is list) or (attribute.type is List)) and _is_spock_instance(
-                attribute.metadata["type"].__args__[0]
-            ):
+            if (
+                (attribute.type is list) or (attribute.type is List)
+            ) and _is_spock_instance(attribute.metadata["type"].__args__[0]):
                 handler = RegisterList()
             # Enums
             elif isinstance(attribute.type, EnumMeta) and _check_iterable(
