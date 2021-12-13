@@ -2,3 +2,4 @@ attrs==21.2.0
 GitPython==3.1.18
 pytomlpp==1.0.3
 pyYAML==6.0
+networkx

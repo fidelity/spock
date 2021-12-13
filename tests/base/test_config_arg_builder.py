@@ -60,7 +60,7 @@ class TestNoCmdLineKwargRaise:
 
     def test_cmd_line_kwarg_raise(self, monkeypatch):
         with monkeypatch.context() as m:
-            with pytest.raises(ValueError):
+            with pytest.raises(TypeError):
                 config = ConfigArgBuilder(
                     TypeConfig,
                     NestedStuff,
@@ -153,7 +153,7 @@ class TestRaiseWrongInputType:
     def test_wrong_input_raise(self, monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test.foo"])
-            with pytest.raises(ValueError):
+            with pytest.raises(TypeError):
                 config = ConfigArgBuilder(
                     TypeConfig,
                     NestedStuff,
@@ -203,7 +203,7 @@ class TestUnknownClassArg:
                 "argv",
                 ["", "--config", "./tests/conf/yaml/test_missing_class.yaml"],
             )
-            with pytest.raises(ValueError):
+            with pytest.raises(TypeError):
                 ConfigArgBuilder(
                     TypeConfig, NestedStuff, NestedListStuff, SingleNestedConfig,
                     FirstDoubleNestedConfig, SecondDoubleNestedConfig, desc="Test Builder"

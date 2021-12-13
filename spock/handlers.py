@@ -10,13 +10,14 @@ import os
 import re
 import typing
 from abc import ABC, abstractmethod
+from pathlib import Path, PurePosixPath
 from warnings import warn
 
 import pytomlpp
 import yaml
 
 from spock import __version__
-from spock.utils import check_path_s3
+from spock.utils import check_path_s3, path_object_to_s3path
 
 
 class Handler(ABC):
@@ -26,7 +27,7 @@ class Handler(ABC):
 
     """
 
-    def load(self, path: str, s3_config=None) -> typing.Dict:
+    def load(self, path: Path, s3_config=None) -> typing.Dict:
         """Load function for file type
 
         This handles s3 path conversion for all handler types pre load call
@@ -42,7 +43,17 @@ class Handler(ABC):
 
         """
         path = self._handle_possible_s3_load_path(path=path, s3_config=s3_config)
-        return self._load(path=path)
+        return self._post_process_config_paths(self._load(path=path))
+
+    @staticmethod
+    def _post_process_config_paths(payload):
+        """
+        Transform path string into path object
+        """
+        if "config" in payload:
+            payload["config"] = [Path(c) for c in payload["config"]]
+
+        return payload
 
     @abstractmethod
     def _load(self, path: str) -> typing.Dict:
@@ -63,7 +74,7 @@ class Handler(ABC):
         self,
         out_dict: typing.Dict,
         info_dict: typing.Optional[typing.Dict],
-        path: str,
+        path: Path,
         name: str,
         create_path: bool = False,
         s3_config=None,
@@ -95,7 +106,10 @@ class Handler(ABC):
                 from spock.addons.s3.utils import handle_s3_save_path
 
                 handle_s3_save_path(
-                    temp_path=write_path, s3_path=path, name=name, s3_config=s3_config
+                    temp_path=write_path,
+                    s3_path=str(PurePosixPath(path)),
+                    name=name,
+                    s3_config=s3_config,
                 )
             except ImportError:
                 print("Error importing spock s3 utils after detecting s3:// save path")
@@ -118,7 +132,9 @@ class Handler(ABC):
         raise NotImplementedError
 
     @staticmethod
-    def _handle_possible_s3_load_path(path: str, s3_config=None) -> str:
+    def _handle_possible_s3_load_path(
+        path: Path, s3_config=None
+    ) -> typing.Union[str, Path]:
         """Handles the possibility of having to handle loading from a S3 path
 
         Checks to see if it detects a S3 uri and if so triggers imports of s3 functionality and handles the file
@@ -139,14 +155,15 @@ class Handler(ABC):
             try:
                 from spock.addons.s3.utils import handle_s3_load_path
 
-                path = handle_s3_load_path(path=path, s3_config=s3_config)
+                s3_path = path_object_to_s3path(path)
+                path = handle_s3_load_path(path=s3_path, s3_config=s3_config)
             except ImportError:
                 print("Error importing spock s3 utils after detecting s3:// load path")
         return path
 
     @staticmethod
     def _handle_possible_s3_save_path(
-        path: str, name: str, create_path: bool, s3_config=None
+        path: Path, name: str, create_path: bool, s3_config=None
     ) -> typing.Tuple[str, bool]:
         """Handles the possibility of having to save to a S3 path
 
@@ -350,7 +367,6 @@ class JSONHandler(Handler):
             warn(
                 "JSON does not support comments and thus cannot save extra info to file... removing extra info"
             )
-            info_dict = None
         with open(path, "a") as json_fid:
             json.dump(out_dict, json_fid, indent=4, separators=(",", ": "))
         return path
