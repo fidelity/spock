@@ -7,7 +7,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
   title: 'spock',
   tagline: 'Managing complex configurations any other way would be highly illogical...',
   url: 'https://fidelity.github.io',
-  baseUrl: '/',
+  baseUrl: '/spock/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/logo_small.png',
