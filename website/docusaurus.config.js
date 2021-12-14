@@ -41,7 +41,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
         title: 'spock',
         logo: {
           alt: 'Spock Logo',
-          src: 'img/logo.png',
+          src: 'img/logo_small.png',
         },
         items: [
           {
