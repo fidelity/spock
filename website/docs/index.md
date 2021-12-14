@@ -1,5 +1,12 @@
-[![Spock](https://raw.githubusercontent.com/fidelity/spock/master/resources/images/logo.png)](https://fidelity.github.io/spock/)
-> Managing complex configurations any other way would be highly illogical...
+---
+slug: /
+title: spock
+---
+
+<h1 align="center">
+    <a href="https://fidelity.github.io/spock/"><img width="200" height="208" src="https://raw.githubusercontent.com/fidelity/spock/master/resources/images/logo_small.png"/></a>
+    <h6 align="center">Managing complex configurations any other way would be highly illogical...</h6>
+</h1>
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-9cf)](https://opensource.org/licenses/Apache-2.0)
 [![Python](https://img.shields.io/badge/python-3.6+-informational.svg)](https://www.python.org/)
@@ -66,9 +73,8 @@ Example `spock` usage is located [here](https://github.com/fidelity/spock/blob/m
 
 See [Releases](https://github.com/fidelity/spock/releases) for more information.
 
-#### December 14, 2021
+#### December 13, 2021
 * Refactored the backend to better handle nested dependencies (and for clarity)
-* Refactored the docs to use Docusaurus
 
 #### August 17, 2021
 * Added hyper-parameter tuning backend support for Ax via Service API
