@@ -13,7 +13,6 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
   favicon: 'img/logo_small.png',
   organizationName: 'fidelity',
   projectName: 'spock',
-  trailingSlash: true,
   presets: [
     [
       '@docusaurus/preset-classic',
