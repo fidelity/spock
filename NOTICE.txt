@@ -4,7 +4,7 @@
 // ------------------------------------------------------------------
 
 Spock
-Copyright [2019-2021] FMR LLC
+Copyright [2019-2022] FMR LLC
 
 This product includes software developed at
 FMR LLC (https://www.fidelity.com/).
@@ -26,3 +26,17 @@ Optional extensions rely on the following works (and the dependencies thereof), 
 - s3transfer | https://github.com/boto/s3transfer | Apache License 2.0
 - torch | https://github.com/pytorch/pytorch | BSD License
 - torchvision | https://github.com/pytorch/vision | BSD 3-Clause License
+
+
+Documentation and testing rely on the following works (and the dependencies thereof), installed separately:
+- black | https://github.com/psf/black | MIT License
+- coveralls | https://github.com/TheKevJames/coveralls-python | MIT License
+- coverage | https://github.com/nedbat/coveragepy | Apache License 2.0
+- docusaurus | https://github.com/facebook/docusaurus | MIT License
+- isort | https://github.com/PyCQA/isort | MIT License
+- moto | https://github.com/spulec/moto | Apache License 2.0
+- pydoc-markdown | https://github.com/NiklasRosenstein/pydoc-markdown | MIT License
+- pytest | https://github.com/pytest-dev/pytest | MIT License
+- pytest-cov | https://github.com/pytest-dev/pytest-cov | MIT License
+- pylint | https://github.com/PyCQA/pylint | GPL-2.0 License
+- scikit-learn | https://github.com/scikit-learn/scikit-learn | BSD-3-Clause License
