@@ -2,15 +2,15 @@
 
 name: docs-test-build
 
-on: workflow_dispatch
+# on: workflow_dispatch
 
-#on:
-#  pull_request:
-#    branches: [master]
-#    paths: [website/**]
-#  push:
-#    branches: [master]
-#    paths: [website/**]
+on:
+ pull_request:
+   branches: [master]
+   paths: [website/**]
+ push:
+   branches: [master]
+   paths: [website/**]
 
 jobs:
   deploy:
