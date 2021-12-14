@@ -2,10 +2,10 @@
 
 name: docs
 
-# on: workflow_dispatch
-on:
- release:
-   types: [released]
+on: workflow_dispatch
+# on:
+#  release:
+#    types: [released]
 
 jobs:
   deploy:
@@ -33,8 +33,22 @@ jobs:
         pip install -r ./requirements/TUNE_REQUIREMENTS.txt
         pip install -r ./requirements/TEST_EXTRAS_REQUIREMENTS.txt
 
-    - name: Build docs with Portray
-      env:
-        PYTHONPATH: .
+    - uses: actions/setup-node@v2
+      with:
+        node-version: 14.x
+        cache: npm
+        cache-dependency-path: website/package-lock.json
+
+    - name: Build website
+      working-directory: website
       run: |
-        portray on_github_pages --force
+        npm ci
+        npm run build
+
+    - name: Deploy to GitHub pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./website/build
+        user_name: github-actions[bot]
+        user_email: nicholas.cilfone@fmr.com
