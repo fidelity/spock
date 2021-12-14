@@ -37,7 +37,7 @@ jobs:
         with:
           node-version: 14.x
           cache: npm
-          cache-dependency-path: spock/website/package-lock.json
+          cache-dependency-path: website/package-lock.json
       
       - name: Test build
         working-directory: website
