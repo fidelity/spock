@@ -73,8 +73,9 @@ Example `spock` usage is located [here](https://github.com/fidelity/spock/blob/m
 
 See [Releases](https://github.com/fidelity/spock/releases) for more information.
 
-#### December 13, 2021
+#### December 14, 2021
 * Refactored the backend to better handle nested dependencies (and for clarity)
+* Refactored the docs to use Docusaurus
 
 #### August 17, 2021
 * Added hyper-parameter tuning backend support for Ax via Service API

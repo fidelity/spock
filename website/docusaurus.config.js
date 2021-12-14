@@ -76,7 +76,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
               },
               {
                 label: 'Quick Start',
-                to: '/docs/quick-start',
+                to: 'Quick-Start',
               },
               {
                 label: 'Examples',
