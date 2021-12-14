@@ -2,10 +2,10 @@
 
 name: docs
 
-on: workflow_dispatch
-# on:
-#  release:
-#    types: [released]
+# on: workflow_dispatch
+on:
+ release:
+   types: [released]
 
 jobs:
   deploy:
