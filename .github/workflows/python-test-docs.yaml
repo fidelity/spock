@@ -25,7 +25,6 @@ jobs:
         with:
           node-version: 14.x
           cache: npm
-          - uses: actions/cache@v2
       - uses: actions/cache@v2
         with:
           path: ${{ env.pythonLocation }}
