@@ -1,4 +1,4 @@
-black~=21.4b0
+black~=21.12b0
 coveralls~=3.3
 coverage~=6.1
 isort~=5.10
