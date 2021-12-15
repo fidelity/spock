@@ -20,8 +20,7 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
     Contains methods to build a correct output payload and then writes to file based on the file
     extension
 
-    *Attributes*:
-
+    Attributes:
         _writers: maps file extension to the correct i/o handler
         _s3_config: optional S3Config object to handle s3 access
 
@@ -33,12 +32,10 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
     def dict_payload(self, payload):
         """Clean up the config payload so it can be returned as a dict representation
 
-        *Args*:
-
+        Args:
             payload: dirty payload
 
-        *Returns*:
-
+        Returns:
             clean_dict: cleaned output payload
 
         """
@@ -61,8 +58,7 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
         Cleans and builds an output payload and then correctly writes it to file based on the
         specified file extension
 
-        *Args*:
-
+        Args:
             payload: current config payload
             path: path to save
             file_name: name of file (will be appended with .spock.cfg.file_extension) -- falls back to uuid if None
@@ -72,8 +68,7 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
             tuner_payload: tuner level payload (unsampled)
             fixed_uuid: fixed uuid to allow for file overwrite
 
-        *Returns*:
-
+        Returns:
             None
 
         """
@@ -112,12 +107,10 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
     def _clean_up_values(self, payload):
         """Clean up the config payload so it can be written to file
 
-        *Args*:
-
+        Args:
             payload: dirty payload
 
-        *Returns*:
-
+        Returns:
             clean_dict: cleaned output payload
 
         """
@@ -126,12 +119,10 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
     def _clean_tuner_values(self, payload):
         """Cleans up the base tuner payload that is not sampled
 
-        *Args*:
-
+        Args:
             payload: dirty payload
 
-        *Returns*:
-
+        Returns:
             clean_dict: cleaned output payload
 
         """
@@ -139,13 +130,11 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
     def _clean_output(self, out_dict):
         """Clean up the dictionary so it can be written to file
 
-        *Args*:
-
+        Args:
             out_dict: cleaned dictionary
             extra_info: boolean to add extra info
 
-        *Returns*:
-
+        Returns:
             clean_dict: cleaned output payload
 
         """
@@ -183,13 +172,11 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
 
         Recursively looks through tuple(s) and convert to lists
 
-        *Args*:
-
+        Args:
             value: value to check and set typ if necessary
             typed: type of the generic alias to check against
 
-        *Returns*:
-
+        Returns:
             value: updated value with correct type casts
 
         """
@@ -211,8 +198,7 @@ class AttrSaver(BaseSaver):
     Contains methods to build a correct output payload and then writes to file based on the file
     extension
 
-    *Attributes*:
-
+    Attributes:
         _writers: maps file extension to the correct i/o handler
 
     """
@@ -254,15 +240,13 @@ class AttrSaver(BaseSaver):
         parameter definitions while correctly mapping nested class definitions to their base level class thus
         allowing the output markdown to be a valid input file
 
-        *Args*:
-
+        Args:
             payload: current payload (namespace)
             out_dict: output dictionary
             parent_name: name of the parent spock class if nested
             all_cls: all top level spock class definitions
 
-        *Returns*:
-
+        Returns:
             out_dict: modified dictionary with the cleaned data
 
         """

@@ -33,12 +33,10 @@ class SavePath(str):
 def _get_name_py_version(typed):
     """Gets the name of the type depending on the python version
 
-    *Args*:
-
+    Args:
         typed: the type of the parameter
 
-    *Returns*:
-
+    Returns:
         name of the type
 
     """
@@ -51,12 +49,10 @@ def _extract_base_type(typed):
     Assumes that the derived types are only of length 1 as the __args__ are [0] recursed... this is not true for
     tuples
 
-    *Args*:
-
+    Args:
         typed: the type of the parameter
 
-    *Returns*:
-
+    Returns:
         name of type
     """
     if hasattr(typed, "__args__"):
@@ -74,12 +70,10 @@ def _recursive_generic_validator(typed):
     Walks through the nested type structure and determines whether to recurse all the way to a base type. Once it
     hits the base type it bubbles up the correct validator that is nested within the upper validator
 
-    *Args*:
-
+    Args:
         typed: input type
 
-    *Returns*:
-
+    Returns:
         return_type: recursively built deep_iterable validators
 
     """
@@ -119,14 +113,12 @@ def _generic_alias_katra(typed, default=None, optional=False):
 
     Handles: List[type] and Tuple[type]
 
-    *Args*:
-
+    Args:
         typed: the type of the parameter to define
         default: the default value to assign if given
         optional: whether to make the parameter optional or not (thus allowing None)
 
-    *Returns*:
-
+    Returns:
         x: Attribute from attrs
 
     """
@@ -171,12 +163,10 @@ def _check_enum_props(typed):
 
     Checks if all types of the enum are the same and assembles a list of allowed values
 
-    *Args*:
-
+    Args:
         typed: the type of parameter (Enum)
 
-    *Returns*:
-
+    Returns:
         base_type: the base type of the Enum
         allowed: List of allowed values of the Enum
 
@@ -197,14 +187,12 @@ def _enum_katra(typed, default=None, optional=False):
     both simple types and subscripted GenericAlias types (e.g. lists and tuples), handles setting default parameters,
     and deals with parameter optionality
 
-    *Args*:
-
+    Args:
         typed: the type of the parameter to define
         default: the default value to assign if given
         optional: whether to make the parameter optional or not (thus allowing None)
 
-    *Returns*:
-
+    Returns:
         x: Attribute from attrs
 
     """
@@ -234,15 +222,14 @@ def _enum_base_katra(typed, base_type, allowed, default=None, optional=False):
     both simple types and subscripted GenericAlias types (e.g. lists and tuples), handles setting default parameters,
     and deals with parameter optionality
 
-    *Args*:
+    Args:
         typed: the type of the parameter to define
         base_type: underlying base type
         allowed: set of allowed values
         default: the default value to assign if given
         optional: whether to make the parameter optional or not (thus allowing None)
 
-    *Returns*:
-
+    Returns:
         x: Attribute from attrs
 
     """
@@ -282,15 +269,13 @@ def _in_type(instance, attribute, value, options):
 
     Checks if the type of the class (e.g. value) is in the specified set of types provided
 
-    *Args*:
-
+    Args:
         instance: current object instance
         attribute: current attribute instance
         value: current value trying to be set in the attrs instance
         options: list, tuple, or enum of allowed options
 
-    *Returns*:
-
+    Returns:
     """
     if type(value) not in options:
         raise ValueError(f"{attribute.name} must be in {options}")
@@ -306,15 +291,13 @@ def _enum_class_katra(typed, allowed, default=None, optional=False):
     both simple types and subscripted GenericAlias types (e.g. lists and tuples), handles setting default parameters,
     and deals with parameter optionality
 
-    *Args*:
-
+    Args:
         typed: the type of the parameter to define
         allowed: set of allowed values
         default: the default value to assign if given
         optional: whether to make the parameter optional or not (thus allowing None)
 
-    *Returns*:
-
+    Returns:
         x: Attribute from attrs
 
     """
@@ -350,14 +333,12 @@ def _type_katra(typed, default=None, optional=False):
 
     Handles: bool, string, float, int, List, and Tuple
 
-    *Args*:
-
+    Args:
         typed: the type of the parameter to define
         default: the default value to assign if given
         optional: whether to make the parameter optional or not (thus allowing None)
 
-    *Returns*:
-
+    Returns:
         x: Attribute from attrs
 
     """
@@ -409,12 +390,10 @@ def _handle_optional_typing(typed):
     Handles Optional[type] typing and strips out the base type to pass back to the creation of a katra which needs base
     typing
 
-    *Args*:
-
+    Args:
         typed: type
 
-    *Returns*:
-
+    Returns:
         typed: type (modified if Optional)
         optional: boolean for katra creation
     """
@@ -438,12 +417,10 @@ def _check_generic_recursive_single_type(typed):
 
     DEPRECATED -- NOW SUPPORTS MIXED TYPES OF TUPLES
 
-    *Args*:
-
+    Args:
         typed: type
 
-    *Returns*:
-
+    Returns:
     """
     # Check if it has __args__ to look for optionality as it is a GenericAlias
     # if hasattr(typed, '__args__'):
@@ -463,14 +440,12 @@ def katra(typed, default=None):
     both simple types and subscripted GenericAlias types (e.g. lists and tuples), handles setting default parameters,
     and deals with parameter optionality
 
-    *Args*:
-
+    Args:
         typed: the type of the parameter to define
         default: the default value to assign if given
         optional: whether to make the parameter optional or not (thus allowing None)
 
     Returns:
-
         x: Attribute from attrs
 
     """

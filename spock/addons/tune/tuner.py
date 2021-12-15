@@ -17,8 +17,7 @@ class TunerInterface:
     """Handles the general tuner interface by creating the necessary underlying tuner class and dispatches necessary
     ops to the class instance
 
-    *Attributes*:
-
+    Attributes:
         _fixed_namespace: fixed parameter namespace used for combination with a sample draw
         _lib_interface: class instance of the underlying hyper-parameter library
 
@@ -32,8 +31,7 @@ class TunerInterface:
     ):
         """Init call to the TunerInterface
 
-        *Args*:
-
+        Args:
             tuner_config: necessary object to determine the interface and sample correctly from the underlying library
             tuner_namespace: tuner namespace that has attr classes that maps to an underlying library types
             fixed_namespace: namespace of fixed parameters
@@ -59,8 +57,7 @@ class TunerInterface:
         """Public interface to underlying library sepcific sample that returns a single sample/draw from the
         hyper-parameter sets (e.g. ranges, choices) and combines them with the fixed parameters into a single Spockspace
 
-        *Returns*:
-
+        Returns:
             Spockspace of drawn sample of hyper-parameters and fixed parameters
 
         """

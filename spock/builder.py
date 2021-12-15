@@ -28,8 +28,7 @@ class ConfigArgBuilder:
     call to generate) generates each class instance based on the necessary
     field values for each backend class instance
 
-    *Attributes*:
-
+    Attributes:
         _args: all command line args
         _arg_namespace: generated argument namespace
         _builder_obj: instance of a BaseBuilder class
@@ -57,8 +56,7 @@ class ConfigArgBuilder:
     ):
         """Init call for ConfigArgBuilder
 
-        *Args*:
-
+        Args:
             *args: tuple of spock decorated classes to process
             configs: list of config paths
             desc: description for help
@@ -117,13 +115,11 @@ class ConfigArgBuilder:
     def __call__(self, *args, **kwargs):
         """Call to self to allow chaining
 
-        *Args*:
-
+        Args:
             *args: non-keyword args
             **kwargs: keyword args
 
-        *Returns*:
-
+        Returns:
             ConfigArgBuilder: self instance
         """
         return ConfigArgBuilder(*args, **kwargs)
@@ -132,8 +128,7 @@ class ConfigArgBuilder:
         """Generate method that returns the actual argument namespace
 
 
-        *Returns*:
-
+        Returns:
             argument namespace consisting of all config classes
 
         """
@@ -153,8 +148,7 @@ class ConfigArgBuilder:
         """Sample method that constructs a namespace from the fixed parameters and samples from the tuner space to
         generate a Spockspace derived from both
 
-        *Returns*:
-
+        Returns:
             argument namespace(s) -- fixed + drawn sample from tuner backend
 
         """
@@ -176,12 +170,10 @@ class ConfigArgBuilder:
     def tuner(self, tuner_config):
         """Chained call that builds the tuner interface for either optuna or ax depending upon the type of the tuner_obj
 
-        *Args*:
-
+        Args:
             tuner_config: a class of type optuna.study.Study or AX****
 
-        *Returns*:
-
+        Returns:
             self so that functions can be chained
 
         """
@@ -209,12 +201,10 @@ class ConfigArgBuilder:
     def _print_usage_and_exit(self, msg=None, sys_exit=True, exit_code=1):
         """Prints the help message and exits
 
-        *Args*:
-
+        Args:
             msg: message to print pre exit
 
-        *Returns*:
-
+        Returns:
             None
 
         """
@@ -234,14 +224,12 @@ class ConfigArgBuilder:
     def _handle_tuner_objects(tune_args, s3_config, kwargs):
         """Handles creating the tuner builder object if @spockTuner classes were passed in
 
-        *Args*:
-
+        Args:
             tune_args: list of tuner classes
             s3_config: s3Config object for S3 support
             kwargs: optional keyword args
 
-        *Returns*:
-
+        Returns:
             tuner builder object or None
 
         """
@@ -265,12 +253,10 @@ class ConfigArgBuilder:
     def _verify_attr(args: typing.Tuple):
         """Verifies that all the input classes are attr based
 
-        *Args*:
-
+        Args:
             args: tuple of classes passed to the builder
 
-        *Returns*:
-
+        Returns:
             None
 
         """
@@ -293,12 +279,10 @@ class ConfigArgBuilder:
     def _strip_tune_parameters(args: typing.Tuple):
         """Separates the fixed arguments from any hyper-parameter arguments
 
-        *Args*:
-
+        Args:
             args: tuple of classes passed to the builder
 
-        *Returns*:
-
+        Returns:
             fixed_args: list of fixed args
             tune_args: list of args destined for a tuner backend
 
@@ -319,8 +303,7 @@ class ConfigArgBuilder:
         as a kwarg (configs=[]) -- also trigger the building of the cmd line overrides for each fixed and
         tunable objects
 
-        *Returns*:
-
+        Returns:
             args: namespace of args
 
         """
@@ -347,12 +330,10 @@ class ConfigArgBuilder:
         Builds the basic command line parser for configs and help then iterates through each attr instance to make
         namespace specific cmd line override parsers -- handles calling both the fixed and tunable objects
 
-        *Args*:
-
+        Args:
             desc: argparser description
 
-        *Returns*:
-
+        Returns:
             args: argument namespace
 
         """
@@ -374,13 +355,11 @@ class ConfigArgBuilder:
     def _get_from_kwargs(args, configs):
         """Get configs from the configs kwarg
 
-        *Args*:
-
+        Args:
             args: argument namespace
             configs: config kwarg
 
-        *Returns*:
-
+        Returns:
             args: arg namespace
 
         """
@@ -398,14 +377,12 @@ class ConfigArgBuilder:
         Calls the various ways to get configs and then parses to retrieve the parameter payload - make sure to call
         deep update so as to not lose some parameters when only partially updating the payload
 
-        *Args*:
-
+        Args:
             payload_obj: current payload object to call
             input_classes: classes to use to get payload
             ignore_args: args that were decorated for hyper-parameter tuning
 
-        *Returns*:
-
+        Returns:
             payload: dictionary of parameter values
 
         """
@@ -452,8 +429,7 @@ class ConfigArgBuilder:
     ):
         """Private interface -- saves the current config setup to file with a UUID
 
-        *Args*:
-
+        Args:
             payload: Spockspace to save
             file_name: name of file (will be appended with .spock.cfg.file_extension) -- falls back to just uuid if None
             user_specified_path: if user provides a path it will be used as the path to write
@@ -463,8 +439,7 @@ class ConfigArgBuilder:
             tuner_payload: tuner level payload (unsampled)
             fixed_uuid: fixed uuid to allow for file overwrite
 
-        *Returns*:
-
+        Returns:
             self so that functions can be chained
         """
         if user_specified_path is not None:
@@ -500,8 +475,7 @@ class ConfigArgBuilder:
     ):
         """Saves the current config setup to file with a UUID
 
-        *Args*:
-
+        Args:
             file_name: name of file (will be appended with .spock.cfg.file_extension) -- falls back to just uuid if None
             user_specified_path: if user provides a path it will be used as the path to write
             create_save_path: bool to create the path to save if called
@@ -509,8 +483,7 @@ class ConfigArgBuilder:
             file_extension: file type to write (default: yaml)
             append_tuner_state: save the current tuner sample to the payload
 
-        *Returns*:
-
+        Returns:
             self so that functions can be chained
         """
         if user_specified_path is not None:
@@ -559,16 +532,14 @@ class ConfigArgBuilder:
     ):
         """Saves the current best config setup to file
 
-        *Args*:
-
+        Args:
             file_name: name of file (will be appended with .spock.cfg.file_extension) -- falls back to just uuid if None
             user_specified_path: if user provides a path it will be used as the path to write
             create_save_path: bool to create the path to save if called
             extra_info: additional info to write to saved config (run date and git info)
             file_extension: file type to write (default: yaml)
 
-        *Returns*:
-
+        Returns:
             self so that functions can be chained
         """
         if self._tune_obj is None:

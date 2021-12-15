@@ -32,13 +32,11 @@ class Handler(ABC):
 
         This handles s3 path conversion for all handler types pre load call
 
-        *Args*:
-
+        Args:
             path: path to file
             s3_config: optional s3 config object if using s3 storage
 
-        *Returns*:
-
+        Returns:
             dictionary of read file
 
         """
@@ -59,12 +57,10 @@ class Handler(ABC):
     def _load(self, path: str) -> typing.Dict:
         """Private load function for file type
 
-        *Args*:
-
+        Args:
             path: path to file
 
-        *Returns*:
-
+        Returns:
             dictionary of read file
 
         """
@@ -84,8 +80,7 @@ class Handler(ABC):
         This will handle local or s3 writes with the boolean is_s3 flag. If detected it will conditionally import
         the necessary addons to handle the upload
 
-        *Args*:
-
+        Args:
             out_dict: payload to write
             info_dict: info payload to write
             path: path to write out
@@ -93,8 +88,7 @@ class Handler(ABC):
             create_path: boolean to create the path if non-existent (for non S3)
             s3_config: optional s3 config object if using s3 storage
 
-        *Returns*:
-
+        Returns:
         """
         write_path, is_s3 = self._handle_possible_s3_save_path(
             path=path, name=name, create_path=create_path, s3_config=s3_config
@@ -120,14 +114,12 @@ class Handler(ABC):
     ) -> str:
         """Write function for file type
 
-        *Args*:
-
+        Args:
             out_dict: payload to write
             info_dict: info payload to write
             path: path to write out
 
-        *Returns*:
-
+        Returns:
         """
         raise NotImplementedError
 
@@ -140,13 +132,11 @@ class Handler(ABC):
         Checks to see if it detects a S3 uri and if so triggers imports of s3 functionality and handles the file
         download
 
-        *Args*:
-
+        Args:
             path: spock config path
             s3_config: optional s3 configuration object
 
-        *Returns*:
-
+        Returns:
             path: current path for the configuration file
 
         """
@@ -169,15 +159,13 @@ class Handler(ABC):
 
         Checks to see if it detects a S3 uri and if so generates a tmp location to write the file to pre-upload
 
-        *Args*:
-
+        Args:
             path: save path
             name: spock generated file name
             create_path: create the path for non s3 data
             s3_config: s3 config object
 
-        *Returns*:
-
+        Returns:
         """
         is_s3 = check_path_s3(path=path)
         if is_s3:
@@ -199,13 +187,11 @@ class Handler(ABC):
     def write_extra_info(path, info_dict):
         """Writes extra info to commented newlines
 
-        *Args*:
-
+        Args:
             path: path to write out
             info_dict: info payload to write
 
-        *Returns*:
-
+        Returns:
         """
         # Write the commented info as new lines
         with open(path, "w+") as fid:
@@ -246,12 +232,10 @@ class YAMLHandler(Handler):
     def _load(self, path: str) -> typing.Dict:
         """YAML load function
 
-        *Args*:
-
+        Args:
             path: path to YAML file
 
-        *Returns*:
-
+        Returns:
             base_payload: dictionary of read file
 
         """
@@ -265,14 +249,12 @@ class YAMLHandler(Handler):
     ):
         """Write function for YAML type
 
-        *Args*:
-
+        Args:
             out_dict: payload to write
             info_dict: info payload to write
             path: path to write out
 
-        *Returns*:
-
+        Returns:
         """
         # First write the commented info
         self.write_extra_info(path=path, info_dict=info_dict)
@@ -293,12 +275,10 @@ class TOMLHandler(Handler):
     def _load(self, path: str) -> typing.Dict:
         """TOML load function
 
-        *Args*:
-
+        Args:
             path: path to TOML file
 
         Returns:
-
             base_payload: dictionary of read file
 
         """
@@ -310,14 +290,12 @@ class TOMLHandler(Handler):
     ):
         """Write function for TOML type
 
-        *Args*:
-
+        Args:
             out_dict: payload to write
             info_dict: info payload to write
             path: path to write out
 
-        *Returns*:
-
+        Returns:
         """
         # First write the commented info
         self.write_extra_info(path=path, info_dict=info_dict)
@@ -336,12 +314,10 @@ class JSONHandler(Handler):
     def _load(self, path: str) -> typing.Dict:
         """JSON load function
 
-        *Args*:
-
+        Args:
             path: path to JSON file
 
         Returns:
-
             base_payload: dictionary of read file
 
         """
@@ -354,14 +330,12 @@ class JSONHandler(Handler):
     ):
         """Write function for JSON type
 
-        *Args*:
-
+        Args:
             out_dict: payload to write
             info_dict: info payload to write
             path: path to write out
 
-        *Returns*:
-
+        Returns:
         """
         if info_dict is not None:
             warn(

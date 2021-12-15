@@ -29,14 +29,12 @@ class TunerBuilder(BaseBuilder):
         Takes a class object of the backend and adds a new argument group with argument names given with name
         Class.val.(unrolled config parameters) so that individual parameters specific to a class can be overridden.
 
-        *Args*:
-
+        Args:
             parser: argument parser
             class_obj: instance of a backend class
             class_name: used for module matching
 
-        *Returns*:
-
+        Returns:
             parser: argument parser with new class specific overrides
 
         """

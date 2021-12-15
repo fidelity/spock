@@ -18,12 +18,10 @@ def _base_attr(cls):
     Connector function that maps type hinting style to the defined katra style which uses the more strict
     attr.ib() definition
 
-    *Args*:
-
+    Args:
         cls: basic class def
 
-    *Returns*:
-
+    Returns:
         cls: slotted attrs class that is frozen and kw only
     """
     # Since we are not using the @attr.s decorator we need to get the parent classes for inheritance
@@ -53,12 +51,10 @@ def spock_attr(cls):
     Connector function that maps type hinting style to the defined katra style which uses the more strict
     attr.ib() definition
 
-    *Args*:
-
+    Args:
         cls: basic class def
 
-    *Returns*:
-
+    Returns:
         cls: slotted attrs class that is frozen and kw only
     """
     bases, attrs_dict = _base_attr(cls)

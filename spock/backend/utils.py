@@ -9,12 +9,10 @@
 def get_attr_fields(input_classes):
     """Gets the attribute fields from all classes
 
-    *Args*:
-
+    Args:
         input_classes: current list of input classes
 
-    *Returns*:
-
+    Returns:
         dictionary of all attrs attribute fields
 
     """
@@ -27,12 +25,10 @@ def get_attr_fields(input_classes):
 def get_type_fields(input_classes):
     """Creates a dictionary of names and types
 
-    *Args*:
-
+    Args:
         input_classes: list of input classes
 
-    *Returns*:
-
+    Returns:
         type_fields: dictionary of names and types
 
     """
@@ -52,12 +48,10 @@ def get_type_fields(input_classes):
 def flatten_type_dict(type_dict):
     """Flattens a nested dictionary
 
-    *Args*:
-
+    Args:
         type_dict: dictionary of types that are generic
 
-    *Returns*:
-
+    Returns:
         flat_dict: flatten dictionary to a single level
 
     """
@@ -78,13 +72,11 @@ def convert_to_tuples(input_dict, named_type_dict, class_names):
     so the attr values are set correctly. Will call itself recursively if a dictionary is present for class specific
     values
 
-    *Args*:
-
+    Args:
         input_dict: input dictionary
         named_type_dict: dictionary of names with generic types
 
-    *Returns*:
-
+    Returns:
         updated_dict: a dictionary with lists converted to tuples
 
     """
@@ -115,13 +107,11 @@ def deep_update(source, updates):
     Iterates through a dictionary recursively to update individual values within a possibly nested dictionary
     of dictionaries
 
-    *Args*:
-
+    Args:
         source: source dictionary
         updates: updates to the dictionary
 
-    *Returns*:
-
+    Returns:
         source: updated version of the source dictionary
 
     """
@@ -141,15 +131,13 @@ def _recursive_list_to_tuple(key, value, typed, class_names):
     Recursively looks through a pair of value and type and sets any of the possibly nested type of value to tuple
     if tuple is the specified type
 
-    *Args*:
-
+    Args:
         key: name of parameter
         value: value to check and set typ if necessary
         typed: type of the generic alias to check against
         class_names: list of all spock class names
 
-    *Returns*:
-
+    Returns:
         value: updated value with correct type casts
 
     """

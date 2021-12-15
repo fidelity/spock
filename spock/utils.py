@@ -31,12 +31,10 @@ from typing import Union
 def path_object_to_s3path(path: Path) -> str:
     """Convert a path object into a string s3 path
 
-    *Args*:
-
+    Args:
         path: a spock config path
 
-    *Returns*:
-
+    Returns:
         string of s3 path
 
     """
@@ -46,12 +44,10 @@ def path_object_to_s3path(path: Path) -> str:
 def check_path_s3(path: Path) -> bool:
     """Checks the given path to see if it matches the s3:// regex
 
-    *Args*:
-
+    Args:
         path: a spock config path
 
-    *Returns*:
-
+    Returns:
         boolean of regex match
 
     """
@@ -64,12 +60,10 @@ def _is_spock_instance(__obj: object):
     Private interface that checks to see if the object passed in is registered within the spock module and also
     is a class with attrs attributes (__attrs_attrs__)
 
-    *Args*:
-
+    Args:
         __obj: class to inspect
 
-    *Returns*:
-
+    Returns:
         bool
 
     """
@@ -82,12 +76,10 @@ def _is_spock_tune_instance(__obj: object):
     Private interface that checks to see if the object passed in is registered within the spock module tune addon and also
     is a class with attrs attributes (__attrs_attrs__)
 
-    *Args*:
-
+    Args:
         __obj: class to inspect
 
-    *Returns*:
-
+    Returns:
         bool
 
     """
@@ -113,14 +105,12 @@ def make_argument(arg_name, arg_type, parser):
     Based on the type passed in handle the creation of the argparser argument so that overrides will have the correct
     behavior when set
 
-    *Args*:
-
+    Args:
         arg_name: name for the argument
         arg_type: type of the argument
         parser: current parser
 
-    *Returns*:
-
+    Returns:
         parser: updated argparser
 
     """
@@ -154,12 +144,10 @@ def _handle_generic_type_args(val):
 
     Seeing a list and tuple types will come in as string literal format, use ast to get the actual type
 
-    *Args*:
-
+    Args:
         val: string literal
 
-    *Returns*:
-
+    Returns:
         the underlying string literal type
 
     """
@@ -169,11 +157,9 @@ def _handle_generic_type_args(val):
 def add_info():
     """Adds extra information to the output dictionary
 
-    *Args*:
+    Args:
 
-
-    *Returns*:
-
+    Returns:
         out_dict: output dictionary
     """
     out_dict = {}
@@ -185,12 +171,10 @@ def add_info():
 def make_blank_git(out_dict):
     """Adds blank git info
 
-    *Args*:
-
+    Args:
         out_dict: current output dictionary
 
-    *Returns*:
-
+    Returns:
         out_dict: output dictionary with added git info
 
     """
@@ -202,12 +186,10 @@ def make_blank_git(out_dict):
 def add_repo_info(out_dict):
     """Adds GIT information to the output dictionary
 
-    *Args*:
-
+    Args:
         out_dict: output dictionary
 
-    *Returns*:
-
+    Returns:
         out_dict: output dictionary
     """
     try:  # pragma: no cover
@@ -256,12 +238,10 @@ def add_repo_info(out_dict):
 def add_generic_info(out_dict):
     """Adds date, fqdn information to the output dictionary
 
-    *Args*:
-
+    Args:
         out_dict: output dictionary
 
-    *Returns*:
-
+    Returns:
         out_dict: output dictionary
     """
     out_dict.update({"# Machine FQDN": socket.getfqdn()})
@@ -285,12 +265,10 @@ def add_generic_info(out_dict):
 def _maybe_docker(cgroup_path="/proc/self/cgroup"):
     """Make a best effort to determine if run in a docker container
 
-    *Args*:
-
+    Args:
         cgroup_path: path to cgroup file
 
-    *Returns*:
-
+    Returns:
         boolean of best effort docker determination
 
     """
@@ -308,12 +286,10 @@ def _maybe_docker(cgroup_path="/proc/self/cgroup"):
 def _maybe_k8s(cgroup_path="/proc/self/cgroup"):
     """Make a best effort to determine if run in a container via k8s
 
-    *Args*:
-
+    Args:
         cgroup_path: path to cgroup file
 
-    *Returns*:
-
+    Returns:
         boolean of best effort k8s determination
 
     """
@@ -334,13 +310,11 @@ def deep_payload_update(source, updates):
     Iterates through a dictionary recursively to update individual values within a possibly nested dictionary
     of dictionaries -- creates a dictionary if empty and trying to recurse
 
-    *Args*:
-
+    Args:
         source: source dictionary
         updates: updates to the dictionary
 
-    *Returns*:
-
+    Returns:
         source: updated version of the source dictionary
 
     """
@@ -359,15 +333,13 @@ def deep_payload_update(source, updates):
 def check_payload_overwrite(payload, updates, configs, overwrite=""):
     """Warns when parameters are overwritten across payloads as order will matter
 
-    *Args*:
-
+    Args:
         payload: current payload
         payload_update: update to add to payload
         configs: config path
         overwrite: name of parent
 
-    *Returns*:
-
+    Returns:
     """
     for k, v in updates.items():
         if isinstance(v, dict) and v:

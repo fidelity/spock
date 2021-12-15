@@ -18,7 +18,7 @@ from spock.backend.wrappers import Spockspace
 class BaseInterface(ABC):
     """Base interface for the various hyper-parameter tuner backends
 
-    *Attributes*
+    Attributes
 
         _tuner_config: spock version of the tuner configuration
         _tuner_namespace: tuner namespace that has attr classes that maps to an underlying library types
@@ -28,8 +28,7 @@ class BaseInterface(ABC):
     def __init__(self, tuner_config, tuner_namespace: Spockspace):
         """Base init call that maps a few variables
 
-        *Args*:
-
+        Args:
             tuner_config: necessary dict object to determine the interface and sample correctly from the underlying library
             tuner_namespace: tuner namespace that has attr classes that maps to an underlying library types
 
@@ -42,8 +41,7 @@ class BaseInterface(ABC):
         """Calls the underlying library sample to get a single sample/draw from the hyper-parameter
         sets (e.g. ranges, choices)
 
-        *Returns*:
-
+        Returns:
             Spockspace of the current hyper-parameter draw
 
         """
@@ -54,8 +52,7 @@ class BaseInterface(ABC):
         """Constructs the base object needed by the underlying library to construct the correct object that allows
         for hyper-parameter sampling
 
-        *Returns*:
-
+        Returns:
             flat dictionary of all hyper-parameters named with dot notation (class.param_name)
 
         """
@@ -83,12 +80,10 @@ class BaseInterface(ABC):
         """Rollup the sample draw into a dictionary that can be converted to a spockspace with the correct names and
         roots -- un-dots the name structure
 
-        *Args*:
-
+        Args:
             params: current parameter dictionary -- named by dot notation
 
-        *Returns*:
-
+        Returns:
             dictionary of rolled up sampled parameters
             md5 hash of the dictionary contents
 
@@ -106,12 +101,10 @@ class BaseInterface(ABC):
     def _gen_spockspace(self, tune_dict: Dict):
         """Converts a dictionary of dictionaries of parameters into a valid Spockspace
 
-        *Args*:
-
+        Args:
             tune_dict: dictionary of current parameters
 
         Returns:
-
             tune_dict: Spockspace
 
         """
@@ -130,12 +123,10 @@ class BaseInterface(ABC):
     def _config_to_dict(tuner_config: Union[OptunaTunerConfig, AxTunerConfig]):
         """Turns an attrs config object into a dictionary
 
-        *Args*:
-
+        Args:
             tuner_config: attrs config object
 
-        *Returns*:
-
+        Returns:
             dictionary of the attrs config object
         """
         return {k: v for k, v in attr.asdict(tuner_config).items() if v is not None}
@@ -144,12 +135,10 @@ class BaseInterface(ABC):
     def _to_spockspace(tune_dict: Dict):
         """Converts a dict to a Spockspace
 
-        *Args*:
-
+        Args:
             tune_dict: current dictionary
 
-        *Returns*:
-
+        Returns:
             Spockspace of dict
 
         """
@@ -159,12 +148,10 @@ class BaseInterface(ABC):
     def _get_caster(val):
         """Gets a callable type object from a string type
 
-        *Args*:
-
+        Args:
             val: current attr val:
 
-        *Returns*:
-
+        Returns:
             type class object
 
         """
@@ -173,13 +160,11 @@ class BaseInterface(ABC):
     def _try_choice_cast(self, val, type_string: str):
         """Try/except for casting choice parameters
 
-        *Args*:
-
+        Args:
             val: current attr val
             type_string: spock hyper-parameter type name
 
-        *Returns*:
-
+        Returns:
             val: updated attr val
 
         """
@@ -196,13 +181,11 @@ class BaseInterface(ABC):
     def _try_range_cast(self, val, type_string: str):
         """Try/except for casting range parameters
 
-        *Args*:
-
+        Args:
             val: current attr val
             type_string: spock hyper-parameter type name
 
-        *Returns*:
-
+        Returns:
             low: low bound
             high: high bound
 
