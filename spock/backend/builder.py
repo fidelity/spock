@@ -26,7 +26,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
     This class handles the interface to the backend with the generic ConfigArgBuilder so that different
     backends can be used to handle processing
 
-    *Attributes*
+    Attributes
 
         _input_classes: list of input classes that link to a backend
         _graph: Graph, graph of the dependencies between spock classes
@@ -64,14 +64,12 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         Takes a class object of the backend and adds a new argument group with argument names given with name
         Class.name so that individual parameters specific to a class can be overridden.
 
-        *Args*:
-
+        Args:
             parser: argument parser
             class_obj: instance of a backend class
             class_name: used for module matching
 
-        *Returns*:
-
+        Returns:
             parser: argument parser with new class specific overrides
 
         """
@@ -82,8 +80,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         For each class this function will search __doc__ and attempt to pull out help information for both the class
         itself and each attribute within the class
 
-        *Returns*:
-
+        Returns:
             None
 
         """
@@ -100,12 +97,10 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         Based on the generated arguments groups and the args read in from the config file(s)
         this function instantiates the classes with the necessary field or attr values
 
-        *Args*:
-
+        Args:
             dict_args: dictionary of arguments from the configs
 
-        *Returns*:
-
+        Returns:
             namespace containing automatically generated instances of the classes
         """
         graph = Graph(input_classes=self.input_classes)
@@ -115,13 +110,11 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
     def resolve_spock_space_kwargs(self, graph: Graph, dict_args: dict) -> dict:
         """Build the dictionary that will define the spock space.
 
-        *Args*:
-
+        Args:
             graph: Dependency graph of nested spock configurations
             dict_args: dictionary of arguments from the configs
 
-        *Returns*:
-
+        Returns:
             dictionary containing automatically generated instances of the classes
         """
         # Empty dictionary that will be mapped to a SpockSpace via spock classes
@@ -149,12 +142,10 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         Builds the basic command line parser for configs and help then iterates through each attr instance to make
         namespace specific cmd line override parsers
 
-        *Args*:
-
+        Args:
             parser: argument parser
 
-        *Returns*:
-
+        Returns:
             parser: argument parser with new class specific overrides
 
         """
@@ -168,13 +159,11 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
     def _extract_other_types(self, typed, module_name):
         """Takes a high level type and recursively extracts any enum or class types
 
-        *Args*:
-
+        Args:
             typed: highest level type
             module_name: name of module to match
 
-        *Returns*:
-
+        Returns:
             return_list: list of nums (dot notation of module_path.enum_name or module_path.class_name)
 
         """
@@ -194,13 +183,11 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
     def _extract_fnc(self, val, module_name):
         """Function that gets the nested lists within classes
 
-        *Args*:
-
+        Args:
             val: current attr
             module_name: matching module name
 
-        *Returns*:
-
+        Returns:
             list of any nested classes/enums
 
         """
@@ -211,7 +198,7 @@ class AttrBuilder(BaseBuilder):
 
     Class that handles building for the attr backend
 
-    *Attributes*
+    Attributes
 
         input_classes: list of input classes that link to a backend
         _configs: None or List of configs to read from
@@ -238,14 +225,12 @@ class AttrBuilder(BaseBuilder):
         Takes a class object of the backend and adds a new argument group with argument names given with name
         Class.name so that individual parameters specific to a class can be overridden.
 
-        *Args*:
-
+        Args:
             parser: argument parser
             class_obj: instance of a backend class
             class_name: used for module matching
 
-        *Returns*:
-
+        Returns:
             parser: argument parser with new class specific overrides
 
         """
@@ -282,13 +267,11 @@ class AttrBuilder(BaseBuilder):
     def _extract_fnc(self, val, module_name):
         """Function that gets the nested lists within classes
 
-        *Args*:
-
+        Args:
             val: current attr
             module_name: matching module name
 
-        *Returns*:
-
+        Returns:
             list of any nested classes/enums
 
         """

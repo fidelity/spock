@@ -16,12 +16,10 @@ from attr import NOTHING
 def find_attribute_idx(newline_split_docs):
     """Finds the possible split between the header and Attribute annotations
 
-    *Args*:
-
+    Args:
         newline_split_docs: new line split text
 
     Returns:
-
         idx: -1 if none or the idx of Attributes
 
     """
@@ -38,12 +36,10 @@ def split_docs(obj):
     Attempts to find the first contiguous line within the Google style docstring to use as the class docstring.
     Splits the docs base on the Attributes tag if present.
 
-    *Args*:
-
+    Args:
         obj: class object to rip info from
 
-    *Returns*:
-
+    Returns:
         class_doc: class docstring if present or blank str
         attr_doc: list of attribute doc strings
 
@@ -77,15 +73,13 @@ def split_docs(obj):
 def match_attribute_docs(attr_name, attr_docs, attr_type_str, attr_default=NOTHING):
     """Matches class attributes with attribute docstrings via regex
 
-    *Args*:
-
+    Args:
         attr_name: attribute name
         attr_docs: list of attribute docstrings
         attr_type_str: str representation of the attribute type
         attr_default: str representation of a possible default value
 
-    *Returns*:
-
+    Returns:
         dictionary of packed attribute information
 
     """
@@ -111,8 +105,7 @@ def match_attribute_docs(attr_name, attr_docs, attr_type_str, attr_default=NOTHI
 def handle_attributes_print(info_dict, max_indent: int):
     """Prints attribute information in an argparser style format
 
-    *Args*:
-
+    Args:
         info_dict: packed attribute info dictionary to print
         max_indent: max indent for pretty print of help
 
@@ -136,13 +129,11 @@ def handle_attributes_print(info_dict, max_indent: int):
 def get_type_string(val, nested_others):
     """Gets the type of the attr val as a string
 
-    *Args*:
-
+    Args:
         val: current attr being processed
         nested_others: list of nested others to deal with that might have module path info in the string
 
-    *Returns*:
-
+    Returns:
         type_string: type of the attr as a str
 
     """
@@ -171,12 +162,10 @@ def get_type_string(val, nested_others):
 def get_from_sys_modules(cls_name):
     """Gets the class from a dot notation name
 
-    *Args*:
-
+    Args:
         cls_name: dot notation enum name
 
-    *Returns*:
-
+    Returns:
         module: enum class
 
     """
@@ -199,15 +188,13 @@ def handle_help_main(
 ):
     """Handles the print of the main class types
 
-    *Args*:
-
+    Args:
         input_classes: current set of input classes
         module_name: module name to match
         extract_fnc: function that gets the nested lists within classes
         max_indent: max indent for pretty print of help
 
-    *Returns*:
-
+    Returns:
         other_list: extended list of other classes/enums to process
 
     """
@@ -247,15 +234,13 @@ def handle_help_enums(
 ):
     """Handles any extra enums from non main args
 
-    *Args*:
-
+    Args:
         other_list: extended list of other classes/enums to process
         module_name: module name to match
         extract_fnc: function that gets the nested lists within classes
         max_indent: max indent for pretty print of help
 
-    *Returns*:
-
+    Returns:
         None
 
     """
@@ -301,15 +286,13 @@ def attrs_help(
     itself and each attribute within the class. If it finds a repeated class in a iterable object it will
     recursively call self to handle information
 
-    *Args*:
-
+    Args:
         input_classes: list of attr classes
         module_name: name of module to match
         extract_fnc: function that gets the nested lists within classes
         max_indent: max indent for pretty print of help
 
-    *Returns*:
-
+    Returns:
         None
 
     """

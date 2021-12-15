@@ -20,8 +20,7 @@ except ImportError:
 class OptunaTunerStatus(TypedDict):
     """Tuner status return object for Optuna -- supports the define-and-run style interface from Optuna
 
-    *Attributes*:
-
+    Attributes:
         trial: current ask trial sample
         study: current optuna study object
 
@@ -34,8 +33,7 @@ class OptunaTunerStatus(TypedDict):
 class OptunaInterface(BaseInterface):
     """Specific override to support the optuna backend -- supports the define-and-run style interface from Optuna
 
-    *Attributes*:
-
+    Attributes:
         _map_type: dictionary that maps class names and types to fns that create optuna distributions
         _trial: current trial object from the optuna backend
         _tuner_obj: underlying optuna study object
@@ -49,8 +47,7 @@ class OptunaInterface(BaseInterface):
         """OptunaInterface init call that maps variables, creates a map to fnc calls, and constructs the necessary
         underlying objects
 
-        *Args*:
-
+        Args:
             tuner_config: configuration object for the optuna backend
             tuner_namespace: tuner namespace that has attr classes that maps to an underlying library types
 
@@ -117,12 +114,10 @@ class OptunaInterface(BaseInterface):
         https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.UniformDistribution.html
         https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.LogUniformDistribution.html
 
-        *Args*:
-
+        Args:
             val: current attr val
 
-        *Returns*:
-
+        Returns:
             optuna.distributions.UniformDistribution or optuna.distributions.LogUniformDistribution
 
         """
@@ -140,12 +135,10 @@ class OptunaInterface(BaseInterface):
         https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.IntUniformDistribution.html
         https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.IntLogUniformDistribution.html
 
-        *Args*:
-
+        Args:
             val: current attr val
 
-        *Returns*:
-
+        Returns:
             optuna.distributions.IntUniformDistribution or optuna.distributions.IntLogUniformDistribution
 
         """
@@ -162,12 +155,10 @@ class OptunaInterface(BaseInterface):
 
         https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.CategoricalDistribution.html
 
-        *Args*:
-
+        Args:
             val: current attr val
 
-        *Returns*:
-
+        Returns:
             optuna.distributions.CategoricalDistribution
 
         """

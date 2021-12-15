@@ -15,8 +15,7 @@ class TunerPayload(BasePayload):
     This class builds out the payload from config files of multiple types. It handles various
     file types and also composition of config files via a recursive calls
 
-    *Attributes*:
-
+    Attributes:
         _loaders: maps of each file extension to the loader class
 
     """
@@ -24,8 +23,7 @@ class TunerPayload(BasePayload):
     def __init__(self, s3_config=None):
         """Init for TunerPayload
 
-        *Args*:
-
+        Args:
             s3_config: optional S3 config object
 
         """
@@ -34,13 +32,10 @@ class TunerPayload(BasePayload):
     def __call__(self, *args, **kwargs):
         """Call to allow self chaining
 
-        *Args*:
-
+        Args:
             *args:
-            **kwargs:
-
-        *Returns*:
-
+            **kwArgs:
+        Returns:
             Payload: instance of self
 
         """

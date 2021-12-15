@@ -19,8 +19,7 @@ except ImportError:
 class AxTunerStatus(TypedDict):
     """Tuner status return object for Ax -- supports the service style API from Ax
 
-    *Attributes*:
-
+    Attributes:
         client: current AxClient instance
         trial_index: current trial index
 
@@ -37,8 +36,7 @@ class AxInterface(BaseInterface):
         """AxInterface init call that maps variables, creates a map to fnc calls, and constructs the necessary
         underlying objects
 
-        *Args*:
-
+        Args:
             tuner_config: configuration object for the ax backend
             tuner_namespace: tuner namespace that has attr classes that maps to an underlying library types
         """
@@ -118,13 +116,11 @@ class AxInterface(BaseInterface):
     def _ax_range(self, name, val):
         """Assemble the dictionary for ax range parameters
 
-        *Args*:
-
+        Args:
             name: parameter name
             val: current attr val
 
-        *Returns*:
-
+        Returns:
             dictionary that can be added to a parameter list
 
         """
@@ -140,13 +136,11 @@ class AxInterface(BaseInterface):
     def _ax_choice(self, name, val):
         """Assemble the dictionary for ax choice parameters
 
-        *Args*:
-
+        Args:
             name: parameter name
             val: current attr val
 
-        *Returns*:
-
+        Returns:
             dictionary that can be added to a parameter list
 
         """

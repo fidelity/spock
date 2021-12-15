@@ -13,8 +13,7 @@ from spock.handlers import JSONHandler, TOMLHandler, YAMLHandler
 class BaseHandler(ABC):
     """Base class for saver and payload
 
-    *Attributes*:
-
+    Attributes:
         _writers: maps file extension to the correct i/o handler
         _s3_config: optional S3Config object to handle s3 access
 

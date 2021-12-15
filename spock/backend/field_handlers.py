@@ -46,7 +46,6 @@ class RegisterFieldTemplate(ABC):
         """Init call for RegisterFieldTemplate class
 
         Args:
-
         """
         self.special_keys = {}
 
@@ -60,7 +59,6 @@ class RegisterFieldTemplate(ABC):
             builder_space: named_tuple containing the arguments and spock_space
 
         Returns:
-
         """
         if self._is_attribute_in_config_arguments(attr_space, builder_space.arguments):
             self.handle_attribute_from_config(attr_space, builder_space)
@@ -114,7 +112,6 @@ class RegisterFieldTemplate(ABC):
             builder_space: named_tuple containing the arguments and spock_space
 
         Returns:
-
         """
         attr_space.field = attr_space.attribute.default
 
@@ -143,7 +140,6 @@ class RegisterList(RegisterFieldTemplate):
         """Init call to RegisterList
 
         Args:
-
         """
         super(RegisterList, self).__init__()
 
@@ -157,7 +153,6 @@ class RegisterList(RegisterFieldTemplate):
             builder_space: named_tuple containing the arguments and spock_space
 
         Returns:
-
         """
         list_item_spock_class = attr_space.attribute.metadata["type"].__args__[0]
         attr_space.field = self._process_list(list_item_spock_class, builder_space)
@@ -173,7 +168,6 @@ class RegisterList(RegisterFieldTemplate):
             builder_space: named_tuple containing the arguments and spock_space
 
         Returns:
-
         """
         list_item_spock_class = attr_space.attribute.default
         attr_space.field = self._process_list(list_item_spock_class, builder_space)
@@ -189,7 +183,6 @@ class RegisterList(RegisterFieldTemplate):
             builder_space: named_tuple containing the arguments and spock_space
 
         Returns:
-
         """
         super().handle_optional_attribute_value(attr_space, builder_space)
         if attr_space.field is not None:
@@ -226,7 +219,6 @@ class RegisterEnum(RegisterFieldTemplate):
         """Init call to RegisterEnum
 
         Args:
-
         """
         super(RegisterEnum, self).__init__()
 
@@ -240,7 +232,6 @@ class RegisterEnum(RegisterFieldTemplate):
             builder_space: named_tuple containing the arguments and spock_space
 
         Returns:
-
         """
         possible_enum_classes = {
             c.value.__name__: c.value for c in attr_space.attribute.type
@@ -261,7 +252,6 @@ class RegisterEnum(RegisterFieldTemplate):
             builder_space: named_tuple containing the arguments and spock_space
 
         Returns:
-
         """
         self._handle_and_register_enum(
             attr_space.attribute.default, attr_space, builder_space
@@ -278,7 +268,6 @@ class RegisterEnum(RegisterFieldTemplate):
             builder_space: named_tuple containing the arguments and spock_space
 
         Returns:
-
         """
         attr_space.field, special_keys = RegisterSpockCls.recurse_generate(
             enum_cls, builder_space
@@ -299,7 +288,6 @@ class RegisterSimpleField(RegisterFieldTemplate):
         """Init call to RegisterSimpleField
 
         Args:
-
         """
         super(RegisterSimpleField, self).__init__()
 
@@ -313,7 +301,6 @@ class RegisterSimpleField(RegisterFieldTemplate):
             builder_space: named_tuple containing the arguments and spock_space
 
         Returns:
-
         """
         attr_space.field = builder_space.arguments[attr_space.config_space.name][
             attr_space.attribute.name
@@ -347,7 +334,6 @@ class RegisterSimpleField(RegisterFieldTemplate):
             builder_space: named_tuple containing the arguments and spock_space
 
         Returns:
-
         """
         super().handle_optional_attribute_value(attr_space, builder_space)
         self.register_special_key(attr_space)
@@ -359,7 +345,6 @@ class RegisterSimpleField(RegisterFieldTemplate):
             attr_space: holds information about a single attribute that is mapped to a ConfigSpace
 
         Returns:
-
         """
         if (
             "special_key" in attr_space.attribute.metadata
@@ -381,7 +366,6 @@ class RegisterTuneCls(RegisterFieldTemplate):
         """Init call to RegisterTuneCls
 
         Args:
-
         """
         super(RegisterTuneCls, self).__init__()
 
@@ -408,7 +392,6 @@ class RegisterTuneCls(RegisterFieldTemplate):
             builder_space: named_tuple containing the arguments and spock_space
 
         Returns:
-
         """
         attr_type = self._attr_type(attr_space)
         attr_space.field = attr_type(
@@ -462,7 +445,6 @@ class RegisterSpockCls(RegisterFieldTemplate):
         """Init call to RegisterSpockCls
 
         Args:
-
         """
         super(RegisterSpockCls, self).__init__()
 
@@ -491,7 +473,6 @@ class RegisterSpockCls(RegisterFieldTemplate):
             builder_space: named_tuple containing the arguments and spock_space
 
         Returns:
-
         """
         attr_type = self._attr_type(attr_space)
         attr_space.field, special_keys = self.recurse_generate(attr_type, builder_space)
@@ -509,7 +490,6 @@ class RegisterSpockCls(RegisterFieldTemplate):
             builder_space: named_tuple containing the arguments and spock_space
 
         Returns:
-
         """
         super().handle_optional_attribute_value(attr_space, builder_space)
         if attr_space.field is None:
@@ -531,7 +511,6 @@ class RegisterSpockCls(RegisterFieldTemplate):
             builder_space: named_tuple containing the arguments and spock_space
 
         Returns:
-
         """
         attr_space.field, special_keys = RegisterSpockCls.recurse_generate(
             self._attr_type(attr_space), builder_space

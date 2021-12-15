@@ -50,12 +50,10 @@ def _spock_tune(cls):
     Using a different name allows spock to easily determine which parameters are normal and which are
     meant to be used in a hyper-parameter tuning backend
 
-    *Args*:
-
+    Args:
         cls: basic class def
 
-    *Returns*:
-
+    Returns:
         cls: slotted attrs class that is frozen and kw only
     """
     bases, attrs_dict = _base_attr(cls)

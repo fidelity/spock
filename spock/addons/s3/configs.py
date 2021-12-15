@@ -55,8 +55,7 @@ S3UploadConfig = attr.make_class(
 class S3Config:
     """Configuration class for S3 support
 
-    *Attributes*:
-
+    Attributes:
         session: instantiated boto3 session object
         s3_session: automatically generated s3 client from the boto3 session if not provided
         kms_arn: AWS KMS key ARN (optional)

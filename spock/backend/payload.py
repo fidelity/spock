@@ -27,8 +27,7 @@ class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
     This class builds out the payload from config files of multiple types. It handles various
     file types and also composition of config files via recursive calls
 
-    *Attributes*:
-
+    Attributes:
         _loaders: maps of each file extension to the loader class
         __s3_config: optional S3Config object to handle s3 access
 
@@ -45,15 +44,13 @@ class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
         Checks the parameters defined in the config files against the provided classes and if
         passable adds them to the payload
 
-        *Args*:
-
+        Args:
             base_payload: current payload
             input_classes: class to roll into
             ignore_classes: list of classes to ignore
             payload: total payload
 
-        *Returns*:
-
+        Returns:
             payload: updated payload
 
         """
@@ -63,16 +60,14 @@ class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
 
         Public exposed call to build the payload and set any command line overrides
 
-        *Args*:
-
+        Args:
             input_classes: list of backend classes
             ignore_classes: list of classes to ignore
             path: path to config file(s)
             cmd_args: command line overrides
             deps: dictionary of config dependencies
 
-        *Returns*:
-
+        Returns:
             payload: dictionary of all mapped parameters
 
         """
@@ -86,14 +81,13 @@ class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
         Main function call that builds out the payload from config files of multiple types. It handles
         various file types and also composition of config files via a recursive calls
 
-        *Args*:
+        Args:
             input_classes: list of backend classes
             ignore_classes: list of classes to ignore
             path: path to config file(s)
             deps: dictionary of config dependencies
 
-        *Returns*:
-
+        Returns:
             payload: dictionary of all mapped parameters
 
         """
@@ -133,14 +127,12 @@ class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
         Checks to see if the config path (full or relative) has already been encountered. Essentially a DFS for graph
         cycles
 
-        *Args*:
-
+        Args:
             deps: dictionary of config dependencies
             path: current config path
             root: boolean if root
 
-        *Returns*:
-
+        Returns:
             deps: updated dependencies
 
         """
@@ -178,8 +170,7 @@ class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
         with the composition path to get the additional payload(s) from the composed file(s) -- checks for file
         validity or if it is an S3 URI via regex
 
-        *Args*:
-
+        Args:
             base_payload: base payload that has a config kwarg
             config_extension: file type
             input_classes: defined backend classes
@@ -188,8 +179,7 @@ class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
             payload: payload pulled from composed files
             deps: dictionary of config dependencies
 
-        *Returns*:
-
+        Returns:
             payload: payload update from composed files
 
         """
@@ -216,13 +206,11 @@ class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
 
         Iterate through the command line override values, determine at what level to set them, and set them if possible
 
-        *Args*:
-
+        Args:
             payload: current payload dictionary
             args: command line override args
 
-        *Returns*:
-
+        Returns:
             payload: updated payload dictionary with override values set
 
         """
@@ -237,13 +225,11 @@ class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
     def _prune_args(args, ignore_classes):
         """Prunes ignored class names from the cmd line args list to prevent incorrect access
 
-        *Args*:
-
+        Args:
             args: current cmd line args
             ignore_classes: list of class names to ignore
 
-        *Returns*:
-
+        Returns:
             dictionary of pruned cmd line args
 
         """
@@ -260,14 +246,12 @@ class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
         Messy logic that sets overrides for the various different types. The hardest being List[spock class] since str
         names have to be mapped backed to sys.modules and can be set at either the general or class level.
 
-        *Args*:
-
+        Args:
             payload: current payload dictionary
             key: current arg key
             value: value at current arg key
 
-        *Returns*:
-
+        Returns:
             payload: modified payload with overrides
 
         """
@@ -279,8 +263,7 @@ class AttrPayload(BasePayload):
     This class builds out the payload from config files of multiple types. It handles various
     file types and also composition of config files via a recursive calls
 
-    *Attributes*:
-
+    Attributes:
         _loaders: maps of each file extension to the loader class
 
     """
@@ -288,8 +271,7 @@ class AttrPayload(BasePayload):
     def __init__(self, s3_config=None):
         """Init for AttrPayload
 
-        *Args*:
-
+        Args:
             s3_config: optional S3 config object
 
         """
@@ -298,13 +280,10 @@ class AttrPayload(BasePayload):
     def __call__(self, *args, **kwargs):
         """Call to allow self chaining
 
-        *Args*:
-
+        Args:
             *args:
-            **kwargs:
-
-        *Returns*:
-
+            **kwArgs:
+        Returns:
             Payload: instance of self
 
         """
@@ -381,14 +360,12 @@ class AttrPayload(BasePayload):
         Messy logic that sets overrides for the various different types. The hardest being List[spock class] since str
         names have to be mapped backed to sys.modules and can be set at either the general or class level.
 
-        *Args*:
-
+        Args:
             payload: current payload dictionary
             key: current arg key
             value: value at current arg key
 
-        *Returns*:
-
+        Returns:
             payload: modified payload with overrides
 
         """
