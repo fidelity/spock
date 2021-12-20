@@ -7,4 +7,4 @@ pydoc-markdown~=4.3 ; python_version >= '3.7'
 pydoc-markdown~=3.13 ; python_version == '3.6'
 pytest~=6.2
 pytest-cov~=3.0
-pylint~=2.11
+pylint~=2.12
