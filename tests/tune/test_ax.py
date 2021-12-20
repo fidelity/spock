@@ -14,6 +14,8 @@ from spock.builder import ConfigArgBuilder
 from tests.tune.attr_configs_test import *
 from tests.tune.base_asserts_test import *
 
+from ax.modelbridge.generation_strategy import GenerationStrategy, GenerationStep
+
 
 class TestAxBasic(AllTypes):
     @staticmethod

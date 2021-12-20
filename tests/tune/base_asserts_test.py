@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from math import log10
+from spock.addons.tune.ax import AxInterface
 
 
 class AllTypes:
@@ -44,8 +44,12 @@ class AllTypes:
 
 class SampleTypes:
     def test_sampling(self, arg_builder):
-        # Draw 100 random samples and make sure all fall within all of the bounds or sets
-        for _ in range(25):
+        # Draw random samples and make sure all fall within all of the bounds or sets
+        if isinstance(arg_builder._tuner_interface._lib_interface, AxInterface):
+            max_draws = arg_builder._tuner_interface.tuner_status['client'].generation_strategy.current_generator_run_limit()[0]
+        else:
+            max_draws = 25
+        for _ in range(max_draws):
             hp_attrs = arg_builder.sample()
             assert 10 <= hp_attrs.HPOne.hp_int <= 100
             assert isinstance(hp_attrs.HPOne.hp_int, int) is True
