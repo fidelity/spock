@@ -4,7 +4,7 @@ coverage~=6.1
 isort~=5.10
 moto~=2.2
 pydoc-markdown~=4.3 ; python_version >= '3.7'
-pydoc-markdown~=3.13 ; python_version == '3.6'
+pydoc-markdown~=4.5 ; python_version == '3.6'
 pytest~=6.2
 pytest-cov~=3.0
 pylint~=2.11
