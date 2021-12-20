@@ -1,6 +1,6 @@
 black~=21.4b0
 coveralls~=3.3
-coverage~=6.1
+coverage~=6.2
 isort~=5.10
 moto~=2.2
 pydoc-markdown~=4.3 ; python_version >= '3.7'
