@@ -192,7 +192,9 @@ class RegisterList(RegisterFieldTemplate):
                 cls_name = attr_space.attribute.metadata["type"].__args__[0].__name__
                 builder_space.spock_space[cls_name] = attr_space.field
             else:
-                builder_space.spock_space[list_item_spock_class.__name__] = attr_space.field
+                builder_space.spock_space[
+                    list_item_spock_class.__name__
+                ] = attr_space.field
 
     @staticmethod
     def _process_list(spock_cls, builder_space: BuilderSpace):
