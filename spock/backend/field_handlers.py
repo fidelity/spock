@@ -189,8 +189,18 @@ class RegisterList(RegisterFieldTemplate):
             list_item_spock_class = attr_space.field
             # Here we need to catch the possibility of repeated lists via coded defaults
             if _is_spock_instance(attr_space.attribute.metadata["type"].__args__[0]):
-                cls_name = attr_space.attribute.metadata["type"].__args__[0].__name__
-                builder_space.spock_space[cls_name] = attr_space.field
+                spock_cls = attr_space.attribute.metadata["type"].__args__[0]
+                # Fall back to configs if present
+                if spock_cls.__name__ in builder_space.arguments:
+                    attr_space.field = self._process_list(spock_cls, builder_space)
+                # Here we need to attempt to instantiate any class references that still exist
+                try:
+                    attr_space.field = [val() if type(val) is type else val for val in attr_space.field]
+                except Exception as e:
+                    raise SpockInstantiationError(
+                        f"Spock class `{spock_cls.__name__}` could not be instantiated -- attrs message: {e}"
+                    )
+                builder_space.spock_space[spock_cls.__name__] = attr_space.field
             else:
                 builder_space.spock_space[
                     list_item_spock_class.__name__

@@ -47,6 +47,12 @@ class NestedListStuff:
     two: str
 
 
+@spock
+class NestedListStuffDef:
+    one: int
+    two: str
+
+
 class ClassChoice(Enum):
     class_nested_stuff = NestedStuff
     class_nested_list_stuff = NestedListStuff
@@ -236,10 +242,10 @@ class TypeDefaultConfig:
     # Nested configuration with no config
     nested_no_conf_def: NestedStuffDefault = NestedStuffDefault()
     # Nested list configuration -- defaults to config values
-    nested_list_def: List[NestedListStuff] = NestedListStuff
+    nested_list_def: List[NestedListStuff] = [NestedListStuff]
     # Nested list configuration -- defaults to coded values
-    nested_list_def_2: List[NestedListStuff] = [
-        NestedListStuff(one=100, two="two"), NestedListStuff(one=300, two="four")
+    nested_list_def_2: List[NestedListStuffDef] = [
+        NestedListStuffDef(one=100, two="two"), NestedListStuffDef(one=300, two="four")
     ]
     # Class Enum
     class_enum_def: ClassChoice = NestedStuff
@@ -286,7 +292,7 @@ class TypeDefaultOptConfig:
     # Nested configuration
     nested_opt_def: Optional[NestedStuff] = NestedStuff
     # Nested list configuration
-    nested_list_opt_def: Optional[List[NestedListStuff]] = NestedListStuff
+    nested_list_opt_def: Optional[List[NestedListStuff]] = [NestedListStuff]
     # Class Enum
     class_enum_opt_def: Optional[ClassChoice] = NestedStuff
 
