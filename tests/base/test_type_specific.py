@@ -103,3 +103,22 @@ class TestEnumClassMissing:
                     SecondDoubleNestedConfig,
                     desc="Test Builder"
                 )
+
+
+@spock
+class RepeatedDefsFailConfig:
+    # Nested list configuration
+    nested_list_def: List[NestedListStuff] = [NestedListStuff]
+
+
+class TestMissingRepeatedDefs:
+    def test_repeated_defs_fail(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(
+                sys,
+                "argv",
+                [""],
+            )
+            with pytest.raises(SpockInstantiationError):
+                config = ConfigArgBuilder(RepeatedDefsFailConfig, NestedListStuff, desc="Test Builder")
+                config.generate()
