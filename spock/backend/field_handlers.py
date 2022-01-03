@@ -195,7 +195,9 @@ class RegisterList(RegisterFieldTemplate):
                     attr_space.field = self._process_list(spock_cls, builder_space)
                 # Here we need to attempt to instantiate any class references that still exist
                 try:
-                    attr_space.field = [val() if type(val) is type else val for val in attr_space.field]
+                    attr_space.field = [
+                        val() if type(val) is type else val for val in attr_space.field
+                    ]
                 except Exception as e:
                     raise SpockInstantiationError(
                         f"Spock class `{spock_cls.__name__}` could not be instantiated -- attrs message: {e}"
