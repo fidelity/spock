@@ -48,7 +48,7 @@ class Handler(ABC):
         """
         Transform path string into path object
         """
-        if "config" in payload:
+        if (payload is not None) and "config" in payload:
             payload["config"] = [Path(c) for c in payload["config"]]
 
         return payload

@@ -104,6 +104,10 @@ class AllDefaults:
         assert arg_builder.TypeDefaultConfig.nested_list_def[0].two == "hello"
         assert arg_builder.TypeDefaultConfig.nested_list_def[1].one == 20
         assert arg_builder.TypeDefaultConfig.nested_list_def[1].two == "bye"
+        assert arg_builder.TypeDefaultConfig.nested_list_def_2[0].one == 100
+        assert arg_builder.TypeDefaultConfig.nested_list_def_2[0].two == "two"
+        assert arg_builder.TypeDefaultConfig.nested_list_def_2[1].one == 300
+        assert arg_builder.TypeDefaultConfig.nested_list_def_2[1].two == "four"
         assert arg_builder.TypeDefaultConfig.class_enum_def.one == 11
         assert arg_builder.TypeDefaultConfig.class_enum_def.two == "ciao"
         assert (

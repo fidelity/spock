@@ -235,8 +235,12 @@ class TypeDefaultConfig:
     nested_def: NestedStuff = NestedStuff
     # Nested configuration with no config
     nested_no_conf_def: NestedStuffDefault = NestedStuffDefault()
-    # Nested list configuration
+    # Nested list configuration -- defaults to config values
     nested_list_def: List[NestedListStuff] = NestedListStuff
+    # Nested list configuration -- defaults to coded values
+    nested_list_def_2: List[NestedListStuff] = [
+        NestedListStuff(one=100, two="two"), NestedListStuff(one=300, two="four")
+    ]
     # Class Enum
     class_enum_def: ClassChoice = NestedStuff
     # Double Nested class ref

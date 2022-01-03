@@ -187,7 +187,12 @@ class RegisterList(RegisterFieldTemplate):
         super().handle_optional_attribute_value(attr_space, builder_space)
         if attr_space.field is not None:
             list_item_spock_class = attr_space.field
-            builder_space.spock_space[list_item_spock_class.__name__] = attr_space.field
+            # Here we need to catch the possibility of repeated lists via coded defaults
+            if _is_spock_instance(attr_space.attribute.metadata["type"].__args__[0]):
+                cls_name = attr_space.attribute.metadata["type"].__args__[0].__name__
+                builder_space.spock_space[cls_name] = attr_space.field
+            else:
+                builder_space.spock_space[list_item_spock_class.__name__] = attr_space.field
 
     @staticmethod
     def _process_list(spock_cls, builder_space: BuilderSpace):
