@@ -86,14 +86,22 @@ class RegisterFieldTemplate(ABC):
         # Instances might have other instances that might be defined in the configs
         # Recurse to try and catch all config defs
         # Only map if default is not None -- do so by evolving the attribute
-        if _is_spock_instance(attr_space.attribute.type) and attr_space.attribute.default is not None:
-            attr_space.field, special_keys = RegisterSpockCls().recurse_generate(attr_space.attribute.type, builder_space)
+        if (
+            _is_spock_instance(attr_space.attribute.type)
+            and attr_space.attribute.default is not None
+        ):
+            attr_space.field, special_keys = RegisterSpockCls().recurse_generate(
+                attr_space.attribute.type, builder_space
+            )
             attr_space.attribute = attr_space.attribute.evolve(default=attr_space.field)
-            builder_space.spock_space[attr_space.attribute.type.__name__] = attr_space.field
+            builder_space.spock_space[
+                attr_space.attribute.type.__name__
+            ] = attr_space.field
             self.special_keys.update(special_keys)
         return (
             attr_space.config_space.name in builder_space.arguments
-            and attr_space.attribute.name in builder_space.arguments[attr_space.config_space.name]
+            and attr_space.attribute.name
+            in builder_space.arguments[attr_space.config_space.name]
         )
 
     @staticmethod
@@ -298,7 +306,9 @@ class RegisterEnum(RegisterFieldTemplate):
         """
         super().handle_optional_attribute_value(attr_space, builder_space)
         if attr_space.field is not None:
-            builder_space.spock_space[type(attr_space.field).__name__] = attr_space.field
+            builder_space.spock_space[
+                type(attr_space.field).__name__
+            ] = attr_space.field
 
     def _handle_and_register_enum(
         self, enum_cls, attr_space: AttributeSpace, builder_space: BuilderSpace
