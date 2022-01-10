@@ -27,13 +27,7 @@ class TestAllTypesFromS3MockYAMLMissingS3:
             )
             with pytest.raises(ValueError):
                 config = ConfigArgBuilder(
-                    TypeConfig,
-                    NestedStuff,
-                    NestedListStuff,
-                    TypeOptConfig,
-                    SingleNestedConfig,
-                    FirstDoubleNestedConfig,
-                    SecondDoubleNestedConfig,
+                    *all_configs,
                     desc="Test Builder",
                 )
 
@@ -54,13 +48,7 @@ class TestAllTypesFromS3MockYAMLNoObject:
             m.setattr(sys, "argv", ["", "--config", f"s3://foo/bar.yaml"])
             with pytest.raises(s3_client.exceptions.NoSuchBucket):
                 config = ConfigArgBuilder(
-                    TypeConfig,
-                    NestedStuff,
-                    NestedListStuff,
-                    TypeOptConfig,
-                    SingleNestedConfig,
-                    FirstDoubleNestedConfig,
-                    SecondDoubleNestedConfig,
+                    *all_configs,
                     s3_config=S3Config(session=aws_session, s3_session=s3_client),
                     desc="Test Builder",
                 )
@@ -73,13 +61,7 @@ class TestS3MockYAMLWriterMissingS3:
             aws_session, s3_client = s3
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test.yaml"])
             config = ConfigArgBuilder(
-                TypeConfig,
-                NestedStuff,
-                NestedListStuff,
-                TypeOptConfig,
-                SingleNestedConfig,
-                FirstDoubleNestedConfig,
-                SecondDoubleNestedConfig,
+                *all_configs,
                 desc="Test Builder",
             )
             # Mock a S3 bucket and object
@@ -106,13 +88,7 @@ class TestS3MockYAMLWriterNoBucket:
             aws_session, s3_client = s3
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test.yaml"])
             config = ConfigArgBuilder(
-                TypeConfig,
-                NestedStuff,
-                NestedListStuff,
-                TypeOptConfig,
-                SingleNestedConfig,
-                FirstDoubleNestedConfig,
-                SecondDoubleNestedConfig,
+                *all_configs,
                 desc="Test Builder",
             )
             # Mock a S3 bucket and object

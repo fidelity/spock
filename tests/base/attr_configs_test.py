@@ -42,6 +42,12 @@ class NestedStuff:
 
 
 @spock
+class NestedStuffOpt:
+    one: int = 1
+    two: str = 'boo'
+
+
+@spock
 class NestedListStuff:
     one: int
     two: str
@@ -186,7 +192,7 @@ class TypeOptConfig:
     # Required list of list of choice -- Str
     list_list_choice_p_opt_no_def_str: Optional[List[List[StrChoice]]]
     # Nested configuration
-    nested_opt_no_def: Optional[NestedStuff]
+    nested_opt_no_def: Optional[NestedStuffOpt]
     # Nested list configuration
     nested_list_opt_no_def: Optional[List[NestedListStuff]]
     # Class Enum
@@ -302,3 +308,15 @@ class TypeInherited(TypeConfig, TypeDefaultOptConfig):
     """This tests inheritance with mixed default and non-default arguments"""
 
     ...
+
+
+all_configs = [
+    TypeConfig,
+    NestedStuff,
+    NestedListStuff,
+    TypeOptConfig,
+    SingleNestedConfig,
+    FirstDoubleNestedConfig,
+    SecondDoubleNestedConfig,
+    NestedStuffOpt
+]

@@ -219,6 +219,8 @@ class AttrSaver(BaseSaver):
         )
         # Convert values
         clean_dict = self._clean_output(out_dict)
+        # Clip any empty dictionaries
+        clean_dict = {k: v for k, v in clean_dict.items() if len(v) > 0}
         return clean_dict
 
     def _clean_tuner_values(self, payload):

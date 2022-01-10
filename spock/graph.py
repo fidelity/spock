@@ -61,6 +61,11 @@ class Graph:
         for input_class in self._input_classes:
             dep_classes = self._find_all_spock_classes(input_class)
             for v in dep_classes:
+                if v not in nodes:
+                    raise ValueError(
+                        f"Missing @spock decorated class -- `{v.__name__}` was not passed as an *arg to "
+                        f"ConfigArgBuilder"
+                    )
                 nodes.get(v).append(input_class)
         nodes = {key: set(val) for key, val in nodes.items()}
         return nodes
