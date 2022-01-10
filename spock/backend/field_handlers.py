@@ -297,7 +297,8 @@ class RegisterEnum(RegisterFieldTemplate):
         Returns:
         """
         super().handle_optional_attribute_value(attr_space, builder_space)
-        builder_space.spock_space[type(attr_space.field).__name__] = attr_space.field
+        if attr_space.field is not None:
+            builder_space.spock_space[type(attr_space.field).__name__] = attr_space.field
 
     def _handle_and_register_enum(
         self, enum_cls, attr_space: AttributeSpace, builder_space: BuilderSpace
