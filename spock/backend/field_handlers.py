@@ -60,7 +60,7 @@ class RegisterFieldTemplate(ABC):
 
         Returns:
         """
-        if self._is_attribute_in_config_arguments(attr_space, builder_space.arguments):
+        if self._is_attribute_in_config_arguments(attr_space, builder_space):
             self.handle_attribute_from_config(attr_space, builder_space)
         elif self._is_attribute_optional(attr_space.attribute):
             if isinstance(attr_space.attribute.default, type):
@@ -68,23 +68,32 @@ class RegisterFieldTemplate(ABC):
             else:
                 self.handle_optional_attribute_value(attr_space, builder_space)
 
-    @staticmethod
     def _is_attribute_in_config_arguments(
-        attr_space: AttributeSpace, arguments: SpockArguments
+        self, attr_space: AttributeSpace, builder_space: BuilderSpace
     ):
         """Checks if an attribute is in the configuration file or keyword arguments dictionary
 
+        Will recurse spock classes as dependencies might be defined in the configs class
+
         Args:
             attr_space: holds information about a single attribute that is mapped to a ConfigSpace
-            arguments: map of the read/cmd-line parameter dictionary to general or class level arguments
+            builder_space: map of the read/cmd-line parameter dictionary to general or class level arguments
 
         Returns:
             boolean if in dictionary
 
         """
+        # Instances might have other instances that might be defined in the configs
+        # Recurse to try and catch all config defs
+        # Only map if default is not None -- do so by evolving the attribute
+        if _is_spock_instance(attr_space.attribute.type) and attr_space.attribute.default is not None:
+            attr_space.field, special_keys = RegisterSpockCls().recurse_generate(attr_space.attribute.type, builder_space)
+            attr_space.attribute = attr_space.attribute.evolve(default=attr_space.field)
+            builder_space.spock_space[attr_space.attribute.type.__name__] = attr_space.field
+            self.special_keys.update(special_keys)
         return (
-            attr_space.config_space.name in arguments
-            and attr_space.attribute.name in arguments[attr_space.config_space.name]
+            attr_space.config_space.name in builder_space.arguments
+            and attr_space.attribute.name in builder_space.arguments[attr_space.config_space.name]
         )
 
     @staticmethod
@@ -275,6 +284,20 @@ class RegisterEnum(RegisterFieldTemplate):
         self._handle_and_register_enum(
             attr_space.attribute.default, attr_space, builder_space
         )
+
+    def handle_optional_attribute_value(
+        self, attr_space: AttributeSpace, builder_space: BuilderSpace
+    ):
+        """Handles setting an optional value with its default
+
+        Args:
+            attr_space: holds information about a single attribute that is mapped to a ConfigSpace
+            builder_space: named_tuple containing the arguments and spock_space
+
+        Returns:
+        """
+        super().handle_optional_attribute_value(attr_space, builder_space)
+        builder_space.spock_space[type(attr_space.field).__name__] = attr_space.field
 
     def _handle_and_register_enum(
         self, enum_cls, attr_space: AttributeSpace, builder_space: BuilderSpace

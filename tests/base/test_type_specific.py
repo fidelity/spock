@@ -35,13 +35,7 @@ class TestTupleRaises:
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/tuple.yaml"])
             with pytest.raises(ValueError):
                 ConfigArgBuilder(
-                    TypeConfig,
-                    NestedStuff,
-                    NestedListStuff,
-                    TypeOptConfig,
-                    SingleNestedConfig,
-                    FirstDoubleNestedConfig,
-                    SecondDoubleNestedConfig,
+                    *all_configs,
                     desc="Test Builder")
 
 
@@ -55,6 +49,7 @@ class TestOverrideRaise:
                 ConfigArgBuilder(
                     TypeInherited,
                     NestedStuff,
+                    NestedStuffOpt,
                     NestedListStuff,
                     TypeOptConfig,
                     SingleNestedConfig,
@@ -94,13 +89,7 @@ class TestEnumClassMissing:
             )
             with pytest.raises(KeyError):
                 ConfigArgBuilder(
-                    TypeConfig,
-                    NestedStuff,
-                    NestedListStuff,
-                    TypeOptConfig,
-                    SingleNestedConfig,
-                    FirstDoubleNestedConfig,
-                    SecondDoubleNestedConfig,
+                    *all_configs,
                     desc="Test Builder"
                 )
 

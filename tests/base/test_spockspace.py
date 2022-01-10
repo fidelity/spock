@@ -16,13 +16,7 @@ class TestHelp:
             )
             with pytest.raises(SystemExit):
                 config = ConfigArgBuilder(
-                    TypeConfig,
-                    NestedStuff,
-                    NestedListStuff,
-                    TypeOptConfig,
-                    SingleNestedConfig,
-                    FirstDoubleNestedConfig,
-                    SecondDoubleNestedConfig,
+                    *all_configs,
                     desc="Test Builder",
                 )
                 return config.generate()
@@ -33,13 +27,7 @@ class TestSpockspaceRepr:
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test.yaml"])
             config = ConfigArgBuilder(
-                TypeConfig,
-                NestedStuff,
-                NestedListStuff,
-                TypeOptConfig,
-                SingleNestedConfig,
-                FirstDoubleNestedConfig,
-                SecondDoubleNestedConfig,
+                *all_configs,
                 desc="Test Builder",
             )
             print(config.generate())
@@ -56,13 +44,7 @@ class TestFrozen:
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test.yaml"])
             config = ConfigArgBuilder(
-                TypeConfig,
-                NestedStuff,
-                NestedListStuff,
-                TypeOptConfig,
-                SingleNestedConfig,
-                FirstDoubleNestedConfig,
-                SecondDoubleNestedConfig,
+                *all_configs,
                 desc="Test Builder",
             )
             return config.generate()

@@ -30,13 +30,7 @@ class TestAllTypesFromS3MockYAML(AllTypes):
                 sys, "argv", ["", "--config", f"s3://{mock_s3_bucket}/{mock_s3_object}"]
             )
             config = ConfigArgBuilder(
-                TypeConfig,
-                NestedStuff,
-                NestedListStuff,
-                TypeOptConfig,
-                SingleNestedConfig,
-                FirstDoubleNestedConfig,
-                SecondDoubleNestedConfig,
+                *all_configs,
                 s3_config=S3Config(session=aws_session, s3_session=s3_client),
                 desc="Test Builder",
             )
@@ -50,13 +44,7 @@ class TestS3MockYAMLWriter:
             aws_session, s3_client = s3
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test.yaml"])
             config = ConfigArgBuilder(
-                TypeConfig,
-                NestedStuff,
-                NestedListStuff,
-                TypeOptConfig,
-                SingleNestedConfig,
-                FirstDoubleNestedConfig,
-                SecondDoubleNestedConfig,
+                *all_configs,
                 s3_config=S3Config(session=aws_session, s3_session=s3_client),
                 desc="Test Builder",
             )

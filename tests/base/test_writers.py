@@ -17,13 +17,7 @@ class TestDefaultWriter:
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test.yaml"])
             config = ConfigArgBuilder(
-                TypeConfig,
-                NestedStuff,
-                NestedListStuff,
-                TypeOptConfig,
-                SingleNestedConfig,
-                FirstDoubleNestedConfig,
-                SecondDoubleNestedConfig,
+                *all_configs,
                 desc="Test Builder",
             )
             # Test the chained version
@@ -37,13 +31,7 @@ class TestYAMLWriter:
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test.yaml"])
             config = ConfigArgBuilder(
-                TypeConfig,
-                NestedStuff,
-                NestedListStuff,
-                TypeOptConfig,
-                SingleNestedConfig,
-                FirstDoubleNestedConfig,
-                SecondDoubleNestedConfig,
+                *all_configs,
                 desc="Test Builder",
             )
             # Test the chained version
@@ -61,13 +49,7 @@ class TestYAMLWriterCreate:
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test.yaml"])
             config = ConfigArgBuilder(
-                TypeConfig,
-                NestedStuff,
-                NestedListStuff,
-                TypeOptConfig,
-                SingleNestedConfig,
-                FirstDoubleNestedConfig,
-                SecondDoubleNestedConfig,
+                *all_configs,
                 desc="Test Builder",
             )
             # Test the chained version
@@ -91,13 +73,7 @@ class TestYAMLWriterSavePath:
                 sys, "argv", ["", "--config", "./tests/conf/yaml/test_save_path.yaml"]
             )
             config = ConfigArgBuilder(
-                TypeConfig,
-                NestedStuff,
-                NestedListStuff,
-                TypeOptConfig,
-                SingleNestedConfig,
-                FirstDoubleNestedConfig,
-                SecondDoubleNestedConfig,
+                *all_configs,
                 desc="Test Builder",
             )
             # Test the chained version
@@ -132,13 +108,7 @@ class TestYAMLWriterNoPath:
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test.yaml"])
             with pytest.raises(ValueError):
                 config = ConfigArgBuilder(
-                    TypeConfig,
-                    NestedStuff,
-                    NestedListStuff,
-                    TypeOptConfig,
-                    SingleNestedConfig,
-                    FirstDoubleNestedConfig,
-                    SecondDoubleNestedConfig,
+                    *all_configs,
                     desc="Test Builder",
                 )
                 # Test the chained version
@@ -151,13 +121,7 @@ class TestWritePathRaise:
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test.yaml"])
             config = ConfigArgBuilder(
-                TypeConfig,
-                NestedStuff,
-                NestedListStuff,
-                TypeOptConfig,
-                SingleNestedConfig,
-                FirstDoubleNestedConfig,
-                SecondDoubleNestedConfig,
+                *all_configs,
                 desc="Test Builder",
             )
             # Test the chained version
@@ -175,13 +139,7 @@ class TestInvalidExtensionTypeRaise:
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test.yaml"])
             config = ConfigArgBuilder(
-                TypeConfig,
-                NestedStuff,
-                NestedListStuff,
-                TypeOptConfig,
-                SingleNestedConfig,
-                FirstDoubleNestedConfig,
-                SecondDoubleNestedConfig,
+                *all_configs,
                 desc="Test Builder",
             )
             # Test the chained version
@@ -198,13 +156,7 @@ class TestTOMLWriter:
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/toml/test.toml"])
             config = ConfigArgBuilder(
-                TypeConfig,
-                NestedStuff,
-                NestedListStuff,
-                TypeOptConfig,
-                SingleNestedConfig,
-                FirstDoubleNestedConfig,
-                SecondDoubleNestedConfig,
+                *all_configs,
                 desc="Test Builder",
             )
             # Test the chained version
@@ -222,13 +174,7 @@ class TestJSONWriter:
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/json/test.json"])
             config = ConfigArgBuilder(
-                TypeConfig,
-                NestedStuff,
-                NestedListStuff,
-                TypeOptConfig,
-                SingleNestedConfig,
-                FirstDoubleNestedConfig,
-                SecondDoubleNestedConfig,
+                *all_configs,
                 desc="Test Builder",
             )
             # Test the chained version
