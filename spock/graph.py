@@ -76,7 +76,7 @@ class Graph:
             for v in dep_names:
                 if v not in self.node_names:
                     raise ValueError(
-                        f"Missing @spock decorated class -- `{v.__name__}` was not passed as an *arg to "
+                        f"Missing @spock decorated class -- `{v}` was not passed as an *arg to "
                         f"ConfigArgBuilder"
                     )
                 nodes.get(v).append(input_class)
