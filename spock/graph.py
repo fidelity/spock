@@ -57,11 +57,12 @@ class Graph:
         """
         # Build a dictionary of all nodes (base spock classes)
         nodes = {val: [] for val in self._input_classes}
+        node_names = [f"{k.__module__}.{k.__name__}" for k in nodes.keys()]
         # Iterate thorough all of the base spock classes to get the dependencies and reverse dependencies
         for input_class in self._input_classes:
             dep_classes = self._find_all_spock_classes(input_class)
             for v in dep_classes:
-                if v not in nodes:
+                if f"{v.__module__}.{v.__name__}" not in node_names:
                     raise ValueError(
                         f"Missing @spock decorated class -- `{v.__name__}` was not passed as an *arg to "
                         f"ConfigArgBuilder"
