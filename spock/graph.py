@@ -5,12 +5,11 @@
 
 """Handles creation and ops for DAGs"""
 
-from enum import EnumMeta
-from typing import List, Type, Union
+from typing import Type
 
 import attr
 
-from spock.utils import _check_iterable, _is_spock_instance
+from spock.utils import _find_all_spock_classes
 
 
 class Graph:
@@ -60,7 +59,7 @@ class Graph:
         node_names = [f"{k.__module__}.{k.__name__}" for k in nodes.keys()]
         # Iterate thorough all of the base spock classes to get the dependencies and reverse dependencies
         for input_class in self._input_classes:
-            dep_classes = self._find_all_spock_classes(input_class)
+            dep_classes = _find_all_spock_classes(input_class)
             for v in dep_classes:
                 if f"{v.__module__}.{v.__name__}" not in node_names:
                     raise ValueError(
@@ -70,60 +69,6 @@ class Graph:
                 nodes.get(v).append(input_class)
         nodes = {key: set(val) for key, val in nodes.items()}
         return nodes
-
-    def _find_all_spock_classes(self, attr_class: Type):
-        """Within a spock class determine if there are any references to other spock classes
-
-        Args:
-            attr_class: a class with attrs attributes
-
-        Returns:
-            list of dependent spock classes
-
-        """
-        # Get the top level dict
-        dict_attr = attr.fields_dict(attr_class)
-        # Dependent classes
-        dep_classes = []
-        for k, v in dict_attr.items():
-            # Checks for direct spock/attrs instance
-            if _is_spock_instance(v.type):
-                dep_classes.append(v.type)
-            # Check for enum of spock/attrs instance
-            elif isinstance(v.type, EnumMeta) and self._check_4_spock_iterable(v.type):
-                dep_classes.extend(self._get_enum_classes(v.type))
-            # Check for List[@spock-class] -- needs to be checked against 3.6 typing.List as well
-            elif ((v.type is list) or (v.type is List)) and _is_spock_instance(
-                v.metadata["type"].__args__[0]
-            ):
-                dep_classes.append(v.metadata["type"].__args__[0])
-        return dep_classes
-
-    @staticmethod
-    def _check_4_spock_iterable(iter_obj: Union[tuple, list]):
-        """Checks if an iterable type contains a spock class
-
-        Args:
-            iter_obj: iterable type
-
-        Returns:
-            boolean if the iterable contains at least one spock class
-
-        """
-        return _check_iterable(iter_obj=iter_obj)
-
-    @staticmethod
-    def _get_enum_classes(enum_obj: EnumMeta):
-        """Checks if any of the values of an enum are spock classes and adds to a list
-
-        Args:
-            enum_obj: enum class
-
-        Returns:
-            list of enum values that are spock classes
-
-        """
-        return [v.value for v in enum_obj if _is_spock_instance(v.value)]
 
     def _has_cycles(self):
         """Uses DFS to check for cycles within the spock dependency graph
