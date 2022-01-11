@@ -38,14 +38,28 @@ class Graph:
             )
 
     @property
+    def dag(self):
+        """Returns the DAG"""
+        return self._dag
+
+    @property
     def nodes(self):
-        """Returns the node names/input_classes"""
+        """Returns the input_classes/nodes"""
         return self._input_classes
+
+    @property
+    def node_names(self):
+        """Returns the node names"""
+        return {f"{k.__name__}" for k in self.nodes}
+
+    @property
+    def node_map(self):
+        return {f"{k.__name__}": k for k in self.nodes}
 
     @property
     def roots(self):
         """Returns the roots of the dependency graph"""
-        return [k for k, v in self._dag.items() if len(v) == 0]
+        return [self.node_map[k] for k, v in self.dag.items() if len(v) == 0]
 
     def _build(self):
         """Builds a dictionary of nodes and their edges (essentially builds the DAG)
@@ -55,13 +69,12 @@ class Graph:
 
         """
         # Build a dictionary of all nodes (base spock classes)
-        nodes = {val: [] for val in self._input_classes}
-        node_names = [f"{k.__module__}.{k.__name__}" for k in nodes.keys()]
+        nodes = {val: [] for val in self.node_names}
         # Iterate thorough all of the base spock classes to get the dependencies and reverse dependencies
-        for input_class in self._input_classes:
-            dep_classes = _find_all_spock_classes(input_class)
-            for v in dep_classes:
-                if f"{v.__module__}.{v.__name__}" not in node_names:
+        for input_class in self.nodes:
+            dep_names = {f"{v.__name__}" for v in _find_all_spock_classes(input_class)}
+            for v in dep_names:
+                if v not in self.node_names:
                     raise ValueError(
                         f"Missing @spock decorated class -- `{v.__name__}` was not passed as an *arg to "
                         f"ConfigArgBuilder"
@@ -78,9 +91,9 @@ class Graph:
 
         """
         # DFS w/ recursion stack for DAG cycle detection
-        visited = {key: False for key in self._dag.keys()}
+        visited = {key: False for key in self.dag.keys()}
         all_nodes = list(visited.keys())
-        recursion_stack = {key: False for key in self._dag.keys()}
+        recursion_stack = {key: False for key in self.dag.keys()}
         # Recur for all edges
         for node in all_nodes:
             if visited.get(node) is False:
@@ -106,7 +119,7 @@ class Graph:
         # Update recursion stack
         recursion_stack.update({node: True})
         # Recur through the edges
-        for val in self._dag.get(node):
+        for val in self.dag.get(node):
             if visited.get(val) is False:
                 # The the recursion returns True then work it up the stack
                 if self._cycle_dfs(val, visited, recursion_stack) is True:

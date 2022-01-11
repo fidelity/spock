@@ -87,7 +87,7 @@ class SpockArguments:
             dictionary of general level parameters
 
         """
-        config_names = {n.__name__ for n in config_dag.nodes}
+        config_names = config_dag.node_names
         return {
             key: value
             for key, value in arguments.items()
