@@ -24,8 +24,8 @@ if minor < 7:
 else:
     from typing import _GenericAlias
 
-from pathlib import Path
 from enum import EnumMeta
+from pathlib import Path
 from typing import List, Type, Union
 
 
@@ -52,7 +52,7 @@ def _find_all_spock_classes(attr_class: Type):
             dep_classes.extend(_get_enum_classes(v.type))
         # Check for List[@spock-class] -- needs to be checked against 3.6 typing.List as well
         elif ((v.type is list) or (v.type is List)) and _is_spock_instance(
-                v.metadata["type"].__args__[0]
+            v.metadata["type"].__args__[0]
         ):
             dep_classes.append(v.metadata["type"].__args__[0])
     return dep_classes
