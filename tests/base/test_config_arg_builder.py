@@ -194,3 +194,15 @@ class TestWrongRepeatedClass:
                 ConfigArgBuilder(
                     *all_configs, desc="Test Builder"
                 )
+
+
+class TestDynamic(AllDynamic):
+    """Testing basic functionality"""
+
+    @staticmethod
+    @pytest.fixture
+    def arg_builder(monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, "argv", [""])
+            config = ConfigArgBuilder(TestConfigDynamicDefaults)
+            return config.generate()

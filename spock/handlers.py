@@ -16,8 +16,10 @@ from warnings import warn
 import pytomlpp
 import yaml
 
-from spock import __version__
+from spock._version import get_versions
 from spock.utils import check_path_s3, path_object_to_s3path
+
+__version__ = get_versions()["version"]
 
 
 class Handler(ABC):

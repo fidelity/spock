@@ -33,10 +33,11 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         _max_indent: maximum to indent between help prints
         _module_name: module name to register in the spock module space
         save_path: list of path(s) to save the configs to
+        _lazy: attempts to lazily find @spock decorated classes registered within sys.modules["spock"].backend.config
 
     """
 
-    def __init__(self, *args, max_indent: int = 4, module_name: str, **kwargs):
+    def __init__(self, *args, max_indent: int = 4, module_name: str, lazy: bool, **kwargs):
         """Init call for BaseBuilder
 
         Args:
@@ -46,7 +47,10 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
             **kwargs: keyword args
         """
         self._input_classes = args
-        self._graph = Graph(input_classes=self.input_classes)
+        self._lazy = lazy
+        self._graph = Graph(input_classes=self.input_classes, lazy=self._lazy)
+        # Make sure the input classes are updated -- lazy evaluation
+        self._input_classes = self._graph.nodes
         self._module_name = module_name
         self._max_indent = max_indent
         self.save_path = None
@@ -103,8 +107,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         Returns:
             namespace containing automatically generated instances of the classes
         """
-        graph = Graph(input_classes=self.input_classes)
-        spock_space_kwargs = self.resolve_spock_space_kwargs(graph, dict_args)
+        spock_space_kwargs = self.resolve_spock_space_kwargs(self._graph, dict_args)
         return Spockspace(**spock_space_kwargs)
 
     def resolve_spock_space_kwargs(self, graph: Graph, dict_args: dict) -> dict:

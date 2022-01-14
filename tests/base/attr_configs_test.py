@@ -304,10 +304,25 @@ class TypeDefaultOptConfig:
 
 
 @spock
+# class TypeInherited(TypeDefaultOptConfig, TypeConfig):
 class TypeInherited(TypeConfig, TypeDefaultOptConfig):
     """This tests inheritance with mixed default and non-default arguments"""
+    pass
 
-    ...
+
+class Foo:
+    p: int = 1
+
+
+class Bar:
+    q: str = 'shhh'
+
+
+@spock(dynamic=True)
+class TestConfigDynamicDefaults(Foo, Bar):
+    x: int = 235
+    y: str = 'yarghhh'
+    z: List[int] = [10, 20]
 
 
 all_configs = [

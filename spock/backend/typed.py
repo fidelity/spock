@@ -463,4 +463,6 @@ def katra(typed, default=None):
         x = _enum_katra(typed=typed, default=default, optional=optional)
     else:
         x = _type_katra(typed=typed, default=default, optional=optional)
+    # Add back in the OG type
+    x.metadata.update({'og_type': typed})
     return x
