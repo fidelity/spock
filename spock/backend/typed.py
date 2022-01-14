@@ -464,5 +464,5 @@ def katra(typed, default=None):
     else:
         x = _type_katra(typed=typed, default=default, optional=optional)
     # Add back in the OG type
-    x.metadata.update({'og_type': typed})
+    x.metadata.update({"og_type": typed})
     return x

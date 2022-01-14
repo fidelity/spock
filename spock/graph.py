@@ -5,9 +5,8 @@
 
 """Handles creation and ops for DAGs"""
 
-from typing import Type
-
 import sys
+from typing import Type
 from warnings import warn
 
 from spock.utils import _find_all_spock_classes
@@ -34,7 +33,10 @@ class Graph:
         self._lazy = lazy
         # Maybe find classes lazily -- roll them into the input class tuple
         if self._lazy:
-            self._input_classes = (*self._input_classes, *self._lazily_find_classes(self._input_classes))
+            self._input_classes = (
+                *self._input_classes,
+                *self._lazily_find_classes(self._input_classes),
+            )
         # Build -- post lazy eval
         self._dag = self._build()
         # Validate (No cycles in DAG)
@@ -99,9 +101,11 @@ class Graph:
         lazy_classes = []
         for _, v in self._yield_class_deps(classes):
             if hasattr(sys.modules["spock"].backend.config, v):
-                warn(f"Lazy evaluation found a @spock decorated class named `{v}` within the registered types of "
-                     f"sys.modules['spock'].backend.config -- Attempting to use the class "
-                     f"`{getattr(sys.modules['spock'].backend.config, v)}`...")
+                warn(
+                    f"Lazy evaluation found a @spock decorated class named `{v}` within the registered types of "
+                    f"sys.modules['spock'].backend.config -- Attempting to use the class "
+                    f"`{getattr(sys.modules['spock'].backend.config, v)}`..."
+                )
                 # Get the lazily discovered class
                 lazy_class = getattr(sys.modules["spock"].backend.config, v)
                 # Recursive check the lazy class for other lazy classes

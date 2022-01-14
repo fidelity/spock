@@ -1,11 +1,4 @@
-from typing import (
-    Any,
-    Callable,
-    Tuple,
-    TypeVar,
-    Union,
-    overload,
-)
+from typing import Any, Callable, Tuple, TypeVar, Union, overload
 
 from attr import attrib, field
 
@@ -30,23 +23,19 @@ def __dataclass_transform__(
     kw_only_default: bool = False,
     field_descriptors: Tuple[Union[type, Callable[..., Any]], ...] = (()),
 ) -> Callable[[_T], _T]: ...
-
-
 @overload
 @__dataclass_transform__(kw_only_default=True, field_descriptors=(attrib, field))
 def spock_attr(
-        maybe_cls: _C,
-        kw_only: bool = True,
-        make_init: bool = True,
-        dynamic: bool = False,
+    maybe_cls: _C,
+    kw_only: bool = True,
+    make_init: bool = True,
+    dynamic: bool = False,
 ) -> _C: ...
-
-
 @overload
 @__dataclass_transform__(kw_only_default=True, field_descriptors=(attrib, field))
 def spock_attr(
-        maybe_cls: None = ...,
-        kw_only: bool = True,
-        make_init: bool = True,
-        dynamic: bool = False,
+    maybe_cls: None = ...,
+    kw_only: bool = True,
+    make_init: bool = True,
+    dynamic: bool = False,
 ) -> Callable[[_C], _C]: ...

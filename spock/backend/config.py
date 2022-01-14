@@ -10,8 +10,8 @@ import sys
 import attr
 
 from spock.backend.typed import katra
-from spock.utils import _is_spock_instance
 from spock.exceptions import _SpockUndecoratedClass
+from spock.utils import _is_spock_instance
 
 
 def _base_attr(cls, kw_only: bool, make_init: bool, dynamic: bool):
@@ -45,7 +45,8 @@ def _base_attr(cls, kw_only: bool, make_init: bool, dynamic: bool):
             if not _is_spock_instance(base_cls) and not dynamic:
                 raise _SpockUndecoratedClass(
                     f"Class `{base_cls.__name__}` was not decorated with the @spock decorator "
-                    f"and `dynamic={dynamic}` was set for child class `{cls.__name__}`")
+                    f"and `dynamic={dynamic}` was set for child class `{cls.__name__}`"
+                )
             elif not _is_spock_instance(base_cls) and dynamic:
                 bases[idx] = _process_class(base_cls, kw_only, make_init, dynamic)
         bases = tuple(bases)
@@ -55,13 +56,20 @@ def _base_attr(cls, kw_only: bool, make_init: bool, dynamic: bool):
                 # Since we are moving left to right via the MRO only update if not currently present
                 # this maintains parity to how the MRO is handled in base python
                 if attribute.name not in base_annotation:
-                    if 'type' in attribute.metadata:
-                        base_annotation.update({attribute.name: attribute.metadata['og_type']})
+                    if "type" in attribute.metadata:
+                        base_annotation.update(
+                            {attribute.name: attribute.metadata["og_type"]}
+                        )
                     else:
                         base_annotation.update({attribute.name: attribute.type})
-        base_defaults = {attribute.name: attribute.default for val in bases for attribute in val.__attrs_attrs__ if attribute.default is not (None or attr.NOTHING)}
+        base_defaults = {
+            attribute.name: attribute.default
+            for val in bases
+            for attribute in val.__attrs_attrs__
+            if attribute.default is not (None or attr.NOTHING)
+        }
     # Merge the annotations -- always override as this is the lowest level of the MRO
-    if hasattr(cls, '__annotations__'):
+    if hasattr(cls, "__annotations__"):
         new_annotations = {k: v for k, v in cls.__annotations__.items()}
     else:
         new_annotations = {}
@@ -99,8 +107,13 @@ def _process_class(cls, kw_only: bool, make_init: bool, dynamic: bool):
     bases, attrs_dict, merged_annotations = _base_attr(cls, kw_only, make_init, dynamic)
     # Dynamically make an attr class
     obj = attr.make_class(
-        name=cls.__name__, bases=bases, attrs=attrs_dict, kw_only=kw_only, frozen=True, auto_attribs=True,
-        init=make_init
+        name=cls.__name__,
+        bases=bases,
+        attrs=attrs_dict,
+        kw_only=kw_only,
+        frozen=True,
+        auto_attribs=True,
+        init=make_init,
     )
     # For each class we dynamically create we need to register it within the system modules for pickle to work
     setattr(sys.modules["spock"].backend.config, obj.__name__, obj)
@@ -113,10 +126,10 @@ def _process_class(cls, kw_only: bool, make_init: bool, dynamic: bool):
 
 
 def spock_attr(
-        maybe_cls=None,
-        kw_only=True,
-        make_init=True,
-        dynamic=False,
+    maybe_cls=None,
+    kw_only=True,
+    make_init=True,
+    dynamic=False,
 ):
     """Map type hints to katras
 
@@ -136,7 +149,10 @@ def spock_attr(
     """
 
     def wrap(cls):
-        return _process_class(cls, kw_only=kw_only, make_init=make_init, dynamic=dynamic)
+        return _process_class(
+            cls, kw_only=kw_only, make_init=make_init, dynamic=dynamic
+        )
+
     # Note: Taken from dataclass/attr definition(s)
     # maybe_cls's type depends on the usage of the decorator.  It's a class
     # if it's used as `@spock` but ``None`` if used as `@spock()`.

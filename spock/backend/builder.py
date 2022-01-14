@@ -37,7 +37,9 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
 
     """
 
-    def __init__(self, *args, max_indent: int = 4, module_name: str, lazy: bool, **kwargs):
+    def __init__(
+        self, *args, max_indent: int = 4, module_name: str, lazy: bool, **kwargs
+    ):
         """Init call for BaseBuilder
 
         Args:
