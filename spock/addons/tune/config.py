@@ -80,9 +80,9 @@ def _process_class(cls, kw_only: bool, make_init: bool, dynamic: bool):
 
 
 def _spock_tune(
-        maybe_cls=None,
-        kw_only=True,
-        make_init=True,
+    maybe_cls=None,
+    kw_only=True,
+    make_init=True,
 ):
     """Ovverides basic spock_attr decorator with another name
 
@@ -99,9 +99,7 @@ def _spock_tune(
     """
 
     def wrap(cls):
-        return _process_class(
-            cls, kw_only=kw_only, make_init=make_init, dynamic=False
-        )
+        return _process_class(cls, kw_only=kw_only, make_init=make_init, dynamic=False)
 
     # Note: Taken from dataclass/attr definition(s)
     # maybe_cls's type depends on the usage of the decorator.  It's a class

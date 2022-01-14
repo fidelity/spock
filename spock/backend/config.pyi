@@ -1,4 +1,4 @@
-from typing import Any, Callable, Tuple, TypeVar, Union, overload, List, Dict
+from typing import Any, Callable, Dict, List, Tuple, TypeVar, Union, overload
 
 from attr import attrib, field
 
@@ -39,7 +39,6 @@ def spock_attr(
     make_init: bool = True,
     dynamic: bool = False,
 ) -> Callable[[_C], _C]: ...
-
 def _base_attr(
     cls: _C,
     kw_only: bool = ...,
