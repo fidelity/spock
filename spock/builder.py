@@ -229,8 +229,7 @@ class ConfigArgBuilder:
         if sys_exit:
             sys.exit(exit_code)
 
-    @staticmethod
-    def _handle_tuner_objects(tune_args, s3_config, kwargs):
+    def _handle_tuner_objects(self, tune_args, s3_config, kwargs):
         """Handles creating the tuner builder object if @spockTuner classes were passed in
 
         Args:
@@ -247,7 +246,7 @@ class ConfigArgBuilder:
                 from spock.addons.tune.builder import TunerBuilder
                 from spock.addons.tune.payload import TunerPayload
 
-                tuner_builder = TunerBuilder(*tune_args, **kwargs)
+                tuner_builder = TunerBuilder(*tune_args, **kwargs, lazy=self._lazy)
                 tuner_payload = TunerPayload(s3_config=s3_config)
                 return tuner_builder, tuner_payload
             except ImportError:

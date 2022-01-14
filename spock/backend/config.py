@@ -14,7 +14,7 @@ from spock.exceptions import _SpockUndecoratedClass
 from spock.utils import _is_spock_instance
 
 
-def _base_attr(cls, kw_only: bool, make_init: bool, dynamic: bool):
+def _base_attr(cls, kw_only, make_init, dynamic):
     """Map type hints to katras
 
     Connector function that maps type hinting style to the defined katra style which uses the more strict
