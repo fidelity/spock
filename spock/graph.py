@@ -7,7 +7,6 @@
 
 import sys
 from typing import Type
-from warnings import warn
 
 from spock.utils import _find_all_spock_classes
 
@@ -32,10 +31,11 @@ class Graph:
         self._input_classes = input_classes
         self._lazy = lazy
         # Maybe find classes lazily -- roll them into the input class tuple
+        # make sure to cast as a set first since the lazy search might find duplicate references
         if self._lazy:
             self._input_classes = (
                 *self._input_classes,
-                *self._lazily_find_classes(self._input_classes),
+                *set(self._lazily_find_classes(self._input_classes)),
             )
         # Build -- post lazy eval
         self._dag = self._build()
@@ -101,7 +101,7 @@ class Graph:
         lazy_classes = []
         for _, v in self._yield_class_deps(classes):
             if hasattr(sys.modules["spock"].backend.config, v):
-                warn(
+                print(
                     f"Lazy evaluation found a @spock decorated class named `{v}` within the registered types of "
                     f"sys.modules['spock'].backend.config -- Attempting to use the class "
                     f"`{getattr(sys.modules['spock'].backend.config, v)}`..."
@@ -114,12 +114,12 @@ class Graph:
                 if len(dependent_lazy_classes) > 0:
                     lazy_classes.extend(dependent_lazy_classes)
                 lazy_classes.append(lazy_class)
-            else:
-                raise ValueError(
-                    f"Missing @spock decorated class -- `{v}` was not passed as an *arg to "
-                    f"ConfigArgBuilder and lazy evaluation could not find it within "
-                    f"sys.modules['spock'].backend.config"
-                )
+            # else:
+            #     raise ValueError(
+            #         f"Missing @spock decorated class -- `{v}` was not passed as an *arg to "
+            #         f"ConfigArgBuilder and lazy evaluation could not find it within "
+            #         f"sys.modules['spock'].backend.config"
+            #     )
         return tuple(lazy_classes)
 
     def _build(self):
@@ -136,7 +136,8 @@ class Graph:
             if v not in self.node_names:
                 raise ValueError(
                     f"Missing @spock decorated class -- `{v}` was not passed as an *arg to "
-                    f"ConfigArgBuilder and/or could not be found via lazy evaluation"
+                    f"ConfigArgBuilder and/or could not be found via lazy evaluation (currently lazy=`{self._lazy}`) "
+                    f"within sys.modules['spock'].backend.config"
                 )
             nodes.get(v).append(input_class)
         nodes = {key: set(val) for key, val in nodes.items()}

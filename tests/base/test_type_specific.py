@@ -4,7 +4,7 @@ import sys
 import pytest
 
 from spock.builder import ConfigArgBuilder
-from spock.backend.field_handlers import SpockInstantiationError
+from spock.exceptions import _SpockInstantiationError
 from tests.base.attr_configs_test import *
 
 
@@ -14,7 +14,7 @@ class TestChoiceRaises:
     def test_choice_raise(self, monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/choice.yaml"])
-            with pytest.raises(SpockInstantiationError):
+            with pytest.raises(_SpockInstantiationError):
                 ConfigArgBuilder(ChoiceFail, desc="Test Builder")
 
 
@@ -23,7 +23,7 @@ class TestOptionalRaises:
     def test_coptional_raise(self, monkeypatch):
         with monkeypatch.context() as m:
             # m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/empty.yaml"])
-            with pytest.raises(SpockInstantiationError):
+            with pytest.raises(_SpockInstantiationError):
                 ConfigArgBuilder(OptionalFail, desc="Test Builder", configs=[], no_cmd_line=True)
 
 
@@ -108,6 +108,6 @@ class TestMissingRepeatedDefs:
                 "argv",
                 [""],
             )
-            with pytest.raises(SpockInstantiationError):
+            with pytest.raises(_SpockInstantiationError):
                 config = ConfigArgBuilder(RepeatedDefsFailConfig, NestedListStuff, desc="Test Builder")
                 config.generate()

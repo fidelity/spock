@@ -45,7 +45,7 @@ def _base_attr(cls, kw_only, make_init, dynamic):
             if not _is_spock_instance(base_cls) and not dynamic:
                 raise _SpockUndecoratedClass(
                     f"Class `{base_cls.__name__}` was not decorated with the @spock decorator "
-                    f"and `dynamic={dynamic}` was set for child class `{cls.__name__}`"
+                    f"and `dynamic={dynamic}` was set for child class `{cls.__name__}` -- Please remedy one of these"
                 )
             elif not _is_spock_instance(base_cls) and dynamic:
                 bases[idx] = _process_class(base_cls, kw_only, make_init, dynamic)

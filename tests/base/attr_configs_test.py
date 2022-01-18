@@ -335,3 +335,20 @@ all_configs = [
     SecondDoubleNestedConfig,
     NestedStuffOpt
 ]
+
+
+@spock
+class OtherBar:
+    hello: str = 'goodbye'
+
+
+@spock
+class RaiseNotFlagged:
+    test: int = 1
+    other: OtherBar = OtherBar
+
+
+@spock
+class RaiseNotDecorated:
+    test: int = 1
+    other: Bar = Bar
