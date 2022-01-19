@@ -12,8 +12,7 @@ Editing our definition in: `tutorial.py`
 
 ```python
 from enum import Enum
-from spock.args import SavePath
-from spock.config import spock
+from spock import spock
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -32,7 +31,6 @@ class Optimizer(Enum):
 
 @spock
 class ModelConfig:
-    save_path: SavePath
     n_features: int
     dropout: Optional[List[float]]
     hidden_sizes: Tuple[int, int, int] = (32, 32, 32)

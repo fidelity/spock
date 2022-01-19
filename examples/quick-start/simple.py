@@ -1,7 +1,7 @@
 from typing import List
 
-from spock.builder import ConfigArgBuilder
-from spock.config import spock
+from spock import SpockBuilder
+from spock import spock
 
 
 @spock
@@ -47,7 +47,7 @@ def add_by_parameter(multiply_param, list_vals, add_param, tf_round):
 
 def main():
     # Chain the generate function to the class call
-    config = ConfigArgBuilder(BasicConfig, desc="Quick start example").generate()
+    config = SpockBuilder(BasicConfig, desc="Quick start example").generate()
     # One can now access the Spock config object by class name with the returned namespace
     print(config.BasicConfig.parameter)
     # And pass the namespace to our first function

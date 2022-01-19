@@ -96,6 +96,11 @@ module.exports = {
                 },
                 {
                     type: 'doc',
+                    label: 'Lazy Dependencies',
+                    id: "advanced_features/Lazy-Features"
+                },
+                {
+                    type: 'doc',
                     label: 'Local Definitions',
                     id: 'advanced_features/Local-Definitions'
                 },

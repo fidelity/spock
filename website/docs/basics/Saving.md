@@ -1,7 +1,7 @@
 # Saving
 
 The current configuration of running python code can be saved to file by chaining the `save()` method before 
-the `generate()` call to the `ConfigArgBuilder` class. `spock` supports two different ways to specify the write path 
+the `generate()` call to the `SpockBuilder` class. `spock` supports two different ways to specify the write path 
 and supports multiple output formats (YAML, TOML, or JSON -- via the `file_extension` keyword argument). Most 
 importantly, the saved markdown file can be used as the configuration input to reproduce prior runtime configurations.
 
@@ -72,7 +72,7 @@ def main():
     # A simple description
     description = 'spock Tutorial'
     # Build out the parser by passing in Spock config objects as *args after description
-    config = ConfigArgBuilder(ModelConfig, desc=description).save(file_extension='.toml').generate()
+    config = SpockBuilder(ModelConfig, desc=description).save(file_extension='.toml').generate()
     # One can now access the Spock config object by class name with the returned namespace
     # For instance...
     print(config.ModelConfig)
@@ -102,7 +102,7 @@ def main():
     # A simple description
     description = 'spock Tutorial'
     # Build out the parser by passing in Spock config objects as *args after description
-    config = ConfigArgBuilder(ModelConfig, desc=description).save(user_specified_path='/tmp').generate()
+    config = SpockBuilder(ModelConfig, desc=description).save(user_specified_path='/tmp').generate()
     # One can now access the Spock config object by class name with the returned namespace
     # For instance...
     print(config.ModelConfig)
@@ -120,7 +120,7 @@ def main():
     # A simple description
     description = 'spock Tutorial'
     # Build out the parser by passing in Spock config objects as *args after description
-    config = ConfigArgBuilder(ModelConfig, desc=description).save(create_save_path=True).generate()
+    config = SpockBuilder(ModelConfig, desc=description).save(create_save_path=True).generate()
     # One can now access the Spock config object by class name with the returned namespace
     # For instance...
     print(config.ModelConfig)
@@ -139,7 +139,7 @@ def main():
     # A simple description
     description = 'spock Tutorial'
     # Build out the parser by passing in Spock config objects as *args after description
-    config = ConfigArgBuilder(ModelConfig, desc=description).save(file_name='cool_name_here').generate()
+    config = CSpockBuilder(ModelConfig, desc=description).save(file_name='cool_name_here').generate()
     # One can now access the Spock config object by class name with the returned namespace
     # For instance...
     print(config.ModelConfig)

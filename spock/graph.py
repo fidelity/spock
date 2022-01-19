@@ -33,9 +33,15 @@ class Graph:
         # Maybe find classes lazily -- roll them into the input class tuple
         # make sure to cast as a set first since the lazy search might find duplicate references
         if self._lazy:
+            # Lazily find base classes
             self._input_classes = (
                 *self._input_classes,
                 *set(self._lazily_find_classes(self._input_classes)),
+            )
+            # Lazily find any parents that are missing
+            self._input_classes = (
+                *self._input_classes,
+                *set(self._lazily_find_parents()),
             )
         # Build -- post lazy eval
         self._dag = self._build()
@@ -104,7 +110,7 @@ class Graph:
                 print(
                     f"Lazy evaluation found a @spock decorated class named `{v}` within the registered types of "
                     f"sys.modules['spock'].backend.config -- Attempting to use the class "
-                    f"`{getattr(sys.modules['spock'].backend.config, v)}`..."
+                    f"`{getattr(sys.modules['spock'].backend.config, v)}` within the SpockBuilder"
                 )
                 # Get the lazily discovered class
                 lazy_class = getattr(sys.modules["spock"].backend.config, v)
@@ -114,13 +120,36 @@ class Graph:
                 if len(dependent_lazy_classes) > 0:
                     lazy_classes.extend(dependent_lazy_classes)
                 lazy_classes.append(lazy_class)
-            # else:
-            #     raise ValueError(
-            #         f"Missing @spock decorated class -- `{v}` was not passed as an *arg to "
-            #         f"ConfigArgBuilder and lazy evaluation could not find it within "
-            #         f"sys.modules['spock'].backend.config"
-            #     )
         return tuple(lazy_classes)
+
+    def _lazily_find_parents(self):
+        """Searches within the current set of input_classes (@spock decorated classes) to lazily find any parents
+
+        Given that lazy inheritance means that the parent classes won't be included (since they are cast to spock
+        classes within the decorator and the MRO is handled internally) this allows the lazy flag to find those parent
+        classes and add them to the SpockBuilder *args (input classes).
+
+        Returns:
+            tuple of any lazily discovered classes
+
+        """
+        lazy_parents = {}
+        for v in self._input_classes:
+            # Check if the MRO is long enough to have bases
+            if len(v.__mro__[1:-1]) > 0:
+                bases = list(v.__mro__[1:-1])
+                for base in bases:
+                    cls_name = base.__name__
+                    if (cls_name not in self.node_names) and (
+                        cls_name not in lazy_parents.keys()
+                    ):
+                        print(
+                            f"Lazy evaluation found a @spock decorated parent class named `{cls_name}` within the "
+                            f"registered types of sys.modules['spock'].backend.config -- Appending the class "
+                            f"`{getattr(sys.modules['spock'].backend.config, cls_name)}` to the SpockBuilder..."
+                        )
+                        lazy_parents.update({base.__name__: base})
+        return tuple(lazy_parents.values())
 
     def _build(self):
         """Builds a dictionary of nodes and their edges (essentially builds the DAG)

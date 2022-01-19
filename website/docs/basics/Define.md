@@ -46,7 +46,7 @@ your `spock` class just like other types.
 
 ```python
 from enum import Enum
-from spock.config import spock
+from spock import spock
 from typing import List
 from typing import Tuple
 
@@ -74,7 +74,6 @@ for help information for each parameter. Modifying the above code to include hel
 
 ```python
 from enum import Enum
-from spock.args import SavePath
 from spock.config import spock
 from typing import List
 from typing import Tuple
@@ -97,13 +96,11 @@ class ModelConfig:
     """Main model configuration for a basic neural net
 
     Attributes:
-        save_path: spock special keyword -- path to write out spock config state
         n_features: number of data features
         dropout: dropout rate for each layer
         hidden_sizes: hidden size for each layer
         activation: choice from the Activation enum of the activation function to use
     """
-    save_path: SavePath
     n_features: int
     dropout: List[float]
     hidden_sizes: Tuple[int, int, int]
@@ -126,7 +123,6 @@ spock Basic Tutorial
 configuration(s):
 
   ModelConfig (Main model configuration for a basic neural net)
-    save_path       Optional[SavePath]      spock special keyword -- path to write out spock config state (default: None)
     n_features      int                     number of data features 
     dropout         List[float]             dropout rate for each layer 
     hidden_sizes    Tuple[int, int, int]    hidden size for each layer 

@@ -4,9 +4,8 @@ from typing import List, Optional, Tuple
 import torch
 from basic_nn import BasicNet
 
-from spock.args import SavePath
-from spock.builder import ConfigArgBuilder
-from spock.config import spock
+from spock import SpockBuilder
+from spock import spock
 
 
 class Activation(Enum):
@@ -22,7 +21,6 @@ class Optimizer(Enum):
 
 @spock
 class ModelConfig:
-    save_path: SavePath
     n_features: int
     dropout: Optional[List[float]]
     hidden_sizes: Tuple[int, int, int] = (32, 32, 32)
@@ -90,7 +88,7 @@ def main():
     # A simple description
     description = "spock Advanced Tutorial"
     # Build out the parser by passing in Spock config objects as *args after description
-    config = ConfigArgBuilder(
+    config = SpockBuilder(
         ModelConfig, DataConfig, SGDConfig, desc=description
     ).generate()
     # Instantiate our neural net using

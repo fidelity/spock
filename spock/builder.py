@@ -67,6 +67,7 @@ class ConfigArgBuilder:
             configs: list of config paths
             desc: description for help
             lazy: attempts to lazily find @spock decorated classes registered within sys.modules["spock"].backend.config
+            as well as the parents of any lazily inherited @spock class
             thus alleviating the need to pass all @spock decorated classes to *args
             no_cmd_line: turn off cmd line args
             s3_config: s3Config object for S3 support
