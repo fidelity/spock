@@ -6,7 +6,7 @@ with keyword arguments.
 ### Specifying The Config Keyword Argument
 
 Let's pass in the `yaml` configuration file via the config keyword argument instead of at the command line. Simply
-add the `config` keyword argument to the `ConfigArgBuilder`. Note: This is not the recommended best practice as it
+add the `config` keyword argument to the `SpockBuilder`. Note: This is not the recommended best practice as it
 creates a dependency between code and configuration files. Please use the `-c` command line argument whenever possible.
 The `config` keyword arg should be used *ONLY* when necessary.
 
@@ -19,7 +19,7 @@ def main():
     # A simple description
     description = 'spock Advanced Tutorial'
     # Build out the parser by passing in Spock config objects as *args after description
-    config = ConfigArgBuilder(ModelConfig, DataConfig, SGDConfig, desc=description, config=['./tutorial.yaml']).generate()
+    config = SpockBuilder(ModelConfig, DataConfig, SGDConfig, desc=description, config=['./tutorial.yaml']).generate()
     # Instantiate our neural net using
     basic_nn = BasicNet(model_config=config.ModelConfig)
     # Make some random data (BxH): H has dim of features in
@@ -51,13 +51,13 @@ called and will clash with `spock`. Therefore we need to pass the configuration 
 argument and deactivate the command line argument.
 
 For instance, we create a route for our basic neural network (shown below). We add the `no_cmd_line=True` flag to the 
-`ConfigArgBuilder` to prevent `spock` from references command line arguments:
+`SpockBuilder` to prevent `spock` from references command line arguments:
 
 ```python
 @api.post("/inference/",  status_code=201)
 def create_job(*, data: schemata.Inference):
     # Build out the parser by passing in Spock config objects as *args after description
-    config = ConfigArgBuilder(ModelConfig, DataConfig, SGDConfig, desc=description, config=['./tutorial.yaml'], 
+    config = SpockBuilder(ModelConfig, DataConfig, SGDConfig, desc=description, config=['./tutorial.yaml'], 
                               no_cmd_line=True).generate()
     # Let's assume we have a model loading function based on our params
     basic_nn = LoadBasicNet(model_config=config.ModelConfig)

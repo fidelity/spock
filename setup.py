@@ -65,6 +65,10 @@ setuptools.setup(
     packages=setuptools.find_packages(
         exclude=["*.tests", "*.tests.*", "tests.*", "tests"]
     ),
+    package_data={
+        "spock": ["py.typed", "*.pyi"],
+    },
+    include_package_data=True,
     python_requires=">=3.6",
     install_requires=install_reqs,
     extras_require={"s3": s3_reqs, "tune": tune_reqs},

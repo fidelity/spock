@@ -42,6 +42,11 @@ class ConfigArgBuilder:
         _tune_namespace: namespace that hold the generated tuner related parameters
         _sample_count: current call to the sample function
         _fixed_uuid: fixed uuid to write the best file to the same path
+        _configs = configs if configs is None else [Path(c) for c in configs]
+        _lazy: flag to lazily find @spock decorated classes registered within sys.modules["spock"].backend.config
+            thus alleviating the need to pass all @spock decorated classes to *args
+        _no_cmd_line: turn off cmd line args
+        _desc: description for help
 
     """
 
@@ -50,6 +55,7 @@ class ConfigArgBuilder:
         *args,
         configs: typing.Optional[typing.List] = None,
         desc: str = "",
+        lazy: bool = False,
         no_cmd_line: bool = False,
         s3_config=None,
         **kwargs,
@@ -60,6 +66,9 @@ class ConfigArgBuilder:
             *args: tuple of spock decorated classes to process
             configs: list of config paths
             desc: description for help
+            lazy: attempts to lazily find @spock decorated classes registered within sys.modules["spock"].backend.config
+            as well as the parents of any lazily inherited @spock class
+            thus alleviating the need to pass all @spock decorated classes to *args
             no_cmd_line: turn off cmd line args
             s3_config: s3Config object for S3 support
             **kwargs: keyword args
@@ -68,6 +77,7 @@ class ConfigArgBuilder:
         # Do some verification first
         self._verify_attr(args)
         self._configs = configs if configs is None else [Path(c) for c in configs]
+        self._lazy = lazy
         self._no_cmd_line = no_cmd_line
         self._desc = desc
         # Build the payload and saver objects
@@ -76,7 +86,7 @@ class ConfigArgBuilder:
         # Split the fixed parameters from the tuneable ones (if present)
         fixed_args, tune_args = self._strip_tune_parameters(args)
         # The fixed parameter builder
-        self._builder_obj = AttrBuilder(*fixed_args, **kwargs)
+        self._builder_obj = AttrBuilder(*fixed_args, lazy=lazy, **kwargs)
         # The possible tunable parameter builder -- might return None
         self._tune_obj, self._tune_payload_obj = self._handle_tuner_objects(
             tune_args, s3_config, kwargs
@@ -220,8 +230,7 @@ class ConfigArgBuilder:
         if sys_exit:
             sys.exit(exit_code)
 
-    @staticmethod
-    def _handle_tuner_objects(tune_args, s3_config, kwargs):
+    def _handle_tuner_objects(self, tune_args, s3_config, kwargs):
         """Handles creating the tuner builder object if @spockTuner classes were passed in
 
         Args:
@@ -238,7 +247,7 @@ class ConfigArgBuilder:
                 from spock.addons.tune.builder import TunerBuilder
                 from spock.addons.tune.payload import TunerPayload
 
-                tuner_builder = TunerBuilder(*tune_args, **kwargs)
+                tuner_builder = TunerBuilder(*tune_args, **kwargs, lazy=self._lazy)
                 tuner_payload = TunerPayload(s3_config=s3_config)
                 return tuner_builder, tuner_payload
             except ImportError:

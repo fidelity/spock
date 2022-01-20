@@ -25,7 +25,8 @@ hierarchical configuration by composition.
   defined within a `@spock` decorated class. Supports required/optional and automatic defaults.
 * Easily Managed Parameter Groups: Each class automatically generates its own object within a single namespace.
 * [Parameter Inheritance](https://fidelity.github.io/spock/docs/advanced_features/Inheritance/): Classes support 
-  inheritance allowing for complex configurations derived from a common base set of parameters.
+  inheritance (w/ lazy evaluation of inheritance/dependencies) allowing for complex configurations derived from 
+  a common base set of parameters.
 * [Complex Types](https://fidelity.github.io/spock/docs/advanced_features/Advanced-Types/): Nested Lists/Tuples, 
   List/Tuples of Enum of `@spock` classes, List of repeated `@spock` classes
 * Multiple Configuration File Types: Configurations are specified from YAML, TOML, or JSON files.
@@ -66,16 +67,19 @@ Example `spock` usage is located [here](https://github.com/fidelity/spock/blob/m
 
 See [Releases](https://github.com/fidelity/spock/releases) for more information.
 
+#### January 18th, 2022
+* Support for lazy evaluation: (1) inherited classes do not need to be `@spock` decorated, (2) dependencies/references 
+between `spock` classes can be lazily handled thus preventing the need for every `@spock` decorated classes to be 
+passed into `*args` within the main `SpockBuilder` API
+* Updated main API interface for better top-level imports (backwards compatible): `ConfigArgBuilder`->`spockBuilder`
+* Added stubs to the underlying decorator that should help with type hinting in VSCode (pylance/pyright)
+
 #### December 14, 2021
 * Refactored the backend to better handle nested dependencies (and for clarity)
 * Refactored the docs to use Docusaurus
 
 #### August 17, 2021
 * Added hyper-parameter tuning backend support for Ax via Service API
-
-#### July 21, 2021
-* Added hyper-parameter tuning support with `pip install spock-config[tune]`
-* Hyper-parameter tuning backend support for Optuna define-and-run API (WIP for Ax)
 
 ## Original Implementation
 

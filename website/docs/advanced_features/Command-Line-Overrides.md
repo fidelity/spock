@@ -7,13 +7,12 @@ normally require use of another argparser.
 ### Automatic Command-Line Argument Generation
 
 `spock` will automatically generate command line arguments for each parameter, unless the `no_cmd_line=True` flag is 
-passed to the `ConfigArgBuilder`. Let's look at two of the `@spock` decorated classes from the `tutorial.py` file to 
+passed to the `SpockBuilder`. Let's look at two of the `@spock` decorated classes from the `tutorial.py` file to 
 illustrate how this works in practice:
 
 ```python
 from enum import Enum
-from spock.args import SavePath
-from spock.config import spock
+from spock import spock
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -56,8 +55,7 @@ Using the automatically generated command-line arguments, let's override a few v
 
 ```python
 from enum import Enum
-from spock.args import SavePath
-from spock.config import spock
+from spock import spock
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -76,7 +74,6 @@ class Optimizer(Enum):
 
 @spock
 class ModelConfig:
-    save_path: SavePath
     n_features: int
     dropout: Optional[List[float]]
     hidden_sizes: Tuple[int, int, int] = (32, 32, 32)
@@ -179,7 +176,7 @@ For `List` of Repeated `@spock` Classes the syntax is slightly different to allo
 Given the below example code:
 
 ```python
-from spock.config import spock
+from spock import spock
 from typing import List
 
 

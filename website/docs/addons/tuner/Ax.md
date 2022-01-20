@@ -14,33 +14,46 @@ posterity let's add some fixed parameters (those that are not part of hyper-para
 elsewhere in our code. 
 
 ```python
-from spock.config import spock
+from spock import spock
+
+from spock.addons.tune import (
+    ChoiceHyperParameter,
+    RangeHyperParameter,
+    spockTuner,
+)
 
 @spock
 class BasicParams:
     n_trials: int
     max_iter: int
+
+
+@spockTuner
+class LogisticRegressionHP:
+    c: RangeHyperParameter
+    solver: ChoiceHyperParameter
 ```
 
 Now we need to tell `spock` that we intend on doing hyper-parameter tuning and which backend we would like to use. We
-do this by calling the `tuner` method on the `ConfigArgBuilder` object passing in a configuration object for the
+do this by calling the `tuner` method on the `SpockBuilder` object passing in a configuration object for the
 backend of choice (just like in basic functionality this is a chained command, thus the builder object will still be 
 returned). For Ax one uses `AxTunerConfig`. This config mirrors all options that would be passed into 
 the `AxClient` constructor and the `AxClient.create_experiment`function call so that `spock` can setup the 
-Service API. (Note: The `@spockTuner`decorated classes are passed to the `ConfigArgBuilder` in the exact same 
+Service API. (Note: The `@spockTuner`decorated classes are passed to the `SpockBuilder` in the exact same 
 way as basic `@spock`decorated classes.)
 
 ```python
+from spock import SpockBuilder
 from spock.addons.tune import AxTunerConfig
 
 # Ax config -- this will internally spawn the AxClient service API style which will be returned
-# by accessing the tuner_status property on the ConfigArgBuilder object -- note here that we need to define the
+# by accessing the tuner_status property on the SpockBuilder object -- note here that we need to define the
 # objective name that the client will expect to be within the data dictionary when completing trials 
 ax_config = AxTunerConfig(objective_name="accuracy", minimize=False)
 
 # Use the builder to setup
 # Call tuner to indicate that we are going to do some HP tuning -- passing in an ax study object
-attrs_obj = ConfigArgBuilder(
+attrs_obj = SpockBuilder(
     LogisticRegressionHP,
     BasicParams,
     desc="Example Logistic Regression Hyper-Parameter Tuning -- Ax Backend",

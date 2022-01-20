@@ -16,8 +16,7 @@ Editing our definition in: `tutorial.py`
 
 ```python
 from enum import Enum
-from spock.args import SavePath
-from spock.config import spock
+from spock import spock
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -35,7 +34,6 @@ class Optimizer(Enum):
 
 @spock
 class ModelConfig:
-    save_path: SavePath
     n_features: int
     dropout: Optional[List[float]]
     hidden_sizes: Tuple[int, int, int] = (32, 32, 32)
@@ -129,7 +127,7 @@ def main():
     # A simple description
     description = 'spock Advanced Tutorial'
     # Build out the parser by passing in Spock config objects as *args after description
-    config = ConfigArgBuilder(ModelConfig, DataConfig, SGDConfig, desc=description).generate()
+    config = SpockBuilder(ModelConfig, DataConfig, SGDConfig, desc=description).generate()
     # Instantiate our neural net using
     basic_nn = BasicNet(model_config=config.ModelConfig)
     # Make some random data (BxH): H has dim of features in

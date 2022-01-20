@@ -13,19 +13,8 @@ from attr import NOTHING, Attribute
 
 from spock.args import SpockArguments
 from spock.backend.spaces import AttributeSpace, BuilderSpace, ConfigSpace
+from spock.exceptions import _SpockInstantiationError, _SpockNotOptionalError
 from spock.utils import _check_iterable, _is_spock_instance, _is_spock_tune_instance
-
-
-class SpockInstantiationError(Exception):
-    """Custom exception for when the spock class cannot be instantiated correctly"""
-
-    pass
-
-
-class SpockNotOptionalError(Exception):
-    """Custom exception for missing value"""
-
-    pass
 
 
 class RegisterFieldTemplate(ABC):
@@ -216,7 +205,7 @@ class RegisterList(RegisterFieldTemplate):
                         val() if type(val) is type else val for val in attr_space.field
                     ]
                 except Exception as e:
-                    raise SpockInstantiationError(
+                    raise _SpockInstantiationError(
                         f"Spock class `{spock_cls.__name__}` could not be instantiated -- attrs message: {e}"
                     )
                 builder_space.spock_space[spock_cls.__name__] = attr_space.field
@@ -370,10 +359,14 @@ class RegisterSimpleField(RegisterFieldTemplate):
             builder_space: named_tuple containing the arguments and spock_space
 
         Raises:
-            SpockNotOptionalError
+            _SpockNotOptionalError
 
         """
-        raise SpockNotOptionalError()
+        raise _SpockNotOptionalError(
+            f"Parameter `{attr_space.attribute.name}` within `{attr_space.config_space.name}` is of "
+            f"type `{type(attr_space.attribute.type)}` which seems to be unsupported -- "
+            f"are you missing an @spock decorator on a base python class?"
+        )
 
     def handle_optional_attribute_value(
         self, attr_space: AttributeSpace, builder_space: BuilderSpace
@@ -463,10 +456,10 @@ class RegisterTuneCls(RegisterFieldTemplate):
             builder_space: named_tuple containing the arguments and spock_space
 
         Raises:
-            SpockNotOptionalError
+            _SpockNotOptionalError
 
         """
-        raise SpockNotOptionalError()
+        raise _SpockNotOptionalError()
 
     def handle_optional_attribute_type(
         self, attr_space: AttributeSpace, builder_space: BuilderSpace
@@ -478,10 +471,10 @@ class RegisterTuneCls(RegisterFieldTemplate):
             builder_space: named_tuple containing the arguments and spock_space
 
         Raises:
-            SpockNotOptionalError
+            _SpockNotOptionalError
 
         """
-        raise SpockNotOptionalError()
+        raise _SpockNotOptionalError()
 
 
 class RegisterSpockCls(RegisterFieldTemplate):
@@ -625,7 +618,7 @@ class RegisterSpockCls(RegisterFieldTemplate):
         try:
             spock_instance = spock_cls(**fields)
         except Exception as e:
-            raise SpockInstantiationError(
+            raise _SpockInstantiationError(
                 f"Spock class `{spock_cls.__name__}` could not be instantiated -- attrs message: {e}"
             )
         return spock_instance, special_keys
