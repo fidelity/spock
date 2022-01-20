@@ -66,7 +66,7 @@ setuptools.setup(
         exclude=["*.tests", "*.tests.*", "tests.*", "tests"]
     ),
     package_data={
-        "spock": ["py.typed", "*.pyi"],
+        "": ["py.typed", "*.pyi"],
     },
     include_package_data=True,
     python_requires=">=3.6",
