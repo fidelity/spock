@@ -6,7 +6,7 @@
 """Handles the definitions of arguments types for Spock (backend: attrs)"""
 
 import sys
-from enum import EnumMeta
+from enum import Enum, EnumMeta
 from functools import partial
 from typing import TypeVar, Union
 
@@ -213,6 +213,24 @@ def _enum_katra(typed, default=None, optional=False):
     return x
 
 
+def _cast_enum_default(default):
+    """Allows the enum default to be the specific value or the Enum structured value
+
+    Checks if enum type and extracts the value from the Enum
+
+    Args:
+        default: the default value to assign if given
+
+    Returns:
+        default value or the Enum extracted value
+
+    """
+    if isinstance(default, Enum):
+        return default.value
+    else:
+        return default
+
+
 def _enum_base_katra(typed, base_type, allowed, default=None, optional=False):
     """Private interface to create a base Enum typed katra
 
@@ -239,7 +257,7 @@ def _enum_base_katra(typed, base_type, allowed, default=None, optional=False):
                 attr.validators.instance_of(base_type),
                 attr.validators.in_(allowed),
             ],
-            default=default,
+            default=_cast_enum_default(default),
             type=typed,
             metadata={"base": typed.__name__},
         )
@@ -248,7 +266,7 @@ def _enum_base_katra(typed, base_type, allowed, default=None, optional=False):
             validator=attr.validators.optional(
                 [attr.validators.instance_of(base_type), attr.validators.in_(allowed)]
             ),
-            default=default,
+            default=_cast_enum_default(default),
             type=typed,
             metadata={"base": typed.__name__, "optional": True},
         )
@@ -267,7 +285,8 @@ def _enum_base_katra(typed, base_type, allowed, default=None, optional=False):
 def _in_type(instance, attribute, value, options):
     """attrs validator for class type enum
 
-    Checks if the type of the class (e.g. value) is in the specified set of types provided
+    Checks if the type of the class (e.g. value) is in the specified set of types provided. Also checks if the value
+    is specified via the Enum definition
 
     Args:
         instance: current object instance
@@ -304,14 +323,14 @@ def _enum_class_katra(typed, allowed, default=None, optional=False):
     if default is not None:
         x = attr.ib(
             validator=[partial(_in_type, options=allowed)],
-            default=default,
+            default=_cast_enum_default(default),
             type=typed,
             metadata={"base": typed.__name__},
         )
     elif optional:
         x = attr.ib(
             validator=attr.validators.optional([partial(_in_type, options=allowed)]),
-            default=default,
+            default=_cast_enum_default(default),
             type=typed,
             metadata={"base": typed.__name__, "optional": True},
         )

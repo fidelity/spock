@@ -1,4 +1,6 @@
-from typing import Any, Callable, Tuple, TypeVar, Union, overload
+from typing import Any, Callable, Tuple, TypeVar, Union, overload, Optional, List, Type
+
+from spock.builder import ConfigArgBuilder
 
 from attr import attrib, field
 
@@ -39,3 +41,12 @@ def spock(
     make_init: bool = True,
     dynamic: bool = False,
 ) -> Callable[[_C], _C]: ...
+def SpockBuilder(
+    *args: _C,
+    configs: Optional[List] = None,
+    desc: str = "",
+    lazy: bool = False,
+    no_cmd_line: bool = False,
+    s3_config: Optional[_C] = None,
+    **kwargs
+) -> ConfigArgBuilder: ...
