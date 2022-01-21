@@ -11,11 +11,11 @@ Please refer to the documentation provided in the README.md
 
 from spock._version import get_versions
 from spock.builder import ConfigArgBuilder
-from spock.config import spock, spock_attr
+from spock.config import spock
 
 SpockBuilder = ConfigArgBuilder
 
-__all__ = ["args", "builder", "config", "spock", "spock_attr", "SpockBuilder"]
+__all__ = ["args", "builder", "config", "spock", "SpockBuilder"]
 
 __version__ = get_versions()["version"]
 del get_versions
