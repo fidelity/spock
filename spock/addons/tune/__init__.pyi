@@ -25,20 +25,6 @@ def __dataclass_transform__(
 ) -> Callable[[_T], _T]: ...
 @overload
 @__dataclass_transform__(kw_only_default=True, field_descriptors=(attrib, field))
-def _spock_tune(
-    maybe_cls: _C,
-    kw_only: bool = True,
-    make_init: bool = True,
-) -> _C: ...
-@overload
-@__dataclass_transform__(kw_only_default=True, field_descriptors=(attrib, field))
-def _spock_tune(
-    maybe_cls: None = ...,
-    kw_only: bool = True,
-    make_init: bool = True,
-) -> Callable[[_C], _C]: ...
-@overload
-@__dataclass_transform__(kw_only_default=True, field_descriptors=(attrib, field))
 def spockTuner(
     maybe_cls: _C,
     kw_only: bool = True,

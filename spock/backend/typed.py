@@ -431,27 +431,6 @@ def _handle_optional_typing(typed):
     return typed, optional
 
 
-def _check_generic_recursive_single_type(typed):
-    """Checks generics for the single types -- mixed types of generics are not allowed
-
-    DEPRECATED -- NOW SUPPORTS MIXED TYPES OF TUPLES
-
-    Args:
-        typed: type
-
-    Returns:
-    """
-    # Check if it has __args__ to look for optionality as it is a GenericAlias
-    # if hasattr(typed, '__args__'):
-    #     if len(set(typed.__args__)) > 1:
-    #         type_list = [str(val) for val in typed.__args__]
-    #         raise TypeError(f"Passing multiple different subscript types to GenericAlias is not supported: {type_list}")
-    #     else:
-    #         for val in typed.__args__:
-    #             _check_generic_recursive_single_type(typed=val)
-    pass
-
-
 def katra(typed, default=None):
     """Public interface to create a katra
 
@@ -470,8 +449,6 @@ def katra(typed, default=None):
     """
     # Handle optionals
     typed, optional = _handle_optional_typing(typed)
-    # Check generic types for consistent types
-    _check_generic_recursive_single_type(typed)
     # We need to check if the type is a _GenericAlias so that we can handle subscripted general types
     # If it is subscript typed it will not be T which python uses as a generic type name
     if isinstance(typed, _GenericAlias) and (

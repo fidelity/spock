@@ -15,3 +15,9 @@ class _SpockNotOptionalError(Exception):
     """Custom exception for missing value"""
 
     pass
+
+
+class _SpockDuplicateArgumentError(Exception):
+    """Custom exception type for duplicated values"""
+
+    pass

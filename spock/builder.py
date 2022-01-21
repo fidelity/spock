@@ -162,12 +162,8 @@ class ConfigArgBuilder:
             argument namespace(s) -- fixed + drawn sample from tuner backend
 
         """
-        if self._tune_obj is None:
-            raise ValueError(
-                f"Called sample method without passing any @spockTuner decorated classes"
-            )
         if self._tuner_interface is None:
-            raise ValueError(
+            raise RuntimeError(
                 f"Called sample method without first calling the tuner method that initializes the "
                 f"backend library"
             )
@@ -187,10 +183,12 @@ class ConfigArgBuilder:
             self so that functions can be chained
 
         """
+
         if self._tune_obj is None:
-            raise ValueError(
+            raise RuntimeError(
                 f"Called tuner method without passing any @spockTuner decorated classes"
             )
+
         try:
             from spock.addons.tune.tuner import TunerInterface
 
@@ -200,12 +198,8 @@ class ConfigArgBuilder:
                 fixed_namespace=self._arg_namespace,
             )
             self._tuner_state = self._tuner_interface.sample()
-        except ImportError as e:
-            print(
-                "Missing libraries to support tune functionality. Please re-install with the extra tune "
-                "dependencies -- pip install spock-config[tune]."
-                f"Error: {e}"
-            )
+        except Exception as e:
+            raise e
         return self
 
     def _print_usage_and_exit(self, msg=None, sys_exit=True, exit_code=1):
@@ -500,7 +494,7 @@ class ConfigArgBuilder:
         if add_tuner_sample:
             if self._tune_obj is None:
                 raise ValueError(
-                    f"Called save method with add_tuner_sample as {add_tuner_sample} without passing any @spockTuner "
+                    f"Called save method with add_tuner_sample as `{add_tuner_sample}` without passing any @spockTuner "
                     f"decorated classes -- please use the add_tuner_sample flag for saving only hyper-parameter tuning "
                     f"runs"
                 )
@@ -553,7 +547,7 @@ class ConfigArgBuilder:
         """
         if self._tune_obj is None:
             raise ValueError(
-                f"Called save_best method without passing any @spockTuner decorated classes -- please use the save()"
+                f"Called save_best method without passing any @spockTuner decorated classes -- please use the `save()`"
                 f" method for saving non hyper-parameter tuning runs"
             )
         file_name = f"hp.best" if file_name is None else f"{file_name}.hp.best"

@@ -45,7 +45,6 @@ class BaseInterface(ABC):
             Spockspace of the current hyper-parameter draw
 
         """
-        pass
 
     @abstractmethod
     def _construct(self):
@@ -56,19 +55,16 @@ class BaseInterface(ABC):
             flat dictionary of all hyper-parameters named with dot notation (class.param_name)
 
         """
-        pass
 
     @property
     @abstractmethod
     def _get_sample(self):
         """Gets the sample parameter dictionary from the underlying backend"""
-        pass
 
     @property
     @abstractmethod
     def tuner_status(self):
         """Returns a dictionary of all the necessary underlying tuner internals to report the result"""
-        pass
 
     @property
     @abstractmethod
@@ -173,13 +169,16 @@ class BaseInterface(ABC):
         try:
             val.choices = [caster(v) for v in val.choices]
             return val
-        except TypeError:
-            print(
-                f"Attempted to cast into type: {val.type} but failed -- check the inputs to {type_string}"
+        except Exception as e:
+            raise TypeError(
+                f"Attempted to cast into type: `{val.type}` but failed -- check the inputs to `{type_string}`: {e}"
             )
 
     def _try_range_cast(self, val, type_string: str):
-        """Try/except for casting range parameters
+        """Casting range parameters
+
+        Note that we don't need to try/except here as the range is already constrained to be a float/int which
+        will always be able to be cast into float/int
 
         Args:
             val: current attr val
@@ -191,11 +190,6 @@ class BaseInterface(ABC):
 
         """
         caster = self._get_caster(val)
-        try:
-            low = caster(val.bounds[0])
-            high = caster(val.bounds[1])
-            return low, high
-        except TypeError:
-            print(
-                f"Attempted to cast into type: {val.type} but failed -- check the inputs to {type_string}"
-            )
+        low = caster(val.bounds[0])
+        high = caster(val.bounds[1])
+        return low, high
