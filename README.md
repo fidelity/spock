@@ -6,10 +6,10 @@
 
 <p align="center">
   <a href="https://opensource.org/licenses/Apache-2.0"><img src="https://img.shields.io/badge/License-Apache%202.0-9cf"/></a>
-  <a href="https://bestpractices.coreinfrastructure.org/projects/5551"><img src="https://bestpractices.coreinfrastructure.org/projects/5551/badge"></a>
+  <a href="https://bestpractices.coreinfrastructure.org/projects/5551"><img src="https://bestpractices.coreinfrastructure.org/projects/5551/badge"/></a>
   <a><img src="https://img.shields.io/badge/python-3.6+-informational.svg"/></a>
   <a href="https://github.com/psf/black"><img src="https://img.shields.io/badge/code%20style-black-000000.svg"/></a>
-  <a href="https://badge.fury.io/py/spock-config"><img src="https://badge.fury.io/py/spock-config.svg" alt="PyPI version"></a>
+  <a href="https://badge.fury.io/py/spock-config"><img src="https://badge.fury.io/py/spock-config.svg"/></a>
   <a href="https://coveralls.io/github/fidelity/spock?branch=master"><img src="https://coveralls.io/repos/github/fidelity/spock/badge.svg?branch=master"/></a>
   <a><img src="https://github.com/fidelity/spock/workflows/pytest/badge.svg?branch=master"/></a>
   <a><img src="https://github.com/fidelity/spock/workflows/docs/badge.svg"/></a>
