@@ -37,3 +37,17 @@ def _spock_tune(
     kw_only: bool = True,
     make_init: bool = True,
 ) -> Callable[[_C], _C]: ...
+@overload
+@__dataclass_transform__(kw_only_default=True, field_descriptors=(attrib, field))
+def spockTuner(
+    maybe_cls: _C,
+    kw_only: bool = True,
+    make_init: bool = True,
+) -> _C: ...
+@overload
+@__dataclass_transform__(kw_only_default=True, field_descriptors=(attrib, field))
+def spockTuner(
+    maybe_cls: None = ...,
+    kw_only: bool = True,
+    make_init: bool = True,
+) -> Callable[[_C], _C]: ...

@@ -1,8 +1,6 @@
-from typing import Any, Callable, List, Optional, Tuple, Type, TypeVar, Union, overload
+from typing import Any, Callable, Tuple, TypeVar, Union, overload
 
 from attr import attrib, field
-
-from spock.builder import ConfigArgBuilder
 
 _T = TypeVar("_T")
 _C = TypeVar("_C", bound=type)
@@ -27,26 +25,15 @@ def __dataclass_transform__(
 ) -> Callable[[_T], _T]: ...
 @overload
 @__dataclass_transform__(kw_only_default=True, field_descriptors=(attrib, field))
-def spock(
+def spockTuner(
     maybe_cls: _C,
     kw_only: bool = True,
     make_init: bool = True,
-    dynamic: bool = False,
 ) -> _C: ...
 @overload
 @__dataclass_transform__(kw_only_default=True, field_descriptors=(attrib, field))
-def spock(
+def spockTuner(
     maybe_cls: None = ...,
     kw_only: bool = True,
     make_init: bool = True,
-    dynamic: bool = False,
 ) -> Callable[[_C], _C]: ...
-def SpockBuilder(
-    *args: _C,
-    configs: Optional[List] = None,
-    desc: str = "",
-    lazy: bool = False,
-    no_cmd_line: bool = False,
-    s3_config: Optional[_C] = None,
-    **kwargs,
-) -> ConfigArgBuilder: ...
