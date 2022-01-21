@@ -13,7 +13,7 @@ from spock.addons.tune.config import (
     ChoiceHyperParameter,
     OptunaTunerConfig,
     RangeHyperParameter,
-    spockTuner
+    spockTuner,
 )
 
 __all__ = [

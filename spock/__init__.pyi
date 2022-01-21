@@ -1,8 +1,8 @@
-from typing import Any, Callable, Tuple, TypeVar, Union, overload, Optional, List, Type
-
-from spock.builder import ConfigArgBuilder
+from typing import Any, Callable, List, Optional, Tuple, Type, TypeVar, Union, overload
 
 from attr import attrib, field
+
+from spock.builder import ConfigArgBuilder
 
 _T = TypeVar("_T")
 _C = TypeVar("_C", bound=type)
@@ -48,5 +48,5 @@ def SpockBuilder(
     lazy: bool = False,
     no_cmd_line: bool = False,
     s3_config: Optional[_C] = None,
-    **kwargs
+    **kwargs,
 ) -> ConfigArgBuilder: ...
