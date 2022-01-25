@@ -8,10 +8,10 @@
 import argparse
 import sys
 import typing
+from collections import Counter
+from copy import deepcopy
 from pathlib import Path
 from uuid import uuid4
-from copy import deepcopy
-from collections import Counter
 
 import attr
 
@@ -19,7 +19,7 @@ from spock.backend.builder import AttrBuilder
 from spock.backend.payload import AttrPayload
 from spock.backend.saver import AttrSaver
 from spock.backend.wrappers import Spockspace
-from spock.exceptions import _SpockUndecoratedClass, _SpockEvolveError
+from spock.exceptions import _SpockEvolveError, _SpockUndecoratedClass
 from spock.utils import _is_spock_instance, check_payload_overwrite, deep_payload_update
 
 _CLS = typing.TypeVar("_CLS", bound=type)
@@ -603,7 +603,15 @@ class ConfigArgBuilder:
         # Create a new copy of the object
         new_arg_namespace = deepcopy(self._arg_namespace)
         # Determine the order of overwrite ops -- based on the topological order
-        topo_idx = sorted(zip([self._builder_obj.graph.topological_order.index(type(v).__name__) for v in args], args))
+        topo_idx = sorted(
+            zip(
+                [
+                    self._builder_obj.graph.topological_order.index(type(v).__name__)
+                    for v in args
+                ],
+                args,
+            )
+        )
         args = {type(v).__name__: v for _, v in topo_idx}
         # Walk through the now sorted set of evolve classes
         for k, v in args.items():
@@ -613,10 +621,14 @@ class ConfigArgBuilder:
             # Note: we don't need to evolve here as it's a fully new obj
             setattr(new_arg_namespace, cls_name, v)
             # Recurse upwards through the deps stack and evolve all the necessary classes
-            new_arg_namespace, all_cls = self._recurse_upwards(new_arg_namespace, cls_name, args)
+            new_arg_namespace, all_cls = self._recurse_upwards(
+                new_arg_namespace, cls_name, args
+            )
         return new_arg_namespace
 
-    def _recurse_upwards(self, new_arg_namespace: Spockspace, current_cls: str, all_cls: typing.Dict):
+    def _recurse_upwards(
+        self, new_arg_namespace: Spockspace, current_cls: str, all_cls: typing.Dict
+    ):
         """Using the underlying graph work recurse upwards through the parents and swap in the correct values
 
         Args:
@@ -634,16 +646,24 @@ class ConfigArgBuilder:
             for parent_cls in parents:
                 parent_name = parent_cls.__name__
                 # Change the parent classes in the Spockspace
-                new_arg_namespace = self._set_matching_attrs_by_name(new_arg_namespace, current_cls, parent_name)
+                new_arg_namespace = self._set_matching_attrs_by_name(
+                    new_arg_namespace, current_cls, parent_name
+                )
                 # if the parent is in the evolve classes then morph them too
                 if parent_name in all_cls.keys():
-                    all_cls = self._set_matching_attrs_by_name_args(current_cls, parent_name, all_cls)
+                    all_cls = self._set_matching_attrs_by_name_args(
+                        current_cls, parent_name, all_cls
+                    )
                 # then recurse to the parents
-                new_arg_namespace, all_cls = self._recurse_upwards(new_arg_namespace, parent_name, all_cls)
+                new_arg_namespace, all_cls = self._recurse_upwards(
+                    new_arg_namespace, parent_name, all_cls
+                )
         return new_arg_namespace, all_cls
 
     @staticmethod
-    def _set_matching_attrs_by_name_args(current_cls_name: str, parent_cls_name: str, all_cls: typing.Dict):
+    def _set_matching_attrs_by_name_args(
+        current_cls_name: str, parent_cls_name: str, all_cls: typing.Dict
+    ):
         """Sets the value of an attribute by matching it to a spock class name
 
         Args:
@@ -672,7 +692,9 @@ class ConfigArgBuilder:
         return all_cls
 
     @staticmethod
-    def _set_matching_attrs_by_name(new_arg_namespace: Spockspace, current_cls_name: str, parent_cls_name: str):
+    def _set_matching_attrs_by_name(
+        new_arg_namespace: Spockspace, current_cls_name: str, parent_cls_name: str
+    ):
         """Sets the value of an attribute by matching it to a spock class name
 
         Args:
