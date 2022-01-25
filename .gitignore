@@ -4,6 +4,9 @@
 # Debugging folder
 debug/
 
+# Auto-gen Reference Docs
+website/docs/reference
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
