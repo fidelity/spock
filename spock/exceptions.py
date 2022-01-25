@@ -21,3 +21,7 @@ class _SpockDuplicateArgumentError(Exception):
     """Custom exception type for duplicated values"""
 
     pass
+
+
+class _SpockEvolveError(Exception):
+    """Custom exception for when evolve errors occur"""
