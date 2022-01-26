@@ -11,7 +11,7 @@ All examples can be found [here](https://github.com/fidelity/spock/blob/master/e
 
 Install `spock` with the extra hyper-parameter tuning related dependencies. Requires Python 3.7+ due to ax-platform
 
-```bash
+```shell
 pip install spock-config[tune]
 ```
 

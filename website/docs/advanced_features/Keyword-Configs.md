@@ -32,8 +32,8 @@ def main():
 
 Now to run `tutorial.py` we don't need to pass a command line argument:
 
-```bash
-$ python tutorial.py
+```shell
+python tutorial.py
 ```
 
 ### Specifying The Config Keyword Argument & The No Command Line Flag

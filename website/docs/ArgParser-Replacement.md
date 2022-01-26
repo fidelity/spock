@@ -35,7 +35,7 @@ valid command-line arguments:
 Simply do not pass a `-c` or `--config` argument at the command line and instead pass in all values to the 
 automatically generated cmd-line arguments.
 
-```bash
-$ python simple.py --ExampleConfig.read_path /my/file/path --ExampleConfig.date 1292838124 \
+```shell
+python simple.py --ExampleConfig.read_path /my/file/path --ExampleConfig.date 1292838124 \
 --ExampleConfig.cache_path /path/to/cache/dir
 ```

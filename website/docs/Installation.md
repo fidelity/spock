@@ -9,7 +9,7 @@
 ### Install/Upgrade
 
 #### PyPi
-```bash
+```shell
 pip install spock-config
 ```
 
@@ -17,7 +17,7 @@ pip install spock-config
 
 Extra Dependencies: boto3, botocore, hurry.filesize, s3transfer
 
-```bash
+```shell
 pip install spock-config[s3]
 ```
 
@@ -27,17 +27,17 @@ Requires Python 3.7+
 
 Extra Dependencies: optuna, ax-platform, torch, torchvision, mypy_extensions (Python < 3.8)
 
-```bash
+```shell
 pip install spock-config[tune]
 ```
 
 #### Pip From Source
-```bash
+```shell
 pip install git+https://github.com/fidelity/spock
 ```
 
 #### Build From Source
-```bash
+```shell
 git clone https://github.com/fidelity/spock
 cd spock
 pip install setuptools wheel

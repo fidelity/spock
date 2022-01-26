@@ -31,7 +31,8 @@
 
 `spock` is a framework that helps users easily define, manage, and use complex parameter configurations within Python 
 applications. It lets you focus on the code you need to write instead of re-implementing boilerplate code such as
-creating ArgParsers, reading configuration files, handling dependencies, type validation, implementing traceability etc.
+creating ArgParsers, reading configuration files, handling dependencies, implementing type validation, 
+maintaining traceability, etc.
 
 `spock` configurations are normal python classes that are decorated with `@spock`. It supports 
 inheritance, dynamic class dependencies, loading/saving configurations from/to multiple markdown formats, automatically 
@@ -39,13 +40,14 @@ generating CLI arguments, and hierarchical configuration by composition.
 
 ## 💥 Why You Should Use Spock 💥 
 
-* Simple and organized parameter defintions (i.e. a single line)
-* Statically type checked & frozen parameters (i.e. fail early during long ML training runs)
+* Simple organized parameter definitions (i.e. a single line)
+* Type checked (static-eqsue) & frozen parameters (i.e. fail early during long ML training runs)
 * Complex parameter dependencies made simple (i.e. `@spock` class with a parameter that is an Enum of other 
 `@spock` classes)
-* Fully serializable parameter state (i.e. reproduce prior runtime parameter configurations)
-* Automatic CLI generation without argparser boilerplate (i.e click or typer for free!)
-* Unified hyper-parameter definitions (i.e. don't write different definitions for Ax or Optuna)
+* Fully serializable parameter state(s) (i.e. exactly reproduce prior runtime parameter configurations)
+* Automatic type checked CLI generation w/o argparser boilerplate (i.e click and/or typer for free!)
+* Easily maintain parity between CLIs and Python APIs (i.e. single line changes between CLI and Python API definitions)
+* Unified hyper-parameter definitions and interface (i.e. don't write different definitions for Ax or Optuna)
 
 ## Key Features
 
@@ -95,11 +97,17 @@ See [Releases](https://github.com/fidelity/spock/releases) for more information.
 
 <details>
 
+#### January 26th, 2022
+* Added `evolve` support to the underlying `SpockBuilder` class. This provides functionality similar to the underlying
+attrs library ([attrs.evolve](https://www.attrs.org/en/stable/api.html#attrs.evolve)). `evolve()` creates a new 
+`Spockspace` instance based on differences between the underlying declared state and any passed in instantiated 
+`@spock` decorated classes.
+
 #### January 18th, 2022
 * Support for lazy evaluation: (1) inherited classes do not need to be `@spock` decorated, (2) dependencies/references 
 between `spock` classes can be lazily handled thus preventing the need for every `@spock` decorated classes to be 
 passed into `*args` within the main `SpockBuilder` API
-* Updated main API interface for better top-level imports (backwards compatible): `ConfigArgBuilder`->`spockBuilder`
+* Updated main API interface for better top-level imports (backwards compatible): `ConfigArgBuilder`->`SpockBuilder`
 * Added stubs to the underlying decorator that should help with type hinting in VSCode (pylance/pyright)
 
 #### December 14, 2021
