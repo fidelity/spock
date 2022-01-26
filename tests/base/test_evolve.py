@@ -89,7 +89,6 @@ class TestEvolve:
             return config
 
     def test_evolve(self, arg_builder):
-
         evolve_nested_stuff = EvolveNestedStuff(
             one=12345, two='abcdef'
         )
@@ -148,3 +147,28 @@ class TestEvolve:
         evolve_not_evolved = NotEvolved(one=100)
         with pytest.raises(_SpockEvolveError):
             new_class = arg_builder.evolve(evolve_not_evolved)
+
+    def test_2_dict(self, arg_builder):
+        evolve_nested_stuff = EvolveNestedStuff(
+            one=12345, two='abcdef'
+        )
+        evolve_type_config = TypeThinDefaultConfig(
+            bool_p_set_def=False,
+            int_p_def=16,
+            float_p_def=16.0,
+            string_p_def="Spocked",
+            list_p_float_def=[16.0, 26.0],
+            list_p_int_def=[16, 26],
+            list_p_str_def=["Spocked", "Packaged"],
+            list_p_bool_def=[False, True],
+            tuple_p_float_def=(16.0, 26.0),
+            tuple_p_int_def=(16, 26),
+            tuple_p_str_def=("Spocked", "Packaged"),
+            tuple_p_bool_def=(False, True),
+            choice_p_str_def="option_1",
+            list_choice_p_str_def=["option_2"],
+            list_list_choice_p_str_def=[["option_2"], ["option_2"]]
+        )
+        # Evolve the class
+        new_class = arg_builder.evolve(evolve_nested_stuff, evolve_type_config)
+        assert isinstance(arg_builder.spockspace_2_dict(new_class), dict) is True
