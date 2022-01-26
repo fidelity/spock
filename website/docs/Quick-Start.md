@@ -102,17 +102,17 @@ most_fancy_parameter: [768, 768, 512, 128]
 
 Finally, we would run our script and pass the path to the configuration file to the command line (`-c` or `--config`):
 
-```bash
-$ python simple.py -c simple.yaml
+```shell
+python simple.py -c simple.yaml
 ```
 
 To get help for our `spock` class and defined parameters:
 
-```bash
-$ python simple.py --help
+```shell
+python simple.py --help
 ```
 
-```bash
+```shell
 usage: /Users/a635179/Documents/git_repos/open_source/spock/examples/quick-start/simple.py -c [--config] config1 [config2, config3, ...]
 
 Quick start example

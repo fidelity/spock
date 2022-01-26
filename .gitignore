@@ -5,7 +5,7 @@
 debug/
 
 # Auto-gen Reference Docs
-website/docs/reference
+website/docs/reference/**/*.md
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

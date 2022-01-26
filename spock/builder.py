@@ -581,10 +581,14 @@ class ConfigArgBuilder:
         allows for class evolution -- returns a new Spockspace object
 
         Args:
-            *args: variable number of @spock decorated classes to evolve parameters with
+            *args: variable number of instantiated @spock decorated classes to evolve parameters with
 
         Returns:
             new_arg_namespace: Spockspace evolved with *arg @spock decorated classes
+
+        Raises:
+            _SpockEvolveError: if multiple of the same instance are passed as input or if the one or more of the inputs
+            are not within the set of original input classes
 
         """
         # First check that all instances are in the underlying set of input_classes and that there are no dupes

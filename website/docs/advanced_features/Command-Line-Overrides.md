@@ -106,23 +106,23 @@ class SGDConfig(OptimizerConfig):
 
 To run `tutorial.py` we would normally pass just the path to the configuration file as a command line argument:
 
-```bash
-$ python tutorial.py --config tutorial.yaml
+```shell
+python tutorial.py --config tutorial.yaml
 ```
 
 But with command line overrides we can also pass parameter arguments to override their value within the configuration
 file:
 
-```bash
-$ python tutorial.py --config tutorial.yaml --DataConfig.cache_path /tmp/trash
+```shell
+python tutorial.py --config tutorial.yaml --DataConfig.cache_path /tmp/trash
 ```
 
 Each parameter can be overridden **ONLY** at the class specific level with the syntax `--classname.parameter`. For
 instance, our previous example would only override the `DataConfig.cache_path` and not the `ModelConfig.cache_path` even
 though they have the same parameter name (due to the different class names).
 
-```bash
-$ python tutorial.py --config tutorial.yaml --DataConfig.cache_path /tmp/trash
+```shell
+python tutorial.py --config tutorial.yaml --DataConfig.cache_path /tmp/trash
 ```
 
 ### Overriding Nested `@spock` Classes
@@ -204,8 +204,8 @@ NestedListStuff:
 
 We could override the parameters like so (note that the len must match the defined length from the YAML):
 
-```bash
-$ python tutorial.py --config tutorial.yaml --TypeConfig.nested_list.NestedListStuff.one [1,2] \
+```shell
+python tutorial.py --config tutorial.yaml --TypeConfig.nested_list.NestedListStuff.one [1,2] \
 --TypeConfig.nested_list.NestedListStuff.two ['ciao','ciao']
 ```
 
