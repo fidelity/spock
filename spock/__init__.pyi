@@ -1,11 +1,13 @@
-from typing import Any, Callable, List, Optional, Tuple, Type, TypeVar, Union, overload
+from typing import Any, Callable, List, Optional, Tuple, TypeVar, Union, overload
 
 from attr import attrib, field
 
+from spock.backend.typed import SavePath
 from spock.builder import ConfigArgBuilder
 
 _T = TypeVar("_T")
 _C = TypeVar("_C", bound=type)
+SavePath: SavePath
 
 # Note: from here
 # https://github.com/python-attrs/attrs/blob/main/src/attr/__init__.pyi
