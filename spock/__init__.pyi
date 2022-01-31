@@ -2,8 +2,8 @@ from typing import Any, Callable, List, Optional, Tuple, TypeVar, Union, overloa
 
 from attr import attrib, field
 
-from spock.builder import ConfigArgBuilder
 from spock.backend.typed import SavePath
+from spock.builder import ConfigArgBuilder
 
 _T = TypeVar("_T")
 _C = TypeVar("_C", bound=type)
