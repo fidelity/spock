@@ -62,6 +62,16 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         """Returns the graph of dependencies between spock classes"""
         return self._input_classes
 
+    @property
+    def dag(self):
+        """Returns the underlying graph DAG"""
+        return self._graph.dag
+
+    @property
+    def graph(self):
+        """Returns the underlying graph object"""
+        return self._graph
+
     @staticmethod
     @abstractmethod
     def _make_group_override_parser(parser, class_obj, class_name):

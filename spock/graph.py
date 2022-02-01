@@ -76,6 +76,10 @@ class Graph:
         """Returns the roots of the dependency graph"""
         return [self.node_map[k] for k, v in self.dag.items() if len(v) == 0]
 
+    @property
+    def topological_order(self):
+        return self._topological_sort()
+
     @staticmethod
     def _yield_class_deps(classes):
         """Generator to iterate through nodes and find dependencies
@@ -106,7 +110,10 @@ class Graph:
         # Iterate thorough all of the base spock classes to get the dependencies and reverse dependencies
         lazy_classes = []
         for _, v in self._yield_class_deps(classes):
-            if hasattr(sys.modules["spock"].backend.config, v):
+            if (
+                hasattr(sys.modules["spock"].backend.config, v)
+                and getattr(sys.modules["spock"].backend.config, v) not in classes
+            ):
                 print(
                     f"Lazy evaluation found a @spock decorated class named `{v}` within the registered types of "
                     f"sys.modules['spock'].backend.config -- Attempting to use the class "
@@ -219,3 +226,24 @@ class Graph:
         # Reset the stack for the current node if we've completed the DFS from this node
         recursion_stack.update({node: False})
         return False
+
+    def _topological_sort(self):
+        # DFS for topological sort
+        # https://en.wikipedia.org/wiki/Topological_sorting
+        visited = {key: False for key in self.node_names}
+        all_nodes = list(visited.keys())
+        stack = []
+        for node in all_nodes:
+            if visited.get(node) is False:
+                self._topological_sort_dfs(node, visited, stack)
+        stack.reverse()
+        return stack
+
+    def _topological_sort_dfs(self, node, visited, stack):
+        # Update the visited dict
+        visited.update({node: True})
+        # Recur for all edges
+        for val in self._dag.get(node):
+            if visited.get(val.__name__) is False:
+                self._topological_sort_dfs(val.__name__, visited, stack)
+        stack.append(node)

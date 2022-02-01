@@ -4,6 +4,7 @@ from attr import attrib, field
 
 _T = TypeVar("_T")
 _C = TypeVar("_C", bound=type)
+SavePath: SavePath
 
 # Note: from here
 # https://github.com/python-attrs/attrs/blob/main/src/attr/__init__.pyi

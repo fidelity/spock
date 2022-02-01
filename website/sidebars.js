@@ -114,6 +114,11 @@ module.exports = {
                     label: 'CMD Line Keyword Arguments',
                     id: 'advanced_features/Command-Line-Overrides'
                 },
+                {
+                    type: 'doc',
+                    label: 'Evolve',
+                    id: 'advanced_features/Evolve'
+                },
             ],
         },
         {
