@@ -110,7 +110,10 @@ class Graph:
         # Iterate thorough all of the base spock classes to get the dependencies and reverse dependencies
         lazy_classes = []
         for _, v in self._yield_class_deps(classes):
-            if hasattr(sys.modules["spock"].backend.config, v):
+            if (
+                hasattr(sys.modules["spock"].backend.config, v)
+                and getattr(sys.modules["spock"].backend.config, v) not in classes
+            ):
                 print(
                     f"Lazy evaluation found a @spock decorated class named `{v}` within the registered types of "
                     f"sys.modules['spock'].backend.config -- Attempting to use the class "
