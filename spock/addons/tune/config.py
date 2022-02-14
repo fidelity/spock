@@ -44,28 +44,70 @@ class OptunaTunerConfig:
     directions: Optional[Sequence[Union[str, optuna.study.StudyDirection]]] = None
 
 
-def _spock_tune(cls):
+def _process_class(cls, kw_only: bool, make_init: bool, dynamic: bool):
+    """Process a given class
+
+    Args:
+        cls: basic class definition
+        kw_only: set kwarg only
+        make_init: make an init function
+        dynamic: allows inherited classes to not be @spock decorated
+
+    Returns:
+        cls with attrs dunder methods added
+
+    """
+    # Handles the MRO and gets old annotations
+    bases, attrs_dict, merged_annotations = _base_attr(cls, kw_only, make_init, dynamic)
+    # Dynamically make an attr class
+    obj = attr.make_class(
+        name=cls.__name__,
+        bases=bases,
+        attrs=attrs_dict,
+        kw_only=kw_only,
+        frozen=True,
+        auto_attribs=True,
+        init=make_init,
+    )
+    # For each class we dynamically create we need to register it within the system modules for pickle to work
+    setattr(sys.modules["spock"].addons.tune.config, obj.__name__, obj)
+    # Swap the __doc__ string from cls to obj
+    obj.__doc__ = cls.__doc__
+    # Set the __init__ function
+    # Handle __annotations__ from the MRO
+    obj.__annotations__ = merged_annotations
+    return obj
+
+
+def _spock_tune(
+    maybe_cls=None,
+    kw_only=True,
+    make_init=True,
+):
     """Ovverides basic spock_attr decorator with another name
 
     Using a different name allows spock to easily determine which parameters are normal and which are
     meant to be used in a hyper-parameter tuning backend
 
     Args:
-        cls: basic class def
+        maybe_cls: maybe a basic class def maybe None depending on call type
+        kw_only: Make all attributes keyword-only
+        make_init: bool, define a __init__() method
 
     Returns:
-        cls: slotted attrs class that is frozen and kw only
+        cls: attrs class that is frozen and kw only
     """
-    bases, attrs_dict = _base_attr(cls)
-    # Dynamically make an attr class
-    obj = attr.make_class(
-        name=cls.__name__, bases=bases, attrs=attrs_dict, kw_only=True, frozen=True
-    )
-    # For each class we dynamically create we need to register it within the system modules for pickle to work
-    setattr(sys.modules["spock"].addons.tune.config, obj.__name__, obj)
-    # Swap the __doc__ string from cls to obj
-    obj.__doc__ = cls.__doc__
-    return obj
+
+    def wrap(cls):
+        return _process_class(cls, kw_only=kw_only, make_init=make_init, dynamic=False)
+
+    # Note: Taken from dataclass/attr definition(s)
+    # maybe_cls's type depends on the usage of the decorator.  It's a class
+    # if it's used as `@spockTuner` but ``None`` if used as `@spockTuner()`.
+    if maybe_cls is None:
+        return wrap
+    else:
+        return wrap(maybe_cls)
 
 
 # Make the alias for the decorator

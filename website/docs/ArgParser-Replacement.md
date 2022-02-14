@@ -6,10 +6,10 @@ from the command line or from setting defaults within the `@spock` decorated cla
 ### Automatic Command-Line Argument Generation
 
 `spock` will automatically generate command line arguments for each parameter, unless the `no_cmd_line=True` flag is 
-passed to the `ConfigArgBuilder`. Let's create a simple example to demonstrate:
+passed to the `SpockBuilder`. Let's create a simple example to demonstrate:
 
 ```python
-from spock.config import spock
+from spock import spock
 from typing import Optional
 
 @spock
@@ -35,7 +35,7 @@ valid command-line arguments:
 Simply do not pass a `-c` or `--config` argument at the command line and instead pass in all values to the 
 automatically generated cmd-line arguments.
 
-```bash
-$ python simple.py --ExampleConfig.read_path /my/file/path --ExampleConfig.date 1292838124 \
+```shell
+python simple.py --ExampleConfig.read_path /my/file/path --ExampleConfig.date 1292838124 \
 --ExampleConfig.cache_path /path/to/cache/dir
 ```

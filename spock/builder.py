@@ -8,6 +8,8 @@
 import argparse
 import sys
 import typing
+from collections import Counter
+from copy import deepcopy
 from pathlib import Path
 from uuid import uuid4
 
@@ -17,7 +19,10 @@ from spock.backend.builder import AttrBuilder
 from spock.backend.payload import AttrPayload
 from spock.backend.saver import AttrSaver
 from spock.backend.wrappers import Spockspace
-from spock.utils import check_payload_overwrite, deep_payload_update
+from spock.exceptions import _SpockEvolveError, _SpockUndecoratedClass
+from spock.utils import _is_spock_instance, check_payload_overwrite, deep_payload_update
+
+_CLS = typing.TypeVar("_CLS", bound=type)
 
 
 class ConfigArgBuilder:
@@ -42,6 +47,11 @@ class ConfigArgBuilder:
         _tune_namespace: namespace that hold the generated tuner related parameters
         _sample_count: current call to the sample function
         _fixed_uuid: fixed uuid to write the best file to the same path
+        _configs = configs if configs is None else [Path(c) for c in configs]
+        _lazy: flag to lazily find @spock decorated classes registered within sys.modules["spock"].backend.config
+            thus alleviating the need to pass all @spock decorated classes to *args
+        _no_cmd_line: turn off cmd line args
+        _desc: description for help
 
     """
 
@@ -50,6 +60,7 @@ class ConfigArgBuilder:
         *args,
         configs: typing.Optional[typing.List] = None,
         desc: str = "",
+        lazy: bool = False,
         no_cmd_line: bool = False,
         s3_config=None,
         **kwargs,
@@ -60,6 +71,9 @@ class ConfigArgBuilder:
             *args: tuple of spock decorated classes to process
             configs: list of config paths
             desc: description for help
+            lazy: attempts to lazily find @spock decorated classes registered within sys.modules["spock"].backend.config
+            as well as the parents of any lazily inherited @spock class
+            thus alleviating the need to pass all @spock decorated classes to *args
             no_cmd_line: turn off cmd line args
             s3_config: s3Config object for S3 support
             **kwargs: keyword args
@@ -68,6 +82,7 @@ class ConfigArgBuilder:
         # Do some verification first
         self._verify_attr(args)
         self._configs = configs if configs is None else [Path(c) for c in configs]
+        self._lazy = lazy
         self._no_cmd_line = no_cmd_line
         self._desc = desc
         # Build the payload and saver objects
@@ -76,7 +91,7 @@ class ConfigArgBuilder:
         # Split the fixed parameters from the tuneable ones (if present)
         fixed_args, tune_args = self._strip_tune_parameters(args)
         # The fixed parameter builder
-        self._builder_obj = AttrBuilder(*fixed_args, **kwargs)
+        self._builder_obj = AttrBuilder(*fixed_args, lazy=lazy, **kwargs)
         # The possible tunable parameter builder -- might return None
         self._tune_obj, self._tune_payload_obj = self._handle_tuner_objects(
             tune_args, s3_config, kwargs
@@ -152,12 +167,8 @@ class ConfigArgBuilder:
             argument namespace(s) -- fixed + drawn sample from tuner backend
 
         """
-        if self._tune_obj is None:
-            raise ValueError(
-                f"Called sample method without passing any @spockTuner decorated classes"
-            )
         if self._tuner_interface is None:
-            raise ValueError(
+            raise RuntimeError(
                 f"Called sample method without first calling the tuner method that initializes the "
                 f"backend library"
             )
@@ -177,10 +188,12 @@ class ConfigArgBuilder:
             self so that functions can be chained
 
         """
+
         if self._tune_obj is None:
-            raise ValueError(
+            raise RuntimeError(
                 f"Called tuner method without passing any @spockTuner decorated classes"
             )
+
         try:
             from spock.addons.tune.tuner import TunerInterface
 
@@ -190,12 +203,8 @@ class ConfigArgBuilder:
                 fixed_namespace=self._arg_namespace,
             )
             self._tuner_state = self._tuner_interface.sample()
-        except ImportError as e:
-            print(
-                "Missing libraries to support tune functionality. Please re-install with the extra tune "
-                "dependencies -- pip install spock-config[tune]."
-                f"Error: {e}"
-            )
+        except Exception as e:
+            raise e
         return self
 
     def _print_usage_and_exit(self, msg=None, sys_exit=True, exit_code=1):
@@ -220,8 +229,7 @@ class ConfigArgBuilder:
         if sys_exit:
             sys.exit(exit_code)
 
-    @staticmethod
-    def _handle_tuner_objects(tune_args, s3_config, kwargs):
+    def _handle_tuner_objects(self, tune_args, s3_config, kwargs):
         """Handles creating the tuner builder object if @spockTuner classes were passed in
 
         Args:
@@ -238,7 +246,7 @@ class ConfigArgBuilder:
                 from spock.addons.tune.builder import TunerBuilder
                 from spock.addons.tune.payload import TunerPayload
 
-                tuner_builder = TunerBuilder(*tune_args, **kwargs)
+                tuner_builder = TunerBuilder(*tune_args, **kwargs, lazy=self._lazy)
                 tuner_payload = TunerPayload(s3_config=s3_config)
                 return tuner_builder, tuner_payload
             except ImportError:
@@ -491,7 +499,7 @@ class ConfigArgBuilder:
         if add_tuner_sample:
             if self._tune_obj is None:
                 raise ValueError(
-                    f"Called save method with add_tuner_sample as {add_tuner_sample} without passing any @spockTuner "
+                    f"Called save method with add_tuner_sample as `{add_tuner_sample}` without passing any @spockTuner "
                     f"decorated classes -- please use the add_tuner_sample flag for saving only hyper-parameter tuning "
                     f"runs"
                 )
@@ -544,7 +552,7 @@ class ConfigArgBuilder:
         """
         if self._tune_obj is None:
             raise ValueError(
-                f"Called save_best method without passing any @spockTuner decorated classes -- please use the save()"
+                f"Called save_best method without passing any @spockTuner decorated classes -- please use the `save()`"
                 f" method for saving non hyper-parameter tuning runs"
             )
         file_name = f"hp.best" if file_name is None else f"{file_name}.hp.best"
@@ -564,3 +572,169 @@ class ConfigArgBuilder:
     def config_2_dict(self):
         """Dictionary representation of the arg payload"""
         return self._saver_obj.dict_payload(self._arg_namespace)
+
+    def spockspace_2_dict(self, payload: Spockspace):
+        """Converts an input SpockSpace into a dictionary
+
+        Args:
+            payload: SpockSpace generated by the ConfigArgBuilder
+
+        Returns:
+            dictionary representation of the SpockSpace
+
+        """
+        return self._saver_obj.dict_payload(payload)
+
+    def evolve(self, *args: typing.Type[_CLS]):
+        """Function that allows a user to evolve the underlying spock classes with instantiated spock objects
+
+        This will map the differences between the passed in instantiated objects and the underlying class definitions
+        to the underlying namespace -- this essentially allows you to 'evolve' the Spockspace similar to how attrs
+        allows for class evolution -- returns a new Spockspace object
+
+        Args:
+            *args: variable number of instantiated @spock decorated classes to evolve parameters with
+
+        Returns:
+            new_arg_namespace: Spockspace evolved with *arg @spock decorated classes
+
+        Raises:
+            _SpockEvolveError: if multiple of the same instance are passed as input or if the one or more of the inputs
+            are not within the set of original input classes
+
+        """
+        # First check that all instances are in the underlying set of input_classes and that there are no dupes
+        arg_counts = Counter([type(v).__name__ for v in args])
+        for k, v in arg_counts.items():
+            if v > 1:
+                raise _SpockEvolveError(
+                    f"Passed multiple instances (count: {v}) of class `{k}` into `evolve()` -- please pass only a "
+                    f"single instance of the class in order to evolve the underlying Spockspace"
+                )
+            elif k not in self._builder_obj.graph.node_names:
+                raise _SpockEvolveError(
+                    f"Passed class `{k}` into `evolve()` but that class in not within the set of input "
+                    f"classes {repr(self._builder_obj.graph.node_names)}"
+                )
+        # Create a new copy of the object
+        new_arg_namespace = deepcopy(self._arg_namespace)
+        # Determine the order of overwrite ops -- based on the topological order
+        topo_idx = sorted(
+            zip(
+                [
+                    self._builder_obj.graph.topological_order.index(type(v).__name__)
+                    for v in args
+                ],
+                args,
+            )
+        )
+        args = {type(v).__name__: v for _, v in topo_idx}
+        # Walk through the now sorted set of evolve classes
+        for k, v in args.items():
+            # Get the class name from the object
+            cls_name = type(v).__name__
+            # Swap in the value to the new object
+            # Note: we don't need to evolve here as it's a fully new obj
+            setattr(new_arg_namespace, cls_name, v)
+            # Recurse upwards through the deps stack and evolve all the necessary classes
+            new_arg_namespace, all_cls = self._recurse_upwards(
+                new_arg_namespace, cls_name, args
+            )
+        return new_arg_namespace
+
+    def _recurse_upwards(
+        self, new_arg_namespace: Spockspace, current_cls: str, all_cls: typing.Dict
+    ):
+        """Using the underlying graph work recurse upwards through the parents and swap in the correct values
+
+        Args:
+            new_arg_namespace: new Spockspace object
+            current_cls: current name of the cls
+            all_cls: dict of the variable number of @spock decorated classes to evolve parameters with
+
+        Returns:
+            modified new_arg_namespace and the updated evolve class dict
+
+        """
+        # Get the parent deps from the graph
+        parents = self._builder_obj.dag[current_cls]
+        if len(parents) > 0:
+            for parent_cls in parents:
+                parent_name = parent_cls.__name__
+                # Change the parent classes in the Spockspace
+                new_arg_namespace = self._set_matching_attrs_by_name(
+                    new_arg_namespace, current_cls, parent_name
+                )
+                # if the parent is in the evolve classes then morph them too
+                if parent_name in all_cls.keys():
+                    all_cls = self._set_matching_attrs_by_name_args(
+                        current_cls, parent_name, all_cls
+                    )
+                # then recurse to the parents
+                new_arg_namespace, all_cls = self._recurse_upwards(
+                    new_arg_namespace, parent_name, all_cls
+                )
+        return new_arg_namespace, all_cls
+
+    @staticmethod
+    def _set_matching_attrs_by_name_args(
+        current_cls_name: str, parent_cls_name: str, all_cls: typing.Dict
+    ):
+        """Sets the value of an attribute by matching it to a spock class name
+
+        Args:
+            current_cls_name: current name of the changed class
+            parent_cls_name: name of the parent class that contains a reference to the current class
+            all_cls: dict of the variable number of @spock decorated classes to evolve parameters with
+
+        Returns:
+            modified all_cls dictionary
+
+        """
+        new_arg_namespace = all_cls[parent_cls_name]
+        names = attr.fields_dict(type(new_arg_namespace)).keys()
+        for v in names:
+            if type(getattr(new_arg_namespace, v)).__name__ == current_cls_name:
+                # Some evolution magic -- attr library wants kwargs so trick it by unrolling the dict
+                # This creates a new object
+                new_obj = attr.evolve(
+                    new_arg_namespace,
+                    **{v: all_cls[current_cls_name]},
+                )
+                all_cls[parent_cls_name] = new_obj
+                print(
+                    f"Evolved CLS Dependency: Parent = {parent_cls_name}, Child = {current_cls_name}, Value = {v}"
+                )
+        return all_cls
+
+    @staticmethod
+    def _set_matching_attrs_by_name(
+        new_arg_namespace: Spockspace, current_cls_name: str, parent_cls_name: str
+    ):
+        """Sets the value of an attribute by matching it to a spock class name
+
+        Args:
+            new_arg_namespace: new Spockspace object
+            current_cls_name: current name of the changed class
+            parent_cls_name: name of the parent class that contains a reference to the current class
+
+        Returns:
+            modified new_arg_namespace
+
+        """
+        parent_attr = getattr(new_arg_namespace, parent_cls_name)
+        names = attr.fields_dict(type(parent_attr)).keys()
+        for v in names:
+            if type(getattr(parent_attr, v)).__name__ == current_cls_name:
+                # Some evolution magic -- attr library wants kwargs so trick it by unrolling the dict
+                # This creates a new object
+                new_obj = attr.evolve(
+                    getattr(new_arg_namespace, parent_cls_name),
+                    **{v: getattr(new_arg_namespace, current_cls_name)},
+                )
+                # Swap the new object into the existing attribute slot
+                setattr(new_arg_namespace, parent_cls_name, new_obj)
+                print(
+                    f"Evolved: Parent = {parent_cls_name}, Child = {current_cls_name}, Value = {v}"
+                )
+        return new_arg_namespace

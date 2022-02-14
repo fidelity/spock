@@ -220,3 +220,12 @@ class AllInherited:
         assert arg_builder.TypeInherited.tuple_p_opt_def_int == (10, 20)
         assert arg_builder.TypeInherited.tuple_p_opt_def_str == ("Spock", "Package")
         assert arg_builder.TypeInherited.tuple_p_opt_def_bool == (True, False)
+
+
+class AllDynamic:
+    def test_all_dynamic(self, arg_builder):
+        assert arg_builder.TestConfigDynamicDefaults.x == 235
+        assert arg_builder.TestConfigDynamicDefaults.y == "yarghhh"
+        assert arg_builder.TestConfigDynamicDefaults.z == [10, 20]
+        assert arg_builder.TestConfigDynamicDefaults.p == 1
+        assert arg_builder.TestConfigDynamicDefaults.q == 'shhh'

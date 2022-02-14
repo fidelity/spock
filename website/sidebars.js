@@ -96,6 +96,11 @@ module.exports = {
                 },
                 {
                     type: 'doc',
+                    label: 'Lazy Dependencies',
+                    id: "advanced_features/Lazy-Features"
+                },
+                {
+                    type: 'doc',
                     label: 'Local Definitions',
                     id: 'advanced_features/Local-Definitions'
                 },
@@ -108,6 +113,11 @@ module.exports = {
                     type: 'doc',
                     label: 'CMD Line Keyword Arguments',
                     id: 'advanced_features/Command-Line-Overrides'
+                },
+                {
+                    type: 'doc',
+                    label: 'Evolve',
+                    id: 'advanced_features/Evolve'
                 },
             ],
         },

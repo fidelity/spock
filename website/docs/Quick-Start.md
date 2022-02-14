@@ -23,8 +23,8 @@ parameters with supported argument types from the `typing` library. Lastly, we w
 docstrings to provide command line `--help` information.
 
 ```python
-from spock.builder import ConfigArgBuilder
-from spock.config import spock
+from spock import SpockBuilder
+from spock import spock
 from typing import List
 
 @spock
@@ -65,7 +65,7 @@ def add_by_parameter(multiply_param, list_vals, add_param, tf_round):
     return val_sum
 ```
 
-Now, we build out the parameter objects by passing in the `spock` objects (as `*args`) to the `ConfigArgBuilder` 
+Now, we build out the parameter objects by passing in the `spock` objects (as `*args`) to the `SpockBuilder` 
 and chain call the `generate` method. The returned namespace object contains the defined classes named with the given
 `spock` class name. We then can pass the whole object to our first function or specific parameters to our
 second function.
@@ -73,7 +73,7 @@ second function.
 ```python
 def main():
     # Chain the generate function to the class call
-    config = ConfigArgBuilder(BasicConfig, desc='Quick start example').generate()
+    config = SpockBuilder(BasicConfig, desc='Quick start example').generate()
     # One can now access the Spock config object by class name with the returned namespace
     print(config.BasicConfig.parameter)
     # And pass the namespace to our first function
@@ -102,17 +102,17 @@ most_fancy_parameter: [768, 768, 512, 128]
 
 Finally, we would run our script and pass the path to the configuration file to the command line (`-c` or `--config`):
 
-```bash
-$ python simple.py -c simple.yaml
+```shell
+python simple.py -c simple.yaml
 ```
 
 To get help for our `spock` class and defined parameters:
 
-```bash
-$ python simple.py --help
+```shell
+python simple.py --help
 ```
 
-```bash
+```shell
 usage: /Users/a635179/Documents/git_repos/open_source/spock/examples/quick-start/simple.py -c [--config] config1 [config2, config3, ...]
 
 Quick start example

@@ -4,6 +4,7 @@ import sys
 import pytest
 
 from spock.builder import ConfigArgBuilder
+from spock.exceptions import _SpockUndecoratedClass, _SpockNotOptionalError
 from tests.base.attr_configs_test import *
 from tests.base.base_asserts_test import *
 
@@ -194,3 +195,74 @@ class TestWrongRepeatedClass:
                 ConfigArgBuilder(
                     *all_configs, desc="Test Builder"
                 )
+
+
+class TestDynamic(AllDynamic):
+    """Testing basic functionality"""
+
+    @staticmethod
+    @pytest.fixture
+    def arg_builder(monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, "argv", [""])
+            config = ConfigArgBuilder(TestConfigDynamicDefaults)
+            return config.generate()
+
+
+class TestBasicLazy(AllTypes):
+    """Testing basic lazy evaluation"""
+    @staticmethod
+    @pytest.fixture
+    def arg_builder(monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test.yaml"])
+            config = ConfigArgBuilder(TypeConfig, TypeOptConfig, lazy=True)
+            return config.generate()
+
+
+class TestLazyNotFlagged:
+    """Testing failed lazy evaluation"""
+    def test_lazy_raise(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, "argv", [""])
+            with pytest.raises(ValueError):
+                config = ConfigArgBuilder(RaiseNotFlagged, lazy=False)
+                config.generate()
+
+
+class TestLazyNotDecorated:
+    """Testing failed lazy evaluation"""
+    def test_lazy_raise(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, "argv", [""])
+            with pytest.raises(_SpockNotOptionalError):
+                config = ConfigArgBuilder(RaiseNotDecorated, lazy=False)
+                config.generate()
+
+
+class TestDynamic(AllDynamic):
+    """Testing basic dynamic inheritance"""
+    @staticmethod
+    @pytest.fixture
+    def arg_builder(monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, "argv", [""])
+            config = ConfigArgBuilder(TestConfigDynamicDefaults)
+            return config.generate()
+
+
+class TestDynamicRaise:
+    """Testing dynamic raise fail"""
+    def test_dynamic_raise(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, "argv", [""])
+            with pytest.raises(_SpockUndecoratedClass):
+
+                @spock
+                class TestConfigDefaultsFail(Foo, Bar):
+                    x: int = 235
+                    y: str = 'yarghhh'
+                    z: List[int] = [10, 20]
+
+                config = ConfigArgBuilder(TestConfigDefaultsFail)
+                return config.generate()

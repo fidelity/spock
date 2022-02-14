@@ -29,18 +29,6 @@ class TunerPayload(BasePayload):
         """
         super().__init__(s3_config=s3_config)
 
-    def __call__(self, *args, **kwargs):
-        """Call to allow self chaining
-
-        Args:
-            *args:
-            **kwArgs:
-        Returns:
-            Payload: instance of self
-
-        """
-        return TunerPayload(*args, **kwargs)
-
     @staticmethod
     def _update_payload(base_payload, input_classes, ignore_classes, payload):
         # Get basic args
@@ -56,12 +44,12 @@ class TunerPayload(BasePayload):
                         # Check for incorrect specific override of global def
                         if k not in attr_fields:
                             raise TypeError(
-                                f"Referring to a class space {k} that is undefined"
+                                f"Referring to a class space `{k}` that is undefined"
                             )
                         for i_keys in v.keys():
                             if i_keys not in attr_fields[k]:
                                 raise ValueError(
-                                    f"Provided an unknown argument named {k}.{i_keys}"
+                                    f"Provided an unknown argument named `{k}.{i_keys}`"
                                 )
                     if k in payload and isinstance(v, dict):
                         payload[k].update(v)
@@ -92,8 +80,8 @@ class TunerPayload(BasePayload):
                     curr_ref[split] = value
                 else:
                     raise ValueError(
-                        f"cmd-line override failed for {key} -- "
-                        f"Failed to find key {split} within lowest level Dict"
+                        f"cmd-line override failed for `{key}` -- "
+                        f"Failed to find key `{split}` within lowest level Dict"
                     )
             # If it's not keep walking the current payload
             else:
