@@ -61,7 +61,9 @@ def _base_attr(cls, kw_only, make_init, dynamic):
                             {attribute.name: attribute.metadata["og_type"]}
                         )
                     else:
-                        base_annotation.update({attribute.name: attribute.type})
+                        base_annotation.update(
+                            {attribute.name: val.__annotations__[attribute.name]}
+                        )
         base_defaults = {
             attribute.name: attribute.default
             for val in bases
