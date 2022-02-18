@@ -108,7 +108,7 @@ def main():
     print(config.ModelConfig)
 ```
 
-### Does the Directory Exit
+### Does the Directory Exist
 
 In either case, if the save path does not exist, it will not be created by default. To change this behavior, 
 set `create_save_path` when creating the builder.
@@ -139,7 +139,7 @@ def main():
     # A simple description
     description = 'spock Tutorial'
     # Build out the parser by passing in Spock config objects as *args after description
-    config = CSpockBuilder(ModelConfig, desc=description).save(file_name='cool_name_here').generate()
+    config = SpockBuilder(ModelConfig, desc=description).save(file_name='cool_name_here').generate()
     # One can now access the Spock config object by class name with the returned namespace
     # For instance...
     print(config.ModelConfig)
