@@ -16,8 +16,10 @@ from warnings import warn
 import pytomlpp
 import yaml
 
-from spock import __version__
+from spock._version import get_versions
 from spock.utils import check_path_s3, path_object_to_s3path
+
+__version__ = get_versions()["version"]
 
 
 class Handler(ABC):
@@ -48,7 +50,7 @@ class Handler(ABC):
         """
         Transform path string into path object
         """
-        if "config" in payload:
+        if (payload is not None) and "config" in payload:
             payload["config"] = [Path(c) for c in payload["config"]]
 
         return payload

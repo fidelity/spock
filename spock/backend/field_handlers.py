@@ -13,19 +13,8 @@ from attr import NOTHING, Attribute
 
 from spock.args import SpockArguments
 from spock.backend.spaces import AttributeSpace, BuilderSpace, ConfigSpace
+from spock.exceptions import _SpockInstantiationError, _SpockNotOptionalError
 from spock.utils import _check_iterable, _is_spock_instance, _is_spock_tune_instance
-
-
-class SpockInstantiationError(Exception):
-    """Custom exception for when the spock class cannot be instantiated correctly"""
-
-    pass
-
-
-class SpockNotOptionalError(Exception):
-    """Custom exception for missing value"""
-
-    pass
 
 
 class RegisterFieldTemplate(ABC):
@@ -60,7 +49,7 @@ class RegisterFieldTemplate(ABC):
 
         Returns:
         """
-        if self._is_attribute_in_config_arguments(attr_space, builder_space.arguments):
+        if self._is_attribute_in_config_arguments(attr_space, builder_space):
             self.handle_attribute_from_config(attr_space, builder_space)
         elif self._is_attribute_optional(attr_space.attribute):
             if isinstance(attr_space.attribute.default, type):
@@ -68,23 +57,40 @@ class RegisterFieldTemplate(ABC):
             else:
                 self.handle_optional_attribute_value(attr_space, builder_space)
 
-    @staticmethod
     def _is_attribute_in_config_arguments(
-        attr_space: AttributeSpace, arguments: SpockArguments
+        self, attr_space: AttributeSpace, builder_space: BuilderSpace
     ):
         """Checks if an attribute is in the configuration file or keyword arguments dictionary
 
+        Will recurse spock classes as dependencies might be defined in the configs class
+
         Args:
             attr_space: holds information about a single attribute that is mapped to a ConfigSpace
-            arguments: map of the read/cmd-line parameter dictionary to general or class level arguments
+            builder_space: map of the read/cmd-line parameter dictionary to general or class level arguments
 
         Returns:
             boolean if in dictionary
 
         """
+        # Instances might have other instances that might be defined in the configs
+        # Recurse to try and catch all config defs
+        # Only map if default is not None -- do so by evolving the attribute
+        if (
+            _is_spock_instance(attr_space.attribute.type)
+            and attr_space.attribute.default is not None
+        ):
+            attr_space.field, special_keys = RegisterSpockCls().recurse_generate(
+                attr_space.attribute.type, builder_space
+            )
+            attr_space.attribute = attr_space.attribute.evolve(default=attr_space.field)
+            builder_space.spock_space[
+                attr_space.attribute.type.__name__
+            ] = attr_space.field
+            self.special_keys.update(special_keys)
         return (
-            attr_space.config_space.name in arguments
-            and attr_space.attribute.name in arguments[attr_space.config_space.name]
+            attr_space.config_space.name in builder_space.arguments
+            and attr_space.attribute.name
+            in builder_space.arguments[attr_space.config_space.name]
         )
 
     @staticmethod
@@ -187,7 +193,26 @@ class RegisterList(RegisterFieldTemplate):
         super().handle_optional_attribute_value(attr_space, builder_space)
         if attr_space.field is not None:
             list_item_spock_class = attr_space.field
-            builder_space.spock_space[list_item_spock_class.__name__] = attr_space.field
+            # Here we need to catch the possibility of repeated lists via coded defaults
+            if _is_spock_instance(attr_space.attribute.metadata["type"].__args__[0]):
+                spock_cls = attr_space.attribute.metadata["type"].__args__[0]
+                # Fall back to configs if present
+                if spock_cls.__name__ in builder_space.arguments:
+                    attr_space.field = self._process_list(spock_cls, builder_space)
+                # Here we need to attempt to instantiate any class references that still exist
+                try:
+                    attr_space.field = [
+                        val() if type(val) is type else val for val in attr_space.field
+                    ]
+                except Exception as e:
+                    raise _SpockInstantiationError(
+                        f"Spock class `{spock_cls.__name__}` could not be instantiated -- attrs message: {e}"
+                    )
+                builder_space.spock_space[spock_cls.__name__] = attr_space.field
+            else:
+                builder_space.spock_space[
+                    list_item_spock_class.__name__
+                ] = attr_space.field
 
     @staticmethod
     def _process_list(spock_cls, builder_space: BuilderSpace):
@@ -257,6 +282,23 @@ class RegisterEnum(RegisterFieldTemplate):
             attr_space.attribute.default, attr_space, builder_space
         )
 
+    def handle_optional_attribute_value(
+        self, attr_space: AttributeSpace, builder_space: BuilderSpace
+    ):
+        """Handles setting an optional value with its default
+
+        Args:
+            attr_space: holds information about a single attribute that is mapped to a ConfigSpace
+            builder_space: named_tuple containing the arguments and spock_space
+
+        Returns:
+        """
+        super().handle_optional_attribute_value(attr_space, builder_space)
+        if attr_space.field is not None:
+            builder_space.spock_space[
+                type(attr_space.field).__name__
+            ] = attr_space.field
+
     def _handle_and_register_enum(
         self, enum_cls, attr_space: AttributeSpace, builder_space: BuilderSpace
     ):
@@ -317,10 +359,14 @@ class RegisterSimpleField(RegisterFieldTemplate):
             builder_space: named_tuple containing the arguments and spock_space
 
         Raises:
-            SpockNotOptionalError
+            _SpockNotOptionalError
 
         """
-        raise SpockNotOptionalError()
+        raise _SpockNotOptionalError(
+            f"Parameter `{attr_space.attribute.name}` within `{attr_space.config_space.name}` is of "
+            f"type `{type(attr_space.attribute.type)}` which seems to be unsupported -- "
+            f"are you missing an @spock decorator on a base python class?"
+        )
 
     def handle_optional_attribute_value(
         self, attr_space: AttributeSpace, builder_space: BuilderSpace
@@ -410,10 +456,10 @@ class RegisterTuneCls(RegisterFieldTemplate):
             builder_space: named_tuple containing the arguments and spock_space
 
         Raises:
-            SpockNotOptionalError
+            _SpockNotOptionalError
 
         """
-        raise SpockNotOptionalError()
+        raise _SpockNotOptionalError()
 
     def handle_optional_attribute_type(
         self, attr_space: AttributeSpace, builder_space: BuilderSpace
@@ -425,10 +471,10 @@ class RegisterTuneCls(RegisterFieldTemplate):
             builder_space: named_tuple containing the arguments and spock_space
 
         Raises:
-            SpockNotOptionalError
+            _SpockNotOptionalError
 
         """
-        raise SpockNotOptionalError()
+        raise _SpockNotOptionalError()
 
 
 class RegisterSpockCls(RegisterFieldTemplate):
@@ -572,7 +618,7 @@ class RegisterSpockCls(RegisterFieldTemplate):
         try:
             spock_instance = spock_cls(**fields)
         except Exception as e:
-            raise SpockInstantiationError(
+            raise _SpockInstantiationError(
                 f"Spock class `{spock_cls.__name__}` could not be instantiated -- attrs message: {e}"
             )
         return spock_instance, special_keys

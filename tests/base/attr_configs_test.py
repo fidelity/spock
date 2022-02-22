@@ -42,7 +42,19 @@ class NestedStuff:
 
 
 @spock
+class NestedStuffOpt:
+    one: int = 1
+    two: str = 'boo'
+
+
+@spock
 class NestedListStuff:
+    one: int
+    two: str
+
+
+@spock
+class NestedListStuffDef:
     one: int
     two: str
 
@@ -180,7 +192,7 @@ class TypeOptConfig:
     # Required list of list of choice -- Str
     list_list_choice_p_opt_no_def_str: Optional[List[List[StrChoice]]]
     # Nested configuration
-    nested_opt_no_def: Optional[NestedStuff]
+    nested_opt_no_def: Optional[NestedStuffOpt]
     # Nested list configuration
     nested_list_opt_no_def: Optional[List[NestedListStuff]]
     # Class Enum
@@ -235,8 +247,12 @@ class TypeDefaultConfig:
     nested_def: NestedStuff = NestedStuff
     # Nested configuration with no config
     nested_no_conf_def: NestedStuffDefault = NestedStuffDefault()
-    # Nested list configuration
-    nested_list_def: List[NestedListStuff] = NestedListStuff
+    # Nested list configuration -- defaults to config values
+    nested_list_def: List[NestedListStuff] = [NestedListStuff]
+    # Nested list configuration -- defaults to coded values
+    nested_list_def_2: List[NestedListStuffDef] = [
+        NestedListStuffDef(one=100, two="two"), NestedListStuffDef(one=300, two="four")
+    ]
     # Class Enum
     class_enum_def: ClassChoice = NestedStuff
     # Double Nested class ref
@@ -282,13 +298,57 @@ class TypeDefaultOptConfig:
     # Nested configuration
     nested_opt_def: Optional[NestedStuff] = NestedStuff
     # Nested list configuration
-    nested_list_opt_def: Optional[List[NestedListStuff]] = NestedListStuff
+    nested_list_opt_def: Optional[List[NestedListStuff]] = [NestedListStuff]
     # Class Enum
     class_enum_opt_def: Optional[ClassChoice] = NestedStuff
 
 
 @spock
+# class TypeInherited(TypeDefaultOptConfig, TypeConfig):
 class TypeInherited(TypeConfig, TypeDefaultOptConfig):
     """This tests inheritance with mixed default and non-default arguments"""
+    pass
 
-    ...
+
+class Foo:
+    p: int = 1
+
+
+class Bar:
+    q: str = 'shhh'
+
+
+@spock(dynamic=True)
+class TestConfigDynamicDefaults(Foo, Bar):
+    x: int = 235
+    y: str = 'yarghhh'
+    z: List[int] = [10, 20]
+
+
+all_configs = [
+    TypeConfig,
+    NestedStuff,
+    NestedListStuff,
+    TypeOptConfig,
+    SingleNestedConfig,
+    FirstDoubleNestedConfig,
+    SecondDoubleNestedConfig,
+    NestedStuffOpt
+]
+
+
+@spock
+class OtherBar:
+    hello: str = 'goodbye'
+
+
+@spock
+class RaiseNotFlagged:
+    test: int = 1
+    other: OtherBar = OtherBar
+
+
+@spock
+class RaiseNotDecorated:
+    test: int = 1
+    other: Bar = Bar

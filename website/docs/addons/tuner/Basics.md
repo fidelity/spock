@@ -56,11 +56,13 @@ X_train, X_valid, y_train, y_valid = train_test_split(X, y)
 
 ```
 
-The `@spockTuner` decorated classes are passed to the `ConfigArgBuilder` in the exact same way as basic `@spock` 
+The `@spockTuner` decorated classes are passed to the `SpockBuilder` in the exact same way as basic `@spock` 
 decorated classes. This returns a `spock` builder object which can be used to call different methods.
 
 ```python
-attrs_obj = ConfigArgBuilder(
+from spock import SpockBuilder
+
+attrs_obj = SpockBuilder(
     LogisticRegressionHP,
     desc="Example Logistic Regression Hyper-Parameter Tuning",
 )

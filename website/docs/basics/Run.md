@@ -13,16 +13,16 @@ Now we can run our basic neural network example.
 
 To run `tutorial.py` we pass the path to the configuration file as a command line argument:
 
-```bash
-$ python tutorial.py --config tutorial.yaml
+```shell
+python tutorial.py --config tutorial.yaml
 ```
 
 ### Help
 
 To get help for parameters need to run our `tutorial.py` script:
 
-```bash
-$ python tutorial.py --help
+```shell
+python tutorial.py --help
 ```
 
 

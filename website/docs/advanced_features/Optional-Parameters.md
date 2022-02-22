@@ -16,8 +16,7 @@ definition in: `tutorial.py`
 
 ```python
 from enum import Enum
-from spock.args import SavePath
-from spock.config import spock
+from spock import spock
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -30,7 +29,6 @@ class Activation(Enum):
 
 @spock
 class ModelConfig:
-    save_path: SavePath
     lr: float = 0.01
     n_features: int
     dropout: Optional[List[float]]

@@ -4,6 +4,7 @@ import sys
 import pytest
 
 from spock.builder import ConfigArgBuilder
+from spock.exceptions import _SpockUndecoratedClass, _SpockNotOptionalError
 from tests.base.attr_configs_test import *
 from tests.base.base_asserts_test import *
 
@@ -16,10 +17,7 @@ class TestBasic(AllTypes):
     def arg_builder(monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test.yaml"])
-            config = ConfigArgBuilder(
-                TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, SingleNestedConfig,
-                FirstDoubleNestedConfig, SecondDoubleNestedConfig
-            )
+            config = ConfigArgBuilder(*all_configs)
             return config.generate()
 
 
@@ -27,10 +25,7 @@ class TestConfigDict:
     def test_config_2_dict(self, monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test.yaml"])
-            config_dict = ConfigArgBuilder(
-                TypeConfig, NestedStuff, NestedListStuff, TypeOptConfig, SingleNestedConfig,
-                FirstDoubleNestedConfig, SecondDoubleNestedConfig
-            ).config_2_dict
+            config_dict = ConfigArgBuilder(*all_configs).config_2_dict
             assert isinstance(config_dict, dict) is True
 
 
@@ -42,13 +37,7 @@ class TestNoCmdLineKwarg(AllTypes):
     def arg_builder(monkeypatch):
         with monkeypatch.context() as m:
             config = ConfigArgBuilder(
-                TypeConfig,
-                NestedStuff,
-                NestedListStuff,
-                TypeOptConfig,
-                SingleNestedConfig,
-                FirstDoubleNestedConfig,
-                SecondDoubleNestedConfig,
+                *all_configs,
                 no_cmd_line=True,
                 configs=["./tests/conf/yaml/test.yaml"],
             )
@@ -62,13 +51,7 @@ class TestNoCmdLineKwargRaise:
         with monkeypatch.context() as m:
             with pytest.raises(TypeError):
                 config = ConfigArgBuilder(
-                    TypeConfig,
-                    NestedStuff,
-                    NestedListStuff,
-                    TypeOptConfig,
-                    SingleNestedConfig,
-                    FirstDoubleNestedConfig,
-                    SecondDoubleNestedConfig,
+                    *all_configs,
                     no_cmd_line=True,
                     configs="./tests/conf/yaml/test.yaml",
                 )
@@ -82,13 +65,7 @@ class TestNoCmdLineRaise:
         with monkeypatch.context() as m:
             with pytest.raises(ValueError):
                 ConfigArgBuilder(
-                    TypeConfig,
-                    NestedStuff,
-                    NestedListStuff,
-                    TypeOptConfig,
-                    SingleNestedConfig,
-                    FirstDoubleNestedConfig,
-                    SecondDoubleNestedConfig,
+                    *all_configs,
                     no_cmd_line=True,
                 )
 
@@ -102,13 +79,7 @@ class TestConfigKwarg(AllTypes):
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", [""])
             config = ConfigArgBuilder(
-                TypeConfig,
-                NestedStuff,
-                NestedListStuff,
-                TypeOptConfig,
-                SingleNestedConfig,
-                FirstDoubleNestedConfig,
-                SecondDoubleNestedConfig,
+                *all_configs,
                 desc="Test Builder",
                 configs=["./tests/conf/yaml/test.yaml"],
             )
@@ -134,15 +105,22 @@ class TestNonAttrs:
                     failed_attr: int
 
                 config = ConfigArgBuilder(
-                    TypeConfig,
-                    NestedStuff,
-                    NestedListStuff,
-                    TypeOptConfig,
-                    SingleNestedConfig,
-                    FirstDoubleNestedConfig,
-                    SecondDoubleNestedConfig,
+                    *all_configs,
                     AttrFail,
                     configs=["./tests/conf/yaml/test.yaml"],
+                )
+                return config.generate()
+
+
+class TestRaisesMissingClass:
+    """Testing basic functionality"""
+
+    def test_raises_missing_class(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test.yaml"])
+            with pytest.raises(ValueError):
+                config = ConfigArgBuilder(
+                    *all_configs[:-1]
                 )
                 return config.generate()
 
@@ -155,13 +133,7 @@ class TestRaiseWrongInputType:
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test.foo"])
             with pytest.raises(TypeError):
                 config = ConfigArgBuilder(
-                    TypeConfig,
-                    NestedStuff,
-                    NestedListStuff,
-                    TypeOptConfig,
-                    SingleNestedConfig,
-                    FirstDoubleNestedConfig,
-                    SecondDoubleNestedConfig,
+                    *all_configs,
                     desc="Test Builder",
                 )
                 return config.generate()
@@ -175,8 +147,7 @@ class TestUnknownArg:
             )
             with pytest.raises(ValueError):
                 ConfigArgBuilder(
-                    TypeConfig, NestedStuff, NestedListStuff, SingleNestedConfig,
-                    FirstDoubleNestedConfig, SecondDoubleNestedConfig, desc="Test Builder"
+                    *all_configs, desc="Test Builder"
                 )
 
 
@@ -190,8 +161,7 @@ class TestUnknownClassParameterArg:
             )
             with pytest.raises(ValueError):
                 ConfigArgBuilder(
-                    TypeConfig, NestedStuff, NestedListStuff, SingleNestedConfig,
-                    FirstDoubleNestedConfig, SecondDoubleNestedConfig, desc="Test Builder"
+                    *all_configs, desc="Test Builder"
                 )
 
 
@@ -205,8 +175,7 @@ class TestUnknownClassArg:
             )
             with pytest.raises(TypeError):
                 ConfigArgBuilder(
-                    TypeConfig, NestedStuff, NestedListStuff, SingleNestedConfig,
-                    FirstDoubleNestedConfig, SecondDoubleNestedConfig, desc="Test Builder"
+                    *all_configs, desc="Test Builder"
                 )
 
 
@@ -224,6 +193,76 @@ class TestWrongRepeatedClass:
             )
             with pytest.raises(ValueError):
                 ConfigArgBuilder(
-                    TypeConfig, NestedStuff, NestedListStuff, SingleNestedConfig,
-                    FirstDoubleNestedConfig, SecondDoubleNestedConfig, desc="Test Builder"
+                    *all_configs, desc="Test Builder"
                 )
+
+
+class TestDynamic(AllDynamic):
+    """Testing basic functionality"""
+
+    @staticmethod
+    @pytest.fixture
+    def arg_builder(monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, "argv", [""])
+            config = ConfigArgBuilder(TestConfigDynamicDefaults)
+            return config.generate()
+
+
+class TestBasicLazy(AllTypes):
+    """Testing basic lazy evaluation"""
+    @staticmethod
+    @pytest.fixture
+    def arg_builder(monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test.yaml"])
+            config = ConfigArgBuilder(TypeConfig, TypeOptConfig, lazy=True)
+            return config.generate()
+
+
+class TestLazyNotFlagged:
+    """Testing failed lazy evaluation"""
+    def test_lazy_raise(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, "argv", [""])
+            with pytest.raises(ValueError):
+                config = ConfigArgBuilder(RaiseNotFlagged, lazy=False)
+                config.generate()
+
+
+class TestLazyNotDecorated:
+    """Testing failed lazy evaluation"""
+    def test_lazy_raise(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, "argv", [""])
+            with pytest.raises(_SpockNotOptionalError):
+                config = ConfigArgBuilder(RaiseNotDecorated, lazy=False)
+                config.generate()
+
+
+class TestDynamic(AllDynamic):
+    """Testing basic dynamic inheritance"""
+    @staticmethod
+    @pytest.fixture
+    def arg_builder(monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, "argv", [""])
+            config = ConfigArgBuilder(TestConfigDynamicDefaults)
+            return config.generate()
+
+
+class TestDynamicRaise:
+    """Testing dynamic raise fail"""
+    def test_dynamic_raise(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, "argv", [""])
+            with pytest.raises(_SpockUndecoratedClass):
+
+                @spock
+                class TestConfigDefaultsFail(Foo, Bar):
+                    x: int = 235
+                    y: str = 'yarghhh'
+                    z: List[int] = [10, 20]
+
+                config = ConfigArgBuilder(TestConfigDefaultsFail)
+                return config.generate()

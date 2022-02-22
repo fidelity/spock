@@ -29,18 +29,18 @@ class ModelConfig:
     activation: Activation
 ```
 
-To generate the namespace object, import the `ConfigArgBuilder` class, pass in your `@spock` classes as `*args`, 
+To generate the namespace object, import the `SpockBuilder` class, pass in your `@spock` classes as `*args`, 
 add an optional description, and then chain call the `generate()` method. Each `spock` class is defined in the 
 namespace object given by the class name.
 
 ```python
-from spock.builder import ConfigArgBuilder
+from spock import SpockBuilder
 
 def main():
     # A simple description
     description = 'spock Tutorial'
     # Build out the parser by passing in Spock config objects as *args after description
-    config = ConfigArgBuilder(ModelConfig, desc=description).generate()
+    config = SpockBuilder(ModelConfig, desc=description).generate()
     # One can now access the Spock config object by class name with the returned namespace
     # For instance...
     print(config.ModelConfig)
@@ -65,7 +65,7 @@ def main():
     # A simple description
     description = 'spock Tutorial'
     # Build out the parser by passing in Spock config objects as *args after description
-    config = ConfigArgBuilder(ModelConfig, desc=description).generate()
+    config = SpockBuilder(ModelConfig, desc=description).generate()
     # Instantiate our neural net using
     basic_nn = BasicNet(model_config=config.ModelConfig)
     # Make some random data (BxH): H has dim of features in

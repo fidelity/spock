@@ -14,7 +14,7 @@ For instance in `tune.py`:
 ```python
 
 # Chain the .save call which will dump the hyper-parameter definitions to the configuration file
-attrs_obj = ConfigArgBuilder(
+attrs_obj = SpockBuilder(
         LogisticRegressionHP,
         BasicParams,
         desc="Example Logistic Regression Hyper-Parameter Tuning",

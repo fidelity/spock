@@ -8,6 +8,7 @@
 
 from _warnings import warn
 
+from spock.exceptions import _SpockDuplicateArgumentError
 from spock.graph import Graph
 
 
@@ -87,7 +88,7 @@ class SpockArguments:
             dictionary of general level parameters
 
         """
-        config_names = {n.__name__ for n in config_dag.nodes}
+        config_names = config_dag.node_names
         return {
             key: value
             for key, value in arguments.items()
@@ -114,7 +115,7 @@ class SpockArguments:
                     if self._is_duplicated_key(
                         attribute_name_to_config_name_mapping, attr.name, n.__name__
                     ):
-                        raise SpockDuplicateArgumentError(
+                        raise _SpockDuplicateArgumentError(
                             f"`{attr.name}` key is located in more than one config and cannot be resolved automatically."
                             f"Either specify the config name (`<config>.{attr.name}`) or change the key name in the config."
                         )
@@ -187,9 +188,3 @@ class SpockArguments:
             if arg not in general_arguments:
                 clean_arguments[arg] = value
         return clean_arguments
-
-
-class SpockDuplicateArgumentError(Exception):
-    """Custom exception type for duplicated values"""
-
-    pass

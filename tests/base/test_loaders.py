@@ -19,13 +19,7 @@ class TestAllTypesYAML(AllTypes):
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test.yaml"])
             config = ConfigArgBuilder(
-                TypeConfig,
-                NestedStuff,
-                NestedListStuff,
-                TypeOptConfig,
-                SingleNestedConfig,
-                FirstDoubleNestedConfig,
-                SecondDoubleNestedConfig,
+                *all_configs,
                 desc="Test Builder",
             )
             return config.generate()
@@ -42,7 +36,9 @@ class TestAllDefaultsYAML(AllDefaults):
             config = ConfigArgBuilder(
                 TypeConfig,
                 NestedStuff,
+                NestedStuffOpt,
                 NestedListStuff,
+                NestedListStuffDef,
                 NestedStuffDefault,
                 TypeDefaultConfig,
                 TypeDefaultOptConfig,
@@ -63,7 +59,7 @@ class TestInheritance(AllInherited):
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/inherited.yaml"])
             config = ConfigArgBuilder(
-                TypeInherited, NestedStuff, NestedListStuff, SingleNestedConfig,
+                TypeInherited, NestedStuff, NestedStuffOpt, NestedListStuff, SingleNestedConfig,
                 FirstDoubleNestedConfig, SecondDoubleNestedConfig, desc="Test Builder"
             )
             return config.generate()
@@ -79,13 +75,7 @@ class TestAllTypesTOML(AllTypes):
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/toml/test.toml"])
             config = ConfigArgBuilder(
-                TypeConfig,
-                NestedStuff,
-                NestedListStuff,
-                TypeOptConfig,
-                SingleNestedConfig,
-                FirstDoubleNestedConfig,
-                SecondDoubleNestedConfig,
+                *all_configs,
                 desc="Test Builder",
             )
             return config.generate()
@@ -102,7 +92,9 @@ class TestAllDefaultsTOML(AllDefaults):
             config = ConfigArgBuilder(
                 TypeConfig,
                 NestedStuff,
+                NestedStuffOpt,
                 NestedListStuff,
+                NestedListStuffDef,
                 NestedStuffDefault,
                 TypeOptConfig,
                 TypeDefaultConfig,
@@ -125,13 +117,7 @@ class TestAllTypesJSON(AllTypes):
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/json/test.json"])
             config = ConfigArgBuilder(
-                TypeConfig,
-                NestedStuff,
-                NestedListStuff,
-                TypeOptConfig,
-                SingleNestedConfig,
-                FirstDoubleNestedConfig,
-                SecondDoubleNestedConfig,
+                *all_configs,
                 desc="Test Builder",
             )
             return config.generate()
@@ -149,6 +135,8 @@ class TestAllDefaultsJSON(AllDefaults):
                 TypeConfig,
                 NestedStuff,
                 NestedListStuff,
+                NestedStuffOpt,
+                NestedListStuffDef,
                 NestedStuffDefault,
                 TypeOptConfig,
                 TypeDefaultConfig,
@@ -172,13 +160,7 @@ class TestComposition:
                 sys, "argv", ["", "--config", "./tests/conf/yaml/test_include.yaml"]
             )
             config = ConfigArgBuilder(
-                TypeConfig,
-                NestedStuff,
-                NestedListStuff,
-                TypeOptConfig,
-                SingleNestedConfig,
-                FirstDoubleNestedConfig,
-                SecondDoubleNestedConfig,
+                *all_configs,
                 desc="Test Builder",
             )
             return config.generate()
@@ -197,8 +179,7 @@ class TestConfigCycles:
             )
             with pytest.raises(ValueError):
                 ConfigArgBuilder(
-                    TypeConfig, NestedStuff, NestedListStuff, SingleNestedConfig,
-                    FirstDoubleNestedConfig, SecondDoubleNestedConfig, desc="Test Builder"
+                    *all_configs, desc="Test Builder"
                 )
 
 
@@ -214,8 +195,7 @@ class TestConfigIncludeRaise:
             )
             with pytest.raises(FileNotFoundError):
                 ConfigArgBuilder(
-                    TypeConfig, NestedStuff, NestedListStuff, SingleNestedConfig,
-                    FirstDoubleNestedConfig, SecondDoubleNestedConfig, desc="Test Builder"
+                    *all_configs, desc="Test Builder"
                 )
 
 
@@ -236,8 +216,7 @@ class TestConfigDuplicate:
             )
             with pytest.raises(ValueError):
                 ConfigArgBuilder(
-                    TypeConfig, NestedStuff, NestedListStuff, SingleNestedConfig,
-                    FirstDoubleNestedConfig, SecondDoubleNestedConfig, desc="Test Builder"
+                    *all_configs, desc="Test Builder"
                 )
 
 

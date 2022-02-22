@@ -9,20 +9,17 @@ index_file='./docs/index.md'
 cat << EOF > $index_file
 ---
 slug: /
-title: spock
+title: Home
 ---
-
-<h1 align="center">
-    <a href="https://fidelity.github.io/spock/"><img width="200" height="208" src="https://raw.githubusercontent.com/fidelity/spock/master/resources/images/logo_small.png"/></a>
-    <h6 align="center">Managing complex configurations any other way would be highly illogical...</h6>
-</h1>
 EOF
 
-tail -n +3 $readme_file >> $index_file
+#tail -n +3 $readme_file >> $index_file
+# Cat and Strip out html and details tags
+cat $readme_file | sed -e 's#<*[/]*html>##g' | sed -e 's#<*[/]*details>##g' >> $index_file
+
 
 contrib_file='../CONTRIBUTING.md'
 to_contrib_file='./docs/contributing.md'
 
 # Contributing
 cat $contrib_file > $to_contrib_file
-

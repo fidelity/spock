@@ -14,8 +14,7 @@ Editing our definition in: `tutorial.py`
 
 ```python
 from enum import Enum
-from spock.args import SavePath
-from spock.config import spock
+from spock import spock
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -33,7 +32,6 @@ class Optimizer(Enum):
 
 @spock
 class ModelConfig:
-    save_path: SavePath
     n_features: int
     dropout: Optional[List[float]]
     hidden_sizes: Tuple[int, int, int] = (32, 32, 32)
@@ -56,16 +54,16 @@ class OptimizerConfig:
 ```
 
 Now we have three separate `spock` classes that we need to generate the namespace object from. Simply add the new 
-classes to `*args` in the `ConfigArgBuilder`. Editing `tutorial.py`:
+classes to `*args` in the `SpockBuilder`. Editing `tutorial.py`:
 
 ```python
-from spock.builder import ConfigArgBuilder
+from spock.builder import SpockBuilder
 
 def main():
     # A simple description
     description = 'spock Advanced Tutorial'
     # Build out the parser by passing in Spock config objects as *args after description
-    config = ConfigArgBuilder(ModelConfig, DataConfig, OptimizerConfig, desc=description).generate()
+    config = SpockBuilder(ModelConfig, DataConfig, OptimizerConfig, desc=description).generate()
     # One can now access the Spock config object by class name with the returned namespace
     # For instance...
     print(config.ModelConfig)
@@ -131,7 +129,7 @@ def main():
     # A simple description
     description = 'spock Advanced Tutorial'
     # Build out the parser by passing in Spock config objects as *args after description
-    config = ConfigArgBuilder(ModelConfig, DataConfig, OptimizerConfig, desc=description).generate()
+    config = SpockBuilder(ModelConfig, DataConfig, OptimizerConfig, desc=description).generate()
     # Instantiate our neural net using
     basic_nn = BasicNet(model_config=config.ModelConfig)
     # Make some random data (BxH): H has dim of features in

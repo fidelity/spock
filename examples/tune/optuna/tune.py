@@ -16,8 +16,8 @@ from spock.addons.tune import (
     RangeHyperParameter,
     spockTuner,
 )
-from spock.builder import ConfigArgBuilder
-from spock.config import spock
+from spock import SpockBuilder
+from spock import spock
 
 
 @spock
@@ -48,7 +48,7 @@ def main():
     # Use the builder to setup
     # Call tuner to indicate that we are going to do some HP tuning -- passing in an optuna study object
     attrs_obj = (
-        ConfigArgBuilder(
+        SpockBuilder(
             LogisticRegressionHP,
             BasicParams,
             desc="Example Logistic Regression Hyper-Parameter Tuning -- Optuna Backend",

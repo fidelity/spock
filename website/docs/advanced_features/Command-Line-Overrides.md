@@ -7,13 +7,12 @@ normally require use of another argparser.
 ### Automatic Command-Line Argument Generation
 
 `spock` will automatically generate command line arguments for each parameter, unless the `no_cmd_line=True` flag is 
-passed to the `ConfigArgBuilder`. Let's look at two of the `@spock` decorated classes from the `tutorial.py` file to 
+passed to the `SpockBuilder`. Let's look at two of the `@spock` decorated classes from the `tutorial.py` file to 
 illustrate how this works in practice:
 
 ```python
 from enum import Enum
-from spock.args import SavePath
-from spock.config import spock
+from spock import spock
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -56,8 +55,7 @@ Using the automatically generated command-line arguments, let's override a few v
 
 ```python
 from enum import Enum
-from spock.args import SavePath
-from spock.config import spock
+from spock import spock
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -76,7 +74,6 @@ class Optimizer(Enum):
 
 @spock
 class ModelConfig:
-    save_path: SavePath
     n_features: int
     dropout: Optional[List[float]]
     hidden_sizes: Tuple[int, int, int] = (32, 32, 32)
@@ -109,23 +106,23 @@ class SGDConfig(OptimizerConfig):
 
 To run `tutorial.py` we would normally pass just the path to the configuration file as a command line argument:
 
-```bash
-$ python tutorial.py --config tutorial.yaml
+```shell
+python tutorial.py --config tutorial.yaml
 ```
 
 But with command line overrides we can also pass parameter arguments to override their value within the configuration
 file:
 
-```bash
-$ python tutorial.py --config tutorial.yaml --DataConfig.cache_path /tmp/trash
+```shell
+python tutorial.py --config tutorial.yaml --DataConfig.cache_path /tmp/trash
 ```
 
 Each parameter can be overridden **ONLY** at the class specific level with the syntax `--classname.parameter`. For
 instance, our previous example would only override the `DataConfig.cache_path` and not the `ModelConfig.cache_path` even
 though they have the same parameter name (due to the different class names).
 
-```bash
-$ python tutorial.py --config tutorial.yaml --DataConfig.cache_path /tmp/trash
+```shell
+python tutorial.py --config tutorial.yaml --DataConfig.cache_path /tmp/trash
 ```
 
 ### Overriding Nested `@spock` Classes
@@ -179,7 +176,7 @@ For `List` of Repeated `@spock` Classes the syntax is slightly different to allo
 Given the below example code:
 
 ```python
-from spock.config import spock
+from spock import spock
 from typing import List
 
 
@@ -207,8 +204,8 @@ NestedListStuff:
 
 We could override the parameters like so (note that the len must match the defined length from the YAML):
 
-```bash
-$ python tutorial.py --config tutorial.yaml --TypeConfig.nested_list.NestedListStuff.one [1,2] \
+```shell
+python tutorial.py --config tutorial.yaml --TypeConfig.nested_list.NestedListStuff.one [1,2] \
 --TypeConfig.nested_list.NestedListStuff.two ['ciao','ciao']
 ```
 

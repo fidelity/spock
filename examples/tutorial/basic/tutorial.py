@@ -4,9 +4,8 @@ from typing import List, Tuple
 import torch
 from basic_nn import BasicNet
 
-from spock.args import SavePath
-from spock.builder import ConfigArgBuilder
-from spock.config import spock
+from spock import SpockBuilder
+from spock import spock
 
 
 class Activation(Enum):
@@ -35,7 +34,6 @@ class ModelConfig:
         activation: choice from the Activation enum of the activation function to use
     """
 
-    save_path: SavePath
     n_features: int
     dropout: List[float]
     hidden_sizes: Tuple[int, int, int]
@@ -47,7 +45,7 @@ def main():
     description = "spock Basic Tutorial"
     # Build out the parser by passing in Spock config objects as *args after description
     config = (
-        ConfigArgBuilder(ModelConfig, desc=description, create_save_path=True)
+        SpockBuilder(ModelConfig, desc=description, create_save_path=True)
         .save(file_extension=".toml")
         .generate()
     )

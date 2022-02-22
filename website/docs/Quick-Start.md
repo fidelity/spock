@@ -23,8 +23,8 @@ parameters with supported argument types from the `typing` library. Lastly, we w
 docstrings to provide command line `--help` information.
 
 ```python
-from spock.builder import ConfigArgBuilder
-from spock.config import spock
+from spock import SpockBuilder
+from spock import spock
 from typing import List
 
 @spock
@@ -44,45 +44,33 @@ class BasicConfig:
     most_fancy_parameter: List[int]
 ```
 
-Next let's add two simple function(s) to our script. They both so the same thing but use our parameters in two different
-ways.
+Next let's add a simple function to our script. The function takes as an argument a `Spockspace` (in this case we type
+hint within Python so IDEs can autocomplete), thus we access our defined parameters from the class definition above via 
+dot notation (just like `Namespaces` as the output from argparsers).
 
 ```python
-def add_namespace(config):
+def add_values(config: BasicConfig):
     # Lets just do some basic algebra here
     val_sum = sum([(config.fancy_parameter * val) + config.fancier_parameter for val in config.most_fancy_parameter])
     # If the boolean is true let's round
     if config.parameter:
         val_sum = round(val_sum)
     return val_sum
-
-def add_by_parameter(multiply_param, list_vals, add_param, tf_round):
-    # Lets just do some basic algebra here
-    val_sum = sum([(multiply_param * val) + add_param for val in list_vals])
-    # If the boolean is true let's round
-    if tf_round:
-        val_sum = round(val_sum)
-    return val_sum
 ```
 
-Now, we build out the parameter objects by passing in the `spock` objects (as `*args`) to the `ConfigArgBuilder` 
-and chain call the `generate` method. The returned namespace object contains the defined classes named with the given
-`spock` class name. We then can pass the whole object to our first function or specific parameters to our
-second function.
+Now, we build out the parameter objects by passing in the `spock` objects (as `*args`) to the `SpockBuilder` 
+and chain call the `generate` method. The returned object contains the defined classes named with the given
+`spock` class name which we call a `Spockspace`. We then simply pass `config.BasicConfig` to our function.
 
 ```python
 def main():
     # Chain the generate function to the class call
-    config = ConfigArgBuilder(BasicConfig, desc='Quick start example').generate()
+    config = SpockBuilder(BasicConfig, desc='Quick start example').generate()
     # One can now access the Spock config object by class name with the returned namespace
     print(config.BasicConfig.parameter)
     # And pass the namespace to our first function
-    val_sum_namespace = add_namespace(config.BasicConfig)
+    val_sum_namespace = add_values(config.BasicConfig)
     print(val_sum_namespace)
-    # Or pass by parameter
-    val_sum_parameter = add_by_parameter(config.BasicConfig.fancy_parameter, config.BasicConfig.most_fancy_parameter, 
-                                         config.BasicConfig.fancier_parameter, config.BasicConfig.parameter)
-    print(val_sum_parameter)
 
 
 if __name__ == '__main__':
@@ -102,17 +90,17 @@ most_fancy_parameter: [768, 768, 512, 128]
 
 Finally, we would run our script and pass the path to the configuration file to the command line (`-c` or `--config`):
 
-```bash
-$ python simple.py -c simple.yaml
+```shell
+python simple.py -c simple.yaml
 ```
 
 To get help for our `spock` class and defined parameters:
 
-```bash
-$ python simple.py --help
+```shell
+python simple.py --help
 ```
 
-```bash
+```shell
 usage: /Users/a635179/Documents/git_repos/open_source/spock/examples/quick-start/simple.py -c [--config] config1 [config2, config3, ...]
 
 Quick start example
