@@ -278,6 +278,10 @@ class AttrBuilder(BaseBuilder):
                 arg_name = f"--{str(attr_name)}.{val.name}"
                 val_type = str
                 group_parser = make_argument(arg_name, val_type, group_parser)
+            # This catches callables -- need to be of type str which will be use in importlib
+            elif isinstance(val.type, _SpockVariadicGenericAlias):
+                arg_name = f"--{str(attr_name)}.{val.name}"
+                group_parser = make_argument(arg_name, str, group_parser)
             else:
                 arg_name = f"--{str(attr_name)}.{val.name}"
                 group_parser = make_argument(arg_name, val_type, group_parser)

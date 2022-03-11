@@ -79,7 +79,7 @@ class TestClassCmdLineOverride:
                     "--SecondDoubleNestedConfig.morph_tolerance",
                     "0.2",
                     "--TypeConfig.call_me",
-                    "'tests.base.attr_configs_test.foo'"
+                    'tests.base.attr_configs_test.foo'
                 ],
             )
             config = ConfigArgBuilder(
@@ -192,7 +192,7 @@ class TestClassOnlyCmdLine:
                     "--TypeConfig.high_config",
                     "SingleNestedConfig",
                     "--TypeConfig.call_me",
-                    "'tests.base.attr_configs_test.foo'"
+                    'tests.base.attr_configs_test.foo'
                 ],
             )
             config = ConfigArgBuilder(
