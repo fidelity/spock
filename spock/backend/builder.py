@@ -20,7 +20,6 @@ from spock.backend.wrappers import Spockspace
 from spock.graph import Graph
 from spock.utils import make_argument
 
-
 minor = sys.version_info.minor
 if minor < 7:
     from typing import CallableMeta as _VariadicGenericAlias

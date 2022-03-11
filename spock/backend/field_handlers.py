@@ -5,6 +5,7 @@
 
 """Handles registering field attributes for spock classes -- deals with the recursive nature of dependencies"""
 
+import importlib
 import sys
 from abc import ABC, abstractmethod
 from enum import EnumMeta
@@ -12,12 +13,13 @@ from typing import List, Type
 
 from attr import NOTHING, Attribute
 
-import importlib
-
 from spock.backend.spaces import AttributeSpace, BuilderSpace, ConfigSpace
-from spock.exceptions import _SpockInstantiationError, _SpockNotOptionalError, _SpockValueError
+from spock.exceptions import (
+    _SpockInstantiationError,
+    _SpockNotOptionalError,
+    _SpockValueError,
+)
 from spock.utils import _check_iterable, _is_spock_instance, _is_spock_tune_instance
-
 
 minor = sys.version_info.minor
 if minor < 7:
@@ -354,10 +356,12 @@ class RegisterCallableField(RegisterFieldTemplate):
         Returns:
         """
         # These are always going to be strings... cast just in case
-        str_field = str(builder_space.arguments[attr_space.config_space.name][
-            attr_space.attribute.name
-        ])
-        module, fn = str_field.rsplit('.', 1)
+        str_field = str(
+            builder_space.arguments[attr_space.config_space.name][
+                attr_space.attribute.name
+            ]
+        )
+        module, fn = str_field.rsplit(".", 1)
         try:
             call_ref = getattr(importlib.import_module(module), fn)
             attr_space.field = call_ref

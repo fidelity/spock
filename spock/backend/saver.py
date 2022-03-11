@@ -146,7 +146,9 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
                 for idx, list_val in enumerate(val):
                     tmp_dict = {}
                     for inner_key, inner_val in list_val.items():
-                        tmp_dict = self._convert_tuples_2_lists(tmp_dict, inner_val, inner_key)
+                        tmp_dict = self._convert_tuples_2_lists(
+                            tmp_dict, inner_val, inner_key
+                        )
                     val[idx] = tmp_dict
                 clean_inner_dict = val
             else:

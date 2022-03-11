@@ -16,8 +16,8 @@ import attr
 
 minor = sys.version_info.minor
 if minor < 7:
-    from typing import GenericMeta as _GenericAlias
     from typing import CallableMeta as _VariadicGenericAlias
+    from typing import GenericMeta as _GenericAlias
 else:
     from typing import _GenericAlias, _VariadicGenericAlias
 
