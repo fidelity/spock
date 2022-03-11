@@ -331,7 +331,7 @@ class Bar:
 
 
 @spock(dynamic=True)
-class TestConfigDynamicDefaults(Foo, Bar):
+class ConfigDynamicDefaults(Foo, Bar):
     x: int = 235
     y: str = 'yarghhh'
     z: List[int] = [10, 20]

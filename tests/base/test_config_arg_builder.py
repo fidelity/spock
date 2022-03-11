@@ -205,7 +205,7 @@ class TestDynamic(AllDynamic):
     def arg_builder(monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", [""])
-            config = ConfigArgBuilder(TestConfigDynamicDefaults)
+            config = ConfigArgBuilder(ConfigDynamicDefaults)
             return config.generate()
 
 
@@ -247,7 +247,7 @@ class TestDynamic(AllDynamic):
     def arg_builder(monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", [""])
-            config = ConfigArgBuilder(TestConfigDynamicDefaults)
+            config = ConfigArgBuilder(ConfigDynamicDefaults)
             return config.generate()
 
 

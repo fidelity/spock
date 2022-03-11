@@ -414,8 +414,9 @@ def _handle_optional_typing(typed):
     """
     # Set optional to false
     optional = False
-    # Check if it has __args__ to look for optionality as it is a GenericAlias
-    if hasattr(typed, "__args__"):
+    # Check if it has __args__ to look for optionality as it is a GenericAlias -- also make sure it is not
+    # callable as that also has __args__
+    if hasattr(typed, "__args__") and not isinstance(typed, _SpockVariadicGenericAlias):
         # If it is more than one than it is most likely optional but check against NoneType in the tuple to verify
         # Check the length of type __args__
         type_args = typed.__args__

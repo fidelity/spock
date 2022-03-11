@@ -230,8 +230,8 @@ class AllInherited:
 
 class AllDynamic:
     def test_all_dynamic(self, arg_builder):
-        assert arg_builder.TestConfigDynamicDefaults.x == 235
-        assert arg_builder.TestConfigDynamicDefaults.y == "yarghhh"
-        assert arg_builder.TestConfigDynamicDefaults.z == [10, 20]
-        assert arg_builder.TestConfigDynamicDefaults.p == 1
-        assert arg_builder.TestConfigDynamicDefaults.q == 'shhh'
+        assert arg_builder.ConfigDynamicDefaults.x == 235
+        assert arg_builder.ConfigDynamicDefaults.y == "yarghhh"
+        assert arg_builder.ConfigDynamicDefaults.z == [10, 20]
+        assert arg_builder.ConfigDynamicDefaults.p == 1
+        assert arg_builder.ConfigDynamicDefaults.q == 'shhh'
