@@ -4,7 +4,8 @@
 # SPDX-License-Identifier: Apache-2.0
 
 """Handles the building/saving of the configurations from the Spock config classes"""
-
+import sys
+import typing
 from abc import ABC, abstractmethod
 from enum import EnumMeta
 from typing import List
@@ -18,6 +19,13 @@ from spock.backend.spaces import BuilderSpace
 from spock.backend.wrappers import Spockspace
 from spock.graph import Graph
 from spock.utils import make_argument
+
+
+minor = sys.version_info.minor
+if minor < 7:
+    from typing import CallableMeta as _VariadicGenericAlias
+else:
+    from typing import _GenericAlias, _VariadicGenericAlias
 
 
 class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
@@ -255,10 +263,11 @@ class AttrBuilder(BaseBuilder):
         )
         for val in class_obj.__attrs_attrs__:
             val_type = val.metadata["type"] if "type" in val.metadata else val.type
-            # Check if the val type has __args__ -- this catches lists?
+            # Check if the val type has __args__ -- this catches GenericAlias classes
             # TODO (ncilfone): Fix up this super super ugly logic
             if (
-                hasattr(val_type, "__args__")
+                not isinstance(val_type, _VariadicGenericAlias)
+                and hasattr(val_type, "__args__")
                 and ((list(set(val_type.__args__))[0]).__module__ == class_name)
                 and attr.has((list(set(val_type.__args__))[0]))
             ):

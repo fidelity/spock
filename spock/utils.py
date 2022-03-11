@@ -7,13 +7,17 @@
 
 import ast
 import os
-import re
 import socket
 import subprocess
 import sys
-from enum import EnumMeta
 from time import localtime, strftime
 from warnings import warn
+
+from spock.exceptions import _SpockValueError
+
+from enum import EnumMeta
+from pathlib import Path
+from typing import List, Type, Union
 
 import attr
 import git
@@ -24,9 +28,101 @@ if minor < 7:
 else:
     from typing import _GenericAlias
 
-from enum import EnumMeta
-from pathlib import Path
-from typing import List, Type, Union
+
+def within(val: Union[float, int], low_bound: Union[float, int], upper_bound: Union[float, int], inclusive_lower: bool = False, inclusive_upper: bool = False) -> None:
+    """Checks that a value is within a defined range
+
+    Args:
+        val: value to check against
+        low_bound: lower bound of range
+        upper_bound: upper bound of range
+        inclusive_lower: if the check includes the bound value (i.e. >=)
+        inclusive_upper: if the check includes the bound value (i.e. <=)
+
+    Returns:
+        None
+
+    Raises:
+        _SpockValueError
+
+    """
+    # Check lower bounds
+    lower_fn = le if inclusive_upper else lt
+    upper_fn = ge if inclusive_lower else gt
+    upper_fn(val=val, bound=low_bound)
+    lower_fn(val=val, bound=upper_bound)
+
+
+def ge(val: Union[float, int], bound: Union[float, int]) -> None:
+    """Checks that a value is greater than or equal to (inclusive) a lower bound
+
+    Args:
+        val: value to check against
+        bound: lower bound
+
+    Returns:
+        None
+
+    Raises:
+        _SpockValueError
+
+    """
+    if val < bound:
+        raise _SpockValueError(f"Set value `{val}` is not >= given bound value `{bound}`")
+
+
+def gt(val: Union[float, int], bound: Union[float, int]) -> None:
+    """Checks that a value is greater (non-inclusive) than a lower bound
+
+    Args:
+        val: value to check against
+        bound: lower bound
+
+    Returns:
+        None
+
+    Raises:
+        _SpockValueError
+
+    """
+    if val <= bound:
+        raise _SpockValueError(f"Set value `{val}` is not > given bound value `{bound}`")
+
+
+def le(val: Union[float, int], bound: Union[float, int], ) -> None:
+    """Checks that a value is less than or equal to (inclusive) an upper bound
+
+    Args:
+        val: value to check against
+        bound: upper bound
+
+    Returns:
+        None
+
+    Raises:
+        _SpockValueError
+
+    """
+    if val > bound:
+        raise _SpockValueError(f"Set value `{val}` is not <= given bound value `{bound}`")
+
+
+def lt(val: Union[float, int], bound: Union[float, int]) -> None:
+    """Checks that a value is less (non-inclusive) than an upper bound
+
+    Args:
+        val: value to check against
+        bound: upper bound
+
+    Returns:
+        None
+
+    Raises:
+        _SpockValueError
+
+    """
+    if val >= bound:
+        raise _SpockValueError(f"Set value `{val}` is not < given bound value `{bound}`")
 
 
 def _find_all_spock_classes(attr_class: Type):

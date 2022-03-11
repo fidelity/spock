@@ -117,6 +117,9 @@ def _process_class(cls, kw_only: bool, make_init: bool, dynamic: bool):
         auto_attribs=True,
         init=make_init,
     )
+    # Copy over the post init function
+    if hasattr(cls, '__post_hook__'):
+        obj.__post_hook__ = cls.__post_hook__
     # For each class we dynamically create we need to register it within the system modules for pickle to work
     setattr(sys.modules["spock"].backend.config, obj.__name__, obj)
     # Swap the __doc__ string from cls to obj

@@ -12,11 +12,14 @@ from typing import TypeVar, Union
 
 import attr
 
+# from spock.exceptions import _SpockValueError
+
 minor = sys.version_info.minor
 if minor < 7:
     from typing import GenericMeta as _GenericAlias
+    from typing import CallableMeta as _VariadicGenericAlias
 else:
-    from typing import _GenericAlias
+    from typing import _GenericAlias, _VariadicGenericAlias
 
 
 class SavePath(str):
@@ -431,6 +434,55 @@ def _handle_optional_typing(typed):
     return typed, optional
 
 
+def _callable_katra(typed, default=None, optional=False):
+    """Private interface to create a Callable katra
+
+    Here we handle the callable type katra that allows us to force a callable check on the value provided
+
+    A 'katra' is the basic functional unit of `spock`. It defines a parameter using attrs as the backend, type checks
+    both simple types and subscripted GenericAlias types (e.g. lists and tuples), handles setting default parameters,
+    and deals with parameter optionality
+
+    Handles: bool, string, float, int, List, and Tuple
+
+    Args:
+        typed: the type of the parameter to define
+        default: the default value to assign if given
+        optional: whether to make the parameter optional or not (thus allowing None)
+
+    Returns:
+        x: Attribute from attrs
+
+    """
+    if default is not None:
+        # if a default is provided, that takes precedence
+        x = attr.ib(
+            validator=attr.validators.is_callable(),
+            default=default,
+            type=typed,
+            metadata={"base": _get_name_py_version(typed)},
+        )
+    elif optional:
+        x = attr.ib(
+            validator=attr.validators.optional(attr.validators.is_callable()),
+            default=default,
+            type=typed,
+            metadata={"optional": True, "base": _get_name_py_version(typed)},
+        )
+    else:
+        x = attr.ib(
+            validator=attr.validators.is_callable(),
+            type=typed,
+            metadata={"base": _get_name_py_version(typed)},
+        )
+
+        # raise _SpockValueError(f"Types of `{_get_name_py_version(typed)}` must have a default value or be optional -- "
+        #                        f"Spock currently has no way to map from a markup style file to a "
+        #                        f"{_get_name_py_version(typed)} type")
+
+    return x
+
+
 def katra(typed, default=None):
     """Public interface to create a katra
 
@@ -449,9 +501,11 @@ def katra(typed, default=None):
     """
     # Handle optionals
     typed, optional = _handle_optional_typing(typed)
+    if isinstance(typed, _VariadicGenericAlias):
+        x = _callable_katra(typed=typed, default=default, optional=optional)
     # We need to check if the type is a _GenericAlias so that we can handle subscripted general types
     # If it is subscript typed it will not be T which python uses as a generic type name
-    if isinstance(typed, _GenericAlias) and (
+    elif isinstance(typed, _GenericAlias) and (
         not isinstance(typed.__args__[0], TypeVar)
     ):
         x = _generic_alias_katra(typed=typed, default=default, optional=optional)

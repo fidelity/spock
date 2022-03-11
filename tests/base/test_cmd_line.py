@@ -77,7 +77,9 @@ class TestClassCmdLineOverride:
                     "--SingleNestedConfig.double_nested_config",
                     "SecondDoubleNestedConfig",
                     "--SecondDoubleNestedConfig.morph_tolerance",
-                    "0.2"
+                    "0.2",
+                    "--TypeConfig.call_me",
+                    "'tests.base.attr_configs_test.foo'"
                 ],
             )
             config = ConfigArgBuilder(
@@ -119,6 +121,7 @@ class TestClassCmdLineOverride:
         assert arg_builder.NestedListStuff[1].two == "Working"
         assert isinstance(arg_builder.SingleNestedConfig.double_nested_config, SecondDoubleNestedConfig) is True
         assert arg_builder.SecondDoubleNestedConfig.morph_tolerance == 0.2
+        assert arg_builder.TypeConfig.call_me == foo
 
 
 class TestClassOnlyCmdLine:
@@ -187,7 +190,9 @@ class TestClassOnlyCmdLine:
                     "--TypeConfig.nested_list.NestedListStuff.two",
                     "['Hooray', 'Working']",
                     "--TypeConfig.high_config",
-                    "SingleNestedConfig"
+                    "SingleNestedConfig",
+                    "--TypeConfig.call_me",
+                    "'tests.base.attr_configs_test.foo'"
                 ],
             )
             config = ConfigArgBuilder(
@@ -231,6 +236,7 @@ class TestClassOnlyCmdLine:
         assert arg_builder.NestedListStuff[0].two == "Hooray"
         assert arg_builder.NestedListStuff[1].one == 21
         assert arg_builder.NestedListStuff[1].two == "Working"
+        assert arg_builder.TypeConfig.call_me == foo
 
 
 class TestRaiseCmdLineNoKey:
