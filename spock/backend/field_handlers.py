@@ -19,13 +19,7 @@ from spock.exceptions import (
     _SpockNotOptionalError,
     _SpockValueError,
 )
-from spock.utils import _check_iterable, _is_spock_instance, _is_spock_tune_instance
-
-minor = sys.version_info.minor
-if minor < 7:
-    from typing import CallableMeta as _VariadicGenericAlias
-else:
-    from typing import _VariadicGenericAlias
+from spock.utils import _check_iterable, _is_spock_instance, _is_spock_tune_instance, _SpockVariadicGenericAlias
 
 
 class RegisterFieldTemplate(ABC):
@@ -681,7 +675,7 @@ class RegisterSpockCls(RegisterFieldTemplate):
             elif _is_spock_tune_instance(attribute.type):
                 handler = RegisterTuneCls()
             # References to callables
-            elif isinstance(attribute.type, _VariadicGenericAlias):
+            elif isinstance(attribute.type, _SpockVariadicGenericAlias):
                 handler = RegisterCallableField()
             # Basic field
             else:

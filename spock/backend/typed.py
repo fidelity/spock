@@ -9,17 +9,9 @@ import sys
 from enum import Enum, EnumMeta
 from functools import partial
 from typing import TypeVar, Union
+from spock.utils import _SpockGenericAlias, _SpockVariadicGenericAlias
 
 import attr
-
-# from spock.exceptions import _SpockValueError
-
-minor = sys.version_info.minor
-if minor < 7:
-    from typing import CallableMeta as _VariadicGenericAlias
-    from typing import GenericMeta as _GenericAlias
-else:
-    from typing import _GenericAlias, _VariadicGenericAlias
 
 
 class SavePath(str):
@@ -367,7 +359,7 @@ def _type_katra(typed, default=None, optional=False):
     # Grab the name first based on if it is a base type or GenericAlias
     if isinstance(typed, type):
         name = typed.__name__
-    elif isinstance(typed, _GenericAlias):
+    elif isinstance(typed, _SpockGenericAlias):
         name = _get_name_py_version(typed=typed)
     else:
         raise TypeError("Encountered an unexpected type in _type_katra")
@@ -475,11 +467,6 @@ def _callable_katra(typed, default=None, optional=False):
             type=typed,
             metadata={"base": _get_name_py_version(typed)},
         )
-
-        # raise _SpockValueError(f"Types of `{_get_name_py_version(typed)}` must have a default value or be optional -- "
-        #                        f"Spock currently has no way to map from a markup style file to a "
-        #                        f"{_get_name_py_version(typed)} type")
-
     return x
 
 
@@ -501,11 +488,11 @@ def katra(typed, default=None):
     """
     # Handle optionals
     typed, optional = _handle_optional_typing(typed)
-    if isinstance(typed, _VariadicGenericAlias):
+    if isinstance(typed, _SpockVariadicGenericAlias):
         x = _callable_katra(typed=typed, default=default, optional=optional)
     # We need to check if the type is a _GenericAlias so that we can handle subscripted general types
     # If it is subscript typed it will not be T which python uses as a generic type name
-    elif isinstance(typed, _GenericAlias) and (
+    elif isinstance(typed, _SpockGenericAlias) and (
         not isinstance(typed.__args__[0], TypeVar)
     ):
         x = _generic_alias_katra(typed=typed, default=default, optional=optional)

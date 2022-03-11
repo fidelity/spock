@@ -20,11 +20,7 @@ from spock.backend.wrappers import Spockspace
 from spock.graph import Graph
 from spock.utils import make_argument
 
-minor = sys.version_info.minor
-if minor < 7:
-    from typing import CallableMeta as _VariadicGenericAlias
-else:
-    from typing import _GenericAlias, _VariadicGenericAlias
+from spock.utils import _SpockVariadicGenericAlias
 
 
 class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
@@ -265,7 +261,7 @@ class AttrBuilder(BaseBuilder):
             # Check if the val type has __args__ -- this catches GenericAlias classes
             # TODO (ncilfone): Fix up this super super ugly logic
             if (
-                not isinstance(val_type, _VariadicGenericAlias)
+                not isinstance(val_type, _SpockVariadicGenericAlias)
                 and hasattr(val_type, "__args__")
                 and ((list(set(val_type.__args__))[0]).__module__ == class_name)
                 and attr.has((list(set(val_type.__args__))[0]))

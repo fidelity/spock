@@ -22,10 +22,31 @@ import git
 from spock.exceptions import _SpockValueError
 
 minor = sys.version_info.minor
-if minor < 7:
-    from typing import GenericMeta as _GenericAlias
-else:
-    from typing import _GenericAlias
+
+
+def _get_alias_type():
+    if minor < 7:
+        from typing import GenericMeta as _GenericAlias
+    else:
+        from typing import _GenericAlias
+
+    return _GenericAlias
+
+
+def _get_callable_type():
+    if minor == 6:
+        from typing import CallableMeta as _VariadicGenericAlias
+    elif (minor > 6) and (minor < 9):
+        from typing import _VariadicGenericAlias
+    elif minor > 8:
+        from typing import _CallableType as _VariadicGenericAlias
+    else:
+        raise RuntimeError(f"Attempting to use spock with python version `3.{minor}` which is unsupported")
+    return _VariadicGenericAlias
+
+
+_SpockGenericAlias = _get_alias_type()
+_SpockVariadicGenericAlias = _get_callable_type()
 
 
 def within(
@@ -283,7 +304,7 @@ def make_argument(arg_name, arg_type, parser):
 
     """
     # For generic alias we take the input string and use a custom type callable to convert
-    if isinstance(arg_type, _GenericAlias):
+    if isinstance(arg_type, _SpockGenericAlias):
         parser.add_argument(arg_name, required=False, type=_handle_generic_type_args)
     # For Unions -- python 3.6 can't deal with them correctly -- use the same ast method that generics require
     elif (
