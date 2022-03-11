@@ -101,6 +101,12 @@ See [Releases](https://github.com/fidelity/spock/releases) for more information.
 
 <details>
 
+#### March 11th, 2022
+* Added support for simple `typing.Callable` types (WIP: advanced versions)
+* Added support for post init hooks that allow for validation on parameters defined within `@spock` decorated classes. 
+Additionally, added some common validation check to utils (within, greater than, less than, etc.)
+* Updated unit tests to support Python 3.10
+
 #### January 26th, 2022
 * Added `evolve` support to the underlying `SpockBuilder` class. This provides functionality similar to the underlying
 attrs library ([attrs.evolve](https://www.attrs.org/en/stable/api.html#attrs.evolve)). `evolve()` creates a new 
@@ -114,12 +120,6 @@ passed into `*args` within the main `SpockBuilder` API
 * Updated main API interface for better top-level imports (backwards compatible): `ConfigArgBuilder`->`SpockBuilder`
 * Added stubs to the underlying decorator that should help with type hinting in VSCode (pylance/pyright)
 
-#### December 14, 2021
-* Refactored the backend to better handle nested dependencies (and for clarity)
-* Refactored the docs to use Docusaurus
-
-#### August 17, 2021
-* Added hyper-parameter tuning backend support for Ax via Service API
 </details>
 
 ## Original Implementation
