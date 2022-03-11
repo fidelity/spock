@@ -63,7 +63,7 @@ SingleNestedConfig:
 FirstDoubleNestedConfig:
   h_factor: 0.99
   v_factor: 0.90
-
+call_me: "tests.base.attr_configs_test.foo"
 
 # Override general definition
 TypeConfig:

@@ -12,11 +12,7 @@ from typing import TypeVar, Union
 
 import attr
 
-minor = sys.version_info.minor
-if minor < 7:
-    from typing import GenericMeta as _GenericAlias
-else:
-    from typing import _GenericAlias
+from spock.utils import _SpockGenericAlias, _SpockVariadicGenericAlias
 
 
 class SavePath(str):
@@ -364,7 +360,7 @@ def _type_katra(typed, default=None, optional=False):
     # Grab the name first based on if it is a base type or GenericAlias
     if isinstance(typed, type):
         name = typed.__name__
-    elif isinstance(typed, _GenericAlias):
+    elif isinstance(typed, _SpockGenericAlias):
         name = _get_name_py_version(typed=typed)
     else:
         raise TypeError("Encountered an unexpected type in _type_katra")
@@ -418,8 +414,9 @@ def _handle_optional_typing(typed):
     """
     # Set optional to false
     optional = False
-    # Check if it has __args__ to look for optionality as it is a GenericAlias
-    if hasattr(typed, "__args__"):
+    # Check if it has __args__ to look for optionality as it is a GenericAlias -- also make sure it is not
+    # callable as that also has __args__
+    if hasattr(typed, "__args__") and not isinstance(typed, _SpockVariadicGenericAlias):
         # If it is more than one than it is most likely optional but check against NoneType in the tuple to verify
         # Check the length of type __args__
         type_args = typed.__args__
@@ -429,6 +426,50 @@ def _handle_optional_typing(typed):
             # Set the optional flag to true
             optional = True
     return typed, optional
+
+
+def _callable_katra(typed, default=None, optional=False):
+    """Private interface to create a Callable katra
+
+    Here we handle the callable type katra that allows us to force a callable check on the value provided
+
+    A 'katra' is the basic functional unit of `spock`. It defines a parameter using attrs as the backend, type checks
+    both simple types and subscripted GenericAlias types (e.g. lists and tuples), handles setting default parameters,
+    and deals with parameter optionality
+
+    Handles: bool, string, float, int, List, and Tuple
+
+    Args:
+        typed: the type of the parameter to define
+        default: the default value to assign if given
+        optional: whether to make the parameter optional or not (thus allowing None)
+
+    Returns:
+        x: Attribute from attrs
+
+    """
+    if default is not None:
+        # if a default is provided, that takes precedence
+        x = attr.ib(
+            validator=attr.validators.is_callable(),
+            default=default,
+            type=typed,
+            metadata={"base": _get_name_py_version(typed)},
+        )
+    elif optional:
+        x = attr.ib(
+            validator=attr.validators.optional(attr.validators.is_callable()),
+            default=default,
+            type=typed,
+            metadata={"optional": True, "base": _get_name_py_version(typed)},
+        )
+    else:
+        x = attr.ib(
+            validator=attr.validators.is_callable(),
+            type=typed,
+            metadata={"base": _get_name_py_version(typed)},
+        )
+    return x
 
 
 def katra(typed, default=None):
@@ -449,9 +490,11 @@ def katra(typed, default=None):
     """
     # Handle optionals
     typed, optional = _handle_optional_typing(typed)
+    if isinstance(typed, _SpockVariadicGenericAlias):
+        x = _callable_katra(typed=typed, default=default, optional=optional)
     # We need to check if the type is a _GenericAlias so that we can handle subscripted general types
     # If it is subscript typed it will not be T which python uses as a generic type name
-    if isinstance(typed, _GenericAlias) and (
+    elif isinstance(typed, _SpockGenericAlias) and (
         not isinstance(typed.__args__[0], TypeVar)
     ):
         x = _generic_alias_katra(typed=typed, default=default, optional=optional)

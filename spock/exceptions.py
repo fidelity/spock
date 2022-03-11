@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+
+# Copyright FMR LLC <opensource@fidelity.com>
+# SPDX-License-Identifier: Apache-2.0
+
+
 class _SpockUndecoratedClass(Exception):
     """Custom exception type for non spock decorated classes and not dynamic"""
 
@@ -25,3 +30,11 @@ class _SpockDuplicateArgumentError(Exception):
 
 class _SpockEvolveError(Exception):
     """Custom exception for when evolve errors occur"""
+
+    pass
+
+
+class _SpockValueError(Exception):
+    """Custom exception for throwing value errors"""
+
+    pass

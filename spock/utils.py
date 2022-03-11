@@ -7,26 +7,161 @@
 
 import ast
 import os
-import re
 import socket
 import subprocess
 import sys
 from enum import EnumMeta
+from pathlib import Path
 from time import localtime, strftime
+from typing import List, Type, Union
 from warnings import warn
 
 import attr
 import git
 
-minor = sys.version_info.minor
-if minor < 7:
-    from typing import GenericMeta as _GenericAlias
-else:
-    from typing import _GenericAlias
+from spock.exceptions import _SpockValueError
 
-from enum import EnumMeta
-from pathlib import Path
-from typing import List, Type, Union
+minor = sys.version_info.minor
+
+
+def _get_alias_type():
+    if minor < 7:
+        from typing import GenericMeta as _GenericAlias
+    else:
+        from typing import _GenericAlias
+
+    return _GenericAlias
+
+
+def _get_callable_type():
+    if minor == 6:
+        from typing import CallableMeta as _VariadicGenericAlias
+    elif (minor > 6) and (minor < 9):
+        from typing import _VariadicGenericAlias
+    elif minor > 8:
+        from typing import _CallableType as _VariadicGenericAlias
+    else:
+        raise RuntimeError(
+            f"Attempting to use spock with python version `3.{minor}` which is unsupported"
+        )
+    return _VariadicGenericAlias
+
+
+_SpockGenericAlias = _get_alias_type()
+_SpockVariadicGenericAlias = _get_callable_type()
+
+
+def within(
+    val: Union[float, int],
+    low_bound: Union[float, int],
+    upper_bound: Union[float, int],
+    inclusive_lower: bool = False,
+    inclusive_upper: bool = False,
+) -> None:
+    """Checks that a value is within a defined range
+
+    Args:
+        val: value to check against
+        low_bound: lower bound of range
+        upper_bound: upper bound of range
+        inclusive_lower: if the check includes the bound value (i.e. >=)
+        inclusive_upper: if the check includes the bound value (i.e. <=)
+
+    Returns:
+        None
+
+    Raises:
+        _SpockValueError
+
+    """
+    # Check lower bounds
+    lower_fn = le if inclusive_upper else lt
+    upper_fn = ge if inclusive_lower else gt
+    upper_fn(val=val, bound=low_bound)
+    lower_fn(val=val, bound=upper_bound)
+
+
+def ge(val: Union[float, int], bound: Union[float, int]) -> None:
+    """Checks that a value is greater than or equal to (inclusive) a lower bound
+
+    Args:
+        val: value to check against
+        bound: lower bound
+
+    Returns:
+        None
+
+    Raises:
+        _SpockValueError
+
+    """
+    if val < bound:
+        raise _SpockValueError(
+            f"Set value `{val}` is not >= given bound value `{bound}`"
+        )
+
+
+def gt(val: Union[float, int], bound: Union[float, int]) -> None:
+    """Checks that a value is greater (non-inclusive) than a lower bound
+
+    Args:
+        val: value to check against
+        bound: lower bound
+
+    Returns:
+        None
+
+    Raises:
+        _SpockValueError
+
+    """
+    if val <= bound:
+        raise _SpockValueError(
+            f"Set value `{val}` is not > given bound value `{bound}`"
+        )
+
+
+def le(
+    val: Union[float, int],
+    bound: Union[float, int],
+) -> None:
+    """Checks that a value is less than or equal to (inclusive) an upper bound
+
+    Args:
+        val: value to check against
+        bound: upper bound
+
+    Returns:
+        None
+
+    Raises:
+        _SpockValueError
+
+    """
+    if val > bound:
+        raise _SpockValueError(
+            f"Set value `{val}` is not <= given bound value `{bound}`"
+        )
+
+
+def lt(val: Union[float, int], bound: Union[float, int]) -> None:
+    """Checks that a value is less (non-inclusive) than an upper bound
+
+    Args:
+        val: value to check against
+        bound: upper bound
+
+    Returns:
+        None
+
+    Raises:
+        _SpockValueError
+
+    """
+    if val >= bound:
+        raise _SpockValueError(
+            f"Set value `{val}` is not < given bound value `{bound}`"
+        )
 
 
 def _find_all_spock_classes(attr_class: Type):
@@ -171,7 +306,7 @@ def make_argument(arg_name, arg_type, parser):
 
     """
     # For generic alias we take the input string and use a custom type callable to convert
-    if isinstance(arg_type, _GenericAlias):
+    if isinstance(arg_type, _SpockGenericAlias):
         parser.add_argument(arg_name, required=False, type=_handle_generic_type_args)
     # For Unions -- python 3.6 can't deal with them correctly -- use the same ast method that generics require
     elif (

@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from enum import Enum
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Callable
 
 from spock.backend.typed import SavePath
 from spock.config import spock
@@ -156,6 +156,8 @@ class TypeConfig:
     class_enum: ClassChoice
     # Double Nested class ref
     high_config: SingleNestedConfig
+    # Callable
+    call_me: Callable
 
 
 @spock
@@ -199,12 +201,18 @@ class TypeOptConfig:
     class_enum_opt_no_def: Optional[ClassChoice]
     # Additional dummy argument
     int_p_2: Optional[int]
+    # Optional Callable
+    call_me_maybe: Optional[Callable]
 
 
 @spock
 class NestedStuffDefault:
     away: str = "arsenal"
     goals: int = 0
+
+
+def foo(val: int):
+    return val * 2
 
 
 @spock
@@ -257,6 +265,8 @@ class TypeDefaultConfig:
     class_enum_def: ClassChoice = NestedStuff
     # Double Nested class ref
     high_config_def: SingleNestedConfig = SingleNestedConfig
+    # Optional Callable
+    call_me_maybe: Callable = foo
 
 
 @spock
@@ -301,6 +311,8 @@ class TypeDefaultOptConfig:
     nested_list_opt_def: Optional[List[NestedListStuff]] = [NestedListStuff]
     # Class Enum
     class_enum_opt_def: Optional[ClassChoice] = NestedStuff
+    # Optional Callable
+    call_me_maybe: Optional[Callable] = foo
 
 
 @spock
@@ -319,7 +331,7 @@ class Bar:
 
 
 @spock(dynamic=True)
-class TestConfigDynamicDefaults(Foo, Bar):
+class ConfigDynamicDefaults(Foo, Bar):
     x: int = 235
     y: str = 'yarghhh'
     z: List[int] = [10, 20]

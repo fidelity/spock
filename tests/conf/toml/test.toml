@@ -58,3 +58,4 @@ high_config = 'SingleNestedConfig'
 # Overrride general definition
 [TypeConfig]
     float_p = 12.0
+call_me = 'tests.base.attr_configs_test.foo'

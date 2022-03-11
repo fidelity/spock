@@ -5,16 +5,26 @@
 
 """Handles registering field attributes for spock classes -- deals with the recursive nature of dependencies"""
 
+import importlib
+import sys
 from abc import ABC, abstractmethod
 from enum import EnumMeta
 from typing import List, Type
 
 from attr import NOTHING, Attribute
 
-from spock.args import SpockArguments
 from spock.backend.spaces import AttributeSpace, BuilderSpace, ConfigSpace
-from spock.exceptions import _SpockInstantiationError, _SpockNotOptionalError
-from spock.utils import _check_iterable, _is_spock_instance, _is_spock_tune_instance
+from spock.exceptions import (
+    _SpockInstantiationError,
+    _SpockNotOptionalError,
+    _SpockValueError,
+)
+from spock.utils import (
+    _check_iterable,
+    _is_spock_instance,
+    _is_spock_tune_instance,
+    _SpockVariadicGenericAlias,
+)
 
 
 class RegisterFieldTemplate(ABC):
@@ -318,6 +328,69 @@ class RegisterEnum(RegisterFieldTemplate):
         builder_space.spock_space[enum_cls.__name__] = attr_space.field
 
 
+class RegisterCallableField(RegisterFieldTemplate):
+    """Class that registers callable types
+
+    Attributes:
+        special_keys: dictionary to check special keys
+
+    """
+
+    def __init__(self):
+        """Init call to RegisterSimpleField
+
+        Args:
+        """
+        super(RegisterCallableField, self).__init__()
+
+    def handle_attribute_from_config(
+        self, attr_space: AttributeSpace, builder_space: BuilderSpace
+    ):
+        """Handles setting a simple attribute when it is a spock class type
+
+        Args:
+            attr_space: holds information about a single attribute that is mapped to a ConfigSpace
+            builder_space: named_tuple containing the arguments and spock_space
+
+        Returns:
+        """
+        # These are always going to be strings... cast just in case
+        str_field = str(
+            builder_space.arguments[attr_space.config_space.name][
+                attr_space.attribute.name
+            ]
+        )
+        module, fn = str_field.rsplit(".", 1)
+        try:
+            call_ref = getattr(importlib.import_module(module), fn)
+            attr_space.field = call_ref
+        except Exception as e:
+            raise _SpockValueError(
+                f"Attempted to import module {module} and callable {fn} however it could not be found on the current "
+                f"python path: {e}"
+            )
+
+    def handle_optional_attribute_type(
+        self, attr_space: AttributeSpace, builder_space: BuilderSpace
+    ):
+        """Not implemented for this type
+
+        Args:
+            attr_space: holds information about a single attribute that is mapped to a ConfigSpace
+            builder_space: named_tuple containing the arguments and spock_space
+
+        Raises:
+            _SpockNotOptionalError
+
+        """
+        print("hi")
+        raise _SpockNotOptionalError(
+            f"Parameter `{attr_space.attribute.name}` within `{attr_space.config_space.name}` is of "
+            f"type `{type(attr_space.attribute.type)}` which seems to be unsupported -- "
+            f"are you missing an @spock decorator on a base python class?"
+        )
+
+
 class RegisterSimpleField(RegisterFieldTemplate):
     """Class that registers basic python types
 
@@ -606,6 +679,9 @@ class RegisterSpockCls(RegisterFieldTemplate):
             # References to tuner classes
             elif _is_spock_tune_instance(attribute.type):
                 handler = RegisterTuneCls()
+            # References to callables
+            elif isinstance(attribute.type, _SpockVariadicGenericAlias):
+                handler = RegisterCallableField()
             # Basic field
             else:
                 handler = RegisterSimpleField()
@@ -617,6 +693,9 @@ class RegisterSpockCls(RegisterFieldTemplate):
         # error on instantiation
         try:
             spock_instance = spock_cls(**fields)
+            # If there is a __post_hook__ dunder method then call it
+            if hasattr(spock_cls, "__post_hook__"):
+                spock_instance.__post_hook__()
         except Exception as e:
             raise _SpockInstantiationError(
                 f"Spock class `{spock_cls.__name__}` could not be instantiated -- attrs message: {e}"

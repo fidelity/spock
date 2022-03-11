@@ -146,18 +146,31 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
                 for idx, list_val in enumerate(val):
                     tmp_dict = {}
                     for inner_key, inner_val in list_val.items():
-                        tmp_dict = self._convert(tmp_dict, inner_val, inner_key)
+                        tmp_dict = self._convert_tuples_2_lists(
+                            tmp_dict, inner_val, inner_key
+                        )
                     val[idx] = tmp_dict
                 clean_inner_dict = val
             else:
                 for inner_key, inner_val in val.items():
-                    clean_inner_dict = self._convert(
+                    clean_inner_dict = self._convert_tuples_2_lists(
                         clean_inner_dict, inner_val, inner_key
                     )
             clean_dict.update({key: clean_inner_dict})
         return clean_dict
 
-    def _convert(self, clean_inner_dict, inner_val, inner_key):
+    def _convert_tuples_2_lists(self, clean_inner_dict, inner_val, inner_key):
+        """Convert tuples to lists
+
+        Args:
+            clean_inner_dict: dictionary to update
+            inner_val: current value
+            inner_key: current key
+
+        Returns:
+            updated dictionary where tuples are cast back to lists
+
+        """
         # Convert tuples to lists so they get written correctly
         if isinstance(inner_val, tuple):
             clean_inner_dict.update(
@@ -277,6 +290,10 @@ class AttrSaver(BaseSaver):
                 if repeat_flag:
                     clean_val = list(set(clean_val))[-1]
                 out_dict.update({key: clean_val})
+            # Catch any callables -- convert back to the str representation
+            elif callable(val):
+                call_2_str = f"{val.__module__}.{val.__name__}"
+                out_dict.update({key: call_2_str})
             # If it's a spock class but has a parent then just use the class name to reference the values
             elif (val_name in all_cls) and parent_name is not None:
                 out_dict.update({key: val_name})

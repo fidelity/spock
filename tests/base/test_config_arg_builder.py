@@ -4,7 +4,7 @@ import sys
 import pytest
 
 from spock.builder import ConfigArgBuilder
-from spock.exceptions import _SpockUndecoratedClass, _SpockNotOptionalError
+from spock.exceptions import _SpockUndecoratedClass, _SpockNotOptionalError, _SpockValueError
 from tests.base.attr_configs_test import *
 from tests.base.base_asserts_test import *
 
@@ -205,7 +205,7 @@ class TestDynamic(AllDynamic):
     def arg_builder(monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", [""])
-            config = ConfigArgBuilder(TestConfigDynamicDefaults)
+            config = ConfigArgBuilder(ConfigDynamicDefaults)
             return config.generate()
 
 
@@ -247,7 +247,7 @@ class TestDynamic(AllDynamic):
     def arg_builder(monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", [""])
-            config = ConfigArgBuilder(TestConfigDynamicDefaults)
+            config = ConfigArgBuilder(ConfigDynamicDefaults)
             return config.generate()
 
 
@@ -265,4 +265,22 @@ class TestDynamicRaise:
                     z: List[int] = [10, 20]
 
                 config = ConfigArgBuilder(TestConfigDefaultsFail)
+                return config.generate()
+
+
+class TestCallableModulePathRaise:
+    def test_callable_module(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test_fail_callable_module.yaml"])
+            with pytest.raises(_SpockValueError):
+                config = ConfigArgBuilder(*all_configs)
+                return config.generate()
+
+
+class TestCallableModuleCallableRaise:
+    def test_callable_module(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test_fail_callable.yaml"])
+            with pytest.raises(_SpockValueError):
+                config = ConfigArgBuilder(*all_configs)
                 return config.generate()
