@@ -19,7 +19,12 @@ from spock.exceptions import (
     _SpockNotOptionalError,
     _SpockValueError,
 )
-from spock.utils import _check_iterable, _is_spock_instance, _is_spock_tune_instance, _SpockVariadicGenericAlias
+from spock.utils import (
+    _check_iterable,
+    _is_spock_instance,
+    _is_spock_tune_instance,
+    _SpockVariadicGenericAlias,
+)
 
 
 class RegisterFieldTemplate(ABC):

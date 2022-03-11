@@ -18,9 +18,7 @@ from spock.backend.help import attrs_help
 from spock.backend.spaces import BuilderSpace
 from spock.backend.wrappers import Spockspace
 from spock.graph import Graph
-from spock.utils import make_argument
-
-from spock.utils import _SpockVariadicGenericAlias
+from spock.utils import _SpockVariadicGenericAlias, make_argument
 
 
 class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods

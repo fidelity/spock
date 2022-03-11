@@ -41,7 +41,9 @@ def _get_callable_type():
     elif minor > 8:
         from typing import _CallableType as _VariadicGenericAlias
     else:
-        raise RuntimeError(f"Attempting to use spock with python version `3.{minor}` which is unsupported")
+        raise RuntimeError(
+            f"Attempting to use spock with python version `3.{minor}` which is unsupported"
+        )
     return _VariadicGenericAlias
 
 

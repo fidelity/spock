@@ -9,9 +9,10 @@ import sys
 from enum import Enum, EnumMeta
 from functools import partial
 from typing import TypeVar, Union
-from spock.utils import _SpockGenericAlias, _SpockVariadicGenericAlias
 
 import attr
+
+from spock.utils import _SpockGenericAlias, _SpockVariadicGenericAlias
 
 
 class SavePath(str):
