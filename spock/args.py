@@ -116,7 +116,7 @@ class SpockArguments:
                         attribute_name_to_config_name_mapping, attr.name, n.__name__
                     ):
                         raise _SpockDuplicateArgumentError(
-                            f"`{attr.name}` key is located in more than one config and cannot be resolved automatically."
+                            f"`{attr.name}` key is located in more than one config and cannot be resolved automatically. "
                             f"Either specify the config name (`<config>.{attr.name}`) or change the key name in the config."
                         )
                     attribute_name_to_config_name_mapping[attr.name] = n.__name__

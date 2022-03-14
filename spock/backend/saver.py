@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 """Handles prepping and saving the Spock config"""
-
+import typing
 from abc import abstractmethod
 from uuid import uuid4
 
@@ -180,6 +180,18 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
             clean_inner_dict.update({inner_key: inner_val})
         return clean_inner_dict
 
+    def _callable_2_str(self, val):
+        """Converts a callable to a str based on the module and name
+
+        Args:
+            val: callable object
+
+        Returns:
+            string of module.name
+
+        """
+        return f"{val.__module__}.{val.__name__}"
+
     def _recursive_tuple_to_list(self, value):
         """Recursively turn tuples into lists
 
@@ -277,6 +289,8 @@ class AttrSaver(BaseSaver):
                     # For those that are a spock class and are repeated (cls_name == key) simply convert to dict
                     if (cls_name in all_cls) and (cls_name == key):
                         clean_val.append(attr.asdict(l_val))
+                    elif callable(l_val):
+                        clean_val.append(self._callable_2_str(l_val))
                     # For those whose cls is different than the key just append the cls name
                     elif cls_name in all_cls:
                         # Change the flag as this is a repeated class -- which needs to be compressed into a single
@@ -292,8 +306,7 @@ class AttrSaver(BaseSaver):
                 out_dict.update({key: clean_val})
             # Catch any callables -- convert back to the str representation
             elif callable(val):
-                call_2_str = f"{val.__module__}.{val.__name__}"
-                out_dict.update({key: call_2_str})
+                out_dict.update({key: self._callable_2_str(val)})
             # If it's a spock class but has a parent then just use the class name to reference the values
             elif (val_name in all_cls) and parent_name is not None:
                 out_dict.update({key: val_name})

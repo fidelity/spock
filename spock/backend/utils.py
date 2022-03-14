@@ -5,6 +5,7 @@
 
 """Attr utility functions for Spock"""
 
+from spock.utils import _SpockVariadicGenericAlias
 
 def get_attr_fields(input_classes):
     """Gets the attribute fields from all classes
@@ -147,6 +148,7 @@ def _recursive_list_to_tuple(key, value, typed, class_names):
         hasattr(typed, "__args__")
         and not isinstance(value, tuple)
         and not (isinstance(value, str) and value in class_names)
+        and not isinstance(typed, _SpockVariadicGenericAlias)
     ):
         # Force those with origin tuple types to be of the defined length
         if (typed.__origin__.__name__.lower() == "tuple") and len(value) != len(

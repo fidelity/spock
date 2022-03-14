@@ -52,6 +52,8 @@ class AllTypes:
         assert arg_builder.TypeConfig.high_config.double_nested_config.h_factor == 0.99
         assert arg_builder.TypeConfig.high_config.double_nested_config.v_factor == 0.90
         assert arg_builder.TypeConfig.call_me == foo
+        assert arg_builder.TypeConfig.call_us[0] == foo
+        assert arg_builder.TypeConfig.call_us[1] == foo
 
         # Optional #
         assert arg_builder.TypeOptConfig.int_p_opt_no_def is None
@@ -72,6 +74,7 @@ class AllTypes:
         assert arg_builder.TypeOptConfig.nested_list_opt_no_def is None
         assert arg_builder.TypeOptConfig.class_enum_opt_no_def is None
         assert arg_builder.TypeOptConfig.call_me_maybe is None
+        assert arg_builder.TypeOptConfig.call_us_maybe is None
 
 
 class AllDefaults:
@@ -124,7 +127,9 @@ class AllDefaults:
             arg_builder.TypeDefaultConfig.high_config_def.double_nested_config.v_factor
             == 0.90
         )
-        assert arg_builder.TypeDefaultConfig.call_me_maybe == foo
+        assert arg_builder.TypeDefaultConfig.call_me_maybe_def == foo
+        assert arg_builder.TypeDefaultConfig.call_us_maybe_def[0] == foo
+        assert arg_builder.TypeDefaultConfig.call_us_maybe_def[1] == foo
 
         # Optional w/ Defaults #
         assert arg_builder.TypeDefaultOptConfig.int_p_opt_def == 10
@@ -160,7 +165,9 @@ class AllDefaults:
         assert arg_builder.TypeDefaultOptConfig.nested_list_opt_def[1].two == "bye"
         assert arg_builder.TypeDefaultOptConfig.class_enum_opt_def.one == 11
         assert arg_builder.TypeDefaultOptConfig.class_enum_opt_def.two == "ciao"
-        assert arg_builder.TypeDefaultOptConfig.call_me_maybe == foo
+        assert arg_builder.TypeDefaultOptConfig.call_me_maybe_opt_def == foo
+        assert arg_builder.TypeDefaultOptConfig.call_us_maybe_opt_def[0] == foo
+        assert arg_builder.TypeDefaultOptConfig.call_us_maybe_opt_def[1] == foo
 
 
 class AllInherited:
@@ -212,6 +219,8 @@ class AllInherited:
             arg_builder.TypeInherited.high_config.double_nested_config.v_factor == 0.90
         )
         assert arg_builder.TypeInherited.call_me == foo
+        assert arg_builder.TypeInherited.call_us[0] == foo
+        assert arg_builder.TypeInherited.call_us[1] == foo
 
         # Optional w/ Defaults #
         assert arg_builder.TypeInherited.int_p_opt_def == 10
@@ -225,7 +234,9 @@ class AllInherited:
         assert arg_builder.TypeInherited.tuple_p_opt_def_int == (10, 20)
         assert arg_builder.TypeInherited.tuple_p_opt_def_str == ("Spock", "Package")
         assert arg_builder.TypeInherited.tuple_p_opt_def_bool == (True, False)
-        assert arg_builder.TypeInherited.call_me_maybe == foo
+        assert arg_builder.TypeInherited.call_me_maybe_opt_def == foo
+        assert arg_builder.TypeInherited.call_us_maybe_opt_def[0] == foo
+        assert arg_builder.TypeInherited.call_us_maybe_opt_def[1] == foo
 
 
 class AllDynamic:

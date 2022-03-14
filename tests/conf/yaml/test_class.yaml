@@ -61,3 +61,5 @@ NestedListStuff:
 NestedStuff:
   one: 11
   two: ciao
+call_me: "tests.base.attr_configs_test.foo"
+call_us: ["tests.base.attr_configs_test.foo", "tests.base.attr_configs_test.foo"]

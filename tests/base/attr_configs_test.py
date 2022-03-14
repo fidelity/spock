@@ -158,6 +158,8 @@ class TypeConfig:
     high_config: SingleNestedConfig
     # Callable
     call_me: Callable
+    # List of Callable
+    call_us: List[Callable]
 
 
 @spock
@@ -203,6 +205,8 @@ class TypeOptConfig:
     int_p_2: Optional[int]
     # Optional Callable
     call_me_maybe: Optional[Callable]
+    # List optional call me
+    call_us_maybe: Optional[List[Callable]]
 
 
 @spock
@@ -212,6 +216,10 @@ class NestedStuffDefault:
 
 
 def foo(val: int):
+    return val * 2
+
+
+def bar(val: int):
     return val * 2
 
 
@@ -266,7 +274,9 @@ class TypeDefaultConfig:
     # Double Nested class ref
     high_config_def: SingleNestedConfig = SingleNestedConfig
     # Optional Callable
-    call_me_maybe: Callable = foo
+    call_me_maybe_def: Callable = foo
+    # List of Callable
+    call_us_maybe_def: List[Callable] = [foo, foo]
 
 
 @spock
@@ -312,7 +322,9 @@ class TypeDefaultOptConfig:
     # Class Enum
     class_enum_opt_def: Optional[ClassChoice] = NestedStuff
     # Optional Callable
-    call_me_maybe: Optional[Callable] = foo
+    call_me_maybe_opt_def: Optional[Callable] = foo
+    # List optional call me
+    call_us_maybe_opt_def: Optional[List[Callable]] = [foo, foo]
 
 
 @spock
