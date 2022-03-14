@@ -405,7 +405,6 @@ class RegisterListCallableField(RegisterFieldTemplate):
         """
         super(RegisterListCallableField, self).__init__()
 
-
     def _convert(self, val):
         str_field = str(val)
         module, fn = str_field.rsplit(".", 1)
@@ -440,7 +439,9 @@ class RegisterListCallableField(RegisterFieldTemplate):
         """
         # These are always going to be strings... cast just in case
         attr_list = []
-        for val in builder_space.arguments[attr_space.config_space.name][attr_space.attribute.name]:
+        for val in builder_space.arguments[attr_space.config_space.name][
+            attr_space.attribute.name
+        ]:
             if isinstance(val, list) or isinstance(val, List):
                 attr_list.append(self._recurse_callables(val))
             else:
@@ -719,9 +720,13 @@ class RegisterSpockCls(RegisterFieldTemplate):
     @classmethod
     def _find_list_callables(cls, typed):
         out = False
-        if hasattr(typed, "__args__") and not isinstance(typed.__args__[0], _SpockVariadicGenericAlias):
+        if hasattr(typed, "__args__") and not isinstance(
+            typed.__args__[0], _SpockVariadicGenericAlias
+        ):
             out = cls._find_list_callables(typed.__args__[0])
-        elif hasattr(typed, "__args__") and isinstance(typed.__args__[0], _SpockVariadicGenericAlias):
+        elif hasattr(typed, "__args__") and isinstance(
+            typed.__args__[0], _SpockVariadicGenericAlias
+        ):
             out = True
         return out
 

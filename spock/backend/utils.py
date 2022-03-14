@@ -7,6 +7,7 @@
 
 from spock.utils import _SpockVariadicGenericAlias
 
+
 def get_attr_fields(input_classes):
     """Gets the attribute fields from all classes
 

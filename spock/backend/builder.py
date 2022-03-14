@@ -184,7 +184,9 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
 
         """
         return_list = []
-        if hasattr(typed, "__args__") and not isinstance(typed, _SpockVariadicGenericAlias):
+        if hasattr(typed, "__args__") and not isinstance(
+            typed, _SpockVariadicGenericAlias
+        ):
             for val in typed.__args__:
                 recurse_return = self._extract_other_types(val, module_name)
                 if isinstance(recurse_return, list):
