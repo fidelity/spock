@@ -79,12 +79,14 @@ class TestClassCmdLineOverride:
                     "--SecondDoubleNestedConfig.morph_tolerance",
                     "0.2",
                     "--TypeConfig.call_me",
-                    'tests.base.attr_configs_test.foo'
+                    'tests.base.attr_configs_test.bar',
+                    "--TypeConfig.call_us",
+                    "['tests.base.attr_configs_test.bar', 'tests.base.attr_configs_test.bar']"
                 ],
             )
             config = ConfigArgBuilder(
                 TypeConfig, NestedStuff, NestedListStuff, SingleNestedConfig,
-                FirstDoubleNestedConfig, SecondDoubleNestedConfig,desc="Test Builder"
+                FirstDoubleNestedConfig, SecondDoubleNestedConfig, desc="Test Builder"
             )
             return config.generate()
 
@@ -121,7 +123,9 @@ class TestClassCmdLineOverride:
         assert arg_builder.NestedListStuff[1].two == "Working"
         assert isinstance(arg_builder.SingleNestedConfig.double_nested_config, SecondDoubleNestedConfig) is True
         assert arg_builder.SecondDoubleNestedConfig.morph_tolerance == 0.2
-        assert arg_builder.TypeConfig.call_me == foo
+        assert arg_builder.TypeConfig.call_me == bar
+        assert arg_builder.TypeConfig.call_us[0] == bar
+        assert arg_builder.TypeConfig.call_us[1] == bar
 
 
 class TestClassOnlyCmdLine:
@@ -192,7 +196,9 @@ class TestClassOnlyCmdLine:
                     "--TypeConfig.high_config",
                     "SingleNestedConfig",
                     "--TypeConfig.call_me",
-                    'tests.base.attr_configs_test.foo'
+                    'tests.base.attr_configs_test.foo',
+                    "--TypeConfig.call_us",
+                    "['tests.base.attr_configs_test.foo', 'tests.base.attr_configs_test.foo']"
                 ],
             )
             config = ConfigArgBuilder(
@@ -237,6 +243,8 @@ class TestClassOnlyCmdLine:
         assert arg_builder.NestedListStuff[1].one == 21
         assert arg_builder.NestedListStuff[1].two == "Working"
         assert arg_builder.TypeConfig.call_me == foo
+        assert arg_builder.TypeConfig.call_us[0] == foo
+        assert arg_builder.TypeConfig.call_us[1] == foo
 
 
 class TestRaiseCmdLineNoKey:

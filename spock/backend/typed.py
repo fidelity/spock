@@ -51,12 +51,12 @@ def _extract_base_type(typed):
     Returns:
         name of type
     """
-    if hasattr(typed, "__args__"):
+    if hasattr(typed, "__args__") and not isinstance(typed, _SpockVariadicGenericAlias):
         name = _get_name_py_version(typed=typed)
         bracket_val = f"{name}[{_extract_base_type(typed.__args__[0])}]"
         return bracket_val
     else:
-        bracket_value = typed.__name__
+        bracket_value = _get_name_py_version(typed=typed)
     return bracket_value
 
 
@@ -73,7 +73,7 @@ def _recursive_generic_validator(typed):
         return_type: recursively built deep_iterable validators
 
     """
-    if hasattr(typed, "__args__"):
+    if hasattr(typed, "__args__") and not isinstance(typed, _SpockVariadicGenericAlias):
         # If there are more __args__ then we still need to recurse as it is still a GenericAlias
         # Iterate through since there might be multiple types?
         if len(typed.__args__) > 1:

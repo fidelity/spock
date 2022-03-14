@@ -383,7 +383,84 @@ class RegisterCallableField(RegisterFieldTemplate):
             _SpockNotOptionalError
 
         """
-        print("hi")
+        raise _SpockNotOptionalError(
+            f"Parameter `{attr_space.attribute.name}` within `{attr_space.config_space.name}` is of "
+            f"type `{type(attr_space.attribute.type)}` which seems to be unsupported -- "
+            f"are you missing an @spock decorator on a base python class?"
+        )
+
+
+class RegisterListCallableField(RegisterFieldTemplate):
+    """Class that registers callable types
+
+    Attributes:
+        special_keys: dictionary to check special keys
+
+    """
+
+    def __init__(self):
+        """Init call to RegisterSimpleField
+
+        Args:
+        """
+        super(RegisterListCallableField, self).__init__()
+
+    def _convert(self, val):
+        str_field = str(val)
+        module, fn = str_field.rsplit(".", 1)
+        try:
+            call_ref = getattr(importlib.import_module(module), fn)
+        except Exception as e:
+            raise _SpockValueError(
+                f"Attempted to import module {module} and callable {fn} however it could not be found on the current "
+                f"python path: {e}"
+            )
+        return call_ref
+
+    def _recurse_callables(self, val: List):
+        attr_list = []
+        for sub in val:
+            if isinstance(sub, list) or isinstance(sub, List):
+                attr_list.append(self._recurse_callables(sub))
+            else:
+                attr_list.append(self._convert(sub))
+        return attr_list
+
+    def handle_attribute_from_config(
+        self, attr_space: AttributeSpace, builder_space: BuilderSpace
+    ):
+        """Handles setting a simple attribute when it is a spock class type
+
+        Args:
+            attr_space: holds information about a single attribute that is mapped to a ConfigSpace
+            builder_space: named_tuple containing the arguments and spock_space
+
+        Returns:
+        """
+        # These are always going to be strings... cast just in case
+        attr_list = []
+        for val in builder_space.arguments[attr_space.config_space.name][
+            attr_space.attribute.name
+        ]:
+            if isinstance(val, list) or isinstance(val, List):
+                attr_list.append(self._recurse_callables(val))
+            else:
+                attr_list.append(self._convert(val))
+        attr_space.field = attr_list
+
+    def handle_optional_attribute_type(
+        self, attr_space: AttributeSpace, builder_space: BuilderSpace
+    ):
+        """Not implemented for this type
+
+        Args:
+            attr_space: holds information about a single attribute that is mapped to a ConfigSpace
+            builder_space: named_tuple containing the arguments and spock_space
+
+        Raises:
+            _SpockNotOptionalError
+
+        """
         raise _SpockNotOptionalError(
             f"Parameter `{attr_space.attribute.name}` within `{attr_space.config_space.name}` is of "
             f"type `{type(attr_space.attribute.type)}` which seems to be unsupported -- "
@@ -641,6 +718,19 @@ class RegisterSpockCls(RegisterFieldTemplate):
         ] = attr_space.field
 
     @classmethod
+    def _find_list_callables(cls, typed):
+        out = False
+        if hasattr(typed, "__args__") and not isinstance(
+            typed.__args__[0], _SpockVariadicGenericAlias
+        ):
+            out = cls._find_list_callables(typed.__args__[0])
+        elif hasattr(typed, "__args__") and isinstance(
+            typed.__args__[0], _SpockVariadicGenericAlias
+        ):
+            out = True
+        return out
+
+    @classmethod
     def recurse_generate(cls, spock_cls, builder_space: BuilderSpace):
         """Call on a spock classes to iterate through the attrs attributes and handle each based on type and optionality
 
@@ -668,6 +758,10 @@ class RegisterSpockCls(RegisterFieldTemplate):
                 (attribute.type is list) or (attribute.type is List)
             ) and _is_spock_instance(attribute.metadata["type"].__args__[0]):
                 handler = RegisterList()
+            elif (
+                (attribute.type is list) or (attribute.type is List)
+            ) and cls._find_list_callables(attribute.metadata["type"]):
+                handler = RegisterListCallableField()
             # Enums
             elif isinstance(attribute.type, EnumMeta) and _check_iterable(
                 attribute.type
