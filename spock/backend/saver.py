@@ -4,15 +4,15 @@
 # SPDX-License-Identifier: Apache-2.0
 
 """Handles prepping and saving the Spock config"""
-from typing import Dict, Optional, Set, Any, List, Tuple, Callable, Union
 from abc import abstractmethod
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
 from uuid import uuid4
 
 import attr
 
 from spock.backend.handler import BaseHandler
+from spock.backend.utils import _callable_2_str, _get_iter, _recurse_callables
 from spock.backend.wrappers import Spockspace
-from spock.backend.utils import _callable_2_str, _recurse_callables, _get_iter
 from spock.utils import add_info
 
 
@@ -250,7 +250,11 @@ class AttrSaver(BaseSaver):
         return clean_val
 
     def _recursively_handle_clean(
-        self, payload: Spockspace, out_dict: Dict, parent_name: Optional[str] = None, all_cls: Optional[Set] = None
+        self,
+        payload: Spockspace,
+        out_dict: Dict,
+        parent_name: Optional[str] = None,
+        all_cls: Optional[Set] = None,
     ) -> Dict:
         """Recursively works through spock classes and adds clean data to a dictionary
 
@@ -273,9 +277,15 @@ class AttrSaver(BaseSaver):
             # If v is any iterable we need to step into the nested structure
             if isinstance(val, (dict, Dict, list, List, tuple, Tuple)):
                 # Need to inspect list type for lists of spock classes which must be handled differently
-                mod_val = self._check_list_of_spock_classes(val, key, all_cls) if isinstance(val, (list, List)) else val
+                mod_val = (
+                    self._check_list_of_spock_classes(val, key, all_cls)
+                    if isinstance(val, (list, List))
+                    else val
+                )
                 # Recurses all iterables to find all callables and casts them to strings
-                clean_val = _recurse_callables(mod_val, _callable_2_str, check_type=Callable)
+                clean_val = _recurse_callables(
+                    mod_val, _callable_2_str, check_type=Callable
+                )
                 out_dict.update({key: clean_val})
             # Catch any callables -- convert back to the str representation
             elif callable(val):

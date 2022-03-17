@@ -7,7 +7,7 @@
 import argparse
 from abc import ABC, abstractmethod
 from enum import EnumMeta
-from typing import List, Dict
+from typing import Dict, List
 
 import attr
 
@@ -17,7 +17,7 @@ from spock.backend.help import attrs_help
 from spock.backend.spaces import BuilderSpace
 from spock.backend.wrappers import Spockspace
 from spock.graph import Graph
-from spock.utils import _SpockVariadicGenericAlias, make_argument, _C, _T
+from spock.utils import _C, _T, _SpockVariadicGenericAlias, make_argument
 
 
 class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
@@ -74,7 +74,9 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
 
     @staticmethod
     @abstractmethod
-    def _make_group_override_parser(parser: argparse.ArgumentParser, class_obj: _C, class_name: str) -> argparse.ArgumentParser:
+    def _make_group_override_parser(
+        parser: argparse.ArgumentParser, class_obj: _C, class_name: str
+    ) -> argparse.ArgumentParser:
         """Makes a name specific override parser for a given class obj
 
         Takes a class object of the backend and adds a new argument group with argument names given with name
@@ -151,7 +153,9 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
 
         return spock_space
 
-    def build_override_parsers(self, parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
+    def build_override_parsers(
+        self, parser: argparse.ArgumentParser
+    ) -> argparse.ArgumentParser:
         """Creates parsers for command-line overrides
 
         Builds the basic command line parser for configs and help then iterates through each attr instance to make
@@ -236,7 +240,9 @@ class AttrBuilder(BaseBuilder):
         super().__init__(*args, module_name="spock.backend.config", **kwargs)
 
     @staticmethod
-    def _make_group_override_parser(parser: argparse.ArgumentParser, class_obj: _C, class_name: str) -> argparse.ArgumentParser:
+    def _make_group_override_parser(
+        parser: argparse.ArgumentParser, class_obj: _C, class_name: str
+    ) -> argparse.ArgumentParser:
         """Makes a name specific override parser for a given class obj
 
         Takes a class object of the backend and adds a new argument group with argument names given with name

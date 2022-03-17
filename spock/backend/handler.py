@@ -6,10 +6,10 @@
 """Base handler Spock class"""
 
 from abc import ABC
+from typing import Optional
 
 from spock.handlers import JSONHandler, TOMLHandler, YAMLHandler
 from spock.utils import _T
-from typing import Optional
 
 
 class BaseHandler(ABC):

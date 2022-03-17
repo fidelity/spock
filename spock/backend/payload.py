@@ -10,18 +10,17 @@ import sys
 from abc import abstractmethod
 from itertools import chain
 from pathlib import Path
+from typing import Dict, List, Optional
 
 from spock.backend.handler import BaseHandler
 from spock.backend.utils import (
     convert_to_tuples,
     deep_update,
+    flatten_type_dict,
     get_attr_fields,
     get_type_fields,
-    flatten_type_dict
 )
-from spock.utils import check_path_s3, _C, _T
-
-from typing import Dict, List, Optional
+from spock.utils import _C, _T, check_path_s3
 
 
 class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
@@ -354,7 +353,9 @@ class AttrPayload(BasePayload):
                     payload[keys].update(values)
                 else:
                     payload[keys] = values
-        tuple_payload = convert_to_tuples(payload, type_fields, flat_fields, class_names)
+        tuple_payload = convert_to_tuples(
+            payload, type_fields, flat_fields, class_names
+        )
         # tuple_payload = convert_to_tuples(payload, type_fields, class_names)
         payload = deep_update(payload, tuple_payload)
         return payload

@@ -10,13 +10,12 @@ import os
 import socket
 import subprocess
 import sys
+from argparse import _ArgumentGroup
 from enum import EnumMeta
 from pathlib import Path
 from time import localtime, strftime
-from typing import Any, Dict, List, Tuple, Union, TypeVar, Type
+from typing import Any, Dict, List, Tuple, Type, TypeVar, Union
 from warnings import warn
-
-from argparse import _ArgumentGroup
 
 import attr
 import git
@@ -294,7 +293,9 @@ def _check_iterable(iter_obj: Union[Tuple, List, EnumMeta]) -> bool:
     return any([_is_spock_instance(v.value) for v in iter_obj])
 
 
-def make_argument(arg_name: str, arg_type: _T, parser: Type[_ArgumentGroup]) -> _ArgumentGroup:
+def make_argument(
+    arg_name: str, arg_type: _T, parser: Type[_ArgumentGroup]
+) -> _ArgumentGroup:
     """Make argparser argument based on type
 
     Based on the type passed in handle the creation of the argparser argument so that overrides will have the correct
@@ -525,7 +526,9 @@ def deep_payload_update(source: Dict, updates: Dict) -> Dict:
     return source
 
 
-def check_payload_overwrite(payload: Dict, updates: Dict, configs: str, overwrite: str = "") -> None:
+def check_payload_overwrite(
+    payload: Dict, updates: Dict, configs: str, overwrite: str = ""
+) -> None:
     """Warns when parameters are overwritten across payloads as order will matter
 
     Args:

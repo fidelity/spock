@@ -6,12 +6,12 @@
 """Handles mapping config arguments to a payload with both general and class specific sets"""
 
 
+from typing import Any, Dict, Iterable
+
 from _warnings import warn
 
 from spock.exceptions import _SpockDuplicateArgumentError
 from spock.graph import Graph
-
-from typing import Dict, Iterable, Any
 
 
 class SpockArguments:

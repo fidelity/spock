@@ -8,9 +8,9 @@
 import json
 import os
 import re
-from typing import Dict, Optional, Tuple, Union
 from abc import ABC, abstractmethod
 from pathlib import Path, PurePosixPath
+from typing import Dict, Optional, Tuple, Union
 from warnings import warn
 
 import pytomlpp
@@ -111,9 +111,7 @@ class Handler(ABC):
                 print("Error importing spock s3 utils after detecting s3:// save path")
 
     @abstractmethod
-    def _save(
-        self, out_dict: Dict, info_dict: Optional[Dict], path: str
-    ) -> str:
+    def _save(self, out_dict: Dict, info_dict: Optional[Dict], path: str) -> str:
         """Write function for file type
 
         Args:
@@ -126,9 +124,7 @@ class Handler(ABC):
         raise NotImplementedError
 
     @staticmethod
-    def _handle_possible_s3_load_path(
-        path: Path, s3_config=None
-    ) -> Union[str, Path]:
+    def _handle_possible_s3_load_path(path: Path, s3_config=None) -> Union[str, Path]:
         """Handles the possibility of having to handle loading from a S3 path
 
         Checks to see if it detects a S3 uri and if so triggers imports of s3 functionality and handles the file
@@ -246,9 +242,7 @@ class YAMLHandler(Handler):
         base_payload = yaml.safe_load(file_contents)
         return base_payload
 
-    def _save(
-        self, out_dict: Dict, info_dict: Optional[Dict], path: str
-    ) -> str:
+    def _save(self, out_dict: Dict, info_dict: Optional[Dict], path: str) -> str:
         """Write function for YAML type
 
         Args:
@@ -287,9 +281,7 @@ class TOMLHandler(Handler):
         base_payload = pytomlpp.load(path)
         return base_payload
 
-    def _save(
-        self, out_dict: Dict, info_dict: Optional[Dict], path: str
-    ) -> str:
+    def _save(self, out_dict: Dict, info_dict: Optional[Dict], path: str) -> str:
         """Write function for TOML type
 
         Args:
@@ -327,9 +319,7 @@ class JSONHandler(Handler):
             base_payload = json.load(json_fid)
         return base_payload
 
-    def _save(
-        self, out_dict: Dict, info_dict: Optional[Dict], path: str
-    ) -> str:
+    def _save(self, out_dict: Dict, info_dict: Optional[Dict], path: str) -> str:
         """Write function for JSON type
 
         Args:

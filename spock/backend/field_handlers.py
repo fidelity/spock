@@ -9,23 +9,24 @@ import importlib
 import sys
 from abc import ABC, abstractmethod
 from enum import EnumMeta
-from typing import Callable, Dict, List, Type, Tuple
+from typing import Callable, Dict, List, Tuple, Type
 
 from attr import NOTHING, Attribute
 
-from spock.backend.utils import _str_2_callable, _get_name_py_version, _recurse_callables
 from spock.backend.spaces import AttributeSpace, BuilderSpace, ConfigSpace
-from spock.exceptions import (
-    _SpockInstantiationError,
-    _SpockNotOptionalError
+from spock.backend.utils import (
+    _get_name_py_version,
+    _recurse_callables,
+    _str_2_callable,
 )
+from spock.exceptions import _SpockInstantiationError, _SpockNotOptionalError
 from spock.utils import (
+    _C,
+    _T,
     _check_iterable,
     _is_spock_instance,
     _is_spock_tune_instance,
     _SpockVariadicGenericAlias,
-    _C,
-    _T
 )
 
 
@@ -358,8 +359,8 @@ class RegisterCallableField(RegisterFieldTemplate):
         """
         # These should always be strings
         str_field = builder_space.arguments[attr_space.config_space.name][
-                attr_space.attribute.name
-            ]
+            attr_space.attribute.name
+        ]
         call_ref = _str_2_callable(str_field)
         attr_space.field = call_ref
 
@@ -412,7 +413,10 @@ class RegisterGenericAliasCallableField(RegisterFieldTemplate):
         typed = attr_space.attribute.metadata["type"]
         out = None
         # Handle List Types
-        if _get_name_py_version(typed) == "List" or _get_name_py_version(typed) == "Tuple":
+        if (
+            _get_name_py_version(typed) == "List"
+            or _get_name_py_version(typed) == "Tuple"
+        ):
             out = []
             for v in builder_space.arguments[attr_space.config_space.name][
                 attr_space.attribute.name
@@ -697,7 +701,7 @@ class RegisterSpockCls(RegisterFieldTemplate):
         ] = attr_space.field
 
     @classmethod
-    def _find_callables(cls, typed:  _T):
+    def _find_callables(cls, typed: _T):
         """Attempts to find callables nested in Lists, Tuples, or Dicts
 
         Args:
@@ -709,7 +713,10 @@ class RegisterSpockCls(RegisterFieldTemplate):
         """
         out = False
         if hasattr(typed, "__args__"):
-            if _get_name_py_version(typed) == "List" or _get_name_py_version(typed) == "Tuple":
+            if (
+                _get_name_py_version(typed) == "List"
+                or _get_name_py_version(typed) == "Tuple"
+            ):
                 # Possibly nested Callables
                 if not isinstance(typed.__args__[0], _SpockVariadicGenericAlias):
                     out = cls._find_callables(typed.__args__[0])
@@ -723,7 +730,9 @@ class RegisterSpockCls(RegisterFieldTemplate):
                 elif isinstance(value_type, _SpockVariadicGenericAlias):
                     out = True
             else:
-                raise TypeError(f"Unexpected type of `{str(typed)}` when attempting to handle GenericAlias types")
+                raise TypeError(
+                    f"Unexpected type of `{str(typed)}` when attempting to handle GenericAlias types"
+                )
         return out
 
     @classmethod
@@ -756,7 +765,12 @@ class RegisterSpockCls(RegisterFieldTemplate):
                 handler = RegisterList()
             # Dict/List of Callables
             elif (
-                (attribute.type is list) or (attribute.type is List) or (attribute.type is dict) or (attribute.type is Dict) or (attribute.type is tuple) or (attribute.type is Tuple)
+                (attribute.type is list)
+                or (attribute.type is List)
+                or (attribute.type is dict)
+                or (attribute.type is Dict)
+                or (attribute.type is tuple)
+                or (attribute.type is Tuple)
             ) and cls._find_callables(attribute.metadata["type"]):
                 # handler = RegisterListCallableField()
                 handler = RegisterGenericAliasCallableField()

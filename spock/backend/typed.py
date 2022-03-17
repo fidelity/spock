@@ -11,6 +11,7 @@ from functools import partial
 from typing import Dict, List, TypeVar, Union
 
 import attr
+
 from spock.backend.utils import _get_name_py_version
 from spock.utils import _SpockGenericAlias, _SpockVariadicGenericAlias
 
@@ -63,7 +64,10 @@ def _recursive_generic_validator(typed):
     if hasattr(typed, "__args__") and not isinstance(typed, _SpockVariadicGenericAlias):
         # Iterate through since there might be multiple types?
         # Handle List and Tuple types
-        if _get_name_py_version(typed) == "List" or _get_name_py_version(typed) == "Tuple":
+        if (
+            _get_name_py_version(typed) == "List"
+            or _get_name_py_version(typed) == "Tuple"
+        ):
             # If there are more __args__ then we still need to recurse as it is still a GenericAlias
             if len(typed.__args__) > 1:
                 return_type = attr.validators.deep_iterable(
@@ -80,10 +84,14 @@ def _recursive_generic_validator(typed):
         elif _get_name_py_version(typed) == "Dict":
             key_type, value_type = typed.__args__
             if key_type is not str:
-                raise TypeError(f"Unexpected key type of `{str(key_type.__name__)}` when attempting to handle "
-                                f"GenericAlias type of Dict -- currently Spock only supports str as keys due "
-                                f"to maintaining support for valid TOML and JSON files")
-            if hasattr(value_type, "__args__") and not isinstance(typed, _SpockVariadicGenericAlias):
+                raise TypeError(
+                    f"Unexpected key type of `{str(key_type.__name__)}` when attempting to handle "
+                    f"GenericAlias type of Dict -- currently Spock only supports str as keys due "
+                    f"to maintaining support for valid TOML and JSON files"
+                )
+            if hasattr(value_type, "__args__") and not isinstance(
+                typed, _SpockVariadicGenericAlias
+            ):
                 return_type = attr.validators.deep_mapping(
                     value_validator=_recursive_generic_validator(value_type),
                     key_validator=attr.validators.instance_of(key_type),
@@ -95,7 +103,9 @@ def _recursive_generic_validator(typed):
                 )
             return return_type
         else:
-            raise TypeError(f"Unexpected type of `{str(typed)}` when attempting to handle GenericAlias types")
+            raise TypeError(
+                f"Unexpected type of `{str(typed)}` when attempting to handle GenericAlias types"
+            )
     else:
         # If no more __args__ then we are to the base type and need to bubble up the type
         # But we need to check against base types and enums

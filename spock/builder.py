@@ -7,10 +7,10 @@
 
 import argparse
 import sys
-from typing import Optional, Tuple, List, Union, Dict, Type
 from collections import Counter
 from copy import deepcopy
 from pathlib import Path
+from typing import Dict, List, Optional, Tuple, Type, Union
 from uuid import uuid4
 
 import attr
@@ -20,7 +20,13 @@ from spock.backend.payload import AttrPayload
 from spock.backend.saver import AttrSaver
 from spock.backend.wrappers import Spockspace
 from spock.exceptions import _SpockEvolveError, _SpockUndecoratedClass
-from spock.utils import _is_spock_instance, check_payload_overwrite, deep_payload_update, _C, _T
+from spock.utils import (
+    _C,
+    _T,
+    _is_spock_instance,
+    check_payload_overwrite,
+    deep_payload_update,
+)
 
 
 class ConfigArgBuilder:
@@ -205,7 +211,9 @@ class ConfigArgBuilder:
             raise e
         return self
 
-    def _print_usage_and_exit(self, msg: Optional[str] = None, sys_exit: bool = True, exit_code: int = 1) -> None:
+    def _print_usage_and_exit(
+        self, msg: Optional[str] = None, sys_exit: bool = True, exit_code: int = 1
+    ) -> None:
         """Prints the help message and exits
 
         Args:
@@ -227,7 +235,9 @@ class ConfigArgBuilder:
         if sys_exit:
             sys.exit(exit_code)
 
-    def _handle_tuner_objects(self, tune_args: List, s3_config: Optional[_T], kwargs: Dict) -> Tuple:
+    def _handle_tuner_objects(
+        self, tune_args: List, s3_config: Optional[_T], kwargs: Dict
+    ) -> Tuple:
         """Handles creating the tuner builder object if @spockTuner classes were passed in
 
         Args:
@@ -376,7 +386,9 @@ class ConfigArgBuilder:
             )
         return args
 
-    def _get_payload(self, payload_obj: Type[AttrPayload], input_classes: Tuple, ignore_args: List) -> Dict:
+    def _get_payload(
+        self, payload_obj: Type[AttrPayload], input_classes: Tuple, ignore_args: List
+    ) -> Dict:
         """Get the parameter payload from the config file(s)
 
         Calls the various ways to get configs and then parses to retrieve the parameter payload - make sure to call

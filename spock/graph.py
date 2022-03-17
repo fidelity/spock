@@ -6,7 +6,7 @@
 """Handles creation and ops for DAGs"""
 
 import sys
-from typing import Dict, List, Tuple, Generator
+from typing import Dict, Generator, List, Tuple
 
 from spock.utils import _find_all_spock_classes
 

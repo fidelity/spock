@@ -5,12 +5,11 @@
 
 """Attr utility functions for Spock"""
 
-from spock.utils import _SpockVariadicGenericAlias, _T, _C
-from spock.exceptions import _SpockValueError
-
-from typing import Any, Callable, Dict, List, Tuple, Union, Type
-
 import importlib
+from typing import Any, Callable, Dict, List, Tuple, Type, Union
+
+from spock.exceptions import _SpockValueError
+from spock.utils import _C, _T, _SpockVariadicGenericAlias
 
 
 def _str_2_callable(val: str, **kwargs):
@@ -158,7 +157,9 @@ def flatten_type_dict(type_dict: Dict):
     for k, v in type_dict.items():
         if isinstance(v, dict):
             # return_dict = flatten_type_dict(v, input_dict)
-            return_dict = flatten_type_dict(v,)
+            return_dict = flatten_type_dict(
+                v,
+            )
             flat_dict.update(return_dict)
         else:
             flat_dict[k] = v
@@ -183,7 +184,9 @@ def _get_iter(value: Union[List, Dict]):
         raise ValueError(f"Cannot get iterator for type `{type(value)}`")
 
 
-def convert_to_tuples(input_dict: Dict, base_type_dict: Dict, flat_type_dict: Dict, class_names: List):
+def convert_to_tuples(
+    input_dict: Dict, base_type_dict: Dict, flat_type_dict: Dict, class_names: List
+):
     """Convert lists to tuples
 
     Payloads from markup come in as Lists and not Tuples. This function turns lists in to tuples for the payloads
@@ -207,7 +210,9 @@ def convert_to_tuples(input_dict: Dict, base_type_dict: Dict, flat_type_dict: Di
             if isinstance(v, (dict, Dict, list, List, tuple, Tuple)):
                 # We've hit a fundamental declared type -- recurse via type checking
                 if k in flat_type_dict:
-                    updated = _recursive_list_to_tuple(k, v, flat_type_dict[k], class_names)
+                    updated = _recursive_list_to_tuple(
+                        k, v, flat_type_dict[k], class_names
+                    )
                     if updated:
                         updated_dict.update({k: updated})
                 # Have to handle this specifically -- this is lists of spock classes
@@ -223,7 +228,9 @@ def convert_to_tuples(input_dict: Dict, base_type_dict: Dict, flat_type_dict: Di
                     updated_dict.update({k: updated_list})
                 # Keep recursing through the structure
                 else:
-                    updated = convert_to_tuples(v, base_type_dict, flat_type_dict, class_names)
+                    updated = convert_to_tuples(
+                        v, base_type_dict, flat_type_dict, class_names
+                    )
                     if updated:
                         updated_dict.update({k: updated})
             # If there is no nested structure then just map
@@ -282,9 +289,7 @@ def _recursive_list_to_tuple(key: str, value: Any, typed: _T, class_names: List)
     ):
         # Force those with origin tuple types to be of the defined length
         # Here check for tuple and check length
-        if (typed.__origin__ in (tuple, Tuple)) and len(value) != len(
-            typed.__args__
-        ):
+        if (typed.__origin__ in (tuple, Tuple)) and len(value) != len(typed.__args__):
             raise ValueError(
                 f"Tuple(s) are of a defined length -- For parameter {key} the length of the provided argument "
                 f"({len(value)}) does not match the length of the defined argument ({len(typed.__args__)})"
