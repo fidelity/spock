@@ -101,7 +101,7 @@ See [Releases](https://github.com/fidelity/spock/releases) for more information.
 
 <details>
 
-#### March 15th, 2022
+#### March 17th, 2022
 * Added support for `typing.Callable` types (includes advanced types such as `List[List[Callable]]`)
 * Added support for `typing.Dict` types with type checking for types of both keys and values (includes advanced types
 such as `Dict[str, Tuple[Callable, Callable]]`)
