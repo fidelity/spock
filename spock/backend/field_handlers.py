@@ -9,17 +9,20 @@ import importlib
 import sys
 from abc import ABC, abstractmethod
 from enum import EnumMeta
-from typing import List, Type
+from typing import Callable, Dict, List, Tuple, Type
 
 from attr import NOTHING, Attribute
 
 from spock.backend.spaces import AttributeSpace, BuilderSpace, ConfigSpace
-from spock.exceptions import (
-    _SpockInstantiationError,
-    _SpockNotOptionalError,
-    _SpockValueError,
+from spock.backend.utils import (
+    _get_name_py_version,
+    _recurse_callables,
+    _str_2_callable,
 )
+from spock.exceptions import _SpockInstantiationError, _SpockNotOptionalError
 from spock.utils import (
+    _C,
+    _T,
     _check_iterable,
     _is_spock_instance,
     _is_spock_tune_instance,
@@ -354,21 +357,12 @@ class RegisterCallableField(RegisterFieldTemplate):
 
         Returns:
         """
-        # These are always going to be strings... cast just in case
-        str_field = str(
-            builder_space.arguments[attr_space.config_space.name][
-                attr_space.attribute.name
-            ]
-        )
-        module, fn = str_field.rsplit(".", 1)
-        try:
-            call_ref = getattr(importlib.import_module(module), fn)
-            attr_space.field = call_ref
-        except Exception as e:
-            raise _SpockValueError(
-                f"Attempted to import module {module} and callable {fn} however it could not be found on the current "
-                f"python path: {e}"
-            )
+        # These should always be strings
+        str_field = builder_space.arguments[attr_space.config_space.name][
+            attr_space.attribute.name
+        ]
+        call_ref = _str_2_callable(str_field)
+        attr_space.field = call_ref
 
     def handle_optional_attribute_type(
         self, attr_space: AttributeSpace, builder_space: BuilderSpace
@@ -390,8 +384,8 @@ class RegisterCallableField(RegisterFieldTemplate):
         )
 
 
-class RegisterListCallableField(RegisterFieldTemplate):
-    """Class that registers callable types
+class RegisterGenericAliasCallableField(RegisterFieldTemplate):
+    """Class that registers Dicts containing callable types
 
     Attributes:
         special_keys: dictionary to check special keys
@@ -403,28 +397,7 @@ class RegisterListCallableField(RegisterFieldTemplate):
 
         Args:
         """
-        super(RegisterListCallableField, self).__init__()
-
-    def _convert(self, val):
-        str_field = str(val)
-        module, fn = str_field.rsplit(".", 1)
-        try:
-            call_ref = getattr(importlib.import_module(module), fn)
-        except Exception as e:
-            raise _SpockValueError(
-                f"Attempted to import module {module} and callable {fn} however it could not be found on the current "
-                f"python path: {e}"
-            )
-        return call_ref
-
-    def _recurse_callables(self, val: List):
-        attr_list = []
-        for sub in val:
-            if isinstance(sub, list) or isinstance(sub, List):
-                attr_list.append(self._recurse_callables(sub))
-            else:
-                attr_list.append(self._convert(sub))
-        return attr_list
+        super(RegisterGenericAliasCallableField, self).__init__()
 
     def handle_attribute_from_config(
         self, attr_space: AttributeSpace, builder_space: BuilderSpace
@@ -437,16 +410,26 @@ class RegisterListCallableField(RegisterFieldTemplate):
 
         Returns:
         """
-        # These are always going to be strings... cast just in case
-        attr_list = []
-        for val in builder_space.arguments[attr_space.config_space.name][
-            attr_space.attribute.name
-        ]:
-            if isinstance(val, list) or isinstance(val, List):
-                attr_list.append(self._recurse_callables(val))
-            else:
-                attr_list.append(self._convert(val))
-        attr_space.field = attr_list
+        typed = attr_space.attribute.metadata["type"]
+        out = None
+        # Handle List Types
+        if (
+            _get_name_py_version(typed) == "List"
+            or _get_name_py_version(typed) == "Tuple"
+        ):
+            out = []
+            for v in builder_space.arguments[attr_space.config_space.name][
+                attr_space.attribute.name
+            ]:
+                out.append(_recurse_callables(v, _str_2_callable))
+        # Handle Dict Types
+        elif _get_name_py_version(typed) == "Dict":
+            out = {}
+            for k, v in builder_space.arguments[attr_space.config_space.name][
+                attr_space.attribute.name
+            ].items():
+                out.update({k: _recurse_callables(v, _str_2_callable)})
+        attr_space.field = out
 
     def handle_optional_attribute_type(
         self, attr_space: AttributeSpace, builder_space: BuilderSpace
@@ -718,20 +701,42 @@ class RegisterSpockCls(RegisterFieldTemplate):
         ] = attr_space.field
 
     @classmethod
-    def _find_list_callables(cls, typed):
+    def _find_callables(cls, typed: _T):
+        """Attempts to find callables nested in Lists, Tuples, or Dicts
+
+        Args:
+            typed: input type
+
+        Returns:
+            boolean if callables are found
+
+        """
         out = False
-        if hasattr(typed, "__args__") and not isinstance(
-            typed.__args__[0], _SpockVariadicGenericAlias
-        ):
-            out = cls._find_list_callables(typed.__args__[0])
-        elif hasattr(typed, "__args__") and isinstance(
-            typed.__args__[0], _SpockVariadicGenericAlias
-        ):
-            out = True
+        if hasattr(typed, "__args__"):
+            if (
+                _get_name_py_version(typed) == "List"
+                or _get_name_py_version(typed) == "Tuple"
+            ):
+                # Possibly nested Callables
+                if not isinstance(typed.__args__[0], _SpockVariadicGenericAlias):
+                    out = cls._find_callables(typed.__args__[0])
+                # Found callables
+                elif isinstance(typed.__args__[0], _SpockVariadicGenericAlias):
+                    out = True
+            elif _get_name_py_version(typed) == "Dict":
+                key_type, value_type = typed.__args__
+                if not isinstance(value_type, _SpockVariadicGenericAlias):
+                    out = cls._find_callables(value_type)
+                elif isinstance(value_type, _SpockVariadicGenericAlias):
+                    out = True
+            else:
+                raise TypeError(
+                    f"Unexpected type of `{str(typed)}` when attempting to handle GenericAlias types"
+                )
         return out
 
     @classmethod
-    def recurse_generate(cls, spock_cls, builder_space: BuilderSpace):
+    def recurse_generate(cls, spock_cls: _C, builder_space: BuilderSpace):
         """Call on a spock classes to iterate through the attrs attributes and handle each based on type and optionality
 
         Triggers a recursive call when an attribute refers to another spock classes
@@ -758,10 +763,17 @@ class RegisterSpockCls(RegisterFieldTemplate):
                 (attribute.type is list) or (attribute.type is List)
             ) and _is_spock_instance(attribute.metadata["type"].__args__[0]):
                 handler = RegisterList()
+            # Dict/List of Callables
             elif (
-                (attribute.type is list) or (attribute.type is List)
-            ) and cls._find_list_callables(attribute.metadata["type"]):
-                handler = RegisterListCallableField()
+                (attribute.type is list)
+                or (attribute.type is List)
+                or (attribute.type is dict)
+                or (attribute.type is Dict)
+                or (attribute.type is tuple)
+                or (attribute.type is Tuple)
+            ) and cls._find_callables(attribute.metadata["type"]):
+                # handler = RegisterListCallableField()
+                handler = RegisterGenericAliasCallableField()
             # Enums
             elif isinstance(attribute.type, EnumMeta) and _check_iterable(
                 attribute.type

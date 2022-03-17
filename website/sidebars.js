@@ -96,6 +96,11 @@ module.exports = {
                 },
                 {
                     type: 'doc',
+                    label: 'Post-Init Hooks',
+                    id: 'advanced_features/Post-Hooks'
+                },
+                {
+                    type: 'doc',
                     label: 'Lazy Dependencies',
                     id: "advanced_features/Lazy-Features"
                 },

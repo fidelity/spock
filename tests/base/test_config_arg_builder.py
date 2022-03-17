@@ -112,6 +112,22 @@ class TestNonAttrs:
                 return config.generate()
 
 
+class TestRaiseIncorrectKeyType:
+    def test_raises_missing_class(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test_fail_dict_key.yaml"])
+            with pytest.raises(TypeError):
+                @spock
+                class FailDictKey:
+                    # Dict w/ int keys -- List of strings
+                    int_list_str_dict: Dict[int, List[str]]
+
+                config = ConfigArgBuilder(
+                    FailDictKey
+                )
+                return config.generate()
+
+
 class TestRaisesMissingClass:
     """Testing basic functionality"""
 

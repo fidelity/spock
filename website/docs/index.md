@@ -11,12 +11,16 @@ title: Home
 <p align="center">
   <a href="https://opensource.org/licenses/Apache-2.0"><img src="https://img.shields.io/badge/License-Apache%202.0-9cf"/></a>
   <a href="https://bestpractices.coreinfrastructure.org/projects/5551"><img src="https://bestpractices.coreinfrastructure.org/projects/5551/badge"/></a>
+  <a><img src="https://github.com/fidelity/spock/workflows/pytest/badge.svg?branch=master"/></a>
+<a href="https://coveralls.io/github/fidelity/spock?branch=master"><img src="https://coveralls.io/repos/github/fidelity/spock/badge.svg?branch=master"/></a>
+  <a><img src="https://github.com/fidelity/spock/workflows/docs/badge.svg"/></a>
+</p>
+
+<p align="center">
   <a><img src="https://img.shields.io/badge/python-3.6+-informational.svg"/></a>
   <a href="https://github.com/psf/black"><img src="https://img.shields.io/badge/code%20style-black-000000.svg"/></a>
   <a href="https://badge.fury.io/py/spock-config"><img src="https://badge.fury.io/py/spock-config.svg"/></a>
-  <a href="https://coveralls.io/github/fidelity/spock?branch=master"><img src="https://coveralls.io/repos/github/fidelity/spock/badge.svg?branch=master"/></a>
-  <a><img src="https://github.com/fidelity/spock/workflows/pytest/badge.svg?branch=master"/></a>
-  <a><img src="https://github.com/fidelity/spock/workflows/docs/badge.svg"/></a>
+  <a href="https://pepy.tech/badge/spock-config"><img src="https://static.pepy.tech/personalized-badge/spock-config?period=total&units=international_system&left_color=grey&right_color=orange&left_text=Downloads"/></a>
 </p>
   
 <h3 align="center">
@@ -101,9 +105,17 @@ See [Releases](https://github.com/fidelity/spock/releases) for more information.
 
 
 
+#### March 17th, 2022
+* Added support for `typing.Callable` types (includes advanced types such as `List[List[Callable]]`)
+* Added support for `typing.Dict` types with type checking for types of both keys and values (includes advanced types
+such as `Dict[str, Tuple[Callable, Callable]]`)
+* Added support for post init hooks that allow for validation on parameters defined within `@spock` decorated classes. 
+Additionally, added some common validation check to utils (within, greater than, less than, etc.)
+* Updated unit tests to support Python 3.10
+
 #### January 26th, 2022
 * Added `evolve` support to the underlying `SpockBuilder` class. This provides functionality similar to the underlying
-attrs library ([attrs.evolve](https://www.attrs.org/en/stable/api.html#attrs.evolve). `evolve()` creates a new 
+attrs library ([attrs.evolve](https://www.attrs.org/en/stable/api.html#attrs.evolve)). `evolve()` creates a new 
 `Spockspace` instance based on differences between the underlying declared state and any passed in instantiated 
 `@spock` decorated classes.
 
@@ -114,12 +126,6 @@ passed into `*args` within the main `SpockBuilder` API
 * Updated main API interface for better top-level imports (backwards compatible): `ConfigArgBuilder`->`SpockBuilder`
 * Added stubs to the underlying decorator that should help with type hinting in VSCode (pylance/pyright)
 
-#### December 14, 2021
-* Refactored the backend to better handle nested dependencies (and for clarity)
-* Refactored the docs to use Docusaurus
-
-#### August 17, 2021
-* Added hyper-parameter tuning backend support for Ax via Service API
 
 
 ## Original Implementation

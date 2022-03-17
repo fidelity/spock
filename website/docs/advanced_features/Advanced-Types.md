@@ -1,17 +1,24 @@
 # Advanced Types
 
-`spock` also supports nested `List` or `Tuple` types and advanced argument types (such as repeated objects) that 
-use `Enum` or `@spock` decorated classes. All of the advanced types support the use of `Optional` and setting default 
-values. Example usage of advanced types can be found in the unittests 
+`spock` also supports nested `List`, `Tuple`, and `Dict` types and advanced argument types (such as repeated objects) 
+that use `Enum` or `@spock` decorated classes. All of the advanced types support the use of `Optional` and setting 
+default values. Example usage of advanced types can be found in the unittests 
 [here](https://github.com/fidelity/spock/tree/master/tests).
 
-### Nested List/Tuple Types
+### Nested List, Tuple, and Dict Types
+
+Some examples (not the full combinatorics space, but to illustrate what is possible) are:
 
 `List[List[int]]` -- Defines a list of list of integers.
 
-`List[List[str]]` -- Defines a list of list of strings.
+`List[List[Callable]]` -- Defines a list of list of callable objects.
 
-### Lists/Tuples of `Enum`
+`Tuple[List[str], List[str]]` -- Defines a two length tuple of lists of strings.
+
+`Dict[str, List[str]]` -- Defines a dictionary where keys are strings and values must be lists of strings
+
+
+### Lists and Tuple of `Enum`
 
 ```python
 from enum import Enum
@@ -34,7 +41,7 @@ With YAML definitions:
 list_choice_p_str: ['option_1', 'option_2']
 ```
 
-### List/Tuple of Repeated `@spock` Classes 
+### List and Tuple of Repeated `@spock` Classes 
 
 These can be accessed by index and are iterable.
 

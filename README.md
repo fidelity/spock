@@ -101,8 +101,10 @@ See [Releases](https://github.com/fidelity/spock/releases) for more information.
 
 <details>
 
-#### March 11th, 2022
-* Added support for simple `typing.Callable` types (WIP: advanced versions)
+#### March 17th, 2022
+* Added support for `typing.Callable` types (includes advanced types such as `List[List[Callable]]`)
+* Added support for `typing.Dict` types with type checking for types of both keys and values (includes advanced types
+such as `Dict[str, Tuple[Callable, Callable]]`)
 * Added support for post init hooks that allow for validation on parameters defined within `@spock` decorated classes. 
 Additionally, added some common validation check to utils (within, greater than, less than, etc.)
 * Updated unit tests to support Python 3.10

@@ -6,6 +6,8 @@
 """Handles mapping config arguments to a payload with both general and class specific sets"""
 
 
+from typing import Any, Dict, Iterable
+
 from _warnings import warn
 
 from spock.exceptions import _SpockDuplicateArgumentError
@@ -20,7 +22,7 @@ class SpockArguments:
 
     """
 
-    def __init__(self, arguments: dict, config_dag: Graph):
+    def __init__(self, arguments: Dict, config_dag: Graph):
         """Init call for SpockArguments class
 
         Handles creating a clean arguments dictionary that can be cleanly mapped to spock classes
@@ -39,7 +41,7 @@ class SpockArguments:
             general_arguments, attribute_name_to_config_name_mapping
         )
 
-    def __getitem__(self, key: str):
+    def __getitem__(self, key: str) -> Any:
         """Gets value from the _arguments dictionary
 
         Args:
@@ -51,7 +53,7 @@ class SpockArguments:
         """
         return self._arguments[key]
 
-    def __iter__(self):
+    def __iter__(self) -> Iterable[str]:
         """Returns the next value of the keys within the _arguments dictionary
 
         Returns:
@@ -77,7 +79,7 @@ class SpockArguments:
         return self._arguments.values()
 
     @staticmethod
-    def _get_general_arguments(arguments: dict, config_dag: Graph):
+    def _get_general_arguments(arguments: Dict, config_dag: Graph) -> Dict:
         """Creates a dictionary of config file parameters that are defined at the general level (not class specific)
 
         Args:
@@ -96,8 +98,8 @@ class SpockArguments:
         }
 
     def _attribute_name_to_config_name_mapping(
-        self, config_dag: Graph, general_arguments: dict
-    ):
+        self, config_dag: Graph, general_arguments: Dict
+    ) -> Dict:
         """Returns a mapping of names to spock config class parameter names
 
         Args:
@@ -125,8 +127,8 @@ class SpockArguments:
 
     @staticmethod
     def _is_duplicated_key(
-        attribute_name_to_config_name_mapping: dict, attr_name: str, config_name: str
-    ):
+        attribute_name_to_config_name_mapping: Dict, attr_name: str, config_name: str
+    ) -> bool:
         """Checks if a duplicated key exists in multiple classes
 
         Args:
@@ -144,8 +146,8 @@ class SpockArguments:
         )
 
     def _assign_general_arguments_to_config(
-        self, general_arguments: dict, attribute_name_to_config_name_mapping: dict
-    ):
+        self, general_arguments: Dict, attribute_name_to_config_name_mapping: Dict
+    ) -> None:
         """Assigns the values from general definitions to values within specific classes if the specific definition
         doesn't exist
 
@@ -172,7 +174,7 @@ class SpockArguments:
                 self._arguments[config_name] = {arg: value}
 
     @staticmethod
-    def _clean_arguments(arguments: dict, general_arguments: dict):
+    def _clean_arguments(arguments: Dict, general_arguments: Dict) -> Dict:
         """Sets up a clean dictionary for those not in the general dictionary
 
         Args:
