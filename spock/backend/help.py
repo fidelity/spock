@@ -279,7 +279,7 @@ def attrs_help(
     module_name: str,
     extract_fnc: Callable,
     max_indent: int,
-):
+) -> None:
     """Handles walking through a list classes to get help info
 
     For each class this function will search __doc__ and attempt to pull out help information for both the class

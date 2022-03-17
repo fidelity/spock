@@ -13,8 +13,10 @@ import sys
 from enum import EnumMeta
 from pathlib import Path
 from time import localtime, strftime
-from typing import List, Type, Union
+from typing import Any, Dict, List, Tuple, Union, TypeVar, Type
 from warnings import warn
+
+from argparse import _ArgumentGroup
 
 import attr
 import git
@@ -49,6 +51,8 @@ def _get_callable_type():
 
 _SpockGenericAlias = _get_alias_type()
 _SpockVariadicGenericAlias = _get_callable_type()
+_T = TypeVar("_T")
+_C = TypeVar("_C", bound=type)
 
 
 def within(
@@ -164,7 +168,7 @@ def lt(val: Union[float, int], bound: Union[float, int]) -> None:
         )
 
 
-def _find_all_spock_classes(attr_class: Type):
+def _find_all_spock_classes(attr_class: _C) -> List:
     """Within a spock class determine if there are any references to other spock classes
 
     Args:
@@ -193,7 +197,7 @@ def _find_all_spock_classes(attr_class: Type):
     return dep_classes
 
 
-def _check_4_spock_iterable(iter_obj: Union[tuple, list]):
+def _check_4_spock_iterable(iter_obj: Union[Tuple, List]) -> bool:
     """Checks if an iterable type contains a spock class
 
     Args:
@@ -206,7 +210,7 @@ def _check_4_spock_iterable(iter_obj: Union[tuple, list]):
     return _check_iterable(iter_obj=iter_obj)
 
 
-def _get_enum_classes(enum_obj: EnumMeta):
+def _get_enum_classes(enum_obj: EnumMeta) -> List:
     """Checks if any of the values of an enum are spock classes and adds to a list
 
     Args:
@@ -245,7 +249,7 @@ def check_path_s3(path: Path) -> bool:
     return len(path.parts) > 1 and path.parts[0] == "s3:"
 
 
-def _is_spock_instance(__obj: object):
+def _is_spock_instance(__obj: object) -> bool:
     """Checks if the object is a @spock decorated class
 
     Private interface that checks to see if the object passed in is registered within the spock module and also
@@ -261,7 +265,7 @@ def _is_spock_instance(__obj: object):
     return attr.has(__obj) and (__obj.__module__ == "spock.backend.config")
 
 
-def _is_spock_tune_instance(__obj: object):
+def _is_spock_tune_instance(__obj: object) -> bool:
     """Checks if the object is a @spock decorated class
 
     Private interface that checks to see if the object passed in is registered within the spock module tune addon and also
@@ -277,7 +281,7 @@ def _is_spock_tune_instance(__obj: object):
     return attr.has(__obj) and (__obj.__module__ == "spock.addons.tune.config")
 
 
-def _check_iterable(iter_obj: Union[tuple, list, EnumMeta]):
+def _check_iterable(iter_obj: Union[Tuple, List, EnumMeta]) -> bool:
     """Check if an iterable type contains a spock class
 
     Args:
@@ -290,7 +294,7 @@ def _check_iterable(iter_obj: Union[tuple, list, EnumMeta]):
     return any([_is_spock_instance(v.value) for v in iter_obj])
 
 
-def make_argument(arg_name, arg_type, parser):
+def make_argument(arg_name: str, arg_type: _T, parser: Type[_ArgumentGroup]) -> _ArgumentGroup:
     """Make argparser argument based on type
 
     Based on the type passed in handle the creation of the argparser argument so that overrides will have the correct
@@ -330,7 +334,7 @@ def make_argument(arg_name, arg_type, parser):
     return parser
 
 
-def _handle_generic_type_args(val):
+def _handle_generic_type_args(val: str) -> Any:
     """Evaluates a string containing a Python literal
 
     Seeing a list and tuple types will come in as string literal format, use ast to get the actual type
@@ -345,7 +349,7 @@ def _handle_generic_type_args(val):
     return ast.literal_eval(val)
 
 
-def add_info():
+def add_info() -> Dict:
     """Adds extra information to the output dictionary
 
     Args:
@@ -359,7 +363,7 @@ def add_info():
     return out_dict
 
 
-def make_blank_git(out_dict):
+def make_blank_git(out_dict: Dict) -> Dict:
     """Adds blank git info
 
     Args:
@@ -374,7 +378,7 @@ def make_blank_git(out_dict):
     return out_dict
 
 
-def add_repo_info(out_dict):
+def add_repo_info(out_dict: Dict) -> Dict:
     """Adds GIT information to the output dictionary
 
     Args:
@@ -426,7 +430,7 @@ def add_repo_info(out_dict):
     return out_dict
 
 
-def add_generic_info(out_dict):
+def add_generic_info(out_dict: Dict) -> Dict:
     """Adds date, fqdn information to the output dictionary
 
     Args:
@@ -453,7 +457,7 @@ def add_generic_info(out_dict):
     return out_dict
 
 
-def _maybe_docker(cgroup_path="/proc/self/cgroup"):
+def _maybe_docker(cgroup_path: str = "/proc/self/cgroup") -> bool:
     """Make a best effort to determine if run in a docker container
 
     Args:
@@ -474,7 +478,7 @@ def _maybe_docker(cgroup_path="/proc/self/cgroup"):
     return bool_env or bool_cgroup
 
 
-def _maybe_k8s(cgroup_path="/proc/self/cgroup"):
+def _maybe_k8s(cgroup_path: str = "/proc/self/cgroup") -> bool:
     """Make a best effort to determine if run in a container via k8s
 
     Args:
@@ -495,7 +499,7 @@ def _maybe_k8s(cgroup_path="/proc/self/cgroup"):
     return bool_env or bool_cgroup
 
 
-def deep_payload_update(source, updates):
+def deep_payload_update(source: Dict, updates: Dict) -> Dict:
     """Deeply updates a dictionary
 
     Iterates through a dictionary recursively to update individual values within a possibly nested dictionary
@@ -511,7 +515,7 @@ def deep_payload_update(source, updates):
     """
 
     for k, v in updates.items():
-        if isinstance(v, dict) and v:
+        if isinstance(v, (dict, Dict)) and v:
             source_dict = {} if source.get(k) is None else source.get(k)
             updated_dict = deep_payload_update(source_dict, v)
             if updated_dict:
@@ -521,7 +525,7 @@ def deep_payload_update(source, updates):
     return source
 
 
-def check_payload_overwrite(payload, updates, configs, overwrite=""):
+def check_payload_overwrite(payload: Dict, updates: Dict, configs: str, overwrite: str = "") -> None:
     """Warns when parameters are overwritten across payloads as order will matter
 
     Args:

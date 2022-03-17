@@ -8,10 +8,10 @@
 import sys
 from enum import Enum, EnumMeta
 from functools import partial
-from typing import TypeVar, Union
+from typing import Dict, List, TypeVar, Union
 
 import attr
-
+from spock.backend.utils import _get_name_py_version
 from spock.utils import _SpockGenericAlias, _SpockVariadicGenericAlias
 
 
@@ -24,19 +24,6 @@ class SavePath(str):
 
     def __new__(cls, x):
         return super().__new__(cls, x)
-
-
-def _get_name_py_version(typed):
-    """Gets the name of the type depending on the python version
-
-    Args:
-        typed: the type of the parameter
-
-    Returns:
-        name of the type
-
-    """
-    return typed._name if hasattr(typed, "_name") else typed.__name__
 
 
 def _extract_base_type(typed):
@@ -74,19 +61,41 @@ def _recursive_generic_validator(typed):
 
     """
     if hasattr(typed, "__args__") and not isinstance(typed, _SpockVariadicGenericAlias):
-        # If there are more __args__ then we still need to recurse as it is still a GenericAlias
         # Iterate through since there might be multiple types?
-        if len(typed.__args__) > 1:
-            return_type = attr.validators.deep_iterable(
-                member_validator=_recursive_generic_validator(typed.__args__),
-                iterable_validator=attr.validators.instance_of(typed.__origin__),
-            )
+        # Handle List and Tuple types
+        if _get_name_py_version(typed) == "List" or _get_name_py_version(typed) == "Tuple":
+            # If there are more __args__ then we still need to recurse as it is still a GenericAlias
+            if len(typed.__args__) > 1:
+                return_type = attr.validators.deep_iterable(
+                    member_validator=_recursive_generic_validator(typed.__args__),
+                    iterable_validator=attr.validators.instance_of(typed.__origin__),
+                )
+            else:
+                return_type = attr.validators.deep_iterable(
+                    member_validator=_recursive_generic_validator(typed.__args__[0]),
+                    iterable_validator=attr.validators.instance_of(typed.__origin__),
+                )
+            return return_type
+        # Handle Dict types
+        elif _get_name_py_version(typed) == "Dict":
+            key_type, value_type = typed.__args__
+            if key_type is not str:
+                raise TypeError(f"Unexpected key type of `{str(key_type.__name__)}` when attempting to handle "
+                                f"GenericAlias type of Dict -- currently Spock only supports str as keys due "
+                                f"to maintaining support for valid TOML and JSON files")
+            if hasattr(value_type, "__args__") and not isinstance(typed, _SpockVariadicGenericAlias):
+                return_type = attr.validators.deep_mapping(
+                    value_validator=_recursive_generic_validator(value_type),
+                    key_validator=attr.validators.instance_of(key_type),
+                )
+            else:
+                return_type = attr.validators.deep_mapping(
+                    value_validator=attr.validators.instance_of(value_type),
+                    key_validator=attr.validators.instance_of(key_type),
+                )
+            return return_type
         else:
-            return_type = attr.validators.deep_iterable(
-                member_validator=_recursive_generic_validator(typed.__args__[0]),
-                iterable_validator=attr.validators.instance_of(typed.__origin__),
-            )
-        return return_type
+            raise TypeError(f"Unexpected type of `{str(typed)}` when attempting to handle GenericAlias types")
     else:
         # If no more __args__ then we are to the base type and need to bubble up the type
         # But we need to check against base types and enums
@@ -107,7 +116,7 @@ def _generic_alias_katra(typed, default=None, optional=False):
     both simple types and subscripted GenericAlias types (e.g. lists and tuples), handles setting default parameters,
     and deals with parameter optionality
 
-    Handles: List[type] and Tuple[type]
+    Handles: List[type], Tuple[type], Dict[type]
 
     Args:
         typed: the type of the parameter to define
@@ -141,16 +150,12 @@ def _generic_alias_katra(typed, default=None, optional=False):
                 "type": typed,
             },
         )
-        # x = attr.ib(validator=attr.validators.optional(_recursive_generic_iterator(typed)), type=base_typed,
-        #             default=default, metadata={'optional': True, 'base': _extract_base_type(typed)})
     else:
         x = attr.ib(
             validator=_recursive_generic_validator(typed),
             type=base_typed,
             metadata={"base": _extract_base_type(typed), "type": typed},
         )
-        # x = attr.ib(validator=_recursive_generic_iterator(typed), type=base_typed,
-        #             metadata={'base': _extract_base_type(typed)})
     return x
 
 

@@ -8,7 +8,7 @@
 import json
 import os
 import re
-import typing
+from typing import Dict, Optional, Tuple, Union
 from abc import ABC, abstractmethod
 from pathlib import Path, PurePosixPath
 from warnings import warn
@@ -29,7 +29,7 @@ class Handler(ABC):
 
     """
 
-    def load(self, path: Path, s3_config=None) -> typing.Dict:
+    def load(self, path: Path, s3_config=None) -> Dict:
         """Load function for file type
 
         This handles s3 path conversion for all handler types pre load call
@@ -56,7 +56,7 @@ class Handler(ABC):
         return payload
 
     @abstractmethod
-    def _load(self, path: str) -> typing.Dict:
+    def _load(self, path: str) -> Dict:
         """Private load function for file type
 
         Args:
@@ -70,8 +70,8 @@ class Handler(ABC):
 
     def save(
         self,
-        out_dict: typing.Dict,
-        info_dict: typing.Optional[typing.Dict],
+        out_dict: Dict,
+        info_dict: Optional[Dict],
         path: Path,
         name: str,
         create_path: bool = False,
@@ -112,7 +112,7 @@ class Handler(ABC):
 
     @abstractmethod
     def _save(
-        self, out_dict: typing.Dict, info_dict: typing.Optional[typing.Dict], path: str
+        self, out_dict: Dict, info_dict: Optional[Dict], path: str
     ) -> str:
         """Write function for file type
 
@@ -128,7 +128,7 @@ class Handler(ABC):
     @staticmethod
     def _handle_possible_s3_load_path(
         path: Path, s3_config=None
-    ) -> typing.Union[str, Path]:
+    ) -> Union[str, Path]:
         """Handles the possibility of having to handle loading from a S3 path
 
         Checks to see if it detects a S3 uri and if so triggers imports of s3 functionality and handles the file
@@ -156,7 +156,7 @@ class Handler(ABC):
     @staticmethod
     def _handle_possible_s3_save_path(
         path: Path, name: str, create_path: bool, s3_config=None
-    ) -> typing.Tuple[str, bool]:
+    ) -> Tuple[str, bool]:
         """Handles the possibility of having to save to a S3 path
 
         Checks to see if it detects a S3 uri and if so generates a tmp location to write the file to pre-upload
@@ -231,7 +231,7 @@ class YAMLHandler(Handler):
         list("-+0123456789."),
     )
 
-    def _load(self, path: str) -> typing.Dict:
+    def _load(self, path: str) -> Dict:
         """YAML load function
 
         Args:
@@ -247,8 +247,8 @@ class YAMLHandler(Handler):
         return base_payload
 
     def _save(
-        self, out_dict: typing.Dict, info_dict: typing.Optional[typing.Dict], path: str
-    ):
+        self, out_dict: Dict, info_dict: Optional[Dict], path: str
+    ) -> str:
         """Write function for YAML type
 
         Args:
@@ -274,7 +274,7 @@ class TOMLHandler(Handler):
 
     """
 
-    def _load(self, path: str) -> typing.Dict:
+    def _load(self, path: str) -> Dict:
         """TOML load function
 
         Args:
@@ -288,8 +288,8 @@ class TOMLHandler(Handler):
         return base_payload
 
     def _save(
-        self, out_dict: typing.Dict, info_dict: typing.Optional[typing.Dict], path: str
-    ):
+        self, out_dict: Dict, info_dict: Optional[Dict], path: str
+    ) -> str:
         """Write function for TOML type
 
         Args:
@@ -313,7 +313,7 @@ class JSONHandler(Handler):
 
     """
 
-    def _load(self, path: str) -> typing.Dict:
+    def _load(self, path: str) -> Dict:
         """JSON load function
 
         Args:
@@ -328,8 +328,8 @@ class JSONHandler(Handler):
         return base_payload
 
     def _save(
-        self, out_dict: typing.Dict, info_dict: typing.Optional[typing.Dict], path: str
-    ):
+        self, out_dict: Dict, info_dict: Optional[Dict], path: str
+    ) -> str:
         """Write function for JSON type
 
         Args:

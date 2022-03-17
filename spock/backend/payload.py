@@ -17,8 +17,11 @@ from spock.backend.utils import (
     deep_update,
     get_attr_fields,
     get_type_fields,
+    flatten_type_dict
 )
-from spock.utils import check_path_s3
+from spock.utils import check_path_s3, _C, _T
+
+from typing import Dict, List, Optional
 
 
 class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
@@ -33,7 +36,7 @@ class BasePayload(BaseHandler):  # pylint: disable=too-few-public-methods
 
     """
 
-    def __init__(self, s3_config=None):
+    def __init__(self, s3_config: Optional[_T] = None):
         super(BasePayload, self).__init__(s3_config=s3_config)
 
     @staticmethod
@@ -268,7 +271,7 @@ class AttrPayload(BasePayload):
 
     """
 
-    def __init__(self, s3_config=None):
+    def __init__(self, s3_config: Optional[_T] = None):
         """Init for AttrPayload
 
         Args:
@@ -299,12 +302,14 @@ class AttrPayload(BasePayload):
         class_names = [val.__name__ for val in input_classes]
         # Parse out the types if generic
         type_fields = get_type_fields(input_classes)
+        flat_fields = flatten_type_dict(type_fields)
         for keys, values in base_payload.items():
             if keys not in ignore_fields:
                 # check if the keys, value pair is expected by the attr class
                 if keys != "config":
-                    # Dict infers that we are overriding a global setting in a specific config
-                    if isinstance(values, dict):
+                    # Dict infers that we are overriding a global setting in a specific config -- if it's not in the
+                    # flattened field of all parameters
+                    if isinstance(values, (dict, Dict)) and keys not in flat_fields:
                         # we're in a namespace
                         # Check for incorrect specific override of global def
                         if keys not in attr_fields:
@@ -319,7 +324,7 @@ class AttrPayload(BasePayload):
                     else:
                         # Check if the key is actually a reference to another class
                         if keys in class_names:
-                            if isinstance(values, list):
+                            if isinstance(values, (list, List)):
                                 # Check for incorrect specific override of global def
                                 if keys not in attr_fields:
                                     raise ValueError(
@@ -349,7 +354,8 @@ class AttrPayload(BasePayload):
                     payload[keys].update(values)
                 else:
                     payload[keys] = values
-        tuple_payload = convert_to_tuples(payload, type_fields, class_names)
+        tuple_payload = convert_to_tuples(payload, type_fields, flat_fields, class_names)
+        # tuple_payload = convert_to_tuples(payload, type_fields, class_names)
         payload = deep_update(payload, tuple_payload)
         return payload
 

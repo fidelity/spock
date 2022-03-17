@@ -9,7 +9,7 @@
 
 The `evolve()` method is available form the `SpockBuilder` object. `evolve()` takes as input a variable number of 
 instantiated `@spock` decorated classes, evolves the underlying `attrs` objects to incorporate the changes between
-the instantiated classes and the underlying classes, and returns the new `Spocksspace` object.
+the instantiated classes and the underlying classes, and returns the new `Spockspace` object.
 
 For instance:
 
@@ -40,7 +40,7 @@ if __name__ == '__main__':
     main()
 ```
 
-This would evolve the value of `param` to be 10 instead of the defulat value of 10. The print output woulf be:
+This would evolve the value of `param` to be 20 instead of the default value of 10. The print output would be:
 
 ```shell
 Configs4OneThing: !!python/object:spock.backend.config.Configs4OneThing

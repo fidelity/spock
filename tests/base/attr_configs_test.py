@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from enum import Enum
-from typing import List, Optional, Tuple, Callable
+from typing import List, Optional, Tuple, Callable, Dict
 
 from spock.backend.typed import SavePath
 from spock.config import spock
@@ -160,6 +160,14 @@ class TypeConfig:
     call_me: Callable
     # List of Callable
     call_us: List[Callable]
+    # Dict w/ str keys -- simple float value
+    str_dict: Dict[str, float]
+    # Dict w/ int keys -- List of strings
+    int_list_str_dict: Dict[str, List[str]]
+    # Dict w/ int keys --Tuple len 2 of Callable
+    float_tuple_callable_dict: Dict[str, Tuple[Callable, Callable]]
+    # A weird combo to see if catches hard nested values
+    hardest: List[Dict[str, Tuple[Callable, Callable]]]
 
 
 @spock
@@ -207,6 +215,14 @@ class TypeOptConfig:
     call_me_maybe: Optional[Callable]
     # List optional call me
     call_us_maybe: Optional[List[Callable]]
+    # Dict w/ str keys -- simple float value
+    str_dict_opt: Optional[Dict[str, float]]
+    # Dict w/ int keys -- List of strings
+    int_list_str_dict_opt: Optional[Dict[str, List[str]]]
+    # Dict w/ int keys --Tuple len 2 of Callable
+    float_tuple_callable_dict_opt: Optional[Dict[str, Tuple[Callable, Callable]]]
+    # A weird combo to see if catches hard nested values
+    hardest_opt: Optional[List[Dict[str, Tuple[str, str]]]]
 
 
 @spock
@@ -277,6 +293,15 @@ class TypeDefaultConfig:
     call_me_maybe_def: Callable = foo
     # List of Callable
     call_us_maybe_def: List[Callable] = [foo, foo]
+    # Dict w/ str keys -- simple float value
+    str_dict_def: Dict[str, float] = {"key_1": 1.5, "key_2": 2.5}
+    # Dict w/ int keys -- List of strings
+    int_list_str_dict_def: Dict[str, List[str]] = {"1": ['test', 'me'], "2": ['again', 'test']}
+    # Dict w/ int keys --Tuple len 2 of Callable
+    float_tuple_callable_dict_def: Dict[str, Tuple[Callable, Callable]] = {"1.0": (foo, bar), "2.0": (foo, bar)}
+    # A weird combo to see if catches hard nested values
+    hardest_def: List[Dict[str, Tuple[Callable, Callable]]] = [{"key_1": (foo, bar), "key_2": (foo, bar)},
+                                                  {"key_3": (foo, bar), "key_4": (foo, bar)}]
 
 
 @spock
@@ -325,6 +350,16 @@ class TypeDefaultOptConfig:
     call_me_maybe_opt_def: Optional[Callable] = foo
     # List optional call me
     call_us_maybe_opt_def: Optional[List[Callable]] = [foo, foo]
+    # Dict w/ str keys -- simple float value
+    str_dict_opt_def: Optional[Dict[str, float]] = {"key_1": 1.5, "key_2": 2.5}
+    # Dict w/ int keys -- List of strings
+    int_list_str_dict_opt_def: Optional[Dict[str, List[str]]] = {"1": ['test', 'me'], "2": ['again', 'test']}
+    # Dict w/ int keys --Tuple len 2 of Callable
+    float_tuple_callable_dict_opt_def: Optional[Dict[str, Tuple[Callable, Callable]]] = {"1.0": (foo, bar), "2.0": (foo, bar)}
+    # A weird combo to see if catches hard nested values
+    hardest_opt_def: Optional[List[Dict[str, Tuple[Callable, Callable]]]] = [
+        {"key_1": (foo, bar), "key_2": (foo, bar)}, {"key_3": (foo, bar), "key_4": (foo, bar)}
+    ]
 
 
 @spock

@@ -8,6 +8,8 @@
 from abc import ABC
 
 from spock.handlers import JSONHandler, TOMLHandler, YAMLHandler
+from spock.utils import _T
+from typing import Optional
 
 
 class BaseHandler(ABC):
@@ -19,7 +21,7 @@ class BaseHandler(ABC):
 
     """
 
-    def __init__(self, s3_config=None):
+    def __init__(self, s3_config: Optional[_T] = None):
         self._supported_extensions = {
             ".yaml": YAMLHandler,
             ".toml": TOMLHandler,

@@ -13,16 +13,18 @@ All examples can be found [here](https://github.com/fidelity/spock/blob/master/e
 `spock` supports the following basic argument types (note `List`, `Tuple`, and `Optional` are defined in the `typing` 
 standard library while `Enum` is within the `enum` standard library):
 
-| Python Base or Typing Type (Required) | Optional Type | Description |
-|----------------------------|---------------|-------------|
-| bool | Optional[bool] | Basic boolean parameter (e.g. True) |
-| float | Optional[float] | Basic float type parameter (e.g. 10.2) |
-| int | Optional[int] | Basic integer type parameter (e.g. 2) |
-| str | Optional[str] | Basic string type parameter (e.g. 'foo') |
-| List[type] | Optional[List[type]] | Basic list type parameter of base types such as int, float, etc. (e.g. [10.0, 2.0]) |
-| Tuple[type] | Optional[Tuple[type]] | Basic tuple type parameter of base types such as int, float, etc. Length enforced unlike List. (e.g. (10, 2)) |
-| Enum | Optional[Enum] | Parameter that must be from a defined set of values of base types such as int, float, etc. |
-| @spock decorated Class | Optional[Class] | Parameter that is a reference to another @spock decorated class |
+| Python Base or Typing Type (Required) | Optional Type         | Description                                                                                                   |
+|---------------------------------------|-----------------------|---------------------------------------------------------------------------------------------------------------|
+| bool                                  | Optional[bool]        | Basic boolean parameter (e.g. True)                                                                           |
+| float                                 | Optional[float]       | Basic float type parameter (e.g. 10.2)                                                                        |
+| int                                   | Optional[int]         | Basic integer type parameter (e.g. 2)                                                                         |
+| str                                   | Optional[str]         | Basic string type parameter (e.g. 'foo')                                                                      |
+| Callable                              | Optional[Callable]    | Any callable type (e.g. my_func)                                                                              |
+| List[type]                            | Optional[List[type]]  | Basic list type parameter of base types such as int, float, etc. (e.g. [10.0, 2.0])                           |
+| Tuple[type]                           | Optional[Tuple[type]] | Basic tuple type parameter of base types such as int, float, etc. Length enforced unlike List. (e.g. (10, 2)) |
+| Dict[type]                            | Optional[Dict[type]]  | Basic dict type parameter where both key (str only for valid TOML/JSON) and value types are specified         |
+| Enum                                  | Optional[Enum]        | Parameter that must be from a defined set of values of base types such as int, float, etc.                    |
+| @spock decorated Class                | Optional[Class]       | Parameter that is a reference to another @spock decorated class                                               |
 
 Use `List` types when the length of the `Iterable` is not fixed and `Tuple` when length needs to be strictly enforced.
 
