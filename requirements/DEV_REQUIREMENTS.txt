@@ -6,6 +6,6 @@ isort~=5.10
 moto~=3.0
 pydoc-markdown~=4.3, < 4.6.* ; python_version >= '3.7'
 pydoc-markdown~=3.13 ; python_version == '3.6'
-pytest~=7.0
+pytest~=7.1
 pytest-cov~=3.0
 pylint~=2.11
