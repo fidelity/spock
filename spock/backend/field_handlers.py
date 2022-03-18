@@ -799,9 +799,6 @@ class RegisterSpockCls(RegisterFieldTemplate):
         # error on instantiation
         try:
             spock_instance = spock_cls(**fields)
-            # If there is a __post_hook__ dunder method then call it
-            if hasattr(spock_cls, "__post_hook__"):
-                spock_instance.__post_hook__()
         except Exception as e:
             raise _SpockInstantiationError(
                 f"Spock class `{spock_cls.__name__}` could not be instantiated -- attrs message: {e}"
