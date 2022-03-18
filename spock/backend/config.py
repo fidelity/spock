@@ -107,6 +107,10 @@ def _process_class(cls, kw_only: bool, make_init: bool, dynamic: bool):
     """
     # Handles the MRO and gets old annotations
     bases, attrs_dict, merged_annotations = _base_attr(cls, kw_only, make_init, dynamic)
+    # Copy over the post init function -- borrow a bit from attrs library to add the __post__hook__ method to the
+    # init call via `"__attrs_post_init__"`
+    if hasattr(cls, "__post_hook__"):
+        attrs_dict.update({"__attrs_post_init__": cls.__post_hook__})
     # Dynamically make an attr class
     obj = attr.make_class(
         name=cls.__name__,
@@ -117,9 +121,6 @@ def _process_class(cls, kw_only: bool, make_init: bool, dynamic: bool):
         auto_attribs=True,
         init=make_init,
     )
-    # Copy over the post init function
-    if hasattr(cls, "__post_hook__"):
-        obj.__post_hook__ = cls.__post_hook__
     # For each class we dynamically create we need to register it within the system modules for pickle to work
     setattr(sys.modules["spock"].backend.config, obj.__name__, obj)
     # Swap the __doc__ string from cls to obj
