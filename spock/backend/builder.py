@@ -4,11 +4,10 @@
 # SPDX-License-Identifier: Apache-2.0
 
 """Handles the building/saving of the configurations from the Spock config classes"""
-import sys
-import typing
+import argparse
 from abc import ABC, abstractmethod
 from enum import EnumMeta
-from typing import List
+from typing import Dict, List
 
 import attr
 
@@ -18,7 +17,7 @@ from spock.backend.help import attrs_help
 from spock.backend.spaces import BuilderSpace
 from spock.backend.wrappers import Spockspace
 from spock.graph import Graph
-from spock.utils import _SpockVariadicGenericAlias, make_argument
+from spock.utils import _C, _T, _SpockVariadicGenericAlias, make_argument
 
 
 class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
@@ -75,7 +74,9 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
 
     @staticmethod
     @abstractmethod
-    def _make_group_override_parser(parser, class_obj, class_name):
+    def _make_group_override_parser(
+        parser: argparse.ArgumentParser, class_obj: _C, class_name: str
+    ) -> argparse.ArgumentParser:
         """Makes a name specific override parser for a given class obj
 
         Takes a class object of the backend and adds a new argument group with argument names given with name
@@ -91,7 +92,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
 
         """
 
-    def handle_help_info(self):
+    def handle_help_info(self) -> None:
         """Handles walking through classes to get help info
 
         For each class this function will search __doc__ and attempt to pull out help information for both the class
@@ -108,7 +109,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
             max_indent=self._max_indent,
         )
 
-    def generate(self, dict_args):
+    def generate(self, dict_args: Dict) -> Spockspace:
         """Method to auto-generate the actual class instances from the generated args
 
         Based on the generated arguments groups and the args read in from the config file(s)
@@ -123,7 +124,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         spock_space_kwargs = self.resolve_spock_space_kwargs(self._graph, dict_args)
         return Spockspace(**spock_space_kwargs)
 
-    def resolve_spock_space_kwargs(self, graph: Graph, dict_args: dict) -> dict:
+    def resolve_spock_space_kwargs(self, graph: Graph, dict_args: Dict) -> Dict:
         """Build the dictionary that will define the spock space.
 
         Args:
@@ -152,7 +153,9 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
 
         return spock_space
 
-    def build_override_parsers(self, parser):
+    def build_override_parsers(
+        self, parser: argparse.ArgumentParser
+    ) -> argparse.ArgumentParser:
         """Creates parsers for command-line overrides
 
         Builds the basic command line parser for configs and help then iterates through each attr instance to make
@@ -172,7 +175,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
             )
         return parser
 
-    def _extract_other_types(self, typed, module_name):
+    def _extract_other_types(self, typed: _T, module_name: str) -> List:
         """Takes a high level type and recursively extracts any enum or class types
 
         Args:
@@ -184,7 +187,9 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
 
         """
         return_list = []
-        if hasattr(typed, "__args__"):
+        if hasattr(typed, "__args__") and not isinstance(
+            typed, _SpockVariadicGenericAlias
+        ):
             for val in typed.__args__:
                 recurse_return = self._extract_other_types(val, module_name)
                 if isinstance(recurse_return, list):
@@ -235,7 +240,9 @@ class AttrBuilder(BaseBuilder):
         super().__init__(*args, module_name="spock.backend.config", **kwargs)
 
     @staticmethod
-    def _make_group_override_parser(parser, class_obj, class_name):
+    def _make_group_override_parser(
+        parser: argparse.ArgumentParser, class_obj: _C, class_name: str
+    ) -> argparse.ArgumentParser:
         """Makes a name specific override parser for a given class obj
 
         Takes a class object of the backend and adds a new argument group with argument names given with name

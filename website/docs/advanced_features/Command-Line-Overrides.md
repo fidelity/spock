@@ -214,4 +214,4 @@ python tutorial.py --config tutorial.yaml --TypeConfig.nested_list.NestedListStu
 `spock` can easily be used as a drop in replacement for argparser. This means that all parameter definitions as 
 required to come in from the command line or from setting defaults within the `@spock` decorated classes. Simply do not 
 pass a `-c` or`--config` argument at the command line and instead pass in values to all of the automatically generated 
-cmd-line arguments. See more information [here](https://fidelity.github.io/spock/docs/ArgParser-Replacement/).
+cmd-line arguments. See more information [here](https://fidelity.github.io/spock/ArgParser-Replacement/).

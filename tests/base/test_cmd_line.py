@@ -79,12 +79,22 @@ class TestClassCmdLineOverride:
                     "--SecondDoubleNestedConfig.morph_tolerance",
                     "0.2",
                     "--TypeConfig.call_me",
-                    'tests.base.attr_configs_test.foo'
+                    'tests.base.attr_configs_test.bar',
+                    "--TypeConfig.call_us",
+                    "['tests.base.attr_configs_test.bar', 'tests.base.attr_configs_test.bar']",
+                    "--TypeConfig.str_dict",
+                    "{'key_1': 2.5, 'key_2': 3.5}",
+                    "--TypeConfig.int_list_str_dict",
+                    "{'1': ['again', 'test'], '2': ['test', 'me']}",
+                    "--TypeConfig.float_tuple_callable_dict",
+                    '{"1.0": ("tests.base.attr_configs_test.bar", "tests.base.attr_configs_test.foo"), "2.0": ("tests.base.attr_configs_test.bar", "tests.base.attr_configs_test.foo")}',
+                    "--TypeConfig.hardest",
+                    '[{"key_1": ("tests.base.attr_configs_test.bar", "tests.base.attr_configs_test.foo"), "key_2": ("tests.base.attr_configs_test.bar", "tests.base.attr_configs_test.foo")}, {"key_3": ("tests.base.attr_configs_test.bar", "tests.base.attr_configs_test.foo"), "key_4": ("tests.base.attr_configs_test.bar", "tests.base.attr_configs_test.foo")}]'
                 ],
             )
             config = ConfigArgBuilder(
                 TypeConfig, NestedStuff, NestedListStuff, SingleNestedConfig,
-                FirstDoubleNestedConfig, SecondDoubleNestedConfig,desc="Test Builder"
+                FirstDoubleNestedConfig, SecondDoubleNestedConfig, desc="Test Builder"
             )
             return config.generate()
 
@@ -121,7 +131,14 @@ class TestClassCmdLineOverride:
         assert arg_builder.NestedListStuff[1].two == "Working"
         assert isinstance(arg_builder.SingleNestedConfig.double_nested_config, SecondDoubleNestedConfig) is True
         assert arg_builder.SecondDoubleNestedConfig.morph_tolerance == 0.2
-        assert arg_builder.TypeConfig.call_me == foo
+        assert arg_builder.TypeConfig.call_me == bar
+        assert arg_builder.TypeConfig.call_us[0] == bar
+        assert arg_builder.TypeConfig.call_us[1] == bar
+        assert arg_builder.TypeConfig.str_dict == {"key_1": 2.5, "key_2": 3.5}
+        assert arg_builder.TypeConfig.int_list_str_dict == {"1": ['again', 'test'], "2": ['test', 'me']}
+        assert arg_builder.TypeConfig.float_tuple_callable_dict == {"1.0": (bar, foo), "2.0": (bar, foo)}
+        assert arg_builder.TypeConfig.hardest == [{"key_1": (bar, foo), "key_2": (bar, foo)},
+                                                  {"key_3": (bar, foo), "key_4": (bar, foo)}]
 
 
 class TestClassOnlyCmdLine:
@@ -192,7 +209,17 @@ class TestClassOnlyCmdLine:
                     "--TypeConfig.high_config",
                     "SingleNestedConfig",
                     "--TypeConfig.call_me",
-                    'tests.base.attr_configs_test.foo'
+                    'tests.base.attr_configs_test.foo',
+                    "--TypeConfig.call_us",
+                    "['tests.base.attr_configs_test.foo', 'tests.base.attr_configs_test.foo']",
+                    "--TypeConfig.str_dict",
+                    "{'key_1': 1.5, 'key_2': 2.5}",
+                    "--TypeConfig.int_list_str_dict",
+                    "{'1': ['test', 'me'], '2': ['again', 'test']}",
+                    "--TypeConfig.float_tuple_callable_dict",
+                    '{"1.0": ("tests.base.attr_configs_test.foo", "tests.base.attr_configs_test.bar"), "2.0": ("tests.base.attr_configs_test.foo", "tests.base.attr_configs_test.bar")}',
+                    "--TypeConfig.hardest",
+                    '[{"key_1": ("tests.base.attr_configs_test.foo", "tests.base.attr_configs_test.bar"), "key_2": ("tests.base.attr_configs_test.foo", "tests.base.attr_configs_test.bar")}, {"key_3": ("tests.base.attr_configs_test.foo", "tests.base.attr_configs_test.bar"), "key_4": ("tests.base.attr_configs_test.foo", "tests.base.attr_configs_test.bar")}]'
                 ],
             )
             config = ConfigArgBuilder(
@@ -237,6 +264,13 @@ class TestClassOnlyCmdLine:
         assert arg_builder.NestedListStuff[1].one == 21
         assert arg_builder.NestedListStuff[1].two == "Working"
         assert arg_builder.TypeConfig.call_me == foo
+        assert arg_builder.TypeConfig.call_us[0] == foo
+        assert arg_builder.TypeConfig.call_us[1] == foo
+        assert arg_builder.TypeConfig.str_dict == {"key_1": 1.5, "key_2": 2.5}
+        assert arg_builder.TypeConfig.int_list_str_dict == {"1": ['test', 'me'], "2": ['again', 'test']}
+        assert arg_builder.TypeConfig.float_tuple_callable_dict == {"1.0": (foo, bar), "2.0": (foo, bar)}
+        assert arg_builder.TypeConfig.hardest == [{"key_1": (foo, bar), "key_2": (foo, bar)},
+                                                  {"key_3": (foo, bar), "key_4": (foo, bar)}]
 
 
 class TestRaiseCmdLineNoKey:

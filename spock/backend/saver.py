@@ -4,13 +4,15 @@
 # SPDX-License-Identifier: Apache-2.0
 
 """Handles prepping and saving the Spock config"""
-
 from abc import abstractmethod
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
 from uuid import uuid4
 
 import attr
 
 from spock.backend.handler import BaseHandler
+from spock.backend.utils import _callable_2_str, _get_iter, _recurse_callables
+from spock.backend.wrappers import Spockspace
 from spock.utils import add_info
 
 
@@ -29,7 +31,7 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
     def __init__(self, s3_config=None):
         super(BaseSaver, self).__init__(s3_config=s3_config)
 
-    def dict_payload(self, payload):
+    def dict_payload(self, payload: Spockspace) -> Dict:
         """Clean up the config payload so it can be returned as a dict representation
 
         Args:
@@ -44,15 +46,15 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
 
     def save(
         self,
-        payload,
-        path,
-        file_name=None,
-        create_save_path=False,
-        extra_info=True,
-        file_extension=".yaml",
-        tuner_payload=None,
-        fixed_uuid=None,
-    ):  # pylint: disable=too-many-arguments
+        payload: Spockspace,
+        path: str,
+        file_name: Optional[str] = None,
+        create_save_path: bool = False,
+        extra_info: bool = True,
+        file_extension: str = ".yaml",
+        tuner_payload: Optional[Spockspace] = None,
+        fixed_uuid: Optional[str] = None,
+    ) -> None:  # pylint: disable=too-many-arguments
         """Writes Spock config to file
 
         Cleans and builds an output payload and then correctly writes it to file based on the
@@ -104,7 +106,7 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
             raise e
 
     @abstractmethod
-    def _clean_up_values(self, payload):
+    def _clean_up_values(self, payload: Spockspace) -> Dict:
         """Clean up the config payload so it can be written to file
 
         Args:
@@ -116,7 +118,7 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
         """
 
     @abstractmethod
-    def _clean_tuner_values(self, payload):
+    def _clean_tuner_values(self, payload: Spockspace) -> Dict:
         """Cleans up the base tuner payload that is not sampled
 
         Args:
@@ -127,82 +129,49 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
 
         """
 
-    def _clean_output(self, out_dict):
-        """Clean up the dictionary so it can be written to file
+    def _clean_output(self, out_dict: Dict) -> Dict:
+        """Clean up the dictionary such that it can be written to file
 
         Args:
-            out_dict: cleaned dictionary
-            extra_info: boolean to add extra info
+            out_dict: pre-cleaned dictionary
 
         Returns:
             clean_dict: cleaned output payload
 
         """
-        # Convert values
         clean_dict = {}
-        for key, val in out_dict.items():
-            clean_inner_dict = {}
-            if isinstance(val, list):
-                for idx, list_val in enumerate(val):
-                    tmp_dict = {}
-                    for inner_key, inner_val in list_val.items():
-                        tmp_dict = self._convert_tuples_2_lists(
-                            tmp_dict, inner_val, inner_key
-                        )
-                    val[idx] = tmp_dict
-                clean_inner_dict = val
-            else:
-                for inner_key, inner_val in val.items():
-                    clean_inner_dict = self._convert_tuples_2_lists(
-                        clean_inner_dict, inner_val, inner_key
-                    )
-            clean_dict.update({key: clean_inner_dict})
+        for k, v in out_dict.items():
+            if v is not None:
+                clean_dict.update({k: self._recursive_tuple_2_list(v)})
         return clean_dict
 
-    def _convert_tuples_2_lists(self, clean_inner_dict, inner_val, inner_key):
-        """Convert tuples to lists
+    def _recursive_tuple_2_list(self, val: Any) -> Any:
+        """Recursively find tuples and cast them to lists
 
         Args:
-            clean_inner_dict: dictionary to update
-            inner_val: current value
-            inner_key: current key
+            val: current value of various types
 
         Returns:
-            updated dictionary where tuples are cast back to lists
+            modified version of val
 
         """
-        # Convert tuples to lists so they get written correctly
-        if isinstance(inner_val, tuple):
-            clean_inner_dict.update(
-                {inner_key: self._recursive_tuple_to_list(inner_val)}
-            )
-        elif inner_val is not None:
-            clean_inner_dict.update({inner_key: inner_val})
-        return clean_inner_dict
-
-    def _recursive_tuple_to_list(self, value):
-        """Recursively turn tuples into lists
-
-        Recursively looks through tuple(s) and convert to lists
-
-        Args:
-            value: value to check and set typ if necessary
-            typed: type of the generic alias to check against
-
-        Returns:
-            value: updated value with correct type casts
-
-        """
-        # Check for __args__ as it signifies a generic and make sure it's not already been cast as a tuple
-        # from a composed payload
-        list_v = []
-        for v in value:
-            if isinstance(v, tuple):
-                v = self._recursive_tuple_to_list(v)
-                list_v.append(v)
-            else:
-                list_v.append(v)
-        return list_v
+        # If it is a tuple then we need to cast back -- do this first
+        # so we can assign by idx unlike tuples
+        if isinstance(val, (tuple, Tuple)):
+            val = list(val)
+        if isinstance(val, (list, List)):
+            for idx, v in _get_iter(val):
+                if isinstance(v, (dict, Dict, list, List, tuple, Tuple)):
+                    val[idx] = self._recursive_tuple_2_list(v)
+        elif isinstance(val, (dict, Dict)):
+            new_dict = {}
+            for k, v in _get_iter(val):
+                if isinstance(v, (dict, Dict, list, List, tuple, Tuple)):
+                    new_dict[k] = self._recursive_tuple_2_list(v)
+                elif v is not None:
+                    new_dict[k] = v
+            val = new_dict
+        return val
 
 
 class AttrSaver(BaseSaver):
@@ -222,7 +191,7 @@ class AttrSaver(BaseSaver):
     def __call__(self, *args, **kwargs):
         return AttrSaver(*args, **kwargs)
 
-    def _clean_up_values(self, payload):
+    def _clean_up_values(self, payload: Spockspace) -> Dict:
         # Dictionary to recursively write to
         out_dict = {}
         # All of the classes are defined at the top level
@@ -236,7 +205,7 @@ class AttrSaver(BaseSaver):
         clean_dict = {k: v for k, v in clean_dict.items() if len(v) > 0}
         return clean_dict
 
-    def _clean_tuner_values(self, payload):
+    def _clean_tuner_values(self, payload: Spockspace) -> Dict:
         # Just a double nested dict comprehension to unroll to dicts
         out_dict = {
             k: {ik: vars(iv) for ik, iv in vars(v).items()}
@@ -246,9 +215,47 @@ class AttrSaver(BaseSaver):
         clean_dict = self._clean_output(out_dict)
         return clean_dict
 
+    @staticmethod
+    def _check_list_of_spock_classes(val: List, key: str, all_cls: Set) -> List:
+        """Finds lists of spock classes and handles changing them to a writeable format
+
+        Args:
+            val: current value that is a list
+            key: current dictionary key in the payload
+            all_cls: set of all spock classes
+
+        Returns:
+
+        """
+        # Check if each entry is a spock class
+        clean_val = []
+        repeat_flag = False
+        for v in val:
+            cls_name = type(v).__name__
+            # For those that are a spock class and are repeated (cls_name == key) simply convert to dict
+            if (cls_name in all_cls) and (cls_name == key):
+                clean_val.append(attr.asdict(v))
+            # For those whose cls is different than the key just append the cls name
+            elif cls_name in all_cls:
+                # Change the flag as this is a repeated class -- which needs to be compressed into a single
+                # k:v pair
+                repeat_flag = True
+                clean_val.append(cls_name)
+            # Fall back to the passed in values
+            else:
+                clean_val.append(v)
+        # Handle repeated classes
+        if repeat_flag:
+            clean_val = list(set(clean_val))[-1]
+        return clean_val
+
     def _recursively_handle_clean(
-        self, payload, out_dict, parent_name=None, all_cls=None
-    ):
+        self,
+        payload: Spockspace,
+        out_dict: Dict,
+        parent_name: Optional[str] = None,
+        all_cls: Optional[Set] = None,
+    ) -> Dict:
         """Recursively works through spock classes and adds clean data to a dictionary
 
         Given a payload (Spockspace) work recursively through items that don't have parents to catch all
@@ -267,37 +274,26 @@ class AttrSaver(BaseSaver):
         """
         for key, val in vars(payload).items():
             val_name = type(val).__name__
-            # This catches basic lists and list of classes
-            if isinstance(val, list):
-                # Check if each entry is a spock class
-                clean_val = []
-                repeat_flag = False
-                for l_val in val:
-                    cls_name = type(l_val).__name__
-                    # For those that are a spock class and are repeated (cls_name == key) simply convert to dict
-                    if (cls_name in all_cls) and (cls_name == key):
-                        clean_val.append(attr.asdict(l_val))
-                    # For those whose cls is different than the key just append the cls name
-                    elif cls_name in all_cls:
-                        # Change the flag as this is a repeated class -- which needs to be compressed into a single
-                        # k:v pair
-                        repeat_flag = True
-                        clean_val.append(cls_name)
-                    # Fall back to the passed in values
-                    else:
-                        clean_val.append(l_val)
-                # Handle repeated classes
-                if repeat_flag:
-                    clean_val = list(set(clean_val))[-1]
+            # If v is any iterable we need to step into the nested structure
+            if isinstance(val, (dict, Dict, list, List, tuple, Tuple)):
+                # Need to inspect list type for lists of spock classes which must be handled differently
+                mod_val = (
+                    self._check_list_of_spock_classes(val, key, all_cls)
+                    if isinstance(val, (list, List))
+                    else val
+                )
+                # Recurses all iterables to find all callables and casts them to strings
+                clean_val = _recurse_callables(
+                    mod_val, _callable_2_str, check_type=Callable
+                )
                 out_dict.update({key: clean_val})
             # Catch any callables -- convert back to the str representation
             elif callable(val):
-                call_2_str = f"{val.__module__}.{val.__name__}"
-                out_dict.update({key: call_2_str})
+                out_dict.update({key: _callable_2_str(val)})
             # If it's a spock class but has a parent then just use the class name to reference the values
             elif (val_name in all_cls) and parent_name is not None:
                 out_dict.update({key: val_name})
-            # Check if it's a spock class without a parent -- iterate the values and recurse to catch more lists
+            # Check if it's a spock class without a parent -- iterate the values and recurse to catch more iterables
             elif val_name in all_cls:
                 new_dict = self._recursively_handle_clean(
                     val, {}, parent_name=key, all_cls=all_cls

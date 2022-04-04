@@ -6,7 +6,7 @@
 """Handles creation and ops for DAGs"""
 
 import sys
-from typing import Type
+from typing import Dict, Generator, List, Tuple
 
 from spock.utils import _find_all_spock_classes
 
@@ -21,7 +21,7 @@ class Graph:
 
     """
 
-    def __init__(self, input_classes, lazy: bool):
+    def __init__(self, input_classes: List, lazy: bool):
         """Init call for Graph class
 
         Args:
@@ -81,7 +81,7 @@ class Graph:
         return self._topological_sort()
 
     @staticmethod
-    def _yield_class_deps(classes):
+    def _yield_class_deps(classes: List) -> Generator[Tuple, None, None]:
         """Generator to iterate through nodes and find dependencies
 
         Args:
@@ -96,7 +96,7 @@ class Graph:
             for v in dep_names:
                 yield input_class, v
 
-    def _lazily_find_classes(self, classes):
+    def _lazily_find_classes(self, classes: List) -> Tuple:
         """Searches within the spock sys modules attributes to lazily find @spock decorated classes
 
         These classes have been decorated with @spock but might not have been passes into the ConfigArgBuilder so
@@ -129,7 +129,7 @@ class Graph:
                 lazy_classes.append(lazy_class)
         return tuple(lazy_classes)
 
-    def _lazily_find_parents(self):
+    def _lazily_find_parents(self) -> Tuple:
         """Searches within the current set of input_classes (@spock decorated classes) to lazily find any parents
 
         Given that lazy inheritance means that the parent classes won't be included (since they are cast to spock
@@ -158,7 +158,7 @@ class Graph:
                         lazy_parents.update({base.__name__: base})
         return tuple(lazy_parents.values())
 
-    def _build(self):
+    def _build(self) -> Dict:
         """Builds a dictionary of nodes and their edges (essentially builds the DAG)
 
         Returns:
@@ -179,7 +179,7 @@ class Graph:
         nodes = {key: set(val) for key, val in nodes.items()}
         return nodes
 
-    def _has_cycles(self):
+    def _has_cycles(self) -> bool:
         """Uses DFS to check for cycles within the spock dependency graph
 
         Returns:
@@ -198,7 +198,7 @@ class Graph:
                     return True
         return False
 
-    def _cycle_dfs(self, node: Type, visited: dict, recursion_stack: dict):
+    def _cycle_dfs(self, node: str, visited: Dict, recursion_stack: Dict) -> bool:
         """DFS via a recursion stack for cycles
 
         Args:
@@ -227,7 +227,7 @@ class Graph:
         recursion_stack.update({node: False})
         return False
 
-    def _topological_sort(self):
+    def _topological_sort(self) -> List:
         # DFS for topological sort
         # https://en.wikipedia.org/wiki/Topological_sorting
         visited = {key: False for key in self.node_names}
@@ -239,7 +239,7 @@ class Graph:
         stack.reverse()
         return stack
 
-    def _topological_sort_dfs(self, node, visited, stack):
+    def _topological_sort_dfs(self, node: str, visited: Dict, stack: List) -> None:
         # Update the visited dict
         visited.update({node: True})
         # Recur for all edges

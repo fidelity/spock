@@ -7,10 +7,10 @@
 
 import argparse
 import sys
-import typing
 from collections import Counter
 from copy import deepcopy
 from pathlib import Path
+from typing import Dict, List, Optional, Tuple, Type, Union
 from uuid import uuid4
 
 import attr
@@ -20,9 +20,13 @@ from spock.backend.payload import AttrPayload
 from spock.backend.saver import AttrSaver
 from spock.backend.wrappers import Spockspace
 from spock.exceptions import _SpockEvolveError, _SpockUndecoratedClass
-from spock.utils import _is_spock_instance, check_payload_overwrite, deep_payload_update
-
-_CLS = typing.TypeVar("_CLS", bound=type)
+from spock.utils import (
+    _C,
+    _T,
+    _is_spock_instance,
+    check_payload_overwrite,
+    deep_payload_update,
+)
 
 
 class ConfigArgBuilder:
@@ -58,11 +62,11 @@ class ConfigArgBuilder:
     def __init__(
         self,
         *args,
-        configs: typing.Optional[typing.List] = None,
+        configs: Optional[List] = None,
         desc: str = "",
         lazy: bool = False,
         no_cmd_line: bool = False,
-        s3_config=None,
+        s3_config: Optional[_T] = None,
         **kwargs,
     ):
         """Init call for ConfigArgBuilder
@@ -127,7 +131,7 @@ class ConfigArgBuilder:
             self._print_usage_and_exit(str(e), sys_exit=False)
             raise e
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args, **kwargs) -> _T:
         """Call to self to allow chaining
 
         Args:
@@ -159,7 +163,7 @@ class ConfigArgBuilder:
         """Returns a Spockspace of the best hyper-parameter config and the associated metric value"""
         return self._tuner_interface.best
 
-    def sample(self):
+    def sample(self) -> Type[Spockspace]:
         """Sample method that constructs a namespace from the fixed parameters and samples from the tuner space to
         generate a Spockspace derived from both
 
@@ -178,7 +182,7 @@ class ConfigArgBuilder:
         self._sample_count += 1
         return return_tuple
 
-    def tuner(self, tuner_config):
+    def tuner(self, tuner_config: _T) -> _T:
         """Chained call that builds the tuner interface for either optuna or ax depending upon the type of the tuner_obj
 
         Args:
@@ -207,7 +211,9 @@ class ConfigArgBuilder:
             raise e
         return self
 
-    def _print_usage_and_exit(self, msg=None, sys_exit=True, exit_code=1):
+    def _print_usage_and_exit(
+        self, msg: Optional[str] = None, sys_exit: bool = True, exit_code: int = 1
+    ) -> None:
         """Prints the help message and exits
 
         Args:
@@ -229,7 +235,9 @@ class ConfigArgBuilder:
         if sys_exit:
             sys.exit(exit_code)
 
-    def _handle_tuner_objects(self, tune_args, s3_config, kwargs):
+    def _handle_tuner_objects(
+        self, tune_args: List, s3_config: Optional[_T], kwargs: Dict
+    ) -> Tuple:
         """Handles creating the tuner builder object if @spockTuner classes were passed in
 
         Args:
@@ -258,7 +266,7 @@ class ConfigArgBuilder:
             return None, None
 
     @staticmethod
-    def _verify_attr(args: typing.Tuple):
+    def _verify_attr(args: Tuple) -> None:
         """Verifies that all the input classes are attr based
 
         Args:
@@ -284,7 +292,7 @@ class ConfigArgBuilder:
                 )
 
     @staticmethod
-    def _strip_tune_parameters(args: typing.Tuple):
+    def _strip_tune_parameters(args: Tuple) -> Tuple[List, List]:
         """Separates the fixed arguments from any hyper-parameter arguments
 
         Args:
@@ -304,7 +312,7 @@ class ConfigArgBuilder:
                 tune_args.append(arg)
         return fixed_args, tune_args
 
-    def _handle_cmd_line(self):
+    def _handle_cmd_line(self) -> argparse.Namespace:
         """Handle all cmd line related tasks
 
         Config paths can enter from either the command line or be added in the class init call
@@ -332,7 +340,7 @@ class ConfigArgBuilder:
             args = self._get_from_kwargs(args, self._configs)
         return args
 
-    def _build_override_parsers(self, desc):
+    def _build_override_parsers(self, desc: str) -> argparse.Namespace:
         """Creates parsers for command-line overrides
 
         Builds the basic command line parser for configs and help then iterates through each attr instance to make
@@ -356,11 +364,10 @@ class ConfigArgBuilder:
         if self._tune_obj is not None:
             parser = self._tune_obj.build_override_parsers(parser=parser)
         args = parser.parse_args()
-
         return args
 
     @staticmethod
-    def _get_from_kwargs(args, configs):
+    def _get_from_kwargs(args: argparse.Namespace, configs: List):
         """Get configs from the configs kwarg
 
         Args:
@@ -379,7 +386,9 @@ class ConfigArgBuilder:
             )
         return args
 
-    def _get_payload(self, payload_obj, input_classes, ignore_args: typing.List):
+    def _get_payload(
+        self, payload_obj: Type[AttrPayload], input_classes: Tuple, ignore_args: List
+    ) -> Dict:
         """Get the parameter payload from the config file(s)
 
         Calls the various ways to get configs and then parses to retrieve the parameter payload - make sure to call
@@ -426,15 +435,15 @@ class ConfigArgBuilder:
 
     def _save(
         self,
-        payload,
+        payload: Spockspace,
         file_name: str = None,
         user_specified_path: Path = None,
         create_save_path: bool = True,
         extra_info: bool = True,
         file_extension: str = ".yaml",
-        tuner_payload=None,
-        fixed_uuid=None,
-    ):
+        tuner_payload: Optional[Spockspace] = None,
+        fixed_uuid: str = None,
+    ) -> _T:
         """Private interface -- saves the current config setup to file with a UUID
 
         Args:
@@ -475,12 +484,12 @@ class ConfigArgBuilder:
     def save(
         self,
         file_name: str = None,
-        user_specified_path: typing.Union[Path, str] = None,
+        user_specified_path: Union[Path, str] = None,
         create_save_path: bool = True,
         extra_info: bool = True,
         file_extension: str = ".yaml",
         add_tuner_sample: bool = False,
-    ):
+    ) -> _T:
         """Saves the current config setup to file with a UUID
 
         Args:
@@ -489,7 +498,7 @@ class ConfigArgBuilder:
             create_save_path: bool to create the path to save if called
             extra_info: additional info to write to saved config (run date and git info)
             file_extension: file type to write (default: yaml)
-            append_tuner_state: save the current tuner sample to the payload
+            add_tuner_sample: save the current tuner sample to the payload
 
         Returns:
             self so that functions can be chained
@@ -537,7 +546,7 @@ class ConfigArgBuilder:
         create_save_path: bool = True,
         extra_info: bool = True,
         file_extension: str = ".yaml",
-    ):
+    ) -> _T:
         """Saves the current best config setup to file
 
         Args:
@@ -573,7 +582,7 @@ class ConfigArgBuilder:
         """Dictionary representation of the arg payload"""
         return self._saver_obj.dict_payload(self._arg_namespace)
 
-    def spockspace_2_dict(self, payload: Spockspace):
+    def spockspace_2_dict(self, payload: Spockspace) -> Dict:
         """Converts an input SpockSpace into a dictionary
 
         Args:
@@ -585,7 +594,7 @@ class ConfigArgBuilder:
         """
         return self._saver_obj.dict_payload(payload)
 
-    def evolve(self, *args: typing.Type[_CLS]):
+    def evolve(self, *args: _C) -> Spockspace:
         """Function that allows a user to evolve the underlying spock classes with instantiated spock objects
 
         This will map the differences between the passed in instantiated objects and the underlying class definitions
@@ -643,8 +652,8 @@ class ConfigArgBuilder:
         return new_arg_namespace
 
     def _recurse_upwards(
-        self, new_arg_namespace: Spockspace, current_cls: str, all_cls: typing.Dict
-    ):
+        self, new_arg_namespace: Spockspace, current_cls: str, all_cls: Dict
+    ) -> Tuple[Spockspace, Dict]:
         """Using the underlying graph work recurse upwards through the parents and swap in the correct values
 
         Args:
@@ -678,8 +687,8 @@ class ConfigArgBuilder:
 
     @staticmethod
     def _set_matching_attrs_by_name_args(
-        current_cls_name: str, parent_cls_name: str, all_cls: typing.Dict
-    ):
+        current_cls_name: str, parent_cls_name: str, all_cls: Dict
+    ) -> Dict:
         """Sets the value of an attribute by matching it to a spock class name
 
         Args:
@@ -710,7 +719,7 @@ class ConfigArgBuilder:
     @staticmethod
     def _set_matching_attrs_by_name(
         new_arg_namespace: Spockspace, current_cls_name: str, parent_cls_name: str
-    ):
+    ) -> Spockspace:
         """Sets the value of an attribute by matching it to a spock class name
 
         Args:

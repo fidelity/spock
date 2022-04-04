@@ -59,3 +59,10 @@ high_config = 'SingleNestedConfig'
 [TypeConfig]
     float_p = 12.0
 call_me = 'tests.base.attr_configs_test.foo'
+call_us = ["tests.base.attr_configs_test.foo", "tests.base.attr_configs_test.foo"]
+
+
+str_dict = {key_1 = 1.5, key_2 = 2.5}
+int_list_str_dict = {"1" = ['test', 'me'], "2" = ['again', 'test']}
+float_tuple_callable_dict = {"1.0" = ["tests.base.attr_configs_test.foo", "tests.base.attr_configs_test.bar"], "2.0" = ["tests.base.attr_configs_test.foo", "tests.base.attr_configs_test.bar"]}
+hardest = [{key_1 = ["tests.base.attr_configs_test.foo", "tests.base.attr_configs_test.bar"], key_2 = ["tests.base.attr_configs_test.foo", "tests.base.attr_configs_test.bar"]}, {key_3 = ["tests.base.attr_configs_test.foo", "tests.base.attr_configs_test.bar"], key_4 = ["tests.base.attr_configs_test.foo", "tests.base.attr_configs_test.bar"]}]

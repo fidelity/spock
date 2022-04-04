@@ -16,7 +16,7 @@
   <a><img src="https://img.shields.io/badge/python-3.6+-informational.svg"/></a>
   <a href="https://github.com/psf/black"><img src="https://img.shields.io/badge/code%20style-black-000000.svg"/></a>
   <a href="https://badge.fury.io/py/spock-config"><img src="https://badge.fury.io/py/spock-config.svg"/></a>
-  <a href="https://pepy.tech/badge/spock-config"><img src="https://static.pepy.tech/personalized-badge/spock-config?period=total&units=international_system&left_color=grey&right_color=orange&left_text=Downloads"/></a>
+  <a href="https://pepy.tech/project/spock-config"><img src="https://static.pepy.tech/personalized-badge/spock-config?period=total&units=international_system&left_color=grey&right_color=orange&left_text=Downloads"/></a>
 </p>
   
 <h3 align="center">
@@ -101,8 +101,10 @@ See [Releases](https://github.com/fidelity/spock/releases) for more information.
 
 <details>
 
-#### March 11th, 2022
-* Added support for simple `typing.Callable` types (WIP: advanced versions)
+#### March 17th, 2022
+* Added support for `typing.Callable` types (includes advanced types such as `List[List[Callable]]`)
+* Added support for `typing.Dict` types with type checking for types of both keys and values (includes advanced types
+such as `Dict[str, Tuple[Callable, Callable]]`)
 * Added support for post init hooks that allow for validation on parameters defined within `@spock` decorated classes. 
 Additionally, added some common validation check to utils (within, greater than, less than, etc.)
 * Updated unit tests to support Python 3.10
