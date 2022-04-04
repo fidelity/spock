@@ -117,4 +117,4 @@ configuration(s):
 ### Spock As a Drop In Replacement For Argparser
 
 `spock` can easily be used as a drop in replacement for argparser. 
-See the docs/example [here](https://fidelity.github.io/spock/docs/ArgParser-Replacement/).
+See the docs/example [here](https://fidelity.github.io/spock/ArgParser-Replacement/).
