@@ -42,14 +42,16 @@ hidden_sizes = [ 32, 32, 16,]
 activation = "relu"
 ```
 
-### Specify spock Special Parameter Type
+### Path Option 1: Specify spock Special Parameter Type
 
 We simply specify a `SavePath` in a spock config, which is a special argument type that is used to set the 
-save path from a configuration file.
+save path from a configuration file. It can be imported from the top level `spock` path.
 
 Adding to: `tutorial.py`
 
 ```python
+from spock import SavePath
+
 class Activation(Enum):
     relu = 'relu'
     gelu = 'gelu'
@@ -93,7 +95,7 @@ hidden_sizes: [32, 32, 16]
 activation: relu
 ```
 
-### Specify Path In-Line
+### Path Option 2: Specify Path In-Line
 
 Here we simply specify the path when calling the `save()` method. In: `tutorial.yaml`
 
