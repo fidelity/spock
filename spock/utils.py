@@ -54,12 +54,43 @@ _T = TypeVar("_T")
 _C = TypeVar("_C", bound=type)
 
 
+def eq_len(val: List[Union[Tuple, List, None]], allow_optional: bool = True):
+    """Checks that all values passed in the iterable are of the same length
+
+    Args:
+        val: iterable to compare lengths
+        allow_optional: allows the check to succeed if a given val in the iterable is None
+
+    Returns:
+        None
+
+    Raises:
+        _SpockValueError
+
+    """
+    filtered_val = []
+    for idx, v in enumerate(val):
+        if v is None and not allow_optional:
+            raise _SpockValueError(
+                f"Optional values not allowed -- encountered None value in position `{idx}` of the iterable"
+            )
+        elif v is not None:
+            filtered_val.append(v)
+    # just do a set comprehension -- iterables shouldn't be that long so pay the O(n) price
+    lens = {len(v) for v in filtered_val}
+    if len(lens) != 1:
+        raise _SpockValueError(
+            f"Length mismatch -- current lengths of values within the iterable are `{lens}`"
+        )
+
+
 def within(
-    val: Union[float, int],
+    val: Union[float, int, None],
     low_bound: Union[float, int],
     upper_bound: Union[float, int],
     inclusive_lower: bool = False,
     inclusive_upper: bool = False,
+    allow_optional: bool = True
 ) -> None:
     """Checks that a value is within a defined range
 
@@ -69,6 +100,7 @@ def within(
         upper_bound: upper bound of range
         inclusive_lower: if the check includes the bound value (i.e. >=)
         inclusive_upper: if the check includes the bound value (i.e. <=)
+        allow_optional: allows the check to succeed if val is none
 
     Returns:
         None
@@ -77,19 +109,28 @@ def within(
         _SpockValueError
 
     """
-    # Check lower bounds
-    lower_fn = le if inclusive_upper else lt
-    upper_fn = ge if inclusive_lower else gt
-    upper_fn(val=val, bound=low_bound)
-    lower_fn(val=val, bound=upper_bound)
+    # Skip if None and allowed
+    if allow_optional and val is None:
+        pass
+    elif val is None and not allow_optional:
+        raise _SpockValueError(
+            f"Set value is None and allow_optional is `{allow_optional}`"
+        )
+    else:
+        # Check lower bounds
+        lower_fn = le if inclusive_upper else lt
+        upper_fn = ge if inclusive_lower else gt
+        upper_fn(val=val, bound=low_bound, allow_optional=allow_optional)
+        lower_fn(val=val, bound=upper_bound, allow_optional=allow_optional)
 
 
-def ge(val: Union[float, int], bound: Union[float, int]) -> None:
+def ge(val: Union[float, int, None], bound: Union[float, int], allow_optional: bool = True) -> None:
     """Checks that a value is greater than or equal to (inclusive) a lower bound
 
     Args:
         val: value to check against
         bound: lower bound
+        allow_optional: allows the check to succeed if val is none
 
     Returns:
         None
@@ -98,18 +139,27 @@ def ge(val: Union[float, int], bound: Union[float, int]) -> None:
         _SpockValueError
 
     """
-    if val < bound:
+    # Skip if None and allowed
+    if allow_optional and val is None:
+        pass
+    elif val is None and not allow_optional:
         raise _SpockValueError(
-            f"Set value `{val}` is not >= given bound value `{bound}`"
+            f"Set value is None and allow_optional is `{allow_optional}`"
         )
+    else:
+        if val < bound:
+            raise _SpockValueError(
+                f"Set value `{val}` is not >= given bound value `{bound}`"
+            )
 
 
-def gt(val: Union[float, int], bound: Union[float, int]) -> None:
+def gt(val: Union[float, int, None], bound: Union[float, int], allow_optional: bool = True) -> None:
     """Checks that a value is greater (non-inclusive) than a lower bound
 
     Args:
         val: value to check against
         bound: lower bound
+        allow_optional: allows the check to succeed if val is none
 
     Returns:
         None
@@ -118,21 +168,31 @@ def gt(val: Union[float, int], bound: Union[float, int]) -> None:
         _SpockValueError
 
     """
-    if val <= bound:
+    # Skip if None and allowed
+    if allow_optional and val is None:
+        pass
+    elif val is None and not allow_optional:
         raise _SpockValueError(
-            f"Set value `{val}` is not > given bound value `{bound}`"
+            f"Set value is None and allow_optional is `{allow_optional}`"
         )
+    else:
+        if val <= bound:
+                raise _SpockValueError(
+                    f"Set value `{val}` is not > given bound value `{bound}`"
+                )
 
 
 def le(
-    val: Union[float, int],
+    val: Union[float, int, None],
     bound: Union[float, int],
+    allow_optional: bool = True
 ) -> None:
     """Checks that a value is less than or equal to (inclusive) an upper bound
 
     Args:
         val: value to check against
         bound: upper bound
+        allow_optional: allows the check to succeed if val is none
 
     Returns:
         None
@@ -141,18 +201,27 @@ def le(
         _SpockValueError
 
     """
-    if val > bound:
+    # Skip if None and allowed
+    if allow_optional and val is None:
+        pass
+    elif val is None and not allow_optional:
         raise _SpockValueError(
-            f"Set value `{val}` is not <= given bound value `{bound}`"
+            f"Set value is None and allow_optional is `{allow_optional}`"
         )
+    else:
+        if val > bound:
+                raise _SpockValueError(
+                    f"Set value `{val}` is not <= given bound value `{bound}`"
+                )
 
 
-def lt(val: Union[float, int], bound: Union[float, int]) -> None:
+def lt(val: Union[float, int], bound: Union[float, int], allow_optional: bool = True) -> None:
     """Checks that a value is less (non-inclusive) than an upper bound
 
     Args:
         val: value to check against
         bound: upper bound
+        allow_optional: allows the check to succeed if val is none
 
     Returns:
         None
@@ -161,10 +230,18 @@ def lt(val: Union[float, int], bound: Union[float, int]) -> None:
         _SpockValueError
 
     """
-    if val >= bound:
+    # Skip if None and allowed
+    if allow_optional and val is None:
+        pass
+    elif val is None and not allow_optional:
         raise _SpockValueError(
-            f"Set value `{val}` is not < given bound value `{bound}`"
+            f"Set value is None and allow_optional is `{allow_optional}`"
         )
+    else:
+        if val >= bound:
+            raise _SpockValueError(
+                f"Set value `{val}` is not < given bound value `{bound}`"
+            )
 
 
 def _find_all_spock_classes(attr_class: _C) -> List:

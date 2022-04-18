@@ -19,11 +19,10 @@ from spock.backend.builder import AttrBuilder
 from spock.backend.payload import AttrPayload
 from spock.backend.saver import AttrSaver
 from spock.backend.wrappers import Spockspace
-from spock.exceptions import _SpockEvolveError, _SpockUndecoratedClass
+from spock.exceptions import _SpockEvolveError
 from spock.utils import (
     _C,
     _T,
-    _is_spock_instance,
     check_payload_overwrite,
     deep_payload_update,
 )
@@ -143,7 +142,7 @@ class ConfigArgBuilder:
         """
         return ConfigArgBuilder(*args, **kwargs)
 
-    def generate(self):
+    def generate(self) -> Spockspace:
         """Generate method that returns the actual argument namespace
 
 
@@ -154,16 +153,16 @@ class ConfigArgBuilder:
         return self._arg_namespace
 
     @property
-    def tuner_status(self):
+    def tuner_status(self) -> Dict:
         """Returns a dictionary of all the necessary underlying tuner internals to report the result"""
         return self._tuner_status
 
     @property
-    def best(self):
+    def best(self) -> Spockspace:
         """Returns a Spockspace of the best hyper-parameter config and the associated metric value"""
         return self._tuner_interface.best
 
-    def sample(self) -> Type[Spockspace]:
+    def sample(self) -> Spockspace:
         """Sample method that constructs a namespace from the fixed parameters and samples from the tuner space to
         generate a Spockspace derived from both
 
@@ -578,7 +577,7 @@ class ConfigArgBuilder:
         return self
 
     @property
-    def config_2_dict(self):
+    def config_2_dict(self) -> Dict:
         """Dictionary representation of the arg payload"""
         return self._saver_obj.dict_payload(self._arg_namespace)
 
