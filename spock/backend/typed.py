@@ -5,10 +5,9 @@
 
 """Handles the definitions of arguments types for Spock (backend: attrs)"""
 
-import sys
 from enum import Enum, EnumMeta
 from functools import partial
-from typing import Dict, List, TypeVar, Union
+from typing import TypeVar, Union
 
 import attr
 
@@ -23,7 +22,7 @@ class SavePath(str):
 
     """
 
-    def __new__(cls, x):
+    def __new__(cls, x: str) -> str:
         return super().__new__(cls, x)
 
 

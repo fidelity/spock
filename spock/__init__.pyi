@@ -2,12 +2,14 @@ from typing import Any, Callable, List, Optional, Tuple, TypeVar, Union, overloa
 
 from attr import attrib, field
 
-from spock.backend.typed import SavePath
+# from spock.backend.typed import SavePath
 from spock.builder import ConfigArgBuilder
 
 _T = TypeVar("_T")
 _C = TypeVar("_C", bound=type)
-SavePath: SavePath
+
+# Type alias
+SpockBuilder = ConfigArgBuilder
 
 # Note: from here
 # https://github.com/python-attrs/attrs/blob/main/src/attr/__init__.pyi
@@ -43,12 +45,7 @@ def spock(
     make_init: bool = True,
     dynamic: bool = False,
 ) -> Callable[[_C], _C]: ...
-def SpockBuilder(
-    *args: _C,
-    configs: Optional[List] = None,
-    desc: str = "",
-    lazy: bool = False,
-    no_cmd_line: bool = False,
-    s3_config: Optional[_C] = None,
-    **kwargs,
-) -> ConfigArgBuilder: ...
+
+class SavePath(str):
+    def __new__(cls, x: str) -> str: ...
+    ...
