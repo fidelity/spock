@@ -90,7 +90,7 @@ def within(
     upper_bound: Union[float, int],
     inclusive_lower: bool = False,
     inclusive_upper: bool = False,
-    allow_optional: bool = True
+    allow_optional: bool = True,
 ) -> None:
     """Checks that a value is within a defined range
 
@@ -124,7 +124,9 @@ def within(
         lower_fn(val=val, bound=upper_bound, allow_optional=allow_optional)
 
 
-def ge(val: Union[float, int, None], bound: Union[float, int], allow_optional: bool = True) -> None:
+def ge(
+    val: Union[float, int, None], bound: Union[float, int], allow_optional: bool = True
+) -> None:
     """Checks that a value is greater than or equal to (inclusive) a lower bound
 
     Args:
@@ -153,7 +155,9 @@ def ge(val: Union[float, int, None], bound: Union[float, int], allow_optional: b
             )
 
 
-def gt(val: Union[float, int, None], bound: Union[float, int], allow_optional: bool = True) -> None:
+def gt(
+    val: Union[float, int, None], bound: Union[float, int], allow_optional: bool = True
+) -> None:
     """Checks that a value is greater (non-inclusive) than a lower bound
 
     Args:
@@ -177,15 +181,13 @@ def gt(val: Union[float, int, None], bound: Union[float, int], allow_optional: b
         )
     else:
         if val <= bound:
-                raise _SpockValueError(
-                    f"Set value `{val}` is not > given bound value `{bound}`"
-                )
+            raise _SpockValueError(
+                f"Set value `{val}` is not > given bound value `{bound}`"
+            )
 
 
 def le(
-    val: Union[float, int, None],
-    bound: Union[float, int],
-    allow_optional: bool = True
+    val: Union[float, int, None], bound: Union[float, int], allow_optional: bool = True
 ) -> None:
     """Checks that a value is less than or equal to (inclusive) an upper bound
 
@@ -210,12 +212,14 @@ def le(
         )
     else:
         if val > bound:
-                raise _SpockValueError(
-                    f"Set value `{val}` is not <= given bound value `{bound}`"
-                )
+            raise _SpockValueError(
+                f"Set value `{val}` is not <= given bound value `{bound}`"
+            )
 
 
-def lt(val: Union[float, int], bound: Union[float, int], allow_optional: bool = True) -> None:
+def lt(
+    val: Union[float, int], bound: Union[float, int], allow_optional: bool = True
+) -> None:
     """Checks that a value is less (non-inclusive) than an upper bound
 
     Args:

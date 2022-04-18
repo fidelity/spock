@@ -20,12 +20,7 @@ from spock.backend.payload import AttrPayload
 from spock.backend.saver import AttrSaver
 from spock.backend.wrappers import Spockspace
 from spock.exceptions import _SpockEvolveError
-from spock.utils import (
-    _C,
-    _T,
-    check_payload_overwrite,
-    deep_payload_update,
-)
+from spock.utils import _C, _T, check_payload_overwrite, deep_payload_update
 
 
 class ConfigArgBuilder:
