@@ -14,20 +14,11 @@ from typing import Callable, Dict, List, Tuple, Type
 from attr import NOTHING, Attribute
 
 from spock.backend.spaces import AttributeSpace, BuilderSpace, ConfigSpace
-from spock.backend.utils import (
-    _get_name_py_version,
-    _recurse_callables,
-    _str_2_callable,
-)
+from spock.backend.utils import (_get_name_py_version, _recurse_callables,
+                                 _str_2_callable)
 from spock.exceptions import _SpockInstantiationError, _SpockNotOptionalError
-from spock.utils import (
-    _C,
-    _T,
-    _check_iterable,
-    _is_spock_instance,
-    _is_spock_tune_instance,
-    _SpockVariadicGenericAlias,
-)
+from spock.utils import (_C, _T, _check_iterable, _is_spock_instance,
+                         _is_spock_tune_instance, _SpockVariadicGenericAlias)
 
 
 class RegisterFieldTemplate(ABC):
