@@ -45,7 +45,7 @@ valid command-line arguments:
 ```
 
 None of these command-line arguments are required (i.e. sets `required=False` within the argparser), but a value must
-be set via one of the three core mechanisms: (1) a default value (set withing the `@spock` decorated class), (2) the 
+be set via one of the three core mechanisms: (1) a default value (set within the `@spock` decorated class), (2) the 
 configuration file (passed in with the `--config` argument), or (3) the command-line argument (this takes precedence 
 over all other methods).
 
