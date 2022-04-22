@@ -80,7 +80,7 @@ fixed_params = attrs_obj.generate()
 
 The `sample()` call is the crux of `spock` hyper-parameter tuning support. It draws a hyper-parameter sample from the 
 underlying backend sampler and combines it with fixed parameters and returns a single `Spockspace` with all 
-useable parameters (defined with dot notation). For Optuna -- Under the hood `spock` uses the define-and-run Optuna 
+usable parameters (defined with dot notation). For Optuna -- Under the hood `spock` uses the define-and-run Optuna 
 interface -- thus it handles the underlying 'ask' call. The `spock` builder object has a `@property` called 
 `tuner_status` that returns any necessary backend objects in a dictionary that the user needs to interface with. In the 
 case of Optuna, this contains both the Optuna `study` and `trial` (as dictionary keys). We use the return of 
