@@ -5,6 +5,7 @@ import pytest
 from attr.exceptions import FrozenInstanceError
 
 from spock.builder import ConfigArgBuilder
+from spock.exceptions import _SpockValueError
 from tests.base.attr_configs_test import *
 
 
@@ -33,6 +34,49 @@ class TestSpockspaceRepr:
             print(config.generate())
             out, _ = capsys.readouterr()
             assert ("NestedListStuff" in out) and "TypeConfig" in out
+
+
+class TestToDict:
+    def test_2_dict(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test.yaml"])
+            config = ConfigArgBuilder(
+                *all_configs,
+                desc="Test Builder",
+            )
+            configs = config.generate()
+            config_dict = config.spockspace_2_dict(configs)
+            assert isinstance(config_dict, dict) is True
+
+
+class TestClassToDict:
+    def test_class_2_dict(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test.yaml"])
+            config = ConfigArgBuilder(
+                *all_configs,
+                desc="Test Builder",
+            )
+            configs = config.generate()
+            config_dict = config.obj_2_dict(configs.TypeConfig)
+            assert isinstance(config_dict, dict) is True
+            assert isinstance(config_dict['TypeConfig'], dict) is True
+            configs_dicts = config.obj_2_dict((configs.TypeConfig, configs.NestedStuff))
+            assert isinstance(configs_dicts['TypeConfig'], dict) is True
+            assert isinstance(configs_dicts['NestedStuff'], dict) is True
+
+    def test_raise_incorrect_type(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test.yaml"])
+            config = ConfigArgBuilder(
+                *all_configs,
+                desc="Test Builder",
+            )
+            configs = config.generate()
+            with pytest.raises(_SpockValueError):
+                config_dict = config.obj_2_dict("foo")
+            with pytest.raises(_SpockValueError):
+                config_dict = config.obj_2_dict(("foo", 10))
 
 
 class TestFrozen:

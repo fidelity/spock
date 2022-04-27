@@ -19,8 +19,14 @@ from spock.backend.builder import AttrBuilder
 from spock.backend.payload import AttrPayload
 from spock.backend.saver import AttrSaver
 from spock.backend.wrappers import Spockspace
-from spock.exceptions import _SpockEvolveError
-from spock.utils import _C, _T, check_payload_overwrite, deep_payload_update
+from spock.exceptions import _SpockEvolveError, _SpockValueError
+from spock.utils import (
+    _C,
+    _T,
+    _is_spock_instance,
+    check_payload_overwrite,
+    deep_payload_update,
+)
 
 
 class ConfigArgBuilder:
@@ -587,6 +593,31 @@ class ConfigArgBuilder:
 
         """
         return self._saver_obj.dict_payload(payload)
+
+    def obj_2_dict(self, obj: Union[_C, List[_C], Tuple[_C, ...]]) -> Dict[str, Dict]:
+        """Converts spock classes from a Spockspace into their dictionary representations
+
+        Args:
+            objs: single spock class or an iterable of spock classes
+
+        Returns:
+            dictionary where the class names are keys and the values are the dictionary representations
+        """
+        if isinstance(obj, (List, Tuple)):
+            obj_dict = {}
+            for val in obj:
+                if not _is_spock_instance(val):
+                    raise _SpockValueError(
+                        f"Object is not a @spock decorated class object -- currently `{type(val)}`"
+                    )
+                obj_dict.update({type(val).__name__: val})
+        elif _is_spock_instance(obj):
+            obj_dict = {type(obj).__name__: obj}
+        else:
+            raise _SpockValueError(
+                f"Object is not a @spock decorated class object -- currently `{type(obj)}`"
+            )
+        return self.spockspace_2_dict(Spockspace(**obj_dict))
 
     def evolve(self, *args: _C) -> Spockspace:
         """Function that allows a user to evolve the underlying spock classes with instantiated spock objects
