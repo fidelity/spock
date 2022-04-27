@@ -54,7 +54,7 @@ class TunerInterface:
             )
 
     def sample(self):
-        """Public interface to underlying library sepcific sample that returns a single sample/draw from the
+        """Public interface to underlying library specific sample that returns a single sample/draw from the
         hyper-parameter sets (e.g. ranges, choices) and combines them with the fixed parameters into a single Spockspace
 
         Returns:

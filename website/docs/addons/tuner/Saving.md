@@ -45,7 +45,7 @@ Would result in the following YAML file:
 
 If we want to save each individual hyper-parameter sample we again use the `save()` call with the addition of the 
 `add_tuner_sample=True` keyword arg and chain it before the`sample()` call. The order might be slightly confusing 
-but this is to allow all methods to return the builder object except for hte `sample()` and `generate()` calls 
+but this is to allow all methods to return the builder object except for the `sample()` and `generate()` calls 
 which returns a `Spockspace`. The saver will append `hp.sample.[0-9+]` to the filename to identify each sample 
 configuration.
 

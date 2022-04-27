@@ -79,7 +79,7 @@ fixed_params = attrs_obj.generate()
 
 The `sample()` call is the crux of `spock` hyper-parameter tuning support. It draws a hyper-parameter sample from the 
 underlying backend sampler and combines it with fixed parameters and returns a single `Spockspace` with all 
-useable parameters (defined with dot notation). For Ax -- Under the hood `spock` uses the Service API (with 
+usable parameters (defined with dot notation). For Ax -- Under the hood `spock` uses the Service API (with 
 an `AxClient`) -- thus it handles the underlying call to get the next trial. The `spock` builder object has a 
 `@property` called `tuner_status` that returns any necessary backend objects in a dictionary that the user needs to 
 interface with. In the case of Ax, this contains both the `AxClient` and `trial_index` (as dictionary keys). We use 
