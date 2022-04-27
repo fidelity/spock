@@ -96,6 +96,11 @@ module.exports = {
                 },
                 {
                     type: 'doc',
+                    label: 'Composing Configs',
+                    id: 'advanced_features/Composition'
+                },
+                {
+                    type: 'doc',
                     label: 'Post-Init Hooks',
                     id: 'advanced_features/Post-Hooks'
                 },
