@@ -172,3 +172,6 @@ class TestEvolve:
         # Evolve the class
         new_class = arg_builder.evolve(evolve_nested_stuff, evolve_type_config)
         assert isinstance(arg_builder.spockspace_2_dict(new_class), dict) is True
+
+
+
