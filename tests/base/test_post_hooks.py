@@ -8,7 +8,7 @@ import pytest
 
 from spock import spock
 from spock import SpockBuilder
-from spock.utils import within, gt, ge, lt, le, eq_len
+from spock.utils import within, gt, ge, lt, le, eq_len, sum_vals
 from spock.exceptions import _SpockInstantiationError
 
 
@@ -130,7 +130,59 @@ class EqLenNoneTwoLenConfig:
         eq_len([self.val_1, self.val_2, self.val_3], allow_optional=True)
 
 
+@spock
+class SumNoneFailConfig:
+    val_1: float = 0.5
+    val_2: float = 0.5
+    val_3: Optional[float] = None
+
+    def __post_hook__(self):
+        sum_vals([self.val_1, self.val_2, self.val_3], sum_val=1.0, allow_optional=False)
+
+
+@spock
+class SumNoneNotEqualConfig:
+    val_1: float = 0.5
+    val_2: float = 0.5
+    val_3: Optional[float] = None
+
+    def __post_hook__(self):
+        sum_vals([self.val_1, self.val_2, self.val_3], sum_val=0.75)
+
+
 class TestPostHooks:
+
+    def test_sum_none_fail_config(self, monkeypatch, tmp_path):
+        """Test serialization/de-serialization"""
+        with monkeypatch.context() as m:
+            m.setattr(
+                sys,
+                "argv",
+                [""],
+            )
+            with pytest.raises(_SpockInstantiationError):
+                config = SpockBuilder(
+                    SumNoneFailConfig,
+                    desc="Test Builder",
+                )
+                config.generate()
+
+    def test_sum_not_equal_config(self, monkeypatch, tmp_path):
+        """Test serialization/de-serialization"""
+        with monkeypatch.context() as m:
+            m.setattr(
+                sys,
+                "argv",
+                [""],
+            )
+            with pytest.raises(_SpockInstantiationError):
+                config = SpockBuilder(
+                    SumNoneNotEqualConfig,
+                    desc="Test Builder",
+                )
+                config.generate()
+
+
 
     def test_eq_len_two_len_fail(self, monkeypatch, tmp_path):
         """Test serialization/de-serialization"""
