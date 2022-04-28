@@ -12,11 +12,11 @@ import subprocess
 import sys
 from argparse import _ArgumentGroup
 from enum import EnumMeta
+from math import isclose
 from pathlib import Path
 from time import localtime, strftime
 from typing import Any, Dict, List, Tuple, Type, TypeVar, Union
 from warnings import warn
-from math import isclose
 
 import attr
 import git
@@ -80,7 +80,13 @@ def _filter_optional(val: List, allow_optional: bool = True):
     return filtered_val
 
 
-def sum_vals(val: List[Union[float, int, None]], sum_val: Union[float, int], allow_optional: bool = True, rel_tol: float = 1E-9, abs_tol: float = 0.0):
+def sum_vals(
+    val: List[Union[float, int, None]],
+    sum_val: Union[float, int],
+    allow_optional: bool = True,
+    rel_tol: float = 1e-9,
+    abs_tol: float = 0.0,
+):
     """Checks if an iterable of values sums within tolerance to a specified value
 
     Args:
