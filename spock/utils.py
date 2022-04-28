@@ -16,6 +16,7 @@ from pathlib import Path
 from time import localtime, strftime
 from typing import Any, Dict, List, Tuple, Type, TypeVar, Union
 from warnings import warn
+from math import isclose
 
 import attr
 import git
@@ -54,6 +55,55 @@ _T = TypeVar("_T")
 _C = TypeVar("_C", bound=type)
 
 
+def _filter_optional(val: List, allow_optional: bool = True):
+    """Filters an iterable for None values if they are allowed
+
+    Args:
+        val: iterable of values that might contain None
+        allow_optional: allows the check to succeed if a given val in the iterable is None
+
+    Returns:
+        filtered list of values with None values removed
+
+    Raises:
+        _SpockValueError
+
+    """
+    filtered_val = []
+    for idx, v in enumerate(val):
+        if v is None and not allow_optional:
+            raise _SpockValueError(
+                f"Optional values not allowed -- encountered None value in position `{idx}` of the iterable"
+            )
+        elif v is not None:
+            filtered_val.append(v)
+    return filtered_val
+
+
+def sum_vals(val: List[Union[float, int, None]], sum_val: Union[float, int], allow_optional: bool = True, rel_tol: float = 1E-9, abs_tol: float = 0.0):
+    """Checks if an iterable of values sums within tolerance to a specified value
+
+    Args:
+        val: iterable of values to sum
+        sum_val: sum value to compare against
+        allow_optional: allows the check to succeed if a given val in the iterable is None
+        rel_tol: relative tolerance – it is the maximum allowed difference between a and b
+        abs_tol: the minimum absolute tolerance – useful for comparisons near zero
+
+    Returns:
+        None
+
+    Raises:
+        _SpockValueError
+
+    """
+    filtered_val = _filter_optional(val, allow_optional)
+    if not isclose(sum(filtered_val), sum_val, rel_tol=rel_tol, abs_tol=abs_tol):
+        raise _SpockValueError(
+            f"Sum of iterable is `{sum(filtered_val)}` which is not equal to specified value `{sum_val}` within given tolerances"
+        )
+
+
 def eq_len(val: List[Union[Tuple, List, None]], allow_optional: bool = True):
     """Checks that all values passed in the iterable are of the same length
 
@@ -68,14 +118,7 @@ def eq_len(val: List[Union[Tuple, List, None]], allow_optional: bool = True):
         _SpockValueError
 
     """
-    filtered_val = []
-    for idx, v in enumerate(val):
-        if v is None and not allow_optional:
-            raise _SpockValueError(
-                f"Optional values not allowed -- encountered None value in position `{idx}` of the iterable"
-            )
-        elif v is not None:
-            filtered_val.append(v)
+    filtered_val = _filter_optional(val, allow_optional)
     # just do a set comprehension -- iterables shouldn't be that long so pay the O(n) price
     lens = {len(v) for v in filtered_val}
     if len(lens) != 1:
