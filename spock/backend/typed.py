@@ -389,7 +389,15 @@ def _type_katra(typed, default=None, optional=False):
         optional = True
         special_key = name
         typed = str
-    if default is not None:
+    if default is not None and optional:
+        # if a default is provided, that takes precedence
+        x = attr.ib(
+            validator=attr.validators.optional(attr.validators.instance_of(typed)),
+            default=default,
+            type=typed,
+            metadata={"optional": True, "base": name, "special_key": special_key},
+        )
+    elif default is not None:
         # if a default is provided, that takes precedence
         x = attr.ib(
             validator=attr.validators.instance_of(typed),

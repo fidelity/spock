@@ -13,6 +13,7 @@ from typing import Callable, Dict, List, Tuple, Type
 
 from attr import NOTHING, Attribute
 
+from spock.backend.resolvers import parse_env_variables
 from spock.backend.spaces import AttributeSpace, BuilderSpace, ConfigSpace
 from spock.backend.utils import (
     _get_name_py_version,
@@ -132,7 +133,8 @@ class RegisterFieldTemplate(ABC):
 
         Returns:
         """
-        attr_space.field = attr_space.attribute.default
+        cleaned_attribute = parse_env_variables(attr_space.attribute.default, attr_space.attribute.type)
+        attr_space.field = cleaned_attribute
 
     @abstractmethod
     def handle_optional_attribute_type(
