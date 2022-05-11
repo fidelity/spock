@@ -24,3 +24,7 @@ class Spockspace(argparse.Namespace):
         # Remove aliases in YAML print
         yaml.Dumper.ignore_aliases = lambda *args: True
         return yaml.dump(self.__dict__, default_flow_style=False)
+
+    def __iter__(self):
+        for k, v in self.__dict__.items():
+            yield k, v

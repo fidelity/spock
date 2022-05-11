@@ -72,6 +72,7 @@ class Handler(ABC):
         self,
         out_dict: Dict,
         info_dict: Optional[Dict],
+        library_dict: Optional[Dict],
         path: Path,
         name: str,
         create_path: bool = False,
@@ -85,6 +86,7 @@ class Handler(ABC):
         Args:
             out_dict: payload to write
             info_dict: info payload to write
+            library_dict: package info to write
             path: path to write out
             name: spock generated file name
             create_path: boolean to create the path if non-existent (for non S3)
@@ -95,7 +97,12 @@ class Handler(ABC):
         write_path, is_s3 = self._handle_possible_s3_save_path(
             path=path, name=name, create_path=create_path, s3_config=s3_config
         )
-        write_path = self._save(out_dict=out_dict, info_dict=info_dict, path=write_path)
+        write_path = self._save(
+            out_dict=out_dict,
+            info_dict=info_dict,
+            library_dict=library_dict,
+            path=write_path,
+        )
         # After write check if it needs to be pushed to S3
         if is_s3:
             try:
@@ -111,12 +118,19 @@ class Handler(ABC):
                 print("Error importing spock s3 utils after detecting s3:// save path")
 
     @abstractmethod
-    def _save(self, out_dict: Dict, info_dict: Optional[Dict], path: str) -> str:
+    def _save(
+        self,
+        out_dict: Dict,
+        info_dict: Optional[Dict],
+        library_dict: Optional[Dict],
+        path: str,
+    ) -> str:
         """Write function for file type
 
         Args:
             out_dict: payload to write
             info_dict: info payload to write
+            library_dict: package info to write
             path: path to write out
 
         Returns:
@@ -182,19 +196,35 @@ class Handler(ABC):
         return write_path, is_s3
 
     @staticmethod
-    def write_extra_info(path, info_dict):
+    def write_extra_info(
+        path: str,
+        info_dict: Dict,
+        version: bool = True,
+        write_mode: str = "w+",
+        newlines: Optional[int] = None,
+        header: Optional[str] = None,
+    ):
         """Writes extra info to commented newlines
 
         Args:
             path: path to write out
             info_dict: info payload to write
+            version: write the spock version string first
+            write_mode: write mode for the file
+            newlines: number of new lines to add to start
 
         Returns:
         """
         # Write the commented info as new lines
-        with open(path, "w+") as fid:
+        with open(path, write_mode) as fid:
+            if newlines is not None:
+                for _ in range(newlines):
+                    fid.write("\n")
+            if header is not None:
+                fid.write(header)
             # Write a spock header
-            fid.write(f"# Spock Version: {__version__}\n")
+            if version:
+                fid.write(f"# Spock Version: {__version__}\n")
             # Write info dict if not None
             if info_dict is not None:
                 for k, v in info_dict.items():
@@ -242,12 +272,19 @@ class YAMLHandler(Handler):
         base_payload = yaml.safe_load(file_contents)
         return base_payload
 
-    def _save(self, out_dict: Dict, info_dict: Optional[Dict], path: str) -> str:
+    def _save(
+        self,
+        out_dict: Dict,
+        info_dict: Optional[Dict],
+        library_dict: Optional[Dict],
+        path: str,
+    ) -> str:
         """Write function for YAML type
 
         Args:
             out_dict: payload to write
             info_dict: info payload to write
+            library_dict: package info to write
             path: path to write out
 
         Returns:
@@ -258,6 +295,15 @@ class YAMLHandler(Handler):
         yaml.Dumper.ignore_aliases = lambda *args: True
         with open(path, "a") as yaml_fid:
             yaml.safe_dump(out_dict, yaml_fid, default_flow_style=False)
+        # Write the library info at the bottom
+        self.write_extra_info(
+            path=path,
+            info_dict=library_dict,
+            version=False,
+            write_mode="a",
+            newlines=2,
+            header="################\n# Package Info #\n################\n",
+        )
         return path
 
 
@@ -281,12 +327,19 @@ class TOMLHandler(Handler):
         base_payload = pytomlpp.load(path)
         return base_payload
 
-    def _save(self, out_dict: Dict, info_dict: Optional[Dict], path: str) -> str:
+    def _save(
+        self,
+        out_dict: Dict,
+        info_dict: Optional[Dict],
+        library_dict: Optional[Dict],
+        path: str,
+    ) -> str:
         """Write function for TOML type
 
         Args:
             out_dict: payload to write
             info_dict: info payload to write
+            library_dict: package info to write
             path: path to write out
 
         Returns:
@@ -295,6 +348,10 @@ class TOMLHandler(Handler):
         self.write_extra_info(path=path, info_dict=info_dict)
         with open(path, "a") as toml_fid:
             pytomlpp.dump(out_dict, toml_fid)
+        # Write the library info at the bottom
+        self.write_extra_info(
+            path=path, info_dict=library_dict, version=False, write_mode="a", newlines=2
+        )
         return path
 
 
@@ -319,17 +376,24 @@ class JSONHandler(Handler):
             base_payload = json.load(json_fid)
         return base_payload
 
-    def _save(self, out_dict: Dict, info_dict: Optional[Dict], path: str) -> str:
+    def _save(
+        self,
+        out_dict: Dict,
+        info_dict: Optional[Dict],
+        library_dict: Optional[Dict],
+        path: str,
+    ) -> str:
         """Write function for JSON type
 
         Args:
             out_dict: payload to write
             info_dict: info payload to write
+            library_dict: package info to write
             path: path to write out
 
         Returns:
         """
-        if info_dict is not None:
+        if (info_dict is not None) or (library_dict is not None):
             warn(
                 "JSON does not support comments and thus cannot save extra info to file... removing extra info"
             )

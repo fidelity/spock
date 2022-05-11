@@ -40,7 +40,13 @@ class _SpockValueError(Exception):
     pass
 
 
-class _SpockEnvResolverError(Exception):
+class _SpockResolverError(Exception):
     """Custom exception for environment resolver"""
+
+    pass
+
+
+class _SpockCryptoError(Exception):
+    """Custom exception for dealing with the crypto side of things"""
 
     pass

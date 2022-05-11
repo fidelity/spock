@@ -7,7 +7,7 @@
 import argparse
 from abc import ABC, abstractmethod
 from enum import EnumMeta
-from typing import Dict, List
+from typing import ByteString, Dict, List
 
 import attr
 
@@ -34,11 +34,20 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         _module_name: module name to register in the spock module space
         save_path: list of path(s) to save the configs to
         _lazy: attempts to lazily find @spock decorated classes registered within sys.modules["spock"].backend.config
+        _salt: salt use for crypto purposes
+        _key: key used for crypto purposes
 
     """
 
     def __init__(
-        self, *args, max_indent: int = 4, module_name: str, lazy: bool, **kwargs
+        self,
+        *args,
+        max_indent: int = 4,
+        module_name: str,
+        lazy: bool,
+        salt: str,
+        key: ByteString,
+        **kwargs,
     ):
         """Init call for BaseBuilder
 
@@ -46,10 +55,15 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
             *args: iterable of @spock decorated classes
             max_indent: max indent for pretty print of help
             module_name: module name to register in the spock module space
+            lazy: lazily find @spock decorated classes
+            salt: cryptographic salt
+            key: cryptographic key
             **kwargs: keyword args
         """
         self._input_classes = args
         self._lazy = lazy
+        self._salt = salt
+        self._key = key
         self._graph = Graph(input_classes=self.input_classes, lazy=self._lazy)
         # Make sure the input classes are updated -- lazy evaluation
         self._input_classes = self._graph.nodes
@@ -144,7 +158,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         for spock_cls in graph.roots:
             # Initial call to the RegisterSpockCls generate function (which will handle recursing if needed)
             spock_instance, special_keys = RegisterSpockCls.recurse_generate(
-                spock_cls, builder_space
+                spock_cls, builder_space, self._salt, self._key
             )
             builder_space.spock_space[spock_cls.__name__] = spock_instance
 

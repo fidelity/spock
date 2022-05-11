@@ -10,22 +10,26 @@ import sys
 from collections import Counter
 from copy import deepcopy
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Type, Union
+from typing import ByteString, Dict, List, Optional, Tuple, Type, Union
 from uuid import uuid4
 
 import attr
+from cryptography.fernet import Fernet
 
 from spock.backend.builder import AttrBuilder
 from spock.backend.payload import AttrPayload
+from spock.backend.resolvers import EnvResolver
 from spock.backend.saver import AttrSaver
 from spock.backend.wrappers import Spockspace
-from spock.exceptions import _SpockEvolveError, _SpockValueError
+from spock.exceptions import _SpockCryptoError, _SpockEvolveError, _SpockValueError
+from spock.handlers import YAMLHandler
 from spock.utils import (
     _C,
     _T,
     _is_spock_instance,
     check_payload_overwrite,
     deep_payload_update,
+    make_salt,
 )
 
 
@@ -56,6 +60,8 @@ class ConfigArgBuilder:
             thus alleviating the need to pass all @spock decorated classes to *args
         _no_cmd_line: turn off cmd line args
         _desc: description for help
+        _salt: salt use for crypto purposes
+        _key: key used for crypto purposes
 
     """
 
@@ -67,6 +73,7 @@ class ConfigArgBuilder:
         lazy: bool = False,
         no_cmd_line: bool = False,
         s3_config: Optional[_T] = None,
+        crypto: Optional[Union[str, Tuple[str, ByteString]]] = None,
         **kwargs,
     ):
         """Init call for ConfigArgBuilder
@@ -76,10 +83,11 @@ class ConfigArgBuilder:
             configs: list of config paths
             desc: description for help
             lazy: attempts to lazily find @spock decorated classes registered within sys.modules["spock"].backend.config
-            as well as the parents of any lazily inherited @spock class
-            thus alleviating the need to pass all @spock decorated classes to *args
+                as well as the parents of any lazily inherited @spock class thus alleviating the need to pass all
+                @spock decorated classes to *args
             no_cmd_line: turn off cmd line args
             s3_config: s3Config object for S3 support
+            crypto: either a path to a prior spock saved crypto.yaml file or a tuple of a cryptographic salt and key
             **kwargs: keyword args
 
         """
@@ -89,13 +97,16 @@ class ConfigArgBuilder:
         self._lazy = lazy
         self._no_cmd_line = no_cmd_line
         self._desc = desc
+        self._salt, self._key = self._maybe_crypto(crypto, s3_config)
         # Build the payload and saver objects
         self._payload_obj = AttrPayload(s3_config=s3_config)
         self._saver_obj = AttrSaver(s3_config=s3_config)
         # Split the fixed parameters from the tuneable ones (if present)
         fixed_args, tune_args = self._strip_tune_parameters(args)
         # The fixed parameter builder
-        self._builder_obj = AttrBuilder(*fixed_args, lazy=lazy, **kwargs)
+        self._builder_obj = AttrBuilder(
+            *fixed_args, lazy=lazy, salt=self._salt, key=self._key, **kwargs
+        )
         # The possible tunable parameter builder -- might return None
         self._tune_obj, self._tune_payload_obj = self._handle_tuner_objects(
             tune_args, s3_config, kwargs
@@ -162,6 +173,14 @@ class ConfigArgBuilder:
     def best(self) -> Spockspace:
         """Returns a Spockspace of the best hyper-parameter config and the associated metric value"""
         return self._tuner_interface.best
+
+    @property
+    def salt(self):
+        return self._salt
+
+    @property
+    def key(self):
+        return self._key
 
     def sample(self) -> Spockspace:
         """Sample method that constructs a namespace from the fixed parameters and samples from the tuner space to
@@ -772,3 +791,43 @@ class ConfigArgBuilder:
                     f"Evolved: Parent = {parent_cls_name}, Child = {current_cls_name}, Value = {v}"
                 )
         return new_arg_namespace
+
+    @staticmethod
+    def _maybe_crypto(
+        crypto: Optional[Union[str, Tuple[str, ByteString]]],
+        s3_config: Optional[_T] = None,
+        salt_len: int = 16,
+    ):
+        """Handles setting up the underlying cryptography needs
+
+        Args:
+            crypto: either a path to a prior spock saved crypto.yaml file or a tuple of a cryptographic salt and key
+            s3_config: s3Config object for S3 support
+            salt_len: length of the salt to create
+
+        Returns:
+            tuple containing a salt and a key that spock can use to hide parameters
+
+        """
+        if isinstance(crypto, str):
+            # Read from the yaml and then split
+            payload = YAMLHandler().load(Path(crypto), s3_config)
+            salt = payload["salt"]
+            key = payload["key"]
+        elif isinstance(crypto, (tuple, Tuple)):
+            # order is salt, key
+            salt, key = crypto
+        elif crypto is None:
+            salt = make_salt(salt_len)
+            key = Fernet.generate_key()
+        else:
+            raise _SpockCryptoError(
+                f"The crypto argument expects a path to a valid prior spock saved crypto.yaml file, a tuple of a "
+                f"cryptographic salt and key (as raw strings or using env resolver syntax), or None -- got "
+                f"type {type(crypto)} and value `{crypto}`"
+            )
+        # Parse if defined by env vars
+        env_resolver = EnvResolver()
+        salt, _ = env_resolver.resolve(salt, str)
+        key, _ = env_resolver.resolve(key, str)
+        return salt, key

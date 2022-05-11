@@ -55,6 +55,15 @@ class AttributeSpace:
         """
         self.config_space = config_space
         self.attribute = attribute
+        self._annotations = None
+
+    @property
+    def annotations(self):
+        return self._annotations
+
+    @annotations.setter
+    def annotations(self, x):
+        self._annotations = x
 
     @property
     def field(self):

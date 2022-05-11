@@ -13,7 +13,7 @@ import attr
 from spock.backend.handler import BaseHandler
 from spock.backend.utils import _callable_2_str, _get_iter, _recurse_callables
 from spock.backend.wrappers import Spockspace
-from spock.utils import add_info
+from spock.utils import add_info, get_packages
 
 
 class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
@@ -76,12 +76,18 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
         """
         # Check extension
         self._check_extension(file_extension=file_extension)
-        # Make the filename -- always append a uuid for unique-ness
+        # Make the filename -- always append uuid for unique-ness
         uuid_str = str(uuid4()) if fixed_uuid is None else fixed_uuid
         fname = "" if file_name is None else f"{file_name}."
         name = f"{fname}{uuid_str}.spock.cfg{file_extension}"
         # Fix up values -- parameters
         out_dict = self._clean_up_values(payload)
+        # Handle any env annotations that are present
+        # Just stuff them into the dictionary
+        for k, v in payload:
+            if hasattr(v, "__resolver__"):
+                for key, val in v.__resolver__.items():
+                    out_dict[k][key] = val
         # Fix up the tuner values if present
         tuner_dict = (
             self._clean_tuner_values(tuner_payload)
@@ -92,10 +98,12 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
             out_dict.update(tuner_dict)
         # Get extra info
         extra_dict = add_info() if extra_info else None
+        library_dict = get_packages() if extra_info else None
         try:
             self._supported_extensions.get(file_extension)().save(
                 out_dict=out_dict,
                 info_dict=extra_dict,
+                library_dict=library_dict,
                 path=path,
                 name=name,
                 create_path=create_save_path,

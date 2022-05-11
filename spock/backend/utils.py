@@ -8,8 +8,27 @@
 import importlib
 from typing import Any, Callable, Dict, List, Tuple, Type, Union
 
+from cryptography.fernet import Fernet
+
 from spock.exceptions import _SpockValueError
 from spock.utils import _C, _T, _SpockVariadicGenericAlias
+
+
+def encrypt_value(value, key, salt):
+    # Make the class to encrypt
+    encrypt = Fernet(key=key)
+    # Encrypt the plaintext value
+    salted_password = value + salt
+    # encode to utf-8 -> encrypt -> decode from utf-8
+    return encrypt.encrypt(str.encode(salted_password)).decode()
+
+
+def decrypt_value(value, key, salt):
+    # Make the class to encrypt
+    decrypt = Fernet(key=key)
+    # Decrypt back to plaintext value
+    salted_password = decrypt.decrypt(str.encode(value)).decode()
+    return salted_password[: -len(salt)]
 
 
 def _str_2_callable(val: str, **kwargs):
