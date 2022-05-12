@@ -56,6 +56,7 @@ class AttributeSpace:
         self.config_space = config_space
         self.attribute = attribute
         self._annotations = None
+        self.crypto = False
 
     @property
     def annotations(self):

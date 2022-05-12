@@ -155,6 +155,7 @@ class RegisterFieldTemplate(ABC):
             self._handle_crypto_annotations(
                 attr_space, crypto_annotation, attr_space.attribute.default
             )
+            attr_space.crypto = True
         attr_space.field = value
 
     def _handle_env_annotations(
@@ -537,6 +538,7 @@ class RegisterSimpleField(RegisterFieldTemplate):
         )
         if crypto_annotation is not None:
             self._handle_crypto_annotations(attr_space, crypto_annotation, og_value)
+            attr_space.crypto = True
         attr_space.field = value
         self.register_special_key(attr_space)
 
@@ -815,6 +817,7 @@ class RegisterSpockCls(RegisterFieldTemplate):
         special_keys = {}
         fields = {}
         annotations = {}
+        crypto = False
         # Init the ConfigSpace for this spock class
         config_space = ConfigSpace(spock_cls, fields)
         # Iterate through the attrs within the spock class
@@ -860,6 +863,8 @@ class RegisterSpockCls(RegisterFieldTemplate):
             # Handle annotations by attaching them to a dictionary
             if attr_space.annotations is not None:
                 annotations.update({attr_space.attribute.name: attr_space.annotations})
+            if attr_space.crypto:
+                crypto = True
 
         # Try except on the class since it might not be successful -- throw the attrs message as it will know the
         # error on instantiation
@@ -867,6 +872,8 @@ class RegisterSpockCls(RegisterFieldTemplate):
             # If there are annotations attach them to the spock class in the __resolver__ attribute
             if len(annotations) > 0:
                 spock_cls.__resolver__ = annotations
+            if crypto:
+                spock_cls.__crypto__ = True
             spock_instance = spock_cls(**fields)
         except Exception as e:
             raise _SpockInstantiationError(

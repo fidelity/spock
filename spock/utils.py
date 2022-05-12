@@ -29,11 +29,26 @@ minor = sys.version_info.minor
 
 
 def make_salt(salt_len: int = 16):
+    """Make a salt of specific length
+
+    Args:
+        salt_len: length of the constructed salt
+
+    Returns:
+        salt string
+
+    """
     alphabet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    return "".join(random.choice(alphabet) for i in range(salt_len))
+    return "".join(random.choice(alphabet) for _ in range(salt_len))
 
 
 def _get_alias_type():
+    """Gets the correct type of GenericAlias for versions less than 3.6
+
+    Returns:
+        _GenericAlias type
+
+    """
     if minor < 7:
         from typing import GenericMeta as _GenericAlias
     else:
@@ -43,6 +58,12 @@ def _get_alias_type():
 
 
 def _get_callable_type():
+    """Gets the correct underlying type reference for callable objects depending on the python version
+
+    Returns:
+        _VariadicGenericAlias type
+
+    """
     if minor == 6:
         from typing import CallableMeta as _VariadicGenericAlias
     elif (minor > 6) and (minor < 9):

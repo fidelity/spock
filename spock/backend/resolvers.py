@@ -66,7 +66,11 @@ class BaseResolver(ABC):
     ):
         # Based on the start and end regex ops find the value the user set
         env_str = end_regex_op.split(clip_regex_op.split(value)[-1])[0]
-        if allow_annotation and len(clip_regex_op.split(value)) > 2 and clip_regex_op.split(value)[1] != "":
+        if (
+            allow_annotation
+            and len(clip_regex_op.split(value)) > 2
+            and clip_regex_op.split(value)[1] != ""
+        ):
             annotation = clip_regex_op.split(value)[1]
             if annotation not in self._annotation_set:
                 raise _SpockResolverError(

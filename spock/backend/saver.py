@@ -84,10 +84,13 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
         out_dict = self._clean_up_values(payload)
         # Handle any env annotations that are present
         # Just stuff them into the dictionary
+        crypto_flag = False
         for k, v in payload:
             if hasattr(v, "__resolver__"):
                 for key, val in v.__resolver__.items():
                     out_dict[k][key] = val
+            if hasattr(v, "__crypto__"):
+                crypto_flag = True
         # Fix up the tuner values if present
         tuner_dict = (
             self._clean_tuner_values(tuner_payload)
@@ -108,6 +111,8 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
                 name=name,
                 create_path=create_save_path,
                 s3_config=self._s3_config,
+                salt=payload.__salt__ if crypto_flag else None,
+                key=payload.__key__ if crypto_flag else None,
             )
         except OSError as e:
             print(f"Unable to write to given path: {path / name}")
