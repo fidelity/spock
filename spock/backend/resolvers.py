@@ -7,7 +7,7 @@
 import os
 import re
 from abc import ABC, abstractmethod
-from typing import Any, ByteString, Optional, Tuple
+from typing import Any, ByteString, Optional, Tuple, Pattern, Union
 
 from spock.backend.utils import decrypt_value
 from spock.exceptions import _SpockResolverError
@@ -15,15 +15,43 @@ from spock.utils import _T
 
 
 class BaseResolver(ABC):
+    """Base class for resolvers
+
+    Contains base methods for handling resolver syntax
+
+    Attributes:
+        _annotation_set: current set of supported resolver annotations
+
+    """
     def __init__(self):
+        """Init for BaseResolver class"""
         self._annotation_set = {"crypto", "inject"}
 
     @abstractmethod
     def resolve(self, value: Any, value_type: _T) -> Tuple[Any, Optional[str]]:
+        """Resolves a variable from a given resolver syntax
+
+        Args:
+            value: current value to attempt to resolve
+            value_type: type of the value to cast into
+
+        Returns:
+            Tuple of correctly typed resolved variable and any annotations
+
+        """
         pass
 
     @staticmethod
-    def _handle_default(value: str):
+    def _handle_default(value: str) -> Tuple[str, Union[str, None]]:
+        """Handles setting defaults if allowed for a resolver
+
+        Args:
+            value: current string value
+
+        Returns:
+            tuple of given value and the default value
+
+        """
         env_value, default_value = value.split(",")
         default_value = default_value.strip()
         # Swap string None to type None
@@ -33,9 +61,19 @@ class BaseResolver(ABC):
 
     @staticmethod
     def _check_base_regex(
-        full_regex_op: re.Pattern,
+        full_regex_op: Pattern,
         value: Any,
     ) -> bool:
+        """Check if the value passed into the resolver matches the compiled regex op
+
+        Args:
+            full_regex_op: the full compiled regex
+            value: the value passed into the resolver
+
+        Returns:
+            boolean if there is a regex match
+
+        """
         # If it's a string we can check the regex
         if isinstance(value, str):
             # Check the regex and return non None status
@@ -45,7 +83,21 @@ class BaseResolver(ABC):
             return False
 
     @staticmethod
-    def _attempt_cast(maybe_env: Optional[str], value_type: _T, env_value: str):
+    def _attempt_cast(maybe_env: Optional[str], value_type: _T, env_value: str) -> Any:
+        """Attempts to cast the resolved variable into the given type
+
+        Args:
+            maybe_env: possible resolved variable
+            value_type: type to cast into
+            env_value: the reference to the resolved variable
+
+        Returns:
+            value type cast into the correct type
+
+        Raises:
+            _SpockResolverError if it cannot be cast into the specified type
+
+        """
         # Attempt to cast in a try to be able to catch the failed type casts with an exception
         try:
             typed_env = value_type(maybe_env) if maybe_env is not None else None
@@ -58,12 +110,29 @@ class BaseResolver(ABC):
 
     def _apply_regex(
         self,
-        end_regex_op: re.Pattern,
-        clip_regex_op: re.Pattern,
+        end_regex_op: Pattern,
+        clip_regex_op: Pattern,
         value: str,
         allow_default: bool,
         allow_annotation: bool,
-    ):
+    ) -> Tuple[str, str, Optional[str]]:
+        """Applies the front and back regexes to the string value, determines defaults and annotations
+
+        Args:
+            end_regex_op: compiled regex for the back half of the match
+            clip_regex_op: compiled regex for the front half of the match
+            value: current string value to resolve
+            allow_default: if allowed to contain default value syntax
+            allow_annotation: if allowed to contain annotation syntax
+
+        Returns:
+            tuple containing the resolved string reference, the default value, and the annotation string
+
+        Raises:
+            _SpockResolverError if annotation isn't within the supported set, annotation is not supported, multiple `,`
+                values are used, or defaults are given yet not supported
+
+        """
         # Based on the start and end regex ops find the value the user set
         env_str = end_regex_op.split(clip_regex_op.split(value)[-1])[0]
         if (
@@ -105,7 +174,19 @@ class BaseResolver(ABC):
 
 
 class EnvResolver(BaseResolver):
-    # ENV Resolver -- full regex is ^\${spock\.env:.*}$
+    """Class for resolving environmental variables
+
+    Attributes:
+        _annotation_set: current set of supported resolver annotations
+        CLIP_ENV_PATTERN: regex for the front half
+        CLIP_REGEX_OP: compiled regex for front half
+        END_ENV_PATTERN: regex for back half
+        END_REGEX_OP: comiled regex for back half
+        FULL_ENV_PATTERN: full regex pattern
+        FULL_REGEX_OP: compiled regex for full regex
+
+    """
+    # ENV Resolver -- full regex is ^\${spock\.env\.?([a-z]*?):.*}$
     CLIP_ENV_PATTERN = r"^\${spock\.env\.?([a-z]*?):"
     CLIP_REGEX_OP = re.compile(CLIP_ENV_PATTERN)
     END_ENV_PATTERN = r"}$"
@@ -114,6 +195,7 @@ class EnvResolver(BaseResolver):
     FULL_REGEX_OP = re.compile(FULL_ENV_PATTERN)
 
     def __init__(self):
+        """Init for EnvResolver """
         super(EnvResolver, self).__init__()
 
     def resolve(self, value: Any, value_type: _T) -> Tuple[Any, Optional[str]]:
@@ -140,7 +222,20 @@ class EnvResolver(BaseResolver):
         return typed_env, annotation
 
     @staticmethod
-    def _get_from_env(default_value: Optional[str], env_value: str):
+    def _get_from_env(default_value: Optional[str], env_value: str) -> Optional[str]:
+        """Gets a value from an environmental variable
+
+        Args:
+            default_value: default value to fall back on for the env resolver
+            env_value: current string of the env variable to get
+
+        Returns:
+            string or None for the resolved env variable
+
+        Raises:
+            _SpockResolverError if the env variable is not available or if no default is specified
+
+        """
         # Attempt to get the env variable
         if default_value == "None":
             maybe_env = os.getenv(env_value)
@@ -155,6 +250,20 @@ class EnvResolver(BaseResolver):
 
 
 class CryptoResolver(BaseResolver):
+    """Class for resolving cryptographic variables
+
+    Attributes:
+        _annotation_set: current set of supported resolver annotations
+        CLIP_ENV_PATTERN: regex for the front half
+        CLIP_REGEX_OP: compiled regex for front half
+        END_ENV_PATTERN: regex for back half
+        END_REGEX_OP: comiled regex for back half
+        FULL_ENV_PATTERN: full regex pattern
+        FULL_REGEX_OP: compiled regex for full regex
+        _salt: current cryptographic salt
+        _key: current cryptographic key
+
+    """
     # ENV Resolver -- full regex is ^\${spock\.crypto:.*}$
     CLIP_ENV_PATTERN = r"^\${spock\.crypto:"
     CLIP_REGEX_OP = re.compile(CLIP_ENV_PATTERN)
@@ -164,6 +273,12 @@ class CryptoResolver(BaseResolver):
     FULL_REGEX_OP = re.compile(FULL_ENV_PATTERN)
 
     def __init__(self, salt: str, key: ByteString):
+        """Init for CryptoResolver
+
+        Args:
+            salt: cryptographic salt to use
+            key: cryptographic key to use
+        """
         super(CryptoResolver, self).__init__()
         self._salt = salt
         self._key = key

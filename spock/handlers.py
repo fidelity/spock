@@ -29,7 +29,7 @@ class Handler(ABC):
 
     """
 
-    def load(self, path: Path, s3_config=None) -> Dict:
+    def load(self, path: Path, s3_config: Optional[_T] = None) -> Dict:
         """Load function for file type
 
         This handles s3 path conversion for all handler types pre load call
@@ -202,7 +202,7 @@ class Handler(ABC):
         raise NotImplementedError
 
     @staticmethod
-    def _handle_possible_s3_load_path(path: Path, s3_config=None) -> Union[str, Path]:
+    def _handle_possible_s3_load_path(path: Path, s3_config: Optional[_T] = None) -> Union[str, Path]:
         """Handles the possibility of having to handle loading from a S3 path
 
         Checks to see if it detects a S3 uri and if so triggers imports of s3 functionality and handles the file
@@ -229,7 +229,7 @@ class Handler(ABC):
 
     @staticmethod
     def _handle_possible_s3_save_path(
-        path: Path, name: str, create_path: bool, s3_config=None
+        path: Path, name: str, create_path: bool, s3_config: Optional[_T] = None
     ) -> Tuple[str, bool]:
         """Handles the possibility of having to save to a S3 path
 

@@ -6,7 +6,9 @@
 """Handles the tuner payload backend"""
 
 from spock.backend.payload import BasePayload
-from spock.backend.utils import get_attr_fields
+from spock.backend.utils import get_attr_fields, _T
+
+from typing import Optional
 
 
 class TunerPayload(BasePayload):
@@ -20,7 +22,7 @@ class TunerPayload(BasePayload):
 
     """
 
-    def __init__(self, s3_config=None):
+    def __init__(self, s3_config: Optional[_T] = None):
         """Init for TunerPayload
 
         Args:

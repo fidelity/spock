@@ -74,9 +74,8 @@ class ConfigArgBuilder:
         lazy: bool = False,
         no_cmd_line: bool = False,
         s3_config: Optional[_T] = None,
-        key: Optional[Union[str, ByteString]],
-        salt: Optional[str],
-        crypto: Optional[Union[str, Tuple[str, ByteString]]] = None,
+        key: Optional[Union[str, ByteString]] = None,
+        salt: Optional[str] = None,
         **kwargs,
     ):
         """Init call for ConfigArgBuilder
@@ -806,7 +805,7 @@ class ConfigArgBuilder:
         salt: Optional[str],
         s3_config: Optional[_T] = None,
         salt_len: int = 16,
-    ):
+    ) -> Tuple[str, ByteString]:
         """Handles setting up the underlying cryptography needs
 
         Args:
@@ -831,7 +830,7 @@ class ConfigArgBuilder:
         env_resolver: EnvResolver,
         salt_len: int,
         s3_config: Optional[_T] = None,
-    ):
+    ) -> str:
         """
 
         Args:
@@ -858,7 +857,7 @@ class ConfigArgBuilder:
         key: Optional[Union[str, ByteString]],
         env_resolver: EnvResolver,
         s3_config: Optional[_T] = None,
-    ):
+    ) -> ByteString:
         """
 
         Args:
@@ -885,7 +884,7 @@ class ConfigArgBuilder:
         return key
 
     @staticmethod
-    def _handle_yaml_read(value: str, access: str, s3_config: Optional[_T] = None, encode: bool = False):
+    def _handle_yaml_read(value: str, access: str, s3_config: Optional[_T] = None, encode: bool = False) -> Union[str, ByteString]:
         """Reads in a salt/key yaml
 
         Args:

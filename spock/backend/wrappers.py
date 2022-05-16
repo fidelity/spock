@@ -22,13 +22,16 @@ class Spockspace(argparse.Namespace):
 
     @property
     def __repr_dict__(self):
+        """Handles making a clean dict to hind the salt and key on print"""
         return {k: v for k, v in self.__dict__.items() if k not in {"__key__", "__salt__"}}
 
     def __repr__(self):
+        """Overloaded repr to pretty print the spock object"""
         # Remove aliases in YAML print
         yaml.Dumper.ignore_aliases = lambda *args: True
         return yaml.dump(self.__repr_dict__, default_flow_style=False)
 
     def __iter__(self):
+        """Iter for the underlying dictionary"""
         for k, v in self.__dict__.items():
             yield k, v
