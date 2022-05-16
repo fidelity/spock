@@ -5,10 +5,10 @@
 
 """Handles the tuner payload backend"""
 
-from spock.backend.payload import BasePayload
-from spock.backend.utils import get_attr_fields, _T
-
 from typing import Optional
+
+from spock.backend.payload import BasePayload
+from spock.backend.utils import _T, get_attr_fields
 
 
 class TunerPayload(BasePayload):

@@ -7,7 +7,7 @@
 import os
 import re
 from abc import ABC, abstractmethod
-from typing import Any, ByteString, Optional, Tuple, Pattern, Union
+from typing import Any, ByteString, Optional, Pattern, Tuple, Union
 
 from spock.backend.utils import decrypt_value
 from spock.exceptions import _SpockResolverError
@@ -23,6 +23,7 @@ class BaseResolver(ABC):
         _annotation_set: current set of supported resolver annotations
 
     """
+
     def __init__(self):
         """Init for BaseResolver class"""
         self._annotation_set = {"crypto", "inject"}
@@ -186,6 +187,7 @@ class EnvResolver(BaseResolver):
         FULL_REGEX_OP: compiled regex for full regex
 
     """
+
     # ENV Resolver -- full regex is ^\${spock\.env\.?([a-z]*?):.*}$
     CLIP_ENV_PATTERN = r"^\${spock\.env\.?([a-z]*?):"
     CLIP_REGEX_OP = re.compile(CLIP_ENV_PATTERN)
@@ -195,7 +197,7 @@ class EnvResolver(BaseResolver):
     FULL_REGEX_OP = re.compile(FULL_ENV_PATTERN)
 
     def __init__(self):
-        """Init for EnvResolver """
+        """Init for EnvResolver"""
         super(EnvResolver, self).__init__()
 
     def resolve(self, value: Any, value_type: _T) -> Tuple[Any, Optional[str]]:
@@ -264,6 +266,7 @@ class CryptoResolver(BaseResolver):
         _key: current cryptographic key
 
     """
+
     # ENV Resolver -- full regex is ^\${spock\.crypto:.*}$
     CLIP_ENV_PATTERN = r"^\${spock\.crypto:"
     CLIP_REGEX_OP = re.compile(CLIP_ENV_PATTERN)

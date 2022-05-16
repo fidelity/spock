@@ -13,7 +13,7 @@ import attr
 from spock.backend.handler import BaseHandler
 from spock.backend.utils import _callable_2_str, _get_iter, _recurse_callables
 from spock.backend.wrappers import Spockspace
-from spock.utils import add_info, get_packages, _T
+from spock.utils import _T, add_info, get_packages
 
 
 class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods

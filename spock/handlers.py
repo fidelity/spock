@@ -202,7 +202,9 @@ class Handler(ABC):
         raise NotImplementedError
 
     @staticmethod
-    def _handle_possible_s3_load_path(path: Path, s3_config: Optional[_T] = None) -> Union[str, Path]:
+    def _handle_possible_s3_load_path(
+        path: Path, s3_config: Optional[_T] = None
+    ) -> Union[str, Path]:
         """Handles the possibility of having to handle loading from a S3 path
 
         Checks to see if it detects a S3 uri and if so triggers imports of s3 functionality and handles the file

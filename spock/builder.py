@@ -874,7 +874,9 @@ class ConfigArgBuilder:
             key = Fernet.generate_key()
         # Byte string is assumed to be a direct key
         elif os.path.splitext(key)[1] in {".yaml", ".YAML", ".yml", ".YML"}:
-            key = self._handle_yaml_read(key, access="key", s3_config=s3_config, encode=True)
+            key = self._handle_yaml_read(
+                key, access="key", s3_config=s3_config, encode=True
+            )
         else:
             # Byte string is assumed to be a direct key
             # So only handle the str here
@@ -884,7 +886,9 @@ class ConfigArgBuilder:
         return key
 
     @staticmethod
-    def _handle_yaml_read(value: str, access: str, s3_config: Optional[_T] = None, encode: bool = False) -> Union[str, ByteString]:
+    def _handle_yaml_read(
+        value: str, access: str, s3_config: Optional[_T] = None, encode: bool = False
+    ) -> Union[str, ByteString]:
         """Reads in a salt/key yaml
 
         Args:

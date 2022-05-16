@@ -23,7 +23,9 @@ class Spockspace(argparse.Namespace):
     @property
     def __repr_dict__(self):
         """Handles making a clean dict to hind the salt and key on print"""
-        return {k: v for k, v in self.__dict__.items() if k not in {"__key__", "__salt__"}}
+        return {
+            k: v for k, v in self.__dict__.items() if k not in {"__key__", "__salt__"}
+        }
 
     def __repr__(self):
         """Overloaded repr to pretty print the spock object"""
