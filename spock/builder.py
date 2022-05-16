@@ -280,7 +280,7 @@ class ConfigArgBuilder:
                 from spock.addons.tune.builder import TunerBuilder
                 from spock.addons.tune.payload import TunerPayload
 
-                tuner_builder = TunerBuilder(*tune_args, **kwargs, lazy=self._lazy)
+                tuner_builder = TunerBuilder(*tune_args, **kwargs, lazy=self._lazy, salt=self.salt, key=self.key)
                 tuner_payload = TunerPayload(s3_config=s3_config)
                 return tuner_builder, tuner_payload
             except ImportError:
