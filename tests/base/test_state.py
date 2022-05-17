@@ -46,4 +46,8 @@ class TestSerializedState:
                 *all_configs,
                 desc="Test Builder",
             ).generate()
+            delattr(config_values, '__key__')
+            delattr(config_values, '__salt__')
+            delattr(de_serial_config, '__key__')
+            delattr(de_serial_config, '__salt__')
             assert config_values == de_serial_config

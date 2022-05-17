@@ -52,6 +52,8 @@ generating CLI arguments, and hierarchical configuration by composition.
 * Automatic type checked CLI generation w/o argparser boilerplate (i.e click and/or typer for free!)
 * Easily maintain parity between CLIs and Python APIs (i.e. single line changes between CLI and Python API definitions)
 * Unified hyper-parameter definitions and interface (i.e. don't write different definitions for Ax or Optuna)
+* Resolver that supports value definitions from environmental variables, dynamic template re-injection, and 
+encryption of sensitive values
 
 ## Key Features
 
@@ -100,6 +102,13 @@ See [Releases](https://github.com/fidelity/spock/releases) for more information.
 </html>
 
 <details>
+
+#### May 17th, 2022
+* Added support for resolving value definitions from environmental variables with the following syntax, 
+`${spock.env:name, default}`
+* Added `.inject` annotation that will write back the original env notation to the saved output
+* Added the `.crypto` annotation which provides a simple way to hide sensitive environmental
+variables while still maintaining the written/loadable state of the spock config
 
 #### March 17th, 2022
 * Added support for `typing.Callable` types (includes advanced types such as `List[List[Callable]]`)

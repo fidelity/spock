@@ -7,6 +7,7 @@
 
 import ast
 import os
+import random
 import socket
 import subprocess
 import sys
@@ -20,13 +21,34 @@ from warnings import warn
 
 import attr
 import git
+import pkg_resources
 
 from spock.exceptions import _SpockValueError
 
 minor = sys.version_info.minor
 
 
+def make_salt(salt_len: int = 16):
+    """Make a salt of specific length
+
+    Args:
+        salt_len: length of the constructed salt
+
+    Returns:
+        salt string
+
+    """
+    alphabet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    return "".join(random.choice(alphabet) for _ in range(salt_len))
+
+
 def _get_alias_type():
+    """Gets the correct type of GenericAlias for versions less than 3.6
+
+    Returns:
+        _GenericAlias type
+
+    """
     if minor < 7:
         from typing import GenericMeta as _GenericAlias
     else:
@@ -36,6 +58,12 @@ def _get_alias_type():
 
 
 def _get_callable_type():
+    """Gets the correct underlying type reference for callable objects depending on the python version
+
+    Returns:
+        _VariadicGenericAlias type
+
+    """
     if minor == 6:
         from typing import CallableMeta as _VariadicGenericAlias
     elif (minor > 6) and (minor < 9):
@@ -478,6 +506,22 @@ def _handle_generic_type_args(val: str) -> Any:
 
     """
     return ast.literal_eval(val)
+
+
+def get_packages() -> Dict:
+    """Gets all currently installed packages and assembles a dictionary of name: version
+
+    Notes:
+        https://stackoverflow.com/a/50013400
+
+    Returns:
+        dictionary of all currently available packages
+
+    """
+    named_list = sorted([str(i.key) for i in pkg_resources.working_set])
+    return {
+        f"# {i}": str(pkg_resources.working_set.by_key[i].version) for i in named_list
+    }
 
 
 def add_info() -> Dict:

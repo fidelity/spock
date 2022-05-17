@@ -6,26 +6,31 @@
 """Handles the building/saving of the configurations from the Spock config classes"""
 
 import argparse
+import os.path
 import sys
 from collections import Counter
 from copy import deepcopy
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Type, Union
+from typing import ByteString, Dict, List, Optional, Tuple, Type, Union
 from uuid import uuid4
 
 import attr
+from cryptography.fernet import Fernet
 
 from spock.backend.builder import AttrBuilder
 from spock.backend.payload import AttrPayload
+from spock.backend.resolvers import EnvResolver
 from spock.backend.saver import AttrSaver
 from spock.backend.wrappers import Spockspace
-from spock.exceptions import _SpockEvolveError, _SpockValueError
+from spock.exceptions import _SpockCryptoError, _SpockEvolveError, _SpockValueError
+from spock.handlers import YAMLHandler
 from spock.utils import (
     _C,
     _T,
     _is_spock_instance,
     check_payload_overwrite,
     deep_payload_update,
+    make_salt,
 )
 
 
@@ -56,6 +61,8 @@ class ConfigArgBuilder:
             thus alleviating the need to pass all @spock decorated classes to *args
         _no_cmd_line: turn off cmd line args
         _desc: description for help
+        _salt: salt use for crypto purposes
+        _key: key used for crypto purposes
 
     """
 
@@ -67,6 +74,8 @@ class ConfigArgBuilder:
         lazy: bool = False,
         no_cmd_line: bool = False,
         s3_config: Optional[_T] = None,
+        key: Optional[Union[str, ByteString]] = None,
+        salt: Optional[str] = None,
         **kwargs,
     ):
         """Init call for ConfigArgBuilder
@@ -76,10 +85,13 @@ class ConfigArgBuilder:
             configs: list of config paths
             desc: description for help
             lazy: attempts to lazily find @spock decorated classes registered within sys.modules["spock"].backend.config
-            as well as the parents of any lazily inherited @spock class
-            thus alleviating the need to pass all @spock decorated classes to *args
+                as well as the parents of any lazily inherited @spock class thus alleviating the need to pass all
+                @spock decorated classes to *args
             no_cmd_line: turn off cmd line args
             s3_config: s3Config object for S3 support
+            salt: either a path to a prior spock saved salt.yaml file or a string of the salt (can be an env reference)
+            key: either a path to a prior spock saved key.yaml file, a ByteString of the key, or a str of the key
+                (can be an env reference)
             **kwargs: keyword args
 
         """
@@ -89,13 +101,16 @@ class ConfigArgBuilder:
         self._lazy = lazy
         self._no_cmd_line = no_cmd_line
         self._desc = desc
+        self._salt, self._key = self._maybe_crypto(key, salt, s3_config)
         # Build the payload and saver objects
         self._payload_obj = AttrPayload(s3_config=s3_config)
         self._saver_obj = AttrSaver(s3_config=s3_config)
         # Split the fixed parameters from the tuneable ones (if present)
         fixed_args, tune_args = self._strip_tune_parameters(args)
         # The fixed parameter builder
-        self._builder_obj = AttrBuilder(*fixed_args, lazy=lazy, **kwargs)
+        self._builder_obj = AttrBuilder(
+            *fixed_args, lazy=lazy, salt=self._salt, key=self._key, **kwargs
+        )
         # The possible tunable parameter builder -- might return None
         self._tune_obj, self._tune_payload_obj = self._handle_tuner_objects(
             tune_args, s3_config, kwargs
@@ -117,6 +132,9 @@ class ConfigArgBuilder:
             # Build the Spockspace from the payload and the classes
             # Fixed configs
             self._arg_namespace = self._builder_obj.generate(self._dict_args)
+            # Attach the key and salt to the Spockspace
+            self._arg_namespace.__salt__ = self.salt
+            self._arg_namespace.__key__ = self.key
             # Get the payload from the config files -- hyper-parameters -- only if the obj is not None
             if self._tune_obj is not None:
                 self._tune_args = self._get_payload(
@@ -162,6 +180,14 @@ class ConfigArgBuilder:
     def best(self) -> Spockspace:
         """Returns a Spockspace of the best hyper-parameter config and the associated metric value"""
         return self._tuner_interface.best
+
+    @property
+    def salt(self):
+        return self._salt
+
+    @property
+    def key(self):
+        return self._key
 
     def sample(self) -> Spockspace:
         """Sample method that constructs a namespace from the fixed parameters and samples from the tuner space to
@@ -254,7 +280,9 @@ class ConfigArgBuilder:
                 from spock.addons.tune.builder import TunerBuilder
                 from spock.addons.tune.payload import TunerPayload
 
-                tuner_builder = TunerBuilder(*tune_args, **kwargs, lazy=self._lazy)
+                tuner_builder = TunerBuilder(
+                    *tune_args, **kwargs, lazy=self._lazy, salt=self.salt, key=self.key
+                )
                 tuner_payload = TunerPayload(s3_config=s3_config)
                 return tuner_builder, tuner_payload
             except ImportError:
@@ -772,3 +800,113 @@ class ConfigArgBuilder:
                     f"Evolved: Parent = {parent_cls_name}, Child = {current_cls_name}, Value = {v}"
                 )
         return new_arg_namespace
+
+    def _maybe_crypto(
+        self,
+        key: Optional[Union[str, ByteString]],
+        salt: Optional[str],
+        s3_config: Optional[_T] = None,
+        salt_len: int = 16,
+    ) -> Tuple[str, ByteString]:
+        """Handles setting up the underlying cryptography needs
+
+        Args:
+            salt: either a path to a prior spock saved salt.yaml file or a string of the salt (can be an env reference)
+            key: either a path to a prior spock saved key.yaml file, a ByteString of the key, or a str of the key
+                (can be an env reference)
+            s3_config: s3Config object for S3 support
+            salt_len: length of the salt to create
+
+        Returns:
+            tuple containing a salt and a key that spock can use to hide parameters
+
+        """
+        env_resolver = EnvResolver()
+        salt = self._get_salt(salt, env_resolver, salt_len, s3_config)
+        key = self._get_key(key, env_resolver, s3_config)
+        return salt, key
+
+    def _get_salt(
+        self,
+        salt: Optional[str],
+        env_resolver: EnvResolver,
+        salt_len: int,
+        s3_config: Optional[_T] = None,
+    ) -> str:
+        """
+
+        Args:
+            salt: either a path to a prior spock saved salt.yaml file or a string of the salt (can be an env reference)
+            env_resolver: EnvResolver class to handle env variable resolution if needed
+            salt_len: length of the salt to create
+            s3_config: s3Config object for S3 support
+
+        Returns:
+            salt as a string
+
+        """
+        # Byte string is assumed to be a direct key
+        if salt is None:
+            salt = make_salt(salt_len)
+        elif os.path.splitext(salt)[1] in {".yaml", ".YAML", ".yml", ".YML"}:
+            salt = self._handle_yaml_read(salt, access="salt", s3_config=s3_config)
+        else:
+            salt, _ = env_resolver.resolve(salt, str)
+        return salt
+
+    def _get_key(
+        self,
+        key: Optional[Union[str, ByteString]],
+        env_resolver: EnvResolver,
+        s3_config: Optional[_T] = None,
+    ) -> ByteString:
+        """
+
+        Args:
+            key: either a path to a prior spock saved key.yaml file, a ByteString of the key, or a str of the key
+                (can be an env reference)
+            env_resolver: EnvResolver class to handle env variable resolution if needed
+            s3_config: s3Config object for S3 support
+
+        Returns:
+            key as ByteString
+
+        """
+        if key is None:
+            key = Fernet.generate_key()
+        # Byte string is assumed to be a direct key
+        elif os.path.splitext(key)[1] in {".yaml", ".YAML", ".yml", ".YML"}:
+            key = self._handle_yaml_read(
+                key, access="key", s3_config=s3_config, encode=True
+            )
+        else:
+            # Byte string is assumed to be a direct key
+            # So only handle the str here
+            if isinstance(key, str):
+                key, _ = env_resolver.resolve(key, str)
+                key = str.encode(key)
+        return key
+
+    @staticmethod
+    def _handle_yaml_read(
+        value: str, access: str, s3_config: Optional[_T] = None, encode: bool = False
+    ) -> Union[str, ByteString]:
+        """Reads in a salt/key yaml
+
+        Args:
+            value: path to the key/salt yaml
+            access: which variable name to use from the yaml
+            s3_config: s3Config object for S3 support
+
+        Returns:
+
+        """
+        # Read from the yaml and then split
+        try:
+            payload = YAMLHandler().load(Path(value), s3_config)
+            read_value = payload[access]
+            if encode:
+                read_value = str.encode(read_value)
+            return read_value
+        except Exception as e:
+            _SpockCryptoError(f"Attempted to read from path `{value}` but failed")

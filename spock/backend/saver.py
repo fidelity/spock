@@ -13,7 +13,7 @@ import attr
 from spock.backend.handler import BaseHandler
 from spock.backend.utils import _callable_2_str, _get_iter, _recurse_callables
 from spock.backend.wrappers import Spockspace
-from spock.utils import add_info
+from spock.utils import _T, add_info, get_packages
 
 
 class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
@@ -28,11 +28,16 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
 
     """
 
-    def __init__(self, s3_config=None):
+    def __init__(self, s3_config: Optional[_T] = None):
+        """Init function for base class
+
+        Args:
+            s3_config: optional s3Config object for S3 support
+        """
         super(BaseSaver, self).__init__(s3_config=s3_config)
 
     def dict_payload(self, payload: Spockspace) -> Dict:
-        """Clean up the config payload so it can be returned as a dict representation
+        """Clean up the config payload so that it can be returned as a dict representation
 
         Args:
             payload: dirty payload
@@ -76,12 +81,21 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
         """
         # Check extension
         self._check_extension(file_extension=file_extension)
-        # Make the filename -- always append a uuid for unique-ness
+        # Make the filename -- always append uuid for unique-ness
         uuid_str = str(uuid4()) if fixed_uuid is None else fixed_uuid
         fname = "" if file_name is None else f"{file_name}."
         name = f"{fname}{uuid_str}.spock.cfg{file_extension}"
         # Fix up values -- parameters
-        out_dict = self._clean_up_values(payload)
+        out_dict = self.dict_payload(payload)
+        # Handle any env annotations that are present
+        # Just stuff them into the dictionary
+        crypto_flag = False
+        for k, v in payload:
+            if hasattr(v, "__resolver__"):
+                for key, val in v.__resolver__.items():
+                    out_dict[k][key] = val
+            if hasattr(v, "__crypto__"):
+                crypto_flag = True
         # Fix up the tuner values if present
         tuner_dict = (
             self._clean_tuner_values(tuner_payload)
@@ -92,25 +106,30 @@ class BaseSaver(BaseHandler):  # pylint: disable=too-few-public-methods
             out_dict.update(tuner_dict)
         # Get extra info
         extra_dict = add_info() if extra_info else None
+        library_dict = get_packages() if extra_info else None
         try:
             self._supported_extensions.get(file_extension)().save(
                 out_dict=out_dict,
                 info_dict=extra_dict,
+                library_dict=library_dict,
                 path=path,
                 name=name,
                 create_path=create_save_path,
                 s3_config=self._s3_config,
+                salt=payload.__salt__ if crypto_flag else None,
+                key=payload.__key__ if crypto_flag else None,
             )
         except OSError as e:
             print(f"Unable to write to given path: {path / name}")
             raise e
 
     @abstractmethod
-    def _clean_up_values(self, payload: Spockspace) -> Dict:
+    def _clean_up_values(self, payload: Spockspace, remove_crypto: bool = True) -> Dict:
         """Clean up the config payload so it can be written to file
 
         Args:
             payload: dirty payload
+            remove_crypto: try and remove crypto values if present
 
         Returns:
             clean_dict: cleaned output payload
@@ -185,13 +204,18 @@ class AttrSaver(BaseSaver):
 
     """
 
-    def __init__(self, s3_config=None):
+    def __init__(self, s3_config: Optional[_T] = None):
+        """Init for AttrSaver class
+
+        Args:
+            s3_config: s3Config object for S3 support
+        """
         super().__init__(s3_config=s3_config)
 
     def __call__(self, *args, **kwargs):
         return AttrSaver(*args, **kwargs)
 
-    def _clean_up_values(self, payload: Spockspace) -> Dict:
+    def _clean_up_values(self, payload: Spockspace, remove_crypto: bool = True) -> Dict:
         # Dictionary to recursively write to
         out_dict = {}
         # All of the classes are defined at the top level
@@ -203,6 +227,11 @@ class AttrSaver(BaseSaver):
         clean_dict = self._clean_output(out_dict)
         # Clip any empty dictionaries
         clean_dict = {k: v for k, v in clean_dict.items() if len(v) > 0}
+        if remove_crypto:
+            if "__salt__" in clean_dict:
+                _ = clean_dict.pop("__salt__")
+            if "__key__" in clean_dict:
+                _ = clean_dict.pop("__key__")
         return clean_dict
 
     def _clean_tuner_values(self, payload: Spockspace) -> Dict:
