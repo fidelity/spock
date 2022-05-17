@@ -240,21 +240,21 @@ class TestResolvers:
             curr_int_time = int(f"{now.year}{now.month}{now.day}{now.hour}{now.second}")
             config_values = config.save(
                 file_extension=".yaml",
-                file_name=f"pytest.{curr_int_time}",
+                file_name=f"pytest.crypto.{curr_int_time}",
                 user_specified_path=tmp_path
             ).generate()
             yaml_regex = re.compile(
-                fr"pytest.{curr_int_time}."
+                fr"pytest.crypto.{curr_int_time}."
                 fr"[a-fA-F0-9]{{8}}-[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{4}}-"
                 fr"[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{12}}.spock.cfg.yaml"
             )
             yaml_key_regex = re.compile(
-                fr"pytest.{curr_int_time}."
+                fr"pytest.crypto.{curr_int_time}."
                 fr"[a-fA-F0-9]{{8}}-[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{4}}-"
                 fr"[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{12}}.spock.cfg.key.yaml"
             )
             yaml_salt_regex = re.compile(
-                fr"pytest.{curr_int_time}."
+                fr"pytest.crypto.{curr_int_time}."
                 fr"[a-fA-F0-9]{{8}}-[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{4}}-"
                 fr"[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{12}}.spock.cfg.salt.yaml"
             )
