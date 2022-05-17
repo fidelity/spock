@@ -334,7 +334,6 @@ class YAMLHandler(Handler):
 
         """
         file_contents = open(path, "r").read()
-        file_contents = re.sub(r"--([a-zA-Z0-9_]*)", r"\g<1>: True", file_contents)
         base_payload = yaml.safe_load(file_contents)
         return base_payload
 
