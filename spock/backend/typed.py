@@ -410,7 +410,8 @@ def _type_katra(typed, default=None, optional=False):
     # Default booleans to false and optional due to the nature of a boolean
     if isinstance(typed, type) and name == "bool":
         optional = True
-        if default is not True:
+        # if it's a string -- it could be an env resolver -- pass it through
+        if (not isinstance(default, str)) and (default is not True):
             default = False
     # For the save path type we need to swap the type back to it's base class (str)
     elif isinstance(typed, type) and name == "SavePath":

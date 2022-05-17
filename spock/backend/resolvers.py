@@ -7,6 +7,7 @@
 import os
 import re
 from abc import ABC, abstractmethod
+from distutils.util import strtobool
 from typing import Any, ByteString, Optional, Pattern, Tuple, Union
 
 from spock.backend.utils import decrypt_value
@@ -101,7 +102,12 @@ class BaseResolver(ABC):
         """
         # Attempt to cast in a try to be able to catch the failed type casts with an exception
         try:
-            typed_env = value_type(maybe_env) if maybe_env is not None else None
+            if value_type.__name__ == "bool":
+                typed_env = (
+                    value_type(strtobool(maybe_env)) if maybe_env is not None else False
+                )
+            else:
+                typed_env = value_type(maybe_env) if maybe_env is not None else None
         except Exception as e:
             raise _SpockResolverError(
                 f"Failed attempting to cast environment variable (name: {env_value}, value: `{maybe_env}`) "
@@ -146,7 +152,11 @@ class BaseResolver(ABC):
                 raise _SpockResolverError(
                     f"Environment variable annotation must be within {self._annotation_set} -- got `{annotation}`"
                 )
-        elif not allow_annotation and len(clip_regex_op.split(value)) > 2:
+        elif (
+            not allow_annotation
+            and len(clip_regex_op.split(value)) > 2
+            and clip_regex_op.split(value)[1] != ""
+        ):
             raise _SpockResolverError(
                 f"Found annotation style format however `{value}` does not support annotations"
             )
@@ -267,8 +277,8 @@ class CryptoResolver(BaseResolver):
 
     """
 
-    # ENV Resolver -- full regex is ^\${spock\.crypto:.*}$
-    CLIP_ENV_PATTERN = r"^\${spock\.crypto:"
+    # ENV Resolver -- full regex is ^\${spock\.crypto\.?([a-z]*?):.*}$
+    CLIP_ENV_PATTERN = r"^\${spock\.crypto\.?([a-z]*?):"
     CLIP_REGEX_OP = re.compile(CLIP_ENV_PATTERN)
     END_ENV_PATTERN = r"}$"
     END_REGEX_OP = re.compile(END_ENV_PATTERN)

@@ -155,7 +155,6 @@ class RegisterFieldTemplate(ABC):
             self._handle_crypto_annotations(
                 attr_space, crypto_annotation, attr_space.attribute.default
             )
-            attr_space.crypto = True
         attr_space.field = value
 
     def _handle_env_annotations(
@@ -166,6 +165,7 @@ class RegisterFieldTemplate(ABC):
             attr_space.annotations = (
                 f"${{spock.crypto:{encrypt_value(str(value), self._key, self._salt)}}}"
             )
+            attr_space.crypto = True
         elif annotation == "inject":
             attr_space.annotations = og_value
         else:
@@ -177,6 +177,7 @@ class RegisterFieldTemplate(ABC):
     ):
         if annotation == "crypto":
             attr_space.annotations = og_value
+            attr_space.crypto = True
         else:
             raise _SpockInstantiationError(
                 f"Got unknown crypto annotation `{annotation}`"

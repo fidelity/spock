@@ -182,8 +182,6 @@ class TestPostHooks:
                 )
                 config.generate()
 
-
-
     def test_eq_len_two_len_fail(self, monkeypatch, tmp_path):
         """Test serialization/de-serialization"""
         with monkeypatch.context() as m:
