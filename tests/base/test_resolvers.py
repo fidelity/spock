@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-import sys
+import datetime
 import os
+import re
+import sys
 
-import attr
 import pytest
 
 from spock import spock
@@ -197,7 +198,7 @@ class TestResolvers:
             os.environ["BOOL"] = "true"
             os.environ["STRING"] = "boo"
             config = SpockBuilder(EnvClass)
-            return config.generate()
+            return config.generate(), config
 
     @staticmethod
     @pytest.fixture
@@ -226,6 +227,70 @@ class TestResolvers:
             config = SpockBuilder(FromCrypto, salt='./tests/conf/yaml/test_salt.yaml',
                                   key='./tests/conf/yaml/test_key.yaml')
             return config.generate()
+
+    def test_saver_with_resolvers(self, monkeypatch, tmp_path):
+        with monkeypatch.context() as m:
+            m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test_resolvers.yaml"])
+            os.environ['INT'] = "2"
+            os.environ['FLOAT'] = "2.0"
+            os.environ["BOOL"] = "true"
+            os.environ["STRING"] = "boo"
+            config = SpockBuilder(EnvClass)
+            now = datetime.datetime.now()
+            curr_int_time = int(f"{now.year}{now.month}{now.day}{now.hour}{now.second}")
+            config_values = config.save(
+                file_extension=".yaml",
+                file_name=f"pytest.{curr_int_time}",
+                user_specified_path=tmp_path
+            ).generate()
+            yaml_regex = re.compile(
+                fr"pytest.{curr_int_time}."
+                fr"[a-fA-F0-9]{{8}}-[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{4}}-"
+                fr"[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{12}}.spock.cfg.yaml"
+            )
+            yaml_key_regex = re.compile(
+                fr"pytest.{curr_int_time}."
+                fr"[a-fA-F0-9]{{8}}-[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{4}}-"
+                fr"[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{12}}.spock.cfg.key.yaml"
+            )
+            yaml_salt_regex = re.compile(
+                fr"pytest.{curr_int_time}."
+                fr"[a-fA-F0-9]{{8}}-[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{4}}-"
+                fr"[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{12}}.spock.cfg.salt.yaml"
+            )
+            matches = [
+                re.fullmatch(yaml_regex, val)
+                for val in os.listdir(str(tmp_path))
+                if re.fullmatch(yaml_regex, val) is not None
+            ]
+
+            key_matches = [
+                re.fullmatch(yaml_key_regex, val)
+                for val in os.listdir(str(tmp_path))
+                if re.fullmatch(yaml_key_regex, val) is not None
+            ]
+            assert len(key_matches) == 1 and key_matches[0] is not None
+            salt_matches = [
+                re.fullmatch(yaml_salt_regex, val)
+                for val in os.listdir(str(tmp_path))
+                if re.fullmatch(yaml_salt_regex, val) is not None
+            ]
+            assert len(salt_matches) == 1 and salt_matches[0] is not None
+            fname = f"{str(tmp_path)}/{matches[0].string}"
+            keyname = f"{str(tmp_path)}/{key_matches[0].string}"
+            saltname = f"{str(tmp_path)}/{salt_matches[0].string}"
+
+            # Deserialize
+            m.setattr(
+                sys, "argv", ["", "--config", f"{fname}"]
+            )
+            de_serial_config = SpockBuilder(
+                EnvClass,
+                desc="Test Builder",
+                key=keyname,
+                salt=saltname
+            ).generate()
+            assert config_values == de_serial_config
 
     def test_crypto_from_direct_api(self, crypto_builder_direct_api):
         assert crypto_builder_direct_api.FromCrypto.env_int_def_from_crypto == 100
@@ -273,6 +338,7 @@ class TestResolvers:
         assert arg_builder_no_conf.EnvClass.env_str_def_opt is None
 
     def test_resolver_basic_conf(self, arg_builder_conf):
+        arg_builder_conf, _ = arg_builder_conf
         # Basic types no defaults
         assert arg_builder_conf.EnvClass.env_int == 2
         assert arg_builder_conf.EnvClass.env_float == 2.0
