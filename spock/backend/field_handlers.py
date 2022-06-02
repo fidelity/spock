@@ -9,15 +9,17 @@ import importlib
 import sys
 from abc import ABC, abstractmethod
 from enum import EnumMeta
-from typing import Callable, Dict, List, Tuple, Type
+from typing import Any, ByteString, Callable, Dict, List, Tuple, Type
 
 from attr import NOTHING, Attribute
 
+from spock.backend.resolvers import CryptoResolver, EnvResolver
 from spock.backend.spaces import AttributeSpace, BuilderSpace, ConfigSpace
 from spock.backend.utils import (
     _get_name_py_version,
     _recurse_callables,
     _str_2_callable,
+    encrypt_value,
 )
 from spock.exceptions import _SpockInstantiationError, _SpockNotOptionalError
 from spock.utils import (
@@ -44,12 +46,16 @@ class RegisterFieldTemplate(ABC):
 
     """
 
-    def __init__(self):
+    def __init__(self, salt: str, key: ByteString):
         """Init call for RegisterFieldTemplate class
 
         Args:
         """
         self.special_keys = {}
+        self._salt = salt
+        self._key = key
+        self._env_resolver = EnvResolver()
+        self._crypto_resolver = CryptoResolver(self._salt, self._key)
 
     def __call__(self, attr_space: AttributeSpace, builder_space: BuilderSpace):
         """Call method for RegisterFieldTemplate
@@ -92,8 +98,10 @@ class RegisterFieldTemplate(ABC):
             _is_spock_instance(attr_space.attribute.type)
             and attr_space.attribute.default is not None
         ):
-            attr_space.field, special_keys = RegisterSpockCls().recurse_generate(
-                attr_space.attribute.type, builder_space
+            attr_space.field, special_keys = RegisterSpockCls(
+                self._salt, self._key
+            ).recurse_generate(
+                attr_space.attribute.type, builder_space, self._salt, self._key
             )
             attr_space.attribute = attr_space.attribute.evolve(default=attr_space.field)
             builder_space.spock_space[
@@ -132,7 +140,48 @@ class RegisterFieldTemplate(ABC):
 
         Returns:
         """
-        attr_space.field = attr_space.attribute.default
+
+        value, env_annotation = self._env_resolver.resolve(
+            attr_space.attribute.default, attr_space.attribute.type
+        )
+        if env_annotation is not None:
+            self._handle_env_annotations(
+                attr_space, env_annotation, value, attr_space.attribute.default
+            )
+        value, crypto_annotation = self._crypto_resolver.resolve(
+            value, attr_space.attribute.type
+        )
+        if crypto_annotation is not None:
+            self._handle_crypto_annotations(
+                attr_space, crypto_annotation, attr_space.attribute.default
+            )
+        attr_space.field = value
+
+    def _handle_env_annotations(
+        self, attr_space: AttributeSpace, annotation: str, value: Any, og_value: Any
+    ):
+        if annotation == "crypto":
+            # Take the current value to string and then encrypt
+            attr_space.annotations = (
+                f"${{spock.crypto:{encrypt_value(str(value), self._key, self._salt)}}}"
+            )
+            attr_space.crypto = True
+        elif annotation == "inject":
+            attr_space.annotations = og_value
+        else:
+            raise _SpockInstantiationError(f"Got unknown env annotation `{annotation}`")
+
+    @staticmethod
+    def _handle_crypto_annotations(
+        attr_space: AttributeSpace, annotation: str, og_value: str
+    ):
+        if annotation == "crypto":
+            attr_space.annotations = og_value
+            attr_space.crypto = True
+        else:
+            raise _SpockInstantiationError(
+                f"Got unknown crypto annotation `{annotation}`"
+            )
 
     @abstractmethod
     def handle_optional_attribute_type(
@@ -155,12 +204,12 @@ class RegisterList(RegisterFieldTemplate):
 
     """
 
-    def __init__(self):
+    def __init__(self, salt: str, key: ByteString):
         """Init call to RegisterList
 
         Args:
         """
-        super(RegisterList, self).__init__()
+        super(RegisterList, self).__init__(salt, key)
 
     def handle_attribute_from_config(
         self, attr_space: AttributeSpace, builder_space: BuilderSpace
@@ -253,12 +302,12 @@ class RegisterEnum(RegisterFieldTemplate):
 
     """
 
-    def __init__(self):
+    def __init__(self, salt: str, key: ByteString):
         """Init call to RegisterEnum
 
         Args:
         """
-        super(RegisterEnum, self).__init__()
+        super(RegisterEnum, self).__init__(salt, key)
 
     def handle_attribute_from_config(
         self, attr_space: AttributeSpace, builder_space: BuilderSpace
@@ -325,7 +374,7 @@ class RegisterEnum(RegisterFieldTemplate):
         Returns:
         """
         attr_space.field, special_keys = RegisterSpockCls.recurse_generate(
-            enum_cls, builder_space
+            enum_cls, builder_space, self._salt, self._key
         )
         self.special_keys.update(special_keys)
         builder_space.spock_space[enum_cls.__name__] = attr_space.field
@@ -339,12 +388,12 @@ class RegisterCallableField(RegisterFieldTemplate):
 
     """
 
-    def __init__(self):
+    def __init__(self, salt: str, key: ByteString):
         """Init call to RegisterSimpleField
 
         Args:
         """
-        super(RegisterCallableField, self).__init__()
+        super(RegisterCallableField, self).__init__(salt, key)
 
     def handle_attribute_from_config(
         self, attr_space: AttributeSpace, builder_space: BuilderSpace
@@ -392,12 +441,12 @@ class RegisterGenericAliasCallableField(RegisterFieldTemplate):
 
     """
 
-    def __init__(self):
+    def __init__(self, salt: str, key: ByteString):
         """Init call to RegisterSimpleField
 
         Args:
         """
-        super(RegisterGenericAliasCallableField, self).__init__()
+        super(RegisterGenericAliasCallableField, self).__init__(salt, key)
 
     def handle_attribute_from_config(
         self, attr_space: AttributeSpace, builder_space: BuilderSpace
@@ -459,17 +508,17 @@ class RegisterSimpleField(RegisterFieldTemplate):
 
     """
 
-    def __init__(self):
+    def __init__(self, salt: str, key: ByteString):
         """Init call to RegisterSimpleField
 
         Args:
         """
-        super(RegisterSimpleField, self).__init__()
+        super(RegisterSimpleField, self).__init__(salt, key)
 
     def handle_attribute_from_config(
         self, attr_space: AttributeSpace, builder_space: BuilderSpace
     ):
-        """Handles setting a simple attribute when it is a spock class type
+        """Handles setting a simple attribute from a config file
 
         Args:
             attr_space: holds information about a single attribute that is mapped to a ConfigSpace
@@ -477,9 +526,21 @@ class RegisterSimpleField(RegisterFieldTemplate):
 
         Returns:
         """
-        attr_space.field = builder_space.arguments[attr_space.config_space.name][
+        og_value = builder_space.arguments[attr_space.config_space.name][
             attr_space.attribute.name
         ]
+        value, env_annotation = self._env_resolver.resolve(
+            og_value, attr_space.attribute.type
+        )
+        if env_annotation is not None:
+            self._handle_env_annotations(attr_space, env_annotation, value, og_value)
+        value, crypto_annotation = self._crypto_resolver.resolve(
+            value, attr_space.attribute.type
+        )
+        if crypto_annotation is not None:
+            self._handle_crypto_annotations(attr_space, crypto_annotation, og_value)
+            attr_space.crypto = True
+        attr_space.field = value
         self.register_special_key(attr_space)
 
     def handle_optional_attribute_type(
@@ -541,12 +602,12 @@ class RegisterTuneCls(RegisterFieldTemplate):
 
     """
 
-    def __init__(self):
+    def __init__(self, salt: str, key: ByteString):
         """Init call to RegisterTuneCls
 
         Args:
         """
-        super(RegisterTuneCls, self).__init__()
+        super(RegisterTuneCls, self).__init__(salt, key)
 
     @staticmethod
     def _attr_type(attr_space: AttributeSpace):
@@ -620,12 +681,12 @@ class RegisterSpockCls(RegisterFieldTemplate):
 
     """
 
-    def __init__(self):
+    def __init__(self, salt: str, key: ByteString):
         """Init call to RegisterSpockCls
 
         Args:
         """
-        super(RegisterSpockCls, self).__init__()
+        super(RegisterSpockCls, self).__init__(salt, key)
 
     @staticmethod
     def _attr_type(attr_space: AttributeSpace):
@@ -654,7 +715,9 @@ class RegisterSpockCls(RegisterFieldTemplate):
         Returns:
         """
         attr_type = self._attr_type(attr_space)
-        attr_space.field, special_keys = self.recurse_generate(attr_type, builder_space)
+        attr_space.field, special_keys = self.recurse_generate(
+            attr_type, builder_space, self._salt, self._key
+        )
         builder_space.spock_space[attr_type.__name__] = attr_space.field
         self.special_keys.update(special_keys)
 
@@ -692,7 +755,7 @@ class RegisterSpockCls(RegisterFieldTemplate):
         Returns:
         """
         attr_space.field, special_keys = RegisterSpockCls.recurse_generate(
-            self._attr_type(attr_space), builder_space
+            self._attr_type(attr_space), builder_space, self._salt, self._key
         )
         self.special_keys.update(special_keys)
 
@@ -736,7 +799,9 @@ class RegisterSpockCls(RegisterFieldTemplate):
         return out
 
     @classmethod
-    def recurse_generate(cls, spock_cls: _C, builder_space: BuilderSpace):
+    def recurse_generate(
+        cls, spock_cls: _C, builder_space: BuilderSpace, salt: str, key: ByteString
+    ):
         """Call on a spock classes to iterate through the attrs attributes and handle each based on type and optionality
 
         Triggers a recursive call when an attribute refers to another spock classes
@@ -752,6 +817,8 @@ class RegisterSpockCls(RegisterFieldTemplate):
         # Empty dits for storing info
         special_keys = {}
         fields = {}
+        annotations = {}
+        crypto = False
         # Init the ConfigSpace for this spock class
         config_space = ConfigSpace(spock_cls, fields)
         # Iterate through the attrs within the spock class
@@ -762,7 +829,7 @@ class RegisterSpockCls(RegisterFieldTemplate):
             if (
                 (attribute.type is list) or (attribute.type is List)
             ) and _is_spock_instance(attribute.metadata["type"].__args__[0]):
-                handler = RegisterList()
+                handler = RegisterList(salt, key)
             # Dict/List of Callables
             elif (
                 (attribute.type is list)
@@ -773,31 +840,41 @@ class RegisterSpockCls(RegisterFieldTemplate):
                 or (attribute.type is Tuple)
             ) and cls._find_callables(attribute.metadata["type"]):
                 # handler = RegisterListCallableField()
-                handler = RegisterGenericAliasCallableField()
+                handler = RegisterGenericAliasCallableField(salt, key)
             # Enums
             elif isinstance(attribute.type, EnumMeta) and _check_iterable(
                 attribute.type
             ):
-                handler = RegisterEnum()
+                handler = RegisterEnum(salt, key)
             # References to other spock classes
             elif _is_spock_instance(attribute.type):
-                handler = RegisterSpockCls()
+                handler = RegisterSpockCls(salt, key)
             # References to tuner classes
             elif _is_spock_tune_instance(attribute.type):
-                handler = RegisterTuneCls()
+                handler = RegisterTuneCls(salt, key)
             # References to callables
             elif isinstance(attribute.type, _SpockVariadicGenericAlias):
-                handler = RegisterCallableField()
+                handler = RegisterCallableField(salt, key)
             # Basic field
             else:
-                handler = RegisterSimpleField()
+                handler = RegisterSimpleField(salt, key)
 
             handler(attr_space, builder_space)
             special_keys.update(handler.special_keys)
+            # Handle annotations by attaching them to a dictionary
+            if attr_space.annotations is not None:
+                annotations.update({attr_space.attribute.name: attr_space.annotations})
+            if attr_space.crypto:
+                crypto = True
 
         # Try except on the class since it might not be successful -- throw the attrs message as it will know the
         # error on instantiation
         try:
+            # If there are annotations attach them to the spock class in the __resolver__ attribute
+            if len(annotations) > 0:
+                spock_cls.__resolver__ = annotations
+            if crypto:
+                spock_cls.__crypto__ = True
             spock_instance = spock_cls(**fields)
         except Exception as e:
             raise _SpockInstantiationError(

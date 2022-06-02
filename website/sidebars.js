@@ -129,6 +129,11 @@ module.exports = {
                     label: 'Evolve',
                     id: 'advanced_features/Evolve'
                 },
+                {
+                    type: 'doc',
+                    label: 'Resolvers',
+                    id: 'advanced_features/Resolvers'
+                },
             ],
         },
         {

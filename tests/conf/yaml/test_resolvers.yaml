@@ -1,0 +1,15 @@
+EnvClass:
+  env_int: "${spock.env:INT}"
+  env_float: "${spock.env:FLOAT}"
+  env_bool: "${spock.env:BOOL}"
+  env_str: "${spock.env:STRING}"
+  # Basic types w/ defaults
+  env_int_def:  "${spock.env:INT_DEF, 4}"
+  env_float_def: "${spock.env:FLOAT_DEF, 4.0}"
+  env_bool_def: "${spock.env:BOOL_DEF, False}"
+  env_str_def: "${spock.env:STRING_DEF, rawr}"
+  # Basic types allowing None as default
+  env_int_def_opt: "${spock.env:INT_DEF, None}"
+  env_float_def_opt: "${spock.env:FLOAT_DEF, None}"
+  env_bool_def_opt: "${spock.env:BOOL_DEF, False}"
+  env_str_def_opt: "${spock.env:STRING_DEF, None}"

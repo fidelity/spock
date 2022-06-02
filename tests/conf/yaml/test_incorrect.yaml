@@ -1,7 +1,7 @@
 # conf file for all YAML tests
 ### Required or Boolean Base Types ###
 # Boolean - Set
---bool_p_set
+bool_p_set: true
 failure: 10.0
 # Required Int
 int_p: 10

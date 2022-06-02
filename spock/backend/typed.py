@@ -138,7 +138,19 @@ def _generic_alias_katra(typed, default=None, optional=False):
     """
     # base python class from which a GenericAlias is derived
     base_typed = typed.__origin__
-    if default is not None:
+    if default is not None and optional:
+        # if there's no default, but marked as optional, then set the default to None
+        x = attr.ib(
+            validator=attr.validators.optional(_recursive_generic_validator(typed)),
+            type=base_typed,
+            default=default,
+            metadata={
+                "optional": True,
+                "base": _extract_base_type(typed),
+                "type": typed,
+            },
+        )
+    elif default is not None:
         x = attr.ib(
             validator=_recursive_generic_validator(typed),
             default=default,
@@ -261,7 +273,16 @@ def _enum_base_katra(typed, base_type, allowed, default=None, optional=False):
         x: Attribute from attrs
 
     """
-    if default is not None:
+    if default is not None and optional:
+        x = attr.ib(
+            validator=attr.validators.optional(
+                [attr.validators.instance_of(base_type), attr.validators.in_(allowed)]
+            ),
+            default=_cast_enum_default(default),
+            type=typed,
+            metadata={"base": typed.__name__, "optional": True},
+        )
+    elif default is not None:
         x = attr.ib(
             validator=[
                 attr.validators.instance_of(base_type),
@@ -330,7 +351,14 @@ def _enum_class_katra(typed, allowed, default=None, optional=False):
         x: Attribute from attrs
 
     """
-    if default is not None:
+    if default is not None and optional:
+        x = attr.ib(
+            validator=attr.validators.optional([partial(_in_type, options=allowed)]),
+            default=_cast_enum_default(default),
+            type=typed,
+            metadata={"base": typed.__name__, "optional": True},
+        )
+    elif default is not None:
         x = attr.ib(
             validator=[partial(_in_type, options=allowed)],
             default=_cast_enum_default(default),
@@ -382,14 +410,23 @@ def _type_katra(typed, default=None, optional=False):
     # Default booleans to false and optional due to the nature of a boolean
     if isinstance(typed, type) and name == "bool":
         optional = True
-        if default is not True:
+        # if it's a string -- it could be an env resolver -- pass it through
+        if (not isinstance(default, str)) and (default is not True):
             default = False
     # For the save path type we need to swap the type back to it's base class (str)
     elif isinstance(typed, type) and name == "SavePath":
         optional = True
         special_key = name
         typed = str
-    if default is not None:
+    if default is not None and optional:
+        # if a default is provided, that takes precedence
+        x = attr.ib(
+            validator=attr.validators.optional(attr.validators.instance_of(typed)),
+            default=default,
+            type=typed,
+            metadata={"optional": True, "base": name, "special_key": special_key},
+        )
+    elif default is not None:
         # if a default is provided, that takes precedence
         x = attr.ib(
             validator=attr.validators.instance_of(typed),
@@ -462,7 +499,14 @@ def _callable_katra(typed, default=None, optional=False):
         x: Attribute from attrs
 
     """
-    if default is not None:
+    if default is not None and optional:
+        x = attr.ib(
+            validator=attr.validators.optional(attr.validators.is_callable()),
+            default=default,
+            type=typed,
+            metadata={"optional": True, "base": _get_name_py_version(typed)},
+        )
+    elif default is not None:
         # if a default is provided, that takes precedence
         x = attr.ib(
             validator=attr.validators.is_callable(),
