@@ -7,7 +7,7 @@
 import argparse
 from abc import ABC, abstractmethod
 from enum import EnumMeta
-from typing import ByteString, Dict, List
+from typing import ByteString, Dict, List, Optional, Tuple
 
 import attr
 
@@ -16,15 +16,22 @@ from spock.backend.field_handlers import RegisterSpockCls
 from spock.backend.help import attrs_help
 from spock.backend.spaces import BuilderSpace
 from spock.backend.wrappers import Spockspace
-from spock.graph import Graph
-from spock.utils import _C, _T, _SpockVariadicGenericAlias, make_argument
+from spock.exceptions import _SpockInstantiationError
+from spock.graph import Graph, MergeGraph, VarGraph
+from spock.utils import (
+    _C,
+    _T,
+    _is_spock_instance_type,
+    _SpockVariadicGenericAlias,
+    make_argument,
+)
 
 
 class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
     """Base class for building the backend specific builders
 
-    This class handles the interface to the backend with the generic ConfigArgBuilder so that different
-    backends can be used to handle processing
+    This class handles the interface to the backend with the generic ConfigArgBuilder
+    so that different backends can be used to handle processing
 
     Attributes
 
@@ -33,7 +40,8 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         _max_indent: maximum to indent between help prints
         _module_name: module name to register in the spock module space
         save_path: list of path(s) to save the configs to
-        _lazy: attempts to lazily find @spock decorated classes registered within sys.modules["spock"].backend.config
+        _lazy: attempts to lazily find @spock decorated classes registered within
+        sys.modules["spock"].backend.config
         _salt: salt use for crypto purposes
         _key: key used for crypto purposes
 
@@ -141,6 +149,11 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
     def resolve_spock_space_kwargs(self, graph: Graph, dict_args: Dict) -> Dict:
         """Build the dictionary that will define the spock space.
 
+        This is essentially the meat of the builder. Handles both the cls dep graph
+        and the ref def graph. Based on that merge of the two dependency graphs
+        it cal traverse the dep structure correct to resolve both cls references and
+        var refs
+
         Args:
             graph: Dependency graph of nested spock configurations
             dict_args: dictionary of arguments from the configs
@@ -148,24 +161,70 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         Returns:
             dictionary containing automatically generated instances of the classes
         """
-        # Empty dictionary that will be mapped to a SpockSpace via spock classes
-        spock_space = {}
         # Assemble the arguments dictionary and BuilderSpace
         builder_space = BuilderSpace(
-            arguments=SpockArguments(dict_args, graph), spock_space=spock_space
+            arguments=SpockArguments(dict_args, graph), spock_space={}
         )
-        # For each root recursively step through the definitions
-        for spock_cls in graph.roots:
-            # Initial call to the RegisterSpockCls generate function (which will handle recursing if needed)
-            spock_instance, special_keys = RegisterSpockCls.recurse_generate(
+        cls_fields_list = []
+        # For each node in the cls dep graph step through in topological order
+        # We must do this first so that we can resolve the fields dict for each class
+        # so that we can figure out which variables we need to resolve prior to
+        # instantiation
+        for spock_name in graph.topological_order:
+            spock_cls = graph.node_map[spock_name]
+            # This generates the fields dict for each cls
+            new_cls, special_keys, fields = RegisterSpockCls.recurse_generate(
                 spock_cls, builder_space, self._salt, self._key
             )
-            builder_space.spock_space[spock_cls.__name__] = spock_instance
-
+            cls_fields_list.append((new_cls, fields))
+            # Push back special keys
             for special_key, value in special_keys.items():
                 setattr(self, special_key, value)
+        # Create the variable dependency graph -- this needs the fields dict to do so
+        # as we need all the values that are current set for instantiation
+        var_graph = VarGraph(cls_fields_list, self._input_classes)
+        # Merge the cls dependency graph and the variable dependency graph
+        merged_graph = MergeGraph(
+            graph.dag, var_graph.dag, input_classes=self._input_classes
+        )
+        # Iterate in merged topological order so that we can resolve both cls and ref
+        # dependencies in the correct order
+        for spock_name in merged_graph.topological_order:
+            # First we check for any needed variable resolution
+            cls_fields = var_graph.resolve(spock_name, builder_space.spock_space)
+            # Then we map cls references to their instantiated version
+            cls_fields = self._clean_up_cls_refs(cls_fields, builder_space.spock_space)
+            # Once all resolution occurs we attempt to instantiate the cls
+            spock_cls = merged_graph.node_map[spock_name]
+            try:
+                spock_instance = spock_cls(**cls_fields)
+            except Exception as e:
+                raise _SpockInstantiationError(
+                    f"Spock class `{spock_cls.__name__}` could not be instantiated "
+                    f"-- attrs message: {e}"
+                )
+            # Push back into the builder_space
+            builder_space.spock_space[spock_cls.__name__] = spock_instance
+        return builder_space.spock_space
 
-        return spock_space
+    @staticmethod
+    def _clean_up_cls_refs(fields: Dict, spock_space: Dict) -> Dict:
+        """Swaps in the newly created cls if it hasn't been instantiated yet
+
+        Args:
+            fields: current field dictionary
+            spock_space: current spock space dictionary
+
+        Returns:
+            updated fields dictionary
+
+        """
+        for k, v in fields.items():
+            # If it is an uninstantiated spock instance then swap in the
+            # instantiated class
+            if _is_spock_instance_type(v):
+                fields.update({k: spock_space[v.__name__]})
+        return fields
 
     def build_override_parsers(
         self, parser: argparse.ArgumentParser
@@ -291,13 +350,15 @@ class AttrBuilder(BaseBuilder):
                     group_parser = make_argument(
                         arg_name, List[inner_val.type], group_parser
                     )
-            # If it's a reference to a class it needs to be an arg of a simple string as class matching will take care
+            # If it's a reference to a class it needs to be an arg of a simple string
+            # as class matching will take care
             # of it later on
             elif val_type.__module__ == "spock.backend.config":
                 arg_name = f"--{str(attr_name)}.{val.name}"
                 val_type = str
                 group_parser = make_argument(arg_name, val_type, group_parser)
-            # This catches callables -- need to be of type str which will be use in importlib
+            # This catches callables -- need to be of type str which will be use in
+            # importlib
             elif isinstance(val.type, _SpockVariadicGenericAlias):
                 arg_name = f"--{str(attr_name)}.{val.name}"
                 group_parser = make_argument(arg_name, str, group_parser)

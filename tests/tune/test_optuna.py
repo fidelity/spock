@@ -94,9 +94,9 @@ class TestOptunaSaveTopLevel:
             )
             # Verify the sample was written out to file
             yaml_regex = re.compile(
-                fr"pytest.{curr_int_time}."
-                fr"[a-fA-F0-9]{{8}}-[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{4}}-"
-                fr"[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{12}}.spock.cfg.yaml"
+                rf"pytest.{curr_int_time}."
+                rf"[a-fA-F0-9]{{8}}-[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{4}}-"
+                rf"[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{12}}.spock.cfg.yaml"
             )
             matches = [
                 re.fullmatch(yaml_regex, val)
@@ -164,9 +164,9 @@ class TestIrisOptuna:
             arg_builder.save_best(user_specified_path="/tmp", file_name=f"pytest")
             # Verify the sample was written out to file
             yaml_regex = re.compile(
-                fr"pytest.{curr_int_time}.hp.sample.[0-9]+."
-                fr"[a-fA-F0-9]{{8}}-[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{4}}-"
-                fr"[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{12}}.spock.cfg.yaml"
+                rf"pytest.{curr_int_time}.hp.sample.[0-9]+."
+                rf"[a-fA-F0-9]{{8}}-[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{4}}-"
+                rf"[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{12}}.spock.cfg.yaml"
             )
             matches = [
                 re.fullmatch(yaml_regex, val)
@@ -186,9 +186,9 @@ class TestIrisOptuna:
         print(f"Best Metric: {best_metric}")
         # Verify the sample was written out to file
         yaml_regex = re.compile(
-            fr"pytest.hp.best."
-            fr"[a-fA-F0-9]{{8}}-[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{4}}-"
-            fr"[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{12}}.spock.cfg.yaml"
+            rf"pytest.hp.best."
+            rf"[a-fA-F0-9]{{8}}-[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{4}}-"
+            rf"[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{12}}.spock.cfg.yaml"
         )
         matches = [
             re.fullmatch(yaml_regex, val)

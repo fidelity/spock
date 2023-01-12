@@ -8,7 +8,13 @@ import pytest
 
 from spock import spock
 from spock import SpockBuilder
-from spock.exceptions import _SpockResolverError
+from spock.exceptions import (
+    _SpockEnvResolverError,
+    _SpockFieldHandlerError,
+    _SpockResolverError,
+    _SpockVarResolverError,
+    _SpockInstantiationError,
+)
 from typing import Optional
 
 
@@ -51,6 +57,211 @@ class FromCrypto:
 
 
 @spock
+class Lastly:
+    ooooyah: int = 12
+    tester: int = 1
+    hiyah: bool = True
+
+
+@spock
+class BarFoo:
+    newval: Optional[int] = 2
+    moreref: int = "${spock.var:Lastly.ooooyah}"
+
+
+@spock
+class FooBar:
+    val: int = 12
+
+
+@spock
+class RefClass:
+    a_float: float = 12.1
+    a_int: int = 3
+    a_bool: bool = True
+    a_string: str = "helloo"
+
+
+@spock
+class RefClassFile:
+    ref_float: float
+    ref_int: int
+    ref_bool: bool
+    ref_string: str
+    ref_nested_to_str: str
+    ref_nested_to_float: float
+
+
+@spock
+class RefClassOptionalFile:
+    ref_float: Optional[float]
+    ref_int: Optional[int]
+    ref_bool: Optional[bool]
+    ref_string: Optional[str]
+    ref_nested_to_str: Optional[str]
+    ref_nested_to_float: Optional[float]
+
+
+@spock
+class RefClassDefault:
+    ref_float: float = "${spock.var:RefClass.a_float}"
+    ref_int: int = "${spock.var:RefClass.a_int}"
+    ref_bool: bool = "${spock.var:RefClass.a_bool}"
+    ref_string: str = "${spock.var:RefClass.a_string}"
+    ref_nested_to_str: str = "${spock.var:FooBar.val}.${spock.var:Lastly.tester}"
+    ref_nested_to_float: float = "${spock.var:FooBar.val}.${spock.var:Lastly.tester}"
+
+
+class TestRefResolver:
+    def test_from_config(self, monkeypatch):
+        """Test reading from config to set vars works"""
+        with monkeypatch.context() as m:
+            m.setattr(
+                sys, "argv", ["", "--config", "./tests/conf/yaml/test_variable.yaml"]
+            )
+            config = SpockBuilder(
+                RefClassFile, RefClass, Lastly, BarFoo, FooBar
+            ).generate()
+
+            assert config.RefClassFile.ref_float == 12.1
+            assert config.RefClassFile.ref_int == 3
+            assert config.RefClassFile.ref_bool is True
+            assert config.RefClassFile.ref_string == "helloo"
+            assert config.RefClassFile.ref_nested_to_str == "12.1"
+            assert config.RefClassFile.ref_nested_to_float == 12.1
+
+    def test_from_config_optional(self, monkeypatch):
+        """Test reading from config to set vars works"""
+        with monkeypatch.context() as m:
+            m.setattr(
+                sys, "argv", ["", "--config", "./tests/conf/yaml/test_variable.yaml"]
+            )
+            config = SpockBuilder(
+                RefClassOptionalFile, RefClass, Lastly, BarFoo, FooBar
+            ).generate()
+
+            assert config.RefClassOptionalFile.ref_float == 12.1
+            assert config.RefClassOptionalFile.ref_int == 3
+            assert config.RefClassOptionalFile.ref_bool is True
+            assert config.RefClassOptionalFile.ref_string == "helloo"
+            assert config.RefClassOptionalFile.ref_nested_to_str == "12.1"
+            assert config.RefClassOptionalFile.ref_nested_to_float == 12.1
+
+    def test_from_def(self, monkeypatch):
+        """Test reading from config to set vars works"""
+        with monkeypatch.context() as m:
+            m.setattr(sys, "argv", [""])
+            config = SpockBuilder(
+                RefClassDefault, RefClass, Lastly, BarFoo, FooBar
+            ).generate()
+
+            assert config.RefClassDefault.ref_float == 12.1
+            assert config.RefClassDefault.ref_int == 3
+            assert config.RefClassDefault.ref_bool is True
+            assert config.RefClassDefault.ref_string == "helloo"
+            assert config.RefClassDefault.ref_nested_to_str == "12.1"
+            assert config.RefClassDefault.ref_nested_to_float == 12.1
+
+
+@spock
+class RefCastRaise:
+    failed: float = "${spock.var:RefClass.a_string}"
+
+
+@spock
+class RefInvalid:
+    failed: float = "${spock.var:RefClass.a_str}"
+
+
+@spock
+class RefNotSpockClsRef:
+    failed: float = "${spock.var:RefClassier.a_string}"
+
+
+@spock
+class RefCycle1:
+    we: int = "${spock.var:RefCycle2.make}"
+
+
+@spock
+class RefCycle2:
+    make: float = "${spock.var:RefCycle3.sense}"
+
+
+@spock
+class RefCycle3:
+    no: int = 2
+    sense: float = "${spock.var:RefCycle1.we}"
+
+
+class TestRefResolverExceptions:
+    def test_cast_raise(self, monkeypatch):
+        """Test serialization/de-serialization"""
+        with monkeypatch.context() as m:
+            m.setattr(
+                sys,
+                "argv",
+                [""],
+            )
+            with pytest.raises(_SpockResolverError):
+                config = SpockBuilder(
+                    RefCastRaise,
+                    RefClass,
+                    desc="Test Builder",
+                )
+                config.generate()
+
+    def test_invalid_raise(self, monkeypatch):
+        """Test serialization/de-serialization"""
+        with monkeypatch.context() as m:
+            m.setattr(
+                sys,
+                "argv",
+                [""],
+            )
+            with pytest.raises(_SpockVarResolverError):
+                config = SpockBuilder(
+                    RefInvalid,
+                    RefClass,
+                    desc="Test Builder",
+                )
+                config.generate()
+
+    def test_not_spock(self, monkeypatch):
+        """Test serialization/de-serialization"""
+        with monkeypatch.context() as m:
+            m.setattr(
+                sys,
+                "argv",
+                [""],
+            )
+            with pytest.raises(_SpockVarResolverError):
+                config = SpockBuilder(
+                    RefNotSpockClsRef,
+                    RefClass,
+                    desc="Test Builder",
+                )
+                config.generate()
+
+    def test_ref_cycle(self, monkeypatch):
+        """Test serialization/de-serialization"""
+        with monkeypatch.context() as m:
+            m.setattr(
+                sys,
+                "argv",
+                [""],
+            )
+            with pytest.raises(_SpockInstantiationError):
+                config = SpockBuilder(
+                    RefCycle1,
+                    RefCycle2,
+                    RefCycle3,
+                    desc="Test Builder",
+                )
+                config.generate()
+
+
+@spock
 class CastRaise:
     cast_miss: int = "${spock.env:CAST_MISS}"
 
@@ -89,7 +300,7 @@ class TestResolverExceptions:
                 "argv",
                 [""],
             )
-            with pytest.raises(_SpockResolverError):
+            with pytest.raises(_SpockFieldHandlerError):
                 config = SpockBuilder(
                     NoEnv,
                     desc="Test Builder",
@@ -104,7 +315,7 @@ class TestResolverExceptions:
                 "argv",
                 [""],
             )
-            with pytest.raises(_SpockResolverError):
+            with pytest.raises(_SpockFieldHandlerError):
                 config = SpockBuilder(
                     NoDefAllowed,
                     desc="Test Builder",
@@ -119,13 +330,12 @@ class TestResolverExceptions:
                 "argv",
                 [""],
             )
-            with pytest.raises(_SpockResolverError):
+            with pytest.raises(_SpockFieldHandlerError):
                 config = SpockBuilder(
                     MultipleDefaults,
                     desc="Test Builder",
                 )
                 config.generate()
-
 
     def test_cast_fail(self, monkeypatch, tmp_path):
         """Test serialization/de-serialization"""
@@ -135,8 +345,8 @@ class TestResolverExceptions:
                 "argv",
                 [""],
             )
-            os.environ['CAST_MISS'] = "foo"
-            with pytest.raises(_SpockResolverError):
+            os.environ["CAST_MISS"] = "foo"
+            with pytest.raises(_SpockFieldHandlerError):
                 config = SpockBuilder(
                     CastRaise,
                     desc="Test Builder",
@@ -151,7 +361,7 @@ class TestResolverExceptions:
                 "argv",
                 [""],
             )
-            with pytest.raises(_SpockResolverError):
+            with pytest.raises(_SpockFieldHandlerError):
                 config = SpockBuilder(
                     AnnotationNotInSetRaise,
                     desc="Test Builder",
@@ -166,7 +376,7 @@ class TestResolverExceptions:
                 "argv",
                 [""],
             )
-            with pytest.raises(_SpockResolverError):
+            with pytest.raises(_SpockFieldHandlerError):
                 config = SpockBuilder(
                     AnnotationNotAllowedRaise,
                     desc="Test Builder",
@@ -176,13 +386,14 @@ class TestResolverExceptions:
 
 class TestResolvers:
     """Testing resolvers functionality"""
+
     @staticmethod
     @pytest.fixture
     def arg_builder_no_conf(monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", [""])
-            os.environ['INT'] = "1"
-            os.environ['FLOAT'] = "1.0"
+            os.environ["INT"] = "1"
+            os.environ["FLOAT"] = "1.0"
             os.environ["BOOL"] = "true"
             os.environ["STRING"] = "ciao"
             config = SpockBuilder(EnvClass)
@@ -192,9 +403,11 @@ class TestResolvers:
     @pytest.fixture
     def arg_builder_conf(monkeypatch):
         with monkeypatch.context() as m:
-            m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test_resolvers.yaml"])
-            os.environ['INT'] = "2"
-            os.environ['FLOAT'] = "2.0"
+            m.setattr(
+                sys, "argv", ["", "--config", "./tests/conf/yaml/test_resolvers.yaml"]
+            )
+            os.environ["INT"] = "2"
+            os.environ["FLOAT"] = "2.0"
             os.environ["BOOL"] = "true"
             os.environ["STRING"] = "boo"
             config = SpockBuilder(EnvClass)
@@ -205,7 +418,11 @@ class TestResolvers:
     def crypto_builder_direct_api(monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", [""])
-            config = SpockBuilder(FromCrypto, salt='D7fqSVsaFJH2dbjT', key=b'hXYua9l1jbadIqTYdHtM_g7RKI3WwndMYlYuwNJsMpE=')
+            config = SpockBuilder(
+                FromCrypto,
+                salt="D7fqSVsaFJH2dbjT",
+                key=b"hXYua9l1jbadIqTYdHtM_g7RKI3WwndMYlYuwNJsMpE=",
+            )
             return config.generate()
 
     @staticmethod
@@ -213,10 +430,11 @@ class TestResolvers:
     def crypto_builder_env_api(monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", [""])
-            os.environ['SALT'] = "D7fqSVsaFJH2dbjT"
+            os.environ["SALT"] = "D7fqSVsaFJH2dbjT"
             os.environ["KEY"] = "hXYua9l1jbadIqTYdHtM_g7RKI3WwndMYlYuwNJsMpE="
-            config = SpockBuilder(FromCrypto, salt='${spock.env:SALT}',
-                                  key='${spock.env:KEY}')
+            config = SpockBuilder(
+                FromCrypto, salt="${spock.env:SALT}", key="${spock.env:KEY}"
+            )
             return config.generate()
 
     @staticmethod
@@ -224,15 +442,20 @@ class TestResolvers:
     def crypto_builder_yaml(monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", [""])
-            config = SpockBuilder(FromCrypto, salt='./tests/conf/yaml/test_salt.yaml',
-                                  key='./tests/conf/yaml/test_key.yaml')
+            config = SpockBuilder(
+                FromCrypto,
+                salt="./tests/conf/yaml/test_salt.yaml",
+                key="./tests/conf/yaml/test_key.yaml",
+            )
             return config.generate()
 
     def test_saver_with_resolvers(self, monkeypatch, tmp_path):
         with monkeypatch.context() as m:
-            m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test_resolvers.yaml"])
-            os.environ['INT'] = "2"
-            os.environ['FLOAT'] = "2.0"
+            m.setattr(
+                sys, "argv", ["", "--config", "./tests/conf/yaml/test_resolvers.yaml"]
+            )
+            os.environ["INT"] = "2"
+            os.environ["FLOAT"] = "2.0"
             os.environ["BOOL"] = "true"
             os.environ["STRING"] = "boo"
             config = SpockBuilder(EnvClass)
@@ -241,22 +464,22 @@ class TestResolvers:
             config_values = config.save(
                 file_extension=".yaml",
                 file_name=f"pytest.crypto.{curr_int_time}",
-                user_specified_path=tmp_path
+                user_specified_path=tmp_path,
             ).generate()
             yaml_regex = re.compile(
-                fr"pytest.crypto.{curr_int_time}."
-                fr"[a-fA-F0-9]{{8}}-[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{4}}-"
-                fr"[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{12}}.spock.cfg.yaml"
+                rf"pytest.crypto.{curr_int_time}."
+                rf"[a-fA-F0-9]{{8}}-[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{4}}-"
+                rf"[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{12}}.spock.cfg.yaml"
             )
             yaml_key_regex = re.compile(
-                fr"pytest.crypto.{curr_int_time}."
-                fr"[a-fA-F0-9]{{8}}-[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{4}}-"
-                fr"[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{12}}.spock.cfg.key.yaml"
+                rf"pytest.crypto.{curr_int_time}."
+                rf"[a-fA-F0-9]{{8}}-[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{4}}-"
+                rf"[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{12}}.spock.cfg.key.yaml"
             )
             yaml_salt_regex = re.compile(
-                fr"pytest.crypto.{curr_int_time}."
-                fr"[a-fA-F0-9]{{8}}-[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{4}}-"
-                fr"[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{12}}.spock.cfg.salt.yaml"
+                rf"pytest.crypto.{curr_int_time}."
+                rf"[a-fA-F0-9]{{8}}-[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{4}}-"
+                rf"[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{12}}.spock.cfg.salt.yaml"
             )
             matches = [
                 re.fullmatch(yaml_regex, val)
@@ -281,14 +504,9 @@ class TestResolvers:
             saltname = f"{str(tmp_path)}/{salt_matches[0].string}"
 
             # Deserialize
-            m.setattr(
-                sys, "argv", ["", "--config", f"{fname}"]
-            )
+            m.setattr(sys, "argv", ["", "--config", f"{fname}"])
             de_serial_config = SpockBuilder(
-                EnvClass,
-                desc="Test Builder",
-                key=keyname,
-                salt=saltname
+                EnvClass, desc="Test Builder", key=keyname, salt=saltname
             ).generate()
             assert config_values == de_serial_config
 

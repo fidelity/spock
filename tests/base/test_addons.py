@@ -10,12 +10,11 @@ import datetime
 
 class TestBasicBuilder:
     """Testing when builder is calling an add on functionality it shouldn't"""
+
     def test_raise_tuner_sample(self, monkeypatch, tmp_path):
         """Test serialization/de-serialization"""
         with monkeypatch.context() as m:
-            m.setattr(
-                sys, "argv", ["", "--config", "./tests/conf/yaml/test.yaml"]
-            )
+            m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test.yaml"])
             # Serialize
             config = ConfigArgBuilder(
                 *all_configs,
@@ -28,15 +27,13 @@ class TestBasicBuilder:
                     file_extension=".yaml",
                     file_name=f"pytest.{curr_int_time}",
                     user_specified_path=tmp_path,
-                    add_tuner_sample=True
+                    add_tuner_sample=True,
                 )
 
     def test_raise_save_best(self, monkeypatch, tmp_path):
         """Test serialization/de-serialization"""
         with monkeypatch.context() as m:
-            m.setattr(
-                sys, "argv", ["", "--config", "./tests/conf/yaml/test.yaml"]
-            )
+            m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test.yaml"])
             # Serialize
             config = ConfigArgBuilder(
                 *all_configs,

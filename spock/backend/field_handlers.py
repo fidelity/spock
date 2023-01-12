@@ -13,7 +13,7 @@ from typing import Any, ByteString, Callable, Dict, List, Tuple, Type
 
 from attr import NOTHING, Attribute
 
-from spock.backend.resolvers import CryptoResolver, EnvResolver
+from spock.backend.resolvers import CryptoResolver, EnvResolver, VarResolver
 from spock.backend.spaces import AttributeSpace, BuilderSpace, ConfigSpace
 from spock.backend.utils import (
     _get_name_py_version,
@@ -21,7 +21,11 @@ from spock.backend.utils import (
     _str_2_callable,
     encrypt_value,
 )
-from spock.exceptions import _SpockInstantiationError, _SpockNotOptionalError
+from spock.exceptions import (
+    _SpockFieldHandlerError,
+    _SpockInstantiationError,
+    _SpockNotOptionalError,
+)
 from spock.utils import (
     _C,
     _T,
@@ -43,18 +47,27 @@ class RegisterFieldTemplate(ABC):
 
     Attributes:
         special_keys: dictionary to check special keys
-
+        _salt: salt used for cryptograpy
+        _key: key used for cryptography
+        _env_resolver: class used to resolve environmental variables
+        _crypto_resolver: class used to resolve cryptographic variables
     """
+
+    # As these are un-parametrized we can make them class variables
+    _env_resolver = EnvResolver()
+    _var_resolver = VarResolver()
 
     def __init__(self, salt: str, key: ByteString):
         """Init call for RegisterFieldTemplate class
 
         Args:
+            salt: salt used for cryptograpy
+            key: key used for cryptography
         """
         self.special_keys = {}
         self._salt = salt
         self._key = key
-        self._env_resolver = EnvResolver()
+        # self._env_resolver = EnvResolver()
         self._crypto_resolver = CryptoResolver(self._salt, self._key)
 
     def __call__(self, attr_space: AttributeSpace, builder_space: BuilderSpace):
@@ -98,15 +111,21 @@ class RegisterFieldTemplate(ABC):
             _is_spock_instance(attr_space.attribute.type)
             and attr_space.attribute.default is not None
         ):
-            attr_space.field, special_keys = RegisterSpockCls(
+            # fields, special_keys, annotations, crypto = RegisterSpockCls(
+            #     self._salt, self._key
+            # ).recurse_generate(
+            #     attr_space.attribute.type, builder_space, self._salt, self._key
+            # )
+
+            attr_space.field, special_keys, _ = RegisterSpockCls(
                 self._salt, self._key
             ).recurse_generate(
                 attr_space.attribute.type, builder_space, self._salt, self._key
             )
             attr_space.attribute = attr_space.attribute.evolve(default=attr_space.field)
-            builder_space.spock_space[
-                attr_space.attribute.type.__name__
-            ] = attr_space.field
+            # builder_space.spock_space[
+            #     attr_space.attribute.type.__name__
+            # ] = attr_space.field
             self.special_keys.update(special_keys)
         return (
             attr_space.config_space.name in builder_space.arguments
@@ -196,109 +215,15 @@ class RegisterFieldTemplate(ABC):
         pass
 
 
-class RegisterList(RegisterFieldTemplate):
-    """Class that registers list types
-
-    Attributes:
-        special_keys: dictionary to check special keys
-
-    """
-
-    def __init__(self, salt: str, key: ByteString):
-        """Init call to RegisterList
-
-        Args:
-        """
-        super(RegisterList, self).__init__(salt, key)
-
-    def handle_attribute_from_config(
-        self, attr_space: AttributeSpace, builder_space: BuilderSpace
-    ):
-        """Handles a list of spock config classes (aka repeated classes)
-
-        Args:
-            attr_space: holds information about a single attribute that is mapped to a ConfigSpace
-            builder_space: named_tuple containing the arguments and spock_space
-
-        Returns:
-        """
-        list_item_spock_class = attr_space.attribute.metadata["type"].__args__[0]
-        attr_space.field = self._process_list(list_item_spock_class, builder_space)
-        builder_space.spock_space[list_item_spock_class.__name__] = attr_space.field
-
-    def handle_optional_attribute_type(
-        self, attr_space: AttributeSpace, builder_space: BuilderSpace
-    ):
-        """Handles a list of spock config classes (aka repeated classes) if it is optional
-
-        Args:
-            attr_space: holds information about a single attribute that is mapped to a ConfigSpace
-            builder_space: named_tuple containing the arguments and spock_space
-
-        Returns:
-        """
-        list_item_spock_class = attr_space.attribute.default
-        attr_space.field = self._process_list(list_item_spock_class, builder_space)
-        builder_space.spock_space[list_item_spock_class.__name__] = attr_space.field
-
-    def handle_optional_attribute_value(
-        self, attr_space: AttributeSpace, builder_space: BuilderSpace
-    ):
-        """Handles setting the value for an optional basic attribute
-
-        Args:
-            attr_space: holds information about a single attribute that is mapped to a ConfigSpace
-            builder_space: named_tuple containing the arguments and spock_space
-
-        Returns:
-        """
-        super().handle_optional_attribute_value(attr_space, builder_space)
-        if attr_space.field is not None:
-            list_item_spock_class = attr_space.field
-            # Here we need to catch the possibility of repeated lists via coded defaults
-            if _is_spock_instance(attr_space.attribute.metadata["type"].__args__[0]):
-                spock_cls = attr_space.attribute.metadata["type"].__args__[0]
-                # Fall back to configs if present
-                if spock_cls.__name__ in builder_space.arguments:
-                    attr_space.field = self._process_list(spock_cls, builder_space)
-                # Here we need to attempt to instantiate any class references that still exist
-                try:
-                    attr_space.field = [
-                        val() if type(val) is type else val for val in attr_space.field
-                    ]
-                except Exception as e:
-                    raise _SpockInstantiationError(
-                        f"Spock class `{spock_cls.__name__}` could not be instantiated -- attrs message: {e}"
-                    )
-                builder_space.spock_space[spock_cls.__name__] = attr_space.field
-            else:
-                builder_space.spock_space[
-                    list_item_spock_class.__name__
-                ] = attr_space.field
-
-    @staticmethod
-    def _process_list(spock_cls, builder_space: BuilderSpace):
-        """Rolls up repeated classes into the expected list format
-
-        Args:
-            spock_cls: current spock class
-            builder_space: named_tuple containing the arguments and spock_space
-
-        Returns:
-            list of rolled up repeated spock classes
-
-        """
-        return [
-            spock_cls(**fields)
-            for fields in builder_space.arguments[spock_cls.__name__]
-        ]
-
-
 class RegisterEnum(RegisterFieldTemplate):
     """Class that registers enum types
 
     Attributes:
         special_keys: dictionary to check special keys
+        _salt: salt used for cryptograpy
+        _key: key used for cryptography
+        _env_resolver: class used to resolve environmental variables
+        _crypto_resolver: class used to resolve cryptographic variables
 
     """
 
@@ -306,6 +231,8 @@ class RegisterEnum(RegisterFieldTemplate):
         """Init call to RegisterEnum
 
         Args:
+            salt: salt used for cryptograpy
+            key: key used for cryptography
         """
         super(RegisterEnum, self).__init__(salt, key)
 
@@ -335,7 +262,8 @@ class RegisterEnum(RegisterFieldTemplate):
         """Handles falling back on the optional default for a type based attribute
 
         Args:
-            attr_space: holds information about a single attribute that is mapped to a ConfigSpace
+            attr_space: holds information about a single attribute that is mapped
+                to a ConfigSpace
             builder_space: named_tuple containing the arguments and spock_space
 
         Returns:
@@ -350,34 +278,36 @@ class RegisterEnum(RegisterFieldTemplate):
         """Handles setting an optional value with its default
 
         Args:
-            attr_space: holds information about a single attribute that is mapped to a ConfigSpace
+            attr_space: holds information about a single attribute that is mapped
+                to a ConfigSpace
             builder_space: named_tuple containing the arguments and spock_space
 
         Returns:
         """
         super().handle_optional_attribute_value(attr_space, builder_space)
-        if attr_space.field is not None:
-            builder_space.spock_space[
-                type(attr_space.field).__name__
-            ] = attr_space.field
+        # if attr_space.field is not None:
+        #     builder_space.spock_space[
+        #         type(attr_space.field).__name__
+        #     ] = attr_space.field
 
     def _handle_and_register_enum(
         self, enum_cls, attr_space: AttributeSpace, builder_space: BuilderSpace
     ):
-        """Recurses the enum in case there are nested type definitions
+        """Recurse the enum in case there are nested type definitions
 
         Args:
             enum_cls: current enum class
-            attr_space: holds information about a single attribute that is mapped to a ConfigSpace
+            attr_space: holds information about a single attribute that is mapped
+                to a ConfigSpace
             builder_space: named_tuple containing the arguments and spock_space
 
         Returns:
         """
-        attr_space.field, special_keys = RegisterSpockCls.recurse_generate(
+        attr_space.field, special_keys, _ = RegisterSpockCls.recurse_generate(
             enum_cls, builder_space, self._salt, self._key
         )
         self.special_keys.update(special_keys)
-        builder_space.spock_space[enum_cls.__name__] = attr_space.field
+        # builder_space.spock_space[enum_cls.__name__] = attr_space.field
 
 
 class RegisterCallableField(RegisterFieldTemplate):
@@ -385,6 +315,10 @@ class RegisterCallableField(RegisterFieldTemplate):
 
     Attributes:
         special_keys: dictionary to check special keys
+        _salt: salt used for cryptograpy
+        _key: key used for cryptography
+        _env_resolver: class used to resolve environmental variables
+        _crypto_resolver: class used to resolve cryptographic variables
 
     """
 
@@ -392,6 +326,8 @@ class RegisterCallableField(RegisterFieldTemplate):
         """Init call to RegisterSimpleField
 
         Args:
+            salt: salt used for cryptograpy
+            key: key used for cryptography
         """
         super(RegisterCallableField, self).__init__(salt, key)
 
@@ -438,6 +374,10 @@ class RegisterGenericAliasCallableField(RegisterFieldTemplate):
 
     Attributes:
         special_keys: dictionary to check special keys
+        _salt: salt used for cryptograpy
+        _key: key used for cryptography
+        _env_resolver: class used to resolve environmental variables
+        _crypto_resolver: class used to resolve cryptographic variables
 
     """
 
@@ -445,6 +385,8 @@ class RegisterGenericAliasCallableField(RegisterFieldTemplate):
         """Init call to RegisterSimpleField
 
         Args:
+            salt: salt used for cryptograpy
+            key: key used for cryptography
         """
         super(RegisterGenericAliasCallableField, self).__init__(salt, key)
 
@@ -505,6 +447,10 @@ class RegisterSimpleField(RegisterFieldTemplate):
 
     Attributes:
         special_keys: dictionary to check special keys
+        _salt: salt used for cryptograpy
+        _key: key used for cryptography
+        _env_resolver: class used to resolve environmental variables
+        _crypto_resolver: class used to resolve cryptographic variables
 
     """
 
@@ -512,6 +458,8 @@ class RegisterSimpleField(RegisterFieldTemplate):
         """Init call to RegisterSimpleField
 
         Args:
+            salt: salt used for cryptograpy
+            key: key used for cryptography
         """
         super(RegisterSimpleField, self).__init__(salt, key)
 
@@ -557,8 +505,10 @@ class RegisterSimpleField(RegisterFieldTemplate):
 
         """
         raise _SpockNotOptionalError(
-            f"Parameter `{attr_space.attribute.name}` within `{attr_space.config_space.name}` is of "
-            f"type `{type(attr_space.attribute.type)}` which seems to be unsupported -- "
+            f"Parameter `{attr_space.attribute.name}` within "
+            f"`{attr_space.config_space.name}` is of "
+            f"type `{type(attr_space.attribute.type)}` which seems to be "
+            f"unsupported -- "
             f"are you missing an @spock decorator on a base python class?"
         )
 
@@ -599,6 +549,10 @@ class RegisterTuneCls(RegisterFieldTemplate):
 
     Attributes:
         special_keys: dictionary to check special keys
+        _salt: salt used for cryptograpy
+        _key: key used for cryptography
+        _env_resolver: class used to resolve environmental variables
+        _crypto_resolver: class used to resolve cryptographic variables
 
     """
 
@@ -606,6 +560,8 @@ class RegisterTuneCls(RegisterFieldTemplate):
         """Init call to RegisterTuneCls
 
         Args:
+            salt: salt used for cryptograpy
+            key: key used for cryptography
         """
         super(RegisterTuneCls, self).__init__(salt, key)
 
@@ -674,10 +630,15 @@ class RegisterTuneCls(RegisterFieldTemplate):
 class RegisterSpockCls(RegisterFieldTemplate):
     """Class that registers attributes within a spock class
 
-    Might be called recursively so it has methods to deal with spock classes when invoked via the __call__ method
+    Might be called recursively so it has methods to deal with spock classes when
+    invoked via the __call__ method
 
     Attributes:
         special_keys: dictionary to check special keys
+        _salt: salt used for cryptograpy
+        _key: key used for cryptography
+        _env_resolver: class used to resolve environmental variables
+        _crypto_resolver: class used to resolve cryptographic variables
 
     """
 
@@ -685,6 +646,8 @@ class RegisterSpockCls(RegisterFieldTemplate):
         """Init call to RegisterSpockCls
 
         Args:
+            salt: salt used for cryptograpy
+            key: key used for cryptography
         """
         super(RegisterSpockCls, self).__init__(salt, key)
 
@@ -693,7 +656,8 @@ class RegisterSpockCls(RegisterFieldTemplate):
         """Gets the attribute type
 
         Args:
-            attr_space: holds information about a single attribute that is mapped to a ConfigSpace
+            attr_space: holds information about a single attribute that is mapped to a
+            ConfigSpace
 
         Returns:
             the type of the attribute
@@ -709,44 +673,47 @@ class RegisterSpockCls(RegisterFieldTemplate):
         Calls the recurse_generate function which handles nesting of spock classes
 
         Args:
-            attr_space: holds information about a single attribute that is mapped to a ConfigSpace
+            attr_space: holds information about a single attribute that is mapped to a
+            ConfigSpace
             builder_space: named_tuple containing the arguments and spock_space
 
         Returns:
         """
         attr_type = self._attr_type(attr_space)
-        attr_space.field, special_keys = self.recurse_generate(
+        attr_space.field, special_keys, _ = self.recurse_generate(
             attr_type, builder_space, self._salt, self._key
         )
-        builder_space.spock_space[attr_type.__name__] = attr_space.field
+        # builder_space.spock_space[attr_type.__name__] = attr_space.field
         self.special_keys.update(special_keys)
 
     def handle_optional_attribute_value(
         self, attr_space: AttributeSpace, builder_space: BuilderSpace
     ):
-        """Handles when the falling back onto the default for the attribute of spock class type and the field value
+        """Handles when the falling back onto the default for the attribute of spock
+        class type and the field value
         already exits within the attr_space
 
         Args:
-            attr_space: holds information about a single attribute that is mapped to a ConfigSpace
+            attr_space: holds information about a single attribute that is mapped
+            to a ConfigSpace
             builder_space: named_tuple containing the arguments and spock_space
 
         Returns:
         """
         super().handle_optional_attribute_value(attr_space, builder_space)
-        if attr_space.field is None:
-            return
-        builder_space.spock_space[
-            self._attr_type(attr_space).__name__
-        ] = attr_space.field
+        # if attr_space.field is None:
+        #     return
+        # builder_space.spock_space[
+        #     self._attr_type(attr_space).__name__
+        # ] = attr_space.field
 
     def handle_optional_attribute_type(
         self, attr_space: AttributeSpace, builder_space: BuilderSpace
     ):
         """Handles when the falling back onto the default for the attribute of spock class type
 
-        Calls the recurse_generate function which handles nesting of spock classes -- to make sure the attr_space.field
-        value is defined
+        Calls the recurse_generate function which handles nesting of spock classes
+        -- to make sure the attr_space.field value is defined
 
         Args:
             attr_space: holds information about a single attribute that is mapped to a ConfigSpace
@@ -754,14 +721,14 @@ class RegisterSpockCls(RegisterFieldTemplate):
 
         Returns:
         """
-        attr_space.field, special_keys = RegisterSpockCls.recurse_generate(
+        attr_space.field, special_keys, _ = RegisterSpockCls.recurse_generate(
             self._attr_type(attr_space), builder_space, self._salt, self._key
         )
         self.special_keys.update(special_keys)
 
-        builder_space.spock_space[
-            self._attr_type(attr_space).__name__
-        ] = attr_space.field
+        # builder_space.spock_space[
+        #     self._attr_type(attr_space).__name__
+        # ] = attr_space.field
 
     @classmethod
     def _find_callables(cls, typed: _T):
@@ -809,9 +776,12 @@ class RegisterSpockCls(RegisterFieldTemplate):
         Args:
             spock_cls: current spock class that is being handled
             builder_space: named_tuple containing the arguments and spock_space
+            salt: salt used for cryptograpy
+            key: key used for cryptography
 
         Returns:
-            tuple of the instantiated spock class and the dictionary of special keys
+            tuple of the instantiated spock class, the dictionary of special keys,
+            and the info tuple of the original class and attempted payload
 
         """
         # Empty dits for storing info
@@ -826,58 +796,59 @@ class RegisterSpockCls(RegisterFieldTemplate):
             attr_space = AttributeSpace(attribute, config_space)
             # Logic to handle the underlying type to call the correct Register* class
             # Lists of repeated values
-            if (
-                (attribute.type is list) or (attribute.type is List)
-            ) and _is_spock_instance(attribute.metadata["type"].__args__[0]):
-                handler = RegisterList(salt, key)
-            # Dict/List of Callables
-            elif (
-                (attribute.type is list)
-                or (attribute.type is List)
-                or (attribute.type is dict)
-                or (attribute.type is Dict)
-                or (attribute.type is tuple)
-                or (attribute.type is Tuple)
-            ) and cls._find_callables(attribute.metadata["type"]):
-                # handler = RegisterListCallableField()
-                handler = RegisterGenericAliasCallableField(salt, key)
-            # Enums
-            elif isinstance(attribute.type, EnumMeta) and _check_iterable(
-                attribute.type
-            ):
-                handler = RegisterEnum(salt, key)
-            # References to other spock classes
-            elif _is_spock_instance(attribute.type):
-                handler = RegisterSpockCls(salt, key)
-            # References to tuner classes
-            elif _is_spock_tune_instance(attribute.type):
-                handler = RegisterTuneCls(salt, key)
-            # References to callables
-            elif isinstance(attribute.type, _SpockVariadicGenericAlias):
-                handler = RegisterCallableField(salt, key)
-            # Basic field
-            else:
-                handler = RegisterSimpleField(salt, key)
-
-            handler(attr_space, builder_space)
-            special_keys.update(handler.special_keys)
+            # if (
+            #     (attribute.type is list) or (attribute.type is List)
+            # ) and _is_spock_instance(attribute.metadata["type"].__args__[0]):
+            #     handler = RegisterList(salt, key)
+            # Wrap this in a try except to gracefully handle when a handler isn't
+            # correct
+            try:
+                # Dict/List of Callables
+                if (
+                    (attribute.type is list)
+                    or (attribute.type is List)
+                    or (attribute.type is dict)
+                    or (attribute.type is Dict)
+                    or (attribute.type is tuple)
+                    or (attribute.type is Tuple)
+                ) and cls._find_callables(attribute.metadata["type"]):
+                    handler = RegisterGenericAliasCallableField(salt, key)
+                # Enums
+                elif isinstance(attribute.type, EnumMeta) and _check_iterable(
+                    attribute.type
+                ):
+                    handler = RegisterEnum(salt, key)
+                # References to other spock classes
+                elif _is_spock_instance(attribute.type):
+                    handler = RegisterSpockCls(salt, key)
+                # References to tuner classes
+                elif _is_spock_tune_instance(attribute.type):
+                    handler = RegisterTuneCls(salt, key)
+                # References to callables
+                elif isinstance(attribute.type, _SpockVariadicGenericAlias):
+                    handler = RegisterCallableField(salt, key)
+                # Basic field -- this might fail -- should we try catch here?
+                else:
+                    handler = RegisterSimpleField(salt, key)
+                # Call the handler
+                handler(attr_space, builder_space)
+                # Update any special keys
+                special_keys.update(handler.special_keys)
+            except Exception as e:
+                raise _SpockFieldHandlerError(
+                    f"Could not handle attribute "
+                    f"(name: `{attribute.name}`, type: `{attribute.type}`): "
+                    f"{e}"
+                )
             # Handle annotations by attaching them to a dictionary
             if attr_space.annotations is not None:
                 annotations.update({attr_space.attribute.name: attr_space.annotations})
             if attr_space.crypto:
                 crypto = True
-
-        # Try except on the class since it might not be successful -- throw the attrs message as it will know the
-        # error on instantiation
-        try:
-            # If there are annotations attach them to the spock class in the __resolver__ attribute
-            if len(annotations) > 0:
-                spock_cls.__resolver__ = annotations
-            if crypto:
-                spock_cls.__crypto__ = True
-            spock_instance = spock_cls(**fields)
-        except Exception as e:
-            raise _SpockInstantiationError(
-                f"Spock class `{spock_cls.__name__}` could not be instantiated -- attrs message: {e}"
-            )
-        return spock_instance, special_keys
+        # If there are annotations attach them to the spock class
+        # in the __resolver__ attribute
+        if len(annotations) > 0:
+            spock_cls.__resolver__ = annotations
+        if crypto:
+            spock_cls.__crypto__ = True
+        return spock_cls, special_keys, fields

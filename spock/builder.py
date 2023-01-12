@@ -135,7 +135,8 @@ class ConfigArgBuilder:
             # Attach the key and salt to the Spockspace
             self._arg_namespace.__salt__ = self.salt
             self._arg_namespace.__key__ = self.key
-            # Get the payload from the config files -- hyper-parameters -- only if the obj is not None
+            # Get the payload from the config files -- hyper-parameters --
+            # only if the obj is not None
             if self._tune_obj is not None:
                 self._tune_args = self._get_payload(
                     payload_obj=self._tune_payload_obj,
@@ -173,25 +174,29 @@ class ConfigArgBuilder:
 
     @property
     def tuner_status(self) -> Dict:
-        """Returns a dictionary of all the necessary underlying tuner internals to report the result"""
+        """Returns a dictionary of all the necessary underlying tuner internals to
+        report the result"""
         return self._tuner_status
 
     @property
     def best(self) -> Spockspace:
-        """Returns a Spockspace of the best hyper-parameter config and the associated metric value"""
+        """Returns a Spockspace of the best hyper-parameter config and the
+        associated metric value"""
         return self._tuner_interface.best
 
     @property
     def salt(self):
+        """Returns the salt for crypto"""
         return self._salt
 
     @property
     def key(self):
+        """Returns the key for crypto"""
         return self._key
 
     def sample(self) -> Spockspace:
-        """Sample method that constructs a namespace from the fixed parameters and samples from the tuner space to
-        generate a Spockspace derived from both
+        """Sample method that constructs a namespace from the fixed parameters and
+        samples from the tuner space to generate a Spockspace derived from both
 
         Returns:
             argument namespace(s) -- fixed + drawn sample from tuner backend
@@ -209,7 +214,8 @@ class ConfigArgBuilder:
         return return_tuple
 
     def tuner(self, tuner_config: _T) -> _T:
-        """Chained call that builds the tuner interface for either optuna or ax depending upon the type of the tuner_obj
+        """Chained call that builds the tuner interface for either optuna or ax
+        depending upon the type of the tuner_obj
 
         Args:
             tuner_config: a class of type optuna.study.Study or AX****
@@ -343,15 +349,16 @@ class ConfigArgBuilder:
     def _handle_cmd_line(self) -> argparse.Namespace:
         """Handle all cmd line related tasks
 
-        Config paths can enter from either the command line or be added in the class init call
-        as a kwarg (configs=[]) -- also trigger the building of the cmd line overrides for each fixed and
-        tunable objects
+        Config paths can enter from either the command line or be added in the class
+        init call as a kwarg (configs=[]) -- also trigger the building of the cmd
+        line overrides  for each fixed and tunable objects
 
         Returns:
             args: namespace of args
 
         """
-        # Need to hold an overarching parser here that just gets appended to for both fixed and tunable objects
+        # Need to hold an overarching parser here that just gets appended to for both
+        # fixed and tunable objects
         # Check if the no_cmd_line is not flagged and if the configs are not empty
         if self._no_cmd_line and (self._configs is None):
             raise ValueError(
@@ -371,8 +378,10 @@ class ConfigArgBuilder:
     def _build_override_parsers(self, desc: str) -> argparse.Namespace:
         """Creates parsers for command-line overrides
 
-        Builds the basic command line parser for configs and help then iterates through each attr instance to make
-        namespace specific cmd line override parsers -- handles calling both the fixed and tunable objects
+        Builds the basic command line parser for configs and help then iterates through
+        each attr instance to make
+        namespace specific cmd line override parsers -- handles calling both the fixed
+        and tunable objects
 
         Args:
             desc: argparser description
@@ -648,7 +657,8 @@ class ConfigArgBuilder:
         return self.spockspace_2_dict(Spockspace(**obj_dict))
 
     def evolve(self, *args: _C) -> Spockspace:
-        """Function that allows a user to evolve the underlying spock classes with instantiated spock objects
+        """Function that allows a user to evolve the underlying spock classes with
+        instantiated spock objects
 
         This will map the differences between the passed in instantiated objects and the underlying class definitions
         to the underlying namespace -- this essentially allows you to 'evolve' the Spockspace similar to how attrs

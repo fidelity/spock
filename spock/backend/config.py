@@ -10,8 +10,8 @@ import sys
 import attr
 
 from spock.backend.typed import katra
-from spock.exceptions import _SpockUndecoratedClass
-from spock.utils import _is_spock_instance
+from spock.exceptions import _SpockInstantiationError, _SpockUndecoratedClass
+from spock.utils import _is_spock_instance, vars_dict_non_dunder
 
 
 def _base_attr(cls, kw_only, make_init, dynamic):
@@ -77,9 +77,41 @@ def _base_attr(cls, kw_only, make_init, dynamic):
         new_annotations = {}
     merged_annotations = {**base_annotation, **new_annotations}
 
+    cls_attrs = set()
+    # Iterate through the bases first
+    for val in bases:
+        # Get the underlying attribute defs
+        cls_attrs.update(set(vars_dict_non_dunder(val).keys()))
+        # If it's an attr class -- add the underlying annotations
+        if attr.has(val):
+            cls_attrs.update(set(attr.fields_dict(val).keys()))
+        # Add the underlying annotations
+        if hasattr(cls, "__annotations__"):
+            cls_attrs.update(set(val.__annotations__.keys()))
+
+    # Then on the class itself get everything not from the parents
+    # Set attributes
+    cls_attrs.update(set(vars_dict_non_dunder(cls).keys()))
+    # Annotated attributes
+    cls_attrs.update(set(new_annotations.keys()))
+    # Attr defined attributes
+    if attr.has(cls):
+        cls_attrs.update(set(attr.fields_dict(cls).keys()))
+
+    # Make sure the lengths align -- if they don't then something isn't annotated
+    # throw an exception and print the set diff (cls should always have more than the
+    # merged set)
+    if len(cls_attrs) != len(merged_annotations):
+        # Get the merged keys set
+        merged_set = set(merged_annotations.keys())
+        raise _SpockInstantiationError(
+            f"Class {cls.__name__} contains attributes without type annotations. "
+            f"Please add type annotations to the following attributes: "
+            f"{cls_attrs - merged_set}"
+        )
+
     # Make a blank attrs dict for new attrs
     attrs_dict = {}
-
     for k, v in merged_annotations.items():
         # If the cls has the attribute then a default was set
         if hasattr(cls, k):

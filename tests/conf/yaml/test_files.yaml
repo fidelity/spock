@@ -1,0 +1,4 @@
+test_file_def: '/tmp/foo/tmp2.txt'
+test_list_file_def: ['/tmp/foo/tmp.txt', '/tmp/foo/tmp2.txt']
+test_dict_file_def: {'one': '/tmp/foo/tmp.txt', 'two': '/tmp/foo/tmp2.txt', 'three': '/tmp/foo/tmp3.txt'}
+test_tuple_file_def: ['/tmp/foo/tmp.txt', '/tmp/foo/tmp2.txt']

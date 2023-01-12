@@ -46,7 +46,9 @@ class SampleTypes:
     def test_sampling(self, arg_builder):
         # Draw random samples and make sure all fall within all of the bounds or sets
         if isinstance(arg_builder._tuner_interface._lib_interface, AxInterface):
-            max_draws = arg_builder._tuner_interface.tuner_status['client'].generation_strategy.current_generator_run_limit()[0]
+            max_draws = arg_builder._tuner_interface.tuner_status[
+                "client"
+            ].generation_strategy.current_generator_run_limit()[0]
         else:
             max_draws = 25
         for _ in range(max_draws):

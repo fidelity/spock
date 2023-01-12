@@ -41,37 +41,6 @@ With YAML definitions:
 list_choice_p_str: ['option_1', 'option_2']
 ```
 
-### List and Tuple of Repeated `@spock` Classes 
-
-These can be accessed by index and are iterable.
-
-```python
-from spock.config import spock
-from typing import List
-
-
-@spock
-class NestedListStuff:
-    one: int
-    two: str
-
-@spock
-class TypeConfig:
-    nested_list: List[NestedListStuff] # To Set Default Value append '= NestedListStuff'
-```
-
-With YAML definitions:
-
-```yaml
-# Nested List configuration
-nested_list: NestedListStuff
-NestedListStuff:
-    - one: 10
-      two: hello
-    - one: 20
-      two: bye
-```
-
 ### `Enum` of `@spock` Classes
 
 ```python

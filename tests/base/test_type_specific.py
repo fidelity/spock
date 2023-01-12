@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
+import os
 import sys
 
 import pytest
+import subprocess
 
+from spock import directory, file
 from spock.builder import ConfigArgBuilder
-from spock.exceptions import _SpockInstantiationError
+from spock.exceptions import _SpockInstantiationError, _SpockFieldHandlerError
 from tests.base.attr_configs_test import *
 
 
@@ -20,11 +23,14 @@ class TestChoiceRaises:
 
 class TestOptionalRaises:
     """Check choice raises correctly"""
+
     def test_coptional_raise(self, monkeypatch):
         with monkeypatch.context() as m:
             # m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/empty.yaml"])
             with pytest.raises(_SpockInstantiationError):
-                ConfigArgBuilder(OptionalFail, desc="Test Builder", configs=[], no_cmd_line=True)
+                ConfigArgBuilder(
+                    OptionalFail, desc="Test Builder", configs=[], no_cmd_line=True
+                )
 
 
 class TestTupleRaises:
@@ -34,9 +40,7 @@ class TestTupleRaises:
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/tuple.yaml"])
             with pytest.raises(ValueError):
-                ConfigArgBuilder(
-                    *all_configs,
-                    desc="Test Builder")
+                ConfigArgBuilder(*all_configs, desc="Test Builder")
 
 
 class TestOverrideRaise:
@@ -55,7 +59,7 @@ class TestOverrideRaise:
                     SingleNestedConfig,
                     FirstDoubleNestedConfig,
                     SecondDoubleNestedConfig,
-                    desc="Test Builder"
+                    desc="Test Builder",
                 )
 
 
@@ -79,6 +83,60 @@ class TestIncorrectType:
                     weird_type: lambda x: x
 
 
+@spock
+class TupleFail:
+    foo: Tuple[int, int, int] = (2, 2)
+
+
+class TestTupleLen:
+    def test_tuple_len_value(self, monkeypatch):
+        with monkeypatch.context() as m:
+            with pytest.raises(_SpockInstantiationError):
+                m.setattr(
+                    sys,
+                    "argv",
+                    [""],
+                )
+                config = ConfigArgBuilder(TupleFail, desc="Test Builder")
+                config.generate()
+
+
+@spock
+class TupleFailFlip:
+    foo: Tuple[int, int] = (2, 2, 3)
+
+
+class TestTupleLenFlip:
+    def test_tuple_len_set(self, monkeypatch):
+        with monkeypatch.context() as m:
+            with pytest.raises(_SpockInstantiationError):
+                m.setattr(
+                    sys,
+                    "argv",
+                    [""],
+                )
+                config = ConfigArgBuilder(TupleFailFlip, desc="Test Builder")
+                config.generate()
+
+
+@spock
+class TupleMixedTypeMiss:
+    foo: Tuple[List[int], str] = ([2], 2)
+
+
+class TestTupleTypeMiss:
+    def test_tuple_len_set(self, monkeypatch):
+        with monkeypatch.context() as m:
+            with pytest.raises(_SpockInstantiationError):
+                m.setattr(
+                    sys,
+                    "argv",
+                    [""],
+                )
+                config = ConfigArgBuilder(TupleMixedTypeMiss, desc="Test Builder")
+                config.generate()
+
+
 class TestEnumClassMissing:
     def test_enum_class_missing(self, monkeypatch):
         with monkeypatch.context() as m:
@@ -87,11 +145,8 @@ class TestEnumClassMissing:
                 "argv",
                 ["", "--config", "./tests/conf/yaml/test_wrong_class_enum.yaml"],
             )
-            with pytest.raises(KeyError):
-                ConfigArgBuilder(
-                    *all_configs,
-                    desc="Test Builder"
-                )
+            with pytest.raises(_SpockFieldHandlerError):
+                ConfigArgBuilder(*all_configs, desc="Test Builder")
 
 
 @spock
@@ -109,5 +164,131 @@ class TestMissingRepeatedDefs:
                 [""],
             )
             with pytest.raises(_SpockInstantiationError):
-                config = ConfigArgBuilder(RepeatedDefsFailConfig, NestedListStuff, desc="Test Builder")
+                config = ConfigArgBuilder(
+                    RepeatedDefsFailConfig, NestedListStuff, desc="Test Builder"
+                )
                 config.generate()
+
+
+class TestNotValid:
+    def test_invalid_file(self, monkeypatch, tmp_path):
+        with monkeypatch.context() as m:
+            m.setattr(
+                sys,
+                "argv",
+                [""],
+            )
+
+            dir = f"{str(tmp_path)}/fail_perms"
+            os.mkdir(dir)
+
+            with pytest.raises(_SpockInstantiationError):
+
+                @spock
+                class FileFail:
+                    test_dir: file = dir
+
+                config = ConfigArgBuilder(FileFail, desc="Test Builder")
+                config.generate()
+
+
+class TestWrongPermission:
+    def test_dir_write_permission(self, monkeypatch, tmp_path):
+        """Tests directory write permission check"""
+        with monkeypatch.context() as m:
+            m.setattr(
+                sys,
+                "argv",
+                [""],
+            )
+            dir = f"{str(tmp_path)}/fail_perms"
+            os.mkdir(dir)
+            subprocess.run(["chmod", "444", dir])
+
+            with pytest.raises(_SpockInstantiationError):
+
+                @spock
+                class DirWrongPermissions:
+                    test_dir: directory = dir
+
+                config = ConfigArgBuilder(DirWrongPermissions, desc="Test Builder")
+                config.generate()
+        subprocess.run(["chmod", "777", dir])
+        os.rmdir(dir)
+
+    def test_dir_read_permission(self, monkeypatch, tmp_path):
+        """Tests directory read permission check"""
+        with monkeypatch.context() as m:
+            m.setattr(
+                sys,
+                "argv",
+                [""],
+            )
+            dir = f"{str(tmp_path)}/fail_perms"
+            os.mkdir(dir)
+            subprocess.run(["chmod", "222", dir])
+
+            with pytest.raises(_SpockInstantiationError):
+
+                @spock
+                class DirWrongPermissions:
+                    test_dir: directory = dir
+
+                config = ConfigArgBuilder(DirWrongPermissions, desc="Test Builder")
+                config.generate()
+        subprocess.run(["chmod", "777", dir])
+        os.rmdir(dir)
+
+    def test_file_write_permission(self, monkeypatch, tmp_path):
+        """Tests file write permission check"""
+        with monkeypatch.context() as m:
+            m.setattr(
+                sys,
+                "argv",
+                [""],
+            )
+
+            dir = f"{str(tmp_path)}/fail_perms"
+            os.mkdir(dir)
+            f = open(f"{dir}/tmp_fail.txt", "x")
+            f.close()
+
+            subprocess.run(["chmod", "444", f"{dir}/tmp_fail.txt"])
+
+            with pytest.raises(_SpockInstantiationError):
+
+                @spock
+                class FileWrongPermissions:
+                    test_file: file = f"{dir}/tmp_fail.txt"
+
+                config = ConfigArgBuilder(FileWrongPermissions, desc="Test Builder")
+                config.generate()
+        subprocess.run(["chmod", "777", f"{dir}/tmp_fail.txt"])
+        os.remove(f"{dir}/tmp_fail.txt")
+
+    def test_file_read_permission(self, monkeypatch, tmp_path):
+        """Tests file read permission check"""
+        with monkeypatch.context() as m:
+            m.setattr(
+                sys,
+                "argv",
+                [""],
+            )
+
+            dir = f"{str(tmp_path)}/fail_perms"
+            os.mkdir(dir)
+            f = open(f"{dir}/tmp_fail.txt", "x")
+            f.close()
+
+            subprocess.run(["chmod", "222", f"{dir}/tmp_fail.txt"])
+
+            with pytest.raises(_SpockInstantiationError):
+
+                @spock
+                class FileWrongPermissions:
+                    test_file: file = f"{dir}/tmp_fail.txt"
+
+                config = ConfigArgBuilder(FileWrongPermissions, desc="Test Builder")
+                config.generate()
+        subprocess.run(["chmod", "777", f"{dir}/tmp_fail.txt"])
+        os.remove(f"{dir}/tmp_fail.txt")

@@ -10,13 +10,23 @@ Please refer to the documentation provided in the README.md
 """
 
 from spock._version import get_versions
+from spock.backend.custom import directory, file
 from spock.backend.typed import SavePath
 from spock.builder import ConfigArgBuilder
 from spock.config import spock
 
 SpockBuilder = ConfigArgBuilder
 
-__all__ = ["args", "builder", "config", "SavePath", "spock", "SpockBuilder"]
+__all__ = [
+    "args",
+    "builder",
+    "config",
+    "directory",
+    "file",
+    "SavePath",
+    "spock",
+    "SpockBuilder",
+]
 
 __version__ = get_versions()["version"]
 del get_versions

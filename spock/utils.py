@@ -28,6 +28,19 @@ from spock.exceptions import _SpockValueError
 minor = sys.version_info.minor
 
 
+def vars_dict_non_dunder(__obj: object):
+    """Gets the user defined attributes from a base object class
+
+    Args:
+        __obj: class object to inspect for attribute values
+
+    Returns:
+        dictionary of non dunder attributes
+
+    """
+    return {k: v for k, v in dict(vars(__obj)).items() if not k.startswith("_")}
+
+
 def make_salt(salt_len: int = 16):
     """Make a salt of specific length
 
@@ -409,8 +422,8 @@ def check_path_s3(path: Path) -> bool:
 def _is_spock_instance(__obj: object) -> bool:
     """Checks if the object is a @spock decorated class
 
-    Private interface that checks to see if the object passed in is registered within the spock module and also
-    is a class with attrs attributes (__attrs_attrs__)
+    Private interface that checks to see if the object passed in is registered within
+    the spock module and also is a class with attrs attributes (__attrs_attrs__)
 
     Args:
         __obj: class to inspect
@@ -420,6 +433,23 @@ def _is_spock_instance(__obj: object) -> bool:
 
     """
     return attr.has(__obj) and (__obj.__module__ == "spock.backend.config")
+
+
+def _is_spock_instance_type(__obj: object) -> bool:
+    """Checks if the object is a @spock decorated class type
+
+    Private interface that checks to see if the object passed in is registered within
+    the spock module and also is a class with attrs attributes (__attrs_attrs__) and
+    is of type (aka not instantiated)
+
+    Args:
+        __obj: class to inspect
+
+    Returns:
+        bool
+
+    """
+    return _is_spock_instance(__obj) and type(__obj).__name__ == "type"
 
 
 def _is_spock_tune_instance(__obj: object) -> bool:

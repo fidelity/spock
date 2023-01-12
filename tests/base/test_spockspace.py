@@ -60,10 +60,10 @@ class TestClassToDict:
             configs = config.generate()
             config_dict = config.obj_2_dict(configs.TypeConfig)
             assert isinstance(config_dict, dict) is True
-            assert isinstance(config_dict['TypeConfig'], dict) is True
+            assert isinstance(config_dict["TypeConfig"], dict) is True
             configs_dicts = config.obj_2_dict((configs.TypeConfig, configs.NestedStuff))
-            assert isinstance(configs_dicts['TypeConfig'], dict) is True
-            assert isinstance(configs_dicts['NestedStuff'], dict) is True
+            assert isinstance(configs_dicts["TypeConfig"], dict) is True
+            assert isinstance(configs_dicts["NestedStuff"], dict) is True
 
     def test_raise_incorrect_type(self, monkeypatch):
         with monkeypatch.context() as m:

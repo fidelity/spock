@@ -7,11 +7,17 @@
 
 from enum import Enum, EnumMeta
 from functools import partial
-from typing import TypeVar, Union
+from typing import NewType, TypeVar, Union
 
 import attr
 
 from spock.backend.utils import _get_name_py_version
+from spock.backend.validators import (
+    _in_type,
+    instance_of,
+    is_len,
+    ordered_is_instance_deep_iterable,
+)
 from spock.utils import _SpockGenericAlias, _SpockVariadicGenericAlias
 
 
@@ -29,7 +35,8 @@ class SavePath(str):
 def _extract_base_type(typed):
     """Extracts the name of the type from a _GenericAlias
 
-    Assumes that the derived types are only of length 1 as the __args__ are [0] recursed... this is not true for
+    Assumes that the derived types are only of length 1 as the __args__ are [0]
+    recursed... this is not true for
     tuples
 
     Args:
@@ -50,8 +57,10 @@ def _extract_base_type(typed):
 def _recursive_generic_validator(typed):
     """Recursively assembles the validators for nested generic types
 
-    Walks through the nested type structure and determines whether to recurse all the way to a base type. Once it
-    hits the base type it bubbles up the correct validator that is nested within the upper validator
+    Walks through the nested type structure and determines whether to recurse all the
+    way to a base type. Once it
+    hits the base type it bubbles up the correct validator that is nested within the
+    upper validator
 
     Args:
         typed: input type
@@ -62,67 +71,96 @@ def _recursive_generic_validator(typed):
     """
     if hasattr(typed, "__args__") and not isinstance(typed, _SpockVariadicGenericAlias):
         # Iterate through since there might be multiple types?
-        # Handle List and Tuple types
-        if (
-            _get_name_py_version(typed) == "List"
-            or _get_name_py_version(typed) == "Tuple"
-        ):
-            # If there are more __args__ then we still need to recurse as it is still a GenericAlias
-            if len(typed.__args__) > 1:
-                return_type = attr.validators.deep_iterable(
-                    member_validator=_recursive_generic_validator(typed.__args__),
-                    iterable_validator=attr.validators.instance_of(typed.__origin__),
+        # Handle Tuple type
+        if _get_name_py_version(typed) == "Tuple":
+
+            # Tuples by def have len more than 1. We throw an exception if not since
+            # a tuple is not necessary in that case. Tuples can also have mixed types,
+            # thus we need to handle this oddity here -- we do this by passing each
+            # of the types as the member validator and wrap it in an or
+
+            # If there are more __args__ then we still need to recurse as it is still a
+            # GenericAlias
+            member_validator = (
+                typed.__args__ if len(typed.__args__) > 1 else typed.__args__[0]
+            )
+            # Try to add the length validator
+            try:
+                set_len = len(member_validator)
+            except Exception as e:
+                raise TypeError(
+                    f"Attempting to use a Tuple of length 1 -- don't use an "
+                    f"iterable type as it seems it is not needed"
                 )
-            else:
-                return_type = attr.validators.deep_iterable(
-                    member_validator=_recursive_generic_validator(typed.__args__[0]),
-                    iterable_validator=attr.validators.instance_of(typed.__origin__),
-                )
+            iterable_validator = attr.validators.and_(
+                instance_of(typed.__origin__), is_len(set_len)
+            )
+            return_type = ordered_is_instance_deep_iterable(
+                ordered_types=typed.__args__,
+                recurse_callable=_recursive_generic_validator,
+                iterable_validator=iterable_validator,
+            )
+            return return_type
+        # Handle List type
+        elif _get_name_py_version(typed) == "List":
+            # Lists can only have one given type... thus pop off idx 0 for the member
+            # validator
+            member_validator = typed.__args__[0]
+            iterable_validator = instance_of(typed.__origin__)
+            return_type = attr.validators.deep_iterable(
+                member_validator=_recursive_generic_validator(member_validator),
+                iterable_validator=iterable_validator,
+            )
             return return_type
         # Handle Dict types
         elif _get_name_py_version(typed) == "Dict":
             key_type, value_type = typed.__args__
             if key_type is not str:
                 raise TypeError(
-                    f"Unexpected key type of `{str(key_type.__name__)}` when attempting to handle "
-                    f"GenericAlias type of Dict -- currently Spock only supports str as keys due "
-                    f"to maintaining support for valid TOML and JSON files"
+                    f"Unexpected key type of `{str(key_type.__name__)}` when attempting "
+                    f"to handle GenericAlias type of Dict -- currently Spock only "
+                    f"supports str as keys due to maintaining support for valid TOML "
+                    f"and JSON files"
                 )
             if hasattr(value_type, "__args__") and not isinstance(
                 typed, _SpockVariadicGenericAlias
             ):
                 return_type = attr.validators.deep_mapping(
                     value_validator=_recursive_generic_validator(value_type),
-                    key_validator=attr.validators.instance_of(key_type),
+                    key_validator=instance_of(key_type),
                 )
             else:
                 return_type = attr.validators.deep_mapping(
-                    value_validator=attr.validators.instance_of(value_type),
-                    key_validator=attr.validators.instance_of(key_type),
+                    value_validator=instance_of(value_type),
+                    key_validator=instance_of(key_type),
                 )
             return return_type
         else:
             raise TypeError(
-                f"Unexpected type of `{str(typed)}` when attempting to handle GenericAlias types"
+                f"Unexpected type of `{str(typed)}` when attempting to handle "
+                f"GenericAlias types"
             )
     else:
-        # If no more __args__ then we are to the base type and need to bubble up the type
+        # If no more __args__ then we are to the base type and need to bubble up the
+        # type
         # But we need to check against base types and enums
         if isinstance(typed, EnumMeta):
             base_type, allowed = _check_enum_props(typed)
             return_type = attr.validators.and_(
-                attr.validators.instance_of(base_type), attr.validators.in_(allowed)
+                instance_of(base_type), attr.validators.in_(allowed)
             )
         else:
-            return_type = attr.validators.instance_of(typed)
+            return_type = instance_of(typed)
     return return_type
 
 
 def _generic_alias_katra(typed, default=None, optional=False):
     """Private interface to create a subscripted generic_alias katra
 
-    A 'katra' is the basic functional unit of `spock`. It defines a parameter using attrs as the backend, type checks
-    both simple types and subscripted GenericAlias types (e.g. lists and tuples), handles setting default parameters,
+    A 'katra' is the basic functional unit of `spock`. It defines a parameter using
+    attrs as the backend, type checks
+    both simple types and subscripted GenericAlias types (e.g. lists and tuples),
+    handles setting default parameters,
     and deals with parameter optionality
 
     Handles: List[type], Tuple[type], Dict[type]
@@ -157,8 +195,6 @@ def _generic_alias_katra(typed, default=None, optional=False):
             type=base_typed,
             metadata={"base": _extract_base_type(typed), "type": typed},
         )
-        # x = attr.ib(validator=_recursive_generic_iterator(typed), default=default, type=base_typed,
-        #             metadata={'base': _extract_base_type(typed)})
     elif optional:
         # if there's no default, but marked as optional, then set the default to None
         x = attr.ib(
@@ -205,8 +241,10 @@ def _check_enum_props(typed):
 def _enum_katra(typed, default=None, optional=False):
     """Private interface to create a Enum typed katra
 
-    A 'katra' is the basic functional unit of `spock`. It defines a parameter using attrs as the backend, type checks
-    both simple types and subscripted GenericAlias types (e.g. lists and tuples), handles setting default parameters,
+    A 'katra' is the basic functional unit of `spock`. It defines a parameter using
+    attrs as the backend, type checks
+    both simple types and subscripted GenericAlias types (e.g. lists and tuples),
+    handles setting default parameters,
     and deals with parameter optionality
 
     Args:
@@ -256,10 +294,13 @@ def _cast_enum_default(default):
 def _enum_base_katra(typed, base_type, allowed, default=None, optional=False):
     """Private interface to create a base Enum typed katra
 
-    Here we handle the base types of enums that allows us to force a type check on the instance
+    Here we handle the base types of enums that allows us to force a type check on
+    the instance
 
-    A 'katra' is the basic functional unit of `spock`. It defines a parameter using attrs as the backend, type checks
-    both simple types and subscripted GenericAlias types (e.g. lists and tuples), handles setting default parameters,
+    A 'katra' is the basic functional unit of `spock`. It defines a parameter using
+    attrs as the backend, type checks
+    both simple types and subscripted GenericAlias types (e.g. lists and tuples),
+    handles setting default parameters,
     and deals with parameter optionality
 
     Args:
@@ -276,7 +317,7 @@ def _enum_base_katra(typed, base_type, allowed, default=None, optional=False):
     if default is not None and optional:
         x = attr.ib(
             validator=attr.validators.optional(
-                [attr.validators.instance_of(base_type), attr.validators.in_(allowed)]
+                [instance_of(base_type), attr.validators.in_(allowed)]
             ),
             default=_cast_enum_default(default),
             type=typed,
@@ -285,7 +326,7 @@ def _enum_base_katra(typed, base_type, allowed, default=None, optional=False):
     elif default is not None:
         x = attr.ib(
             validator=[
-                attr.validators.instance_of(base_type),
+                instance_of(base_type),
                 attr.validators.in_(allowed),
             ],
             default=_cast_enum_default(default),
@@ -295,7 +336,7 @@ def _enum_base_katra(typed, base_type, allowed, default=None, optional=False):
     elif optional:
         x = attr.ib(
             validator=attr.validators.optional(
-                [attr.validators.instance_of(base_type), attr.validators.in_(allowed)]
+                [instance_of(base_type), attr.validators.in_(allowed)]
             ),
             default=_cast_enum_default(default),
             type=typed,
@@ -304,7 +345,7 @@ def _enum_base_katra(typed, base_type, allowed, default=None, optional=False):
     else:
         x = attr.ib(
             validator=[
-                attr.validators.instance_of(base_type),
+                instance_of(base_type),
                 attr.validators.in_(allowed),
             ],
             type=typed,
@@ -313,32 +354,18 @@ def _enum_base_katra(typed, base_type, allowed, default=None, optional=False):
     return x
 
 
-def _in_type(instance, attribute, value, options):
-    """attrs validator for class type enum
-
-    Checks if the type of the class (e.g. value) is in the specified set of types provided. Also checks if the value
-    is specified via the Enum definition
-
-    Args:
-        instance: current object instance
-        attribute: current attribute instance
-        value: current value trying to be set in the attrs instance
-        options: list, tuple, or enum of allowed options
-
-    Returns:
-    """
-    if type(value) not in options:
-        raise ValueError(f"{attribute.name} must be in {options}")
-
-
 def _enum_class_katra(typed, allowed, default=None, optional=False):
     """Private interface to create a base Enum typed katra
 
-    Here we handle the class based types of enums. Seeing as these classes are generated dynamically we cannot
-    force type checking of a specific instance however the in_ validator will catch an incorrect instance type
+    Here we handle the class based types of enums. Seeing as these classes are
+    generated dynamically we cannot
+    force type checking of a specific instance however the in_ validator will
+    catch an incorrect instance type
 
-    A 'katra' is the basic functional unit of `spock`. It defines a parameter using attrs as the backend, type checks
-    both simple types and subscripted GenericAlias types (e.g. lists and tuples), handles setting default parameters,
+    A 'katra' is the basic functional unit of `spock`. It defines a parameter using
+    attrs as the backend, type checks
+    both simple types and subscripted GenericAlias types (e.g. lists and tuples),
+    handles setting default parameters,
     and deals with parameter optionality
 
     Args:
@@ -384,8 +411,10 @@ def _enum_class_katra(typed, allowed, default=None, optional=False):
 def _type_katra(typed, default=None, optional=False):
     """Private interface to create a simple typed katra
 
-    A 'katra' is the basic functional unit of `spock`. It defines a parameter using attrs as the backend, type checks
-    both simple types and subscripted GenericAlias types (e.g. lists and tuples), handles setting default parameters,
+    A 'katra' is the basic functional unit of `spock`. It defines a parameter using
+    attrs as the backend, type checks
+    both simple types and subscripted GenericAlias types (e.g. lists and tuples),
+    handles setting default parameters,
     and deals with parameter optionality
 
     Handles: bool, string, float, int, List, and Tuple
@@ -400,12 +429,12 @@ def _type_katra(typed, default=None, optional=False):
 
     """
     # Grab the name first based on if it is a base type or GenericAlias
-    if isinstance(typed, type):
+    if isinstance(typed, (type, NewType)):
         name = typed.__name__
     elif isinstance(typed, _SpockGenericAlias):
         name = _get_name_py_version(typed=typed)
     else:
-        raise TypeError("Encountered an unexpected type in _type_katra")
+        raise TypeError(f"Encountered an unexpected type in _type_katra: {typed}")
     special_key = None
     # Default booleans to false and optional due to the nature of a boolean
     if isinstance(typed, type) and name == "bool":
@@ -418,10 +447,11 @@ def _type_katra(typed, default=None, optional=False):
         optional = True
         special_key = name
         typed = str
+
     if default is not None and optional:
         # if a default is provided, that takes precedence
         x = attr.ib(
-            validator=attr.validators.optional(attr.validators.instance_of(typed)),
+            validator=attr.validators.optional(instance_of(typed)),
             default=default,
             type=typed,
             metadata={"optional": True, "base": name, "special_key": special_key},
@@ -429,21 +459,21 @@ def _type_katra(typed, default=None, optional=False):
     elif default is not None:
         # if a default is provided, that takes precedence
         x = attr.ib(
-            validator=attr.validators.instance_of(typed),
+            validator=instance_of(typed),
             default=default,
             type=typed,
             metadata={"base": name, "special_key": special_key},
         )
     elif optional:
         x = attr.ib(
-            validator=attr.validators.optional(attr.validators.instance_of(typed)),
+            validator=attr.validators.optional(instance_of(typed)),
             default=default,
             type=typed,
             metadata={"optional": True, "base": name, "special_key": special_key},
         )
     else:
         x = attr.ib(
-            validator=attr.validators.instance_of(typed),
+            validator=instance_of(typed),
             type=typed,
             metadata={"base": name, "special_key": special_key},
         )
@@ -488,7 +518,7 @@ def _callable_katra(typed, default=None, optional=False):
     both simple types and subscripted GenericAlias types (e.g. lists and tuples), handles setting default parameters,
     and deals with parameter optionality
 
-    Handles: bool, string, float, int, List, and Tuple
+    Handles: callable
 
     Args:
         typed: the type of the parameter to define
@@ -540,7 +570,6 @@ def katra(typed, default=None):
     Args:
         typed: the type of the parameter to define
         default: the default value to assign if given
-        optional: whether to make the parameter optional or not (thus allowing None)
 
     Returns:
         x: Attribute from attrs
@@ -548,6 +577,7 @@ def katra(typed, default=None):
     """
     # Handle optionals
     typed, optional = _handle_optional_typing(typed)
+    # Checks for callables via the different Variadic types across versions
     if isinstance(typed, _SpockVariadicGenericAlias):
         x = _callable_katra(typed=typed, default=default, optional=optional)
     # We need to check if the type is a _GenericAlias so that we can handle subscripted general types
@@ -556,10 +586,12 @@ def katra(typed, default=None):
         not isinstance(typed.__args__[0], TypeVar)
     ):
         x = _generic_alias_katra(typed=typed, default=default, optional=optional)
+    # Catch the Enum type
     elif isinstance(typed, EnumMeta):
         x = _enum_katra(typed=typed, default=default, optional=optional)
+    # Else fall back on the basic type
     else:
         x = _type_katra(typed=typed, default=default, optional=optional)
-    # Add back in the OG type
+    # Add back in the OG type as part of the metadata
     x.metadata.update({"og_type": typed})
     return x

@@ -27,6 +27,8 @@ tuple_p_str = ["Spock", "Package"]
 tuple_p_bool = [true, false]
 # Required Tuple -- mixed
 tuple_p_mixed = [5, 11.5]
+# Required complex Tyuple
+tuple_complex = [['foo'], [1]]
 # Required Choice -- Str type
 choice_p_str = 'option_1'
 # Required Choice -- Int
@@ -45,11 +47,14 @@ list_choice_p_float = [10.0]
 nested = 'NestedStuff'
 NestedStuff = {one = 11, two = 'ciao'}
 # Nested List configuration
-nested_list = 'NestedListStuff'
-NestedListStuff = [{one = 10, two = 'hello'}, {one = 20, two = 'bye'}]
+#nested_list = 'NestedListStuff'
+#NestedListStuff = [{one = 10, two = 'hello'}, {one = 20, two = 'bye'}]
 # Class Enum
 class_enum = 'NestedStuff'
 high_config = 'SingleNestedConfig'
+[NestedListStuff]
+    one = 10
+    two = "hello"
 [SingleNestedConfig]
     double_nested_config = 'FirstDoubleNestedConfig'
 [FirstDoubleNestedConfig]

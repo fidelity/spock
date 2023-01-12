@@ -28,6 +28,8 @@ tuple_p_str: [Spock, Package]
 tuple_p_bool: [True, False]
 # Required Tuple -- mixed
 tuple_p_mixed: [5, 11.5]
+# Required complex Tyuple
+tuple_complex: [['foo'], [1]]
 # Required Choice -- Str
 choice_p_str: option_1
 # Required Choice -- Int
@@ -48,12 +50,15 @@ NestedStuff:
     one: 11
     two: ciao
 # Nested List configuration
-nested_list: NestedListStuff
+#nested_list: NestedListStuff
 NestedListStuff:
-    - one: 10
-      two: hello
-    - one: 20
-      two: bye
+  one: 10
+  two: hello
+#NestedListStuff:
+#    - one: 10
+#      two: hello
+#    - one: 20
+#      two: bye
 # Class Enum
 class_enum: NestedStuff
 # Nested classes

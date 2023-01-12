@@ -1,6 +1,111 @@
 # Resolvers
 
-`spock` currently supports a single resolver notation `.env` with two annotations `.crypto` and `.inject`.
+`spock` currently supports the resolver notation(s) `.env` and `.var` with 
+two annotations `.crypto` and `.inject` for `.env`.
+
+### Variable Resolver
+
+`spock` supports resolving value definitions from other defined variable definitions with the
+following syntax, `${spock.var:RefClass.ref_value}`.This will set the value from the
+value set within the referenced class and attribute. In addition, `spock` supports using
+multiple references within the definition such as, 
+`version-${spock.var:RefClass.ref_value1}-${spock.var:RefClass.ref_value2}` which will
+resolve both references. Currently, variable resolution only supports simple 
+types: `float`, `int`, `string`, and `bool`. For example, let's define a bunch of 
+parameters that will rely on the variable resolver:
+
+```python
+from spock import spock
+from spock import SpockBuilder
+
+from typing import Optional
+import os
+
+
+@spock
+class Lastly:
+    ooooyah: int = 12
+    tester: int = 1
+    hiyah: bool = True
+
+
+@spock
+class BarFoo:
+    newval: Optional[int] = 2
+    moreref: int = "${spock.var:Lastly.ooooyah}"
+
+
+@spock
+class FooBar:
+    val: int = 12
+
+
+@spock
+class RefClass:
+    a_float: float = 12.1
+    a_int: int = 3
+    a_bool: bool = True
+    a_string: str = "helloo"
+
+
+@spock
+class RefClassFile:
+    ref_float: float
+    ref_int: int
+    ref_bool: bool
+    ref_string: str
+    ref_nested_to_str: str
+    ref_nested_to_float: float
+
+
+@spock
+class RefClassOptionalFile:
+    ref_float: Optional[float]
+    ref_int: Optional[int]
+    ref_bool: Optional[bool]
+    ref_string: Optional[str]
+    ref_nested_to_str: Optional[str]
+    ref_nested_to_float: Optional[float]
+
+
+@spock
+class RefClassDefault:
+    ref_float: float = "${spock.var:RefClass.a_float}"
+    ref_int: int = "${spock.var:RefClass.a_int}"
+    ref_bool: bool = "${spock.var:RefClass.a_bool}"
+    ref_string: str = "${spock.var:RefClass.a_string}"
+    ref_nested_to_str: str = "${spock.var:FooBar.val}.${spock.var:Lastly.tester}"
+    ref_nested_to_float: float = "${spock.var:FooBar.val}.${spock.var:Lastly.tester}"
+```
+
+
+These demonstrate the basic paradigms of variable references as well as the ability to
+use multiple variable references within a single definition. The returned 
+`Spockspace` would be:
+
+```shell
+BarFoo: !!python/object:spock.backend.config.BarFoo
+  moreref: 12
+  newval: 2
+FooBar: !!python/object:spock.backend.config.FooBar
+  val: 12
+Lastly: !!python/object:spock.backend.config.Lastly
+  hiyah: true
+  ooooyah: 12
+  tester: 1
+RefClass: !!python/object:spock.backend.config.RefClass
+  a_bool: true
+  a_float: 12.1
+  a_int: 3
+  a_string: helloo
+RefClassDefault: !!python/object:spock.backend.config.RefClassDefault
+  ref_bool: true
+  ref_float: 12.1
+  ref_int: 3
+  ref_nested_to_float: 12.1
+  ref_nested_to_str: '12.1'
+  ref_string: helloo
+```
 
 ### Environment Resolver
 

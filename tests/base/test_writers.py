@@ -83,9 +83,9 @@ class TestYAMLWriterSavePath:
                 file_extension=".yaml", file_name=f"pytest.{curr_int_time}"
             ).generate()
             yaml_regex = re.compile(
-                fr"pytest.{curr_int_time}."
-                fr"[a-fA-F0-9]{{8}}-[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{4}}-"
-                fr"[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{12}}.spock.cfg.yaml"
+                rf"pytest.{curr_int_time}."
+                rf"[a-fA-F0-9]{{8}}-[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{4}}-"
+                rf"[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{12}}.spock.cfg.yaml"
             )
             matches = [
                 re.fullmatch(yaml_regex, val)

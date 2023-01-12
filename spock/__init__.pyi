@@ -1,9 +1,32 @@
-from typing import Any, Callable, List, Optional, Tuple, TypeVar, Union, overload
+# -*- coding: utf-8 -*-
+
+# Copyright FMR LLC <opensource@fidelity.com>
+# SPDX-License-Identifier: Apache-2.0
+
+"""Stubs"""
+
+from typing import Any, Callable, Tuple, TypeVar, Union, overload
 
 from attr import attrib, field
 
-# from spock.backend.typed import SavePath
+from spock._version import get_versions
+from spock.backend.custom import directory, file
+from spock.backend.typed import SavePath
 from spock.builder import ConfigArgBuilder
+from spock.config import spock
+
+# SpockBuilder = ConfigArgBuilder
+
+__all__ = [
+    "args",
+    "builder",
+    "config",
+    "directory",
+    "file",
+    "SavePath",
+    "spock",
+    "SpockBuilder",
+]
 
 _T = TypeVar("_T")
 _C = TypeVar("_C", bound=type)

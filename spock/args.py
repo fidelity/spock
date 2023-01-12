@@ -80,7 +80,8 @@ class SpockArguments:
 
     @staticmethod
     def _get_general_arguments(arguments: Dict, config_dag: Graph) -> Dict:
-        """Creates a dictionary of config file parameters that are defined at the general level (not class specific)
+        """Creates a dictionary of config file parameters that are defined at the
+        general level (not class specific)
 
         Args:
             arguments: dictionary of parameters from the config file(s)
@@ -148,8 +149,8 @@ class SpockArguments:
     def _assign_general_arguments_to_config(
         self, general_arguments: Dict, attribute_name_to_config_name_mapping: Dict
     ) -> None:
-        """Assigns the values from general definitions to values within specific classes if the specific definition
-        doesn't exist
+        """Assigns the values from general definitions to values within specific
+        classes if the specific definition doesn't exist
 
         Args:
             general_arguments:
