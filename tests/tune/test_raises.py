@@ -8,6 +8,7 @@ from spock import spock
 
 from spock.addons.tune import AxTunerConfig, OptunaTunerConfig
 from spock.builder import ConfigArgBuilder
+from spock.exceptions import _SpockFieldHandlerError
 from tests.tune.attr_configs_test import *
 
 
@@ -101,7 +102,7 @@ class TestOptunaInvalidCastRange:
             optuna_config = OptunaTunerConfig(
                 study_name="Basic Tests", direction="maximize"
             )
-            with pytest.raises(TypeError):
+            with pytest.raises(_SpockFieldHandlerError):
                 config = ConfigArgBuilder(HPOne, HPTwo).tuner(optuna_config)
 
 
@@ -135,5 +136,5 @@ class TestAxInvalidCastRange:
                 objective_name="None",
                 verbose_logging=False,
             )
-            with pytest.raises(TypeError):
+            with pytest.raises(_SpockFieldHandlerError):
                 config = ConfigArgBuilder(HPOne, HPTwo).tuner(ax_config)
