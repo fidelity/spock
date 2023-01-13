@@ -14,7 +14,7 @@ import attr
 from spock.backend.custom import _C, _T, directory, file
 
 
-def _check_instance(value: Any, name: str, type: Type) -> None:
+def _check_instance(value: Any, name: str, type: type) -> None:
     """Mimics instance_of validator from attrs library
 
     Args:
@@ -254,7 +254,7 @@ class _InstanceOfValidator:
         # condition here -- basically if the tuple is of type directory then we need
         # to validate on the dir instance
         if (
-            isinstance(self.type, NewType) and self.type.__name__ == directory.__name__
+            isinstance(self.type, type) and self.type.__name__ == directory.__name__
         ) or (
             isinstance(self.type, tuple)
             and hasattr(self.type[0], "__name__")
@@ -266,9 +266,7 @@ class _InstanceOfValidator:
         # Catch the file type -- tuples suck, so we need to handle them with their own
         # condition here -- basically if the tuple is of type directory then we need
         # to validate on the dir instance
-        elif (
-            isinstance(self.type, NewType) and self.type.__name__ == file.__name__
-        ) or (
+        elif (isinstance(self.type, type) and self.type.__name__ == file.__name__) or (
             isinstance(self.type, tuple)
             and hasattr(self.type[0], "__name__")
             and self.type[0].__name__ == "file"

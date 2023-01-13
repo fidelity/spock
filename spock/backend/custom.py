@@ -5,10 +5,10 @@
 
 """Handles custom types"""
 
-from typing import NewType, TypeVar
+from typing import TypeVar
 
-directory = NewType("directory", str)
-file = NewType("file", str)
+directory = type("directory", (str,), {})
+file = type("file", (str,), {})
 
 
 _T = TypeVar("_T")

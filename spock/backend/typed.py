@@ -428,8 +428,9 @@ def _type_katra(typed, default=None, optional=False):
         x: Attribute from attrs
 
     """
-    # Grab the name first based on if it is a base type or GenericAlias
-    if isinstance(typed, (type, NewType)):
+    # Grab the name first based on if it is a base type, NewType, or GenericAlias
+    # if isinstance(typed, (type, NewType)):
+    if isinstance(typed, type):
         name = typed.__name__
     elif isinstance(typed, _SpockGenericAlias):
         name = _get_name_py_version(typed=typed)

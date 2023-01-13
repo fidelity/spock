@@ -71,7 +71,8 @@ def _get_alias_type():
 
 
 def _get_callable_type():
-    """Gets the correct underlying type reference for callable objects depending on the python version
+    """Gets the correct underlying type reference for callable objects depending on the
+    python version
 
     Returns:
         _VariadicGenericAlias type
@@ -85,9 +86,15 @@ def _get_callable_type():
         from typing import _CallableType as _VariadicGenericAlias
     else:
         raise RuntimeError(
-            f"Attempting to use spock with python version `3.{minor}` which is unsupported"
+            f"Attempting to use spock with python version `3.{minor}` which is "
+            f"unsupported"
         )
     return _VariadicGenericAlias
+
+
+def _get_new_type():
+
+    pass
 
 
 _SpockGenericAlias = _get_alias_type()
