@@ -90,6 +90,7 @@ class RefClassFile:
     ref_string: str
     ref_nested_to_str: str
     ref_nested_to_float: float
+    ref_self: float
 
 
 @spock
@@ -100,6 +101,7 @@ class RefClassOptionalFile:
     ref_string: Optional[str]
     ref_nested_to_str: Optional[str]
     ref_nested_to_float: Optional[float]
+    ref_self: Optional[float]
 
 
 @spock
@@ -110,6 +112,7 @@ class RefClassDefault:
     ref_string: str = "${spock.var:RefClass.a_string}"
     ref_nested_to_str: str = "${spock.var:FooBar.val}.${spock.var:Lastly.tester}"
     ref_nested_to_float: float = "${spock.var:FooBar.val}.${spock.var:Lastly.tester}"
+    ref_self: float = "${spock.var:RefClassDefault.ref_float}"
 
 
 class TestRefResolver:
@@ -129,12 +132,15 @@ class TestRefResolver:
             assert config.RefClassFile.ref_string == "helloo"
             assert config.RefClassFile.ref_nested_to_str == "12.1"
             assert config.RefClassFile.ref_nested_to_float == 12.1
+            assert config.RefClassFile.ref_self == config.RefClassFile.ref_float
 
     def test_from_config_optional(self, monkeypatch):
         """Test reading from config to set vars works"""
         with monkeypatch.context() as m:
             m.setattr(
-                sys, "argv", ["", "--config", "./tests/conf/yaml/test_variable.yaml"]
+                sys,
+                "argv",
+                ["", "--config", "./tests/conf/yaml/test_variable_opt.yaml"],
             )
             config = SpockBuilder(
                 RefClassOptionalFile, RefClass, Lastly, BarFoo, FooBar
@@ -146,6 +152,10 @@ class TestRefResolver:
             assert config.RefClassOptionalFile.ref_string == "helloo"
             assert config.RefClassOptionalFile.ref_nested_to_str == "12.1"
             assert config.RefClassOptionalFile.ref_nested_to_float == 12.1
+            assert (
+                config.RefClassOptionalFile.ref_self
+                == config.RefClassOptionalFile.ref_float
+            )
 
     def test_from_def(self, monkeypatch):
         """Test reading from config to set vars works"""
@@ -161,6 +171,7 @@ class TestRefResolver:
             assert config.RefClassDefault.ref_string == "helloo"
             assert config.RefClassDefault.ref_nested_to_str == "12.1"
             assert config.RefClassDefault.ref_nested_to_float == 12.1
+            assert config.RefClassDefault.ref_self == config.RefClassDefault.ref_float
 
 
 @spock
@@ -192,6 +203,13 @@ class RefCycle2:
 class RefCycle3:
     no: int = 2
     sense: float = "${spock.var:RefCycle1.we}"
+
+
+@spock
+class SelfCycle:
+    hi: str = "${spock.var:SelfCycle.my}"
+    my: str = "${spock.var:SelfCycle.name}"
+    name: str = "${spock.var:SelfCycle.hi}"
 
 
 class TestRefResolverExceptions:
@@ -256,6 +274,21 @@ class TestRefResolverExceptions:
                     RefCycle1,
                     RefCycle2,
                     RefCycle3,
+                    desc="Test Builder",
+                )
+                config.generate()
+
+    def test_self_cycle(self, monkeypatch):
+        """Test serialization/de-serialization"""
+        with monkeypatch.context() as m:
+            m.setattr(
+                sys,
+                "argv",
+                [""],
+            )
+            with pytest.raises(_SpockInstantiationError):
+                config = SpockBuilder(
+                    SelfCycle,
                     desc="Test Builder",
                 )
                 config.generate()

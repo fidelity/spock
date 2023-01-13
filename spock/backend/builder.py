@@ -17,7 +17,7 @@ from spock.backend.help import attrs_help
 from spock.backend.spaces import BuilderSpace
 from spock.backend.wrappers import Spockspace
 from spock.exceptions import _SpockInstantiationError
-from spock.graph import Graph, MergeGraph, VarGraph
+from spock.graph import Graph, MergeGraph, SelfGraph, VarGraph
 from spock.utils import (
     _C,
     _T,
@@ -165,7 +165,7 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         builder_space = BuilderSpace(
             arguments=SpockArguments(dict_args, graph), spock_space={}
         )
-        cls_fields_list = []
+        cls_fields_dict = {}
         # For each node in the cls dep graph step through in topological order
         # We must do this first so that we can resolve the fields dict for each class
         # so that we can figure out which variables we need to resolve prior to
@@ -173,16 +173,21 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         for spock_name in graph.topological_order:
             spock_cls = graph.node_map[spock_name]
             # This generates the fields dict for each cls
-            new_cls, special_keys, fields = RegisterSpockCls.recurse_generate(
+            spock_cls, special_keys, fields = RegisterSpockCls.recurse_generate(
                 spock_cls, builder_space, self._salt, self._key
             )
-            cls_fields_list.append((new_cls, fields))
+            cls_fields_dict.update(
+                {spock_cls.__name__: {"cls": spock_cls, "fields": fields}}
+            )
             # Push back special keys
             for special_key, value in special_keys.items():
                 setattr(self, special_key, value)
         # Create the variable dependency graph -- this needs the fields dict to do so
         # as we need all the values that are current set for instantiation
-        var_graph = VarGraph(cls_fields_list, self._input_classes)
+        var_graph = VarGraph(
+            [(v["cls"], v["fields"]) for v in cls_fields_dict.values()],
+            self._input_classes,
+        )
         # Merge the cls dependency graph and the variable dependency graph
         merged_graph = MergeGraph(
             graph.dag, var_graph.dag, input_classes=self._input_classes
@@ -190,10 +195,16 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         # Iterate in merged topological order so that we can resolve both cls and ref
         # dependencies in the correct order
         for spock_name in merged_graph.topological_order:
-            # First we check for any needed variable resolution
+            # First we check for any needed cls dependent variable resolution
             cls_fields = var_graph.resolve(spock_name, builder_space.spock_space)
             # Then we map cls references to their instantiated version
             cls_fields = self._clean_up_cls_refs(cls_fields, builder_space.spock_space)
+            # Lastly we have to check for self-resolution -- we do this w/ yet another
+            # graph -- graphs FTW! -- this maps back to the fields dict in the tuple
+            cls_fields = SelfGraph(
+                cls_fields_dict[spock_name]["cls"], cls_fields
+            ).resolve()
+
             # Once all resolution occurs we attempt to instantiate the cls
             spock_cls = merged_graph.node_map[spock_name]
             try:

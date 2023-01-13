@@ -103,13 +103,13 @@ class BaseResolver(ABC):
             return False
 
     @staticmethod
-    def _attempt_cast(maybe_env: Optional[str], value_type: _T, env_value: str) -> Any:
+    def _attempt_cast(maybe_env: Optional[str], value_type: _T, ref_value: str) -> Any:
         """Attempts to cast the resolved variable into the given type
 
         Args:
             maybe_env: possible resolved variable
             value_type: type to cast into
-            env_value: the reference to the resolved variable
+            ref_value: the reference to the resolved variable
 
         Returns:
             value type cast into the correct type
@@ -130,13 +130,13 @@ class BaseResolver(ABC):
         except Exception as e:
             raise _SpockResolverError(
                 f"Failed attempting to cast variable "
-                f"(name: {env_value}, value: `{maybe_env}`) "
+                f"(name: {ref_value}, value: `{maybe_env}`) "
                 f"into Spock specified type `{value_type.__name__}`"
             )
         return typed_env
 
     def attempt_cast(
-        self, maybe_env: Optional[str], value_type: _T, env_value: str
+        self, maybe_env: Optional[str], value_type: _T, ref_value: str
     ) -> Any:
         """Attempts to cast the resolved variable into the given type
 
@@ -145,7 +145,7 @@ class BaseResolver(ABC):
         Args:
             maybe_env: possible resolved variable
             value_type: type to cast into
-            env_value: the reference to the resolved variable
+            ref_value: the reference to the resolved variable
 
         Returns:
             value type cast into the correct type
@@ -156,7 +156,7 @@ class BaseResolver(ABC):
         """
         # Attempt to cast in a try to be able to catch the failed type casts with an
         # exception
-        return self._attempt_cast(maybe_env, value_type, env_value)
+        return self._attempt_cast(maybe_env, value_type, ref_value)
 
     def _regex_clip(
         self,
@@ -354,30 +354,59 @@ class VarResolver(BaseResolver):
         )
         return return_list
 
+    def _resolve(self, test_value: str, match_val: Any, regex_str: str, name: str):
+        # Check the full regex for a single full match -- add the start and end matches
+        # to the full regex pattern -- this is direct replacement
+        single_re = r"^" + re.escape(regex_str) + r"$"
+        if re.fullmatch(single_re, test_value) is not None:
+            maybe_val = match_val
+        else:
+            # Cast back to string as we are doing str substitution here prior to the
+            # final cast attempt
+            partial_val = self._attempt_cast(match_val, str, name)
+            maybe_val = test_value.replace(regex_str, partial_val)
+        return maybe_val
+
+    def resolve_self(self, value: str, set_value: Any, ref_match: str, name: str):
+        try:
+            maybe_val = self._resolve(value, set_value, ref_match, name)
+        except Exception as e:
+            raise _SpockVarResolverError(f"Failure matching reference `{value}`: {e}")
+        return maybe_val, None
+
     def resolve(
         self, value: str, value_type: _T, **kwargs
     ) -> Tuple[Any, Optional[str]]:
         ref = kwargs["ref"]
         spock_space = kwargs["spock_space"]
-        # Check the full regex for a single full match -- add the start and end matches
-        # to the full regex pattern -- this is direct replacement
-        single_re = r"^" + re.escape(ref["matched"]) + r"$"
-        if re.fullmatch(single_re, value) is not None:
-            try:
-                maybe_val = getattr(spock_space[ref["class"]], ref["class_val"])
-            except Exception as e:
-                raise _SpockVarResolverError(
-                    f"Failure matching reference `{value}`: {e}"
-                )
-        # If not it is partial replacement, thus we need to replace based on patterns
-        # and attempt the cast
-        else:
-            # Cast back to string as we are doing str substitution here prior to the
-            # final cast attempt
-            partial_val = self._attempt_cast(
-                getattr(spock_space[ref["class"]], ref["class_val"]), str, ref["val"]
+        try:
+            maybe_val = self._resolve(
+                value,
+                getattr(spock_space[ref["class"]], ref["class_val"]),
+                ref["matched"],
+                ref["val"],
             )
-            maybe_val = value.replace(ref["matched"], partial_val)
+        except Exception as e:
+            raise _SpockVarResolverError(f"Failure matching reference `{value}`: {e}")
+        # # Check the full regex for a single full match -- add the start and end matches
+        # # to the full regex pattern -- this is direct replacement
+        # single_re = r"^" + re.escape(ref["matched"]) + r"$"
+        # if re.fullmatch(single_re, value) is not None:
+        #     try:
+        #         maybe_val = getattr(spock_space[ref["class"]], ref["class_val"])
+        #     except Exception as e:
+        #         raise _SpockVarResolverError(
+        #             f"Failure matching reference `{value}`: {e}"
+        #         )
+        # # If not it is partial replacement, thus we need to replace based on patterns
+        # # and attempt the cast
+        # else:
+        #     # Cast back to string as we are doing str substitution here prior to the
+        #     # final cast attempt
+        #     partial_val = self._attempt_cast(
+        #         getattr(spock_space[ref["class"]], ref["class_val"]), str, ref["val"]
+        #     )
+        #     maybe_val = value.replace(ref["matched"], partial_val)
         return maybe_val, None
 
 

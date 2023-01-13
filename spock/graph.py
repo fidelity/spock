@@ -168,8 +168,9 @@ class BaseGraph(ABC):
         visited.update({node: True})
         # Recur for all edges
         for val in self._dag.get(node):
-            if visited.get(val.__name__) is False:
-                self._topological_sort_dfs(val.__name__, visited, stack)
+            val_name = val.__name__ if hasattr(val, "__name__") else val
+            if visited.get(val_name) is False:
+                self._topological_sort_dfs(val_name, visited, stack)
         stack.append(node)
 
 
@@ -228,6 +229,85 @@ class MergeGraph(BaseGraph):
         return self._merge_inputs(*self._args)
 
 
+class SelfGraph(BaseGraph):
+
+    var_resolver = VarResolver()
+
+    def __init__(self, cls: _C, fields: Dict):
+        self._cls = cls
+        self._fields = fields
+        tmp_dag, self._ref_map = self._build()
+        super(SelfGraph, self).__init__(tmp_dag, whoami="Self Variable Reference Graph")
+
+    @property
+    def node_names(self):
+        return {k.name for k in self._cls.__attrs_attrs__}
+
+    @property
+    def node_map(self):
+        """Returns a map of the node names to the underlying classes"""
+        return {k: k for k in self.nodes}
+
+    @property
+    def reverse_map(self):
+        """Returns a map from the underlying classes to the node names"""
+        return {k: k for k in self.nodes}
+
+    @property
+    def nodes(self):
+        return [k.name for k in self._cls.__attrs_attrs__]
+
+    def _cast_all_maps(self, changed_vars: Set):
+        for val in changed_vars:
+            self._fields[val] = self.var_resolver.attempt_cast(
+                self._fields[val], getattr(self._cls.__attrs_attrs__, val).type, val
+            )
+
+    def resolve(self) -> Dict:
+        # Iterate in topo order
+        for k in self.topological_order:
+            # get the self dependent values and swap within the fields dict
+            for v in self.dag[k]:
+                typed_val, _ = self.var_resolver.resolve_self(
+                    value=self._fields[v],
+                    set_value=self._fields[k],
+                    ref_match=self._ref_map[v][k],
+                    name=v,
+                )
+                self._fields[v] = typed_val
+        # Get a set of all changed variables and attempt to cast them
+        self._cast_all_maps(set(self._ref_map.keys()))
+        return self._fields
+
+    def _build(self) -> Tuple[Dict, Dict]:
+        """Builds a dictionary of nodes and their edges (essentially builds the DAG)
+
+        Returns:
+            dictionary of nodes and their edges
+
+        """
+        # Build a dictionary of all nodes (attributes in the class)
+        v_e = {val: [] for val in self.node_names}
+        ref_map = {}
+        for k, v in self._fields.items():
+            # ref_map.update({k: {}})
+            # Can only check against str types
+            if isinstance(v, str):
+                # Check if there is a regex match
+                if self.var_resolver.detect(v, str):
+                    # Get the matched reference
+                    return_list = self.var_resolver.get_regex_match_reference(v)
+                    for typed_ref, _, annotation, match_val in return_list:
+                        dep_cls, dep_val = typed_ref.split(".")
+                        if dep_cls == self._cls.__name__:
+                            v_e.get(dep_val).append(k)
+                            if k not in ref_map.keys():
+                                ref_map.update({k: {}})
+                            ref_map[k].update({dep_val: match_val})
+                            # ref_map.update({k: match_val})
+        return {key: set(val) for key, val in v_e.items()}, ref_map
+
+
 class VarGraph(BaseGraph):
     """Class that helps with variable resolution by mapping dependencies
 
@@ -252,7 +332,7 @@ class VarGraph(BaseGraph):
         self._cls_fields_tuple = cls_fields_list
         self._input_classes = input_classes
         tmp_dag, self.ref_map = self._build()
-        super().__init__(tmp_dag, whoami="Variable Reference Graph")
+        super().__init__(tmp_dag, whoami="Class Variable Reference Graph")
 
     @property
     def cls_names(self):
@@ -366,20 +446,21 @@ class VarGraph(BaseGraph):
                                     f"evaluation within "
                                     f"sys.modules['spock'].backend.config"
                                 )
-                            # Only add non-self deps -- as self deps should always be
-                            # resolvable
+                            # Only add non-self deps -- as we are resolving between
+                            # class dependencies here. We will resolve self deps
+                            # elsewhere
                             if dep_cls != spock_cls.__name__:
                                 nodes.get(dep_cls).append(spock_cls)
-                            # Map the value names such that we can use them later
-                            # post sort
-                            ref_map.append(
-                                {
-                                    "val": k,
-                                    "class": dep_cls,
-                                    "class_val": dep_val,
-                                    "matched": match_val,
-                                }
-                            )
+                                # Map the value names such that we can use them later
+                                # post sort
+                                ref_map.append(
+                                    {
+                                        "val": k,
+                                        "class": dep_cls,
+                                        "class_val": dep_val,
+                                        "matched": match_val,
+                                    }
+                                )
                         # Append the dependent mapped names to the class name
                         if len(ref_map) > 0:
                             node_ref.update({spock_cls.__name__: ref_map})
