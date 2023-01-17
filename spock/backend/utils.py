@@ -6,7 +6,7 @@
 """Attr utility functions for Spock"""
 
 import importlib
-from typing import Any, Callable, Dict, List, Tuple, Type, Union
+from typing import Any, ByteString, Callable, Dict, List, Tuple, Type, Union
 
 from cryptography.fernet import Fernet
 
@@ -14,7 +14,18 @@ from spock.exceptions import _SpockValueError
 from spock.utils import _C, _T, _SpockVariadicGenericAlias
 
 
-def encrypt_value(value, key, salt):
+def encrypt_value(value: Any, key: Union[str, ByteString, bytes], salt: str):
+    """Encrypts a given value with a key and salt
+
+    Args:
+        value: current value to encrypt
+        key: A URL-safe base64-encoded 32-byte key.
+        salt: salt to add to value
+
+    Returns:
+        encrypted value
+
+    """
     # Make the class to encrypt
     encrypt = Fernet(key=key)
     # Encrypt the plaintext value
@@ -23,7 +34,18 @@ def encrypt_value(value, key, salt):
     return encrypt.encrypt(str.encode(salted_password)).decode()
 
 
-def decrypt_value(value, key, salt):
+def decrypt_value(value: Any, key: Union[str, ByteString, bytes], salt: str):
+    """Decrypts a given value from a key and salt
+
+    Args:
+        value: current value to decrypt
+        key: A URL-safe base64-encoded 32-byte key.
+        salt: salt to add to value
+
+    Returns:
+        decrypted value
+
+    """
     # Make the class to encrypt
     decrypt = Fernet(key=key)
     # Decrypt back to plaintext value
@@ -298,8 +320,8 @@ def _recursive_list_to_tuple(key: str, value: Any, typed: _T, class_names: List)
         value: updated value with correct type casts
 
     """
-    # Check for __args__ as it signifies a generic and make sure it's not already been cast as a tuple
-    # from a composed payload
+    # Check for __args__ as it signifies a generic and make sure it's not already
+    # been cast as a tuple from a composed payload
     if (
         hasattr(typed, "__args__")
         and not isinstance(value, tuple)

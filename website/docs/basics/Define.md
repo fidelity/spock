@@ -11,7 +11,8 @@ All examples can be found [here](https://github.com/fidelity/spock/blob/master/e
 
 #### Basic Types
 `spock` supports the following basic argument types (note `List`, `Tuple`, and `Optional` are defined in the `typing` 
-standard library while `Enum` is within the `enum` standard library):
+standard library while `Enum` is within the `enum` standard library) as well as some custom
+types:
 
 | Python Base or Typing Type (Required) | Optional Type         | Description                                                                                                   |
 |---------------------------------------|-----------------------|---------------------------------------------------------------------------------------------------------------|
@@ -19,6 +20,8 @@ standard library while `Enum` is within the `enum` standard library):
 | float                                 | Optional[float]       | Basic float type parameter (e.g. 10.2)                                                                        |
 | int                                   | Optional[int]         | Basic integer type parameter (e.g. 2)                                                                         |
 | str                                   | Optional[str]         | Basic string type parameter (e.g. 'foo')                                                                      |
+| file                                  | Optional[file]        | Overload of string that verifies file existence and (r/w) access                                              |
+| directory                             | Optional[directory]   | overload of a str that verifies directory existence, creation if not existing, and (r/w) access               |
 | Callable                              | Optional[Callable]    | Any callable type (e.g. my_func)                                                                              |
 | List[type]                            | Optional[List[type]]  | Basic list type parameter of base types such as int, float, etc. (e.g. [10.0, 2.0])                           |
 | Tuple[type]                           | Optional[Tuple[type]] | Basic tuple type parameter of base types such as int, float, etc. Length enforced unlike List. (e.g. (10, 2)) |

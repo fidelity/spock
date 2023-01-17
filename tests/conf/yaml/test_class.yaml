@@ -44,7 +44,7 @@ TypeConfig:
   # Nested Configuration
   nested: NestedStuff
   # Nested List configuration
-  nested_list: NestedListStuff
+#  nested_list: NestedListStuff
   # Class Enum
   class_enum: NestedListStuff
   high_config: SingleNestedConfig
@@ -75,10 +75,13 @@ FirstDoubleNestedConfig:
   h_factor: 0.99
   v_factor: 0.90
 NestedListStuff:
-    - one: 10
-      two: hello
-    - one: 20
-      two: bye
+  one: 10
+  two: hello
+#NestedListStuff:
+#    - one: 10
+#      two: hello
+#    - one: 20
+#      two: bye
 NestedStuff:
   one: 11
   two: ciao

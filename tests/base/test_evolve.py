@@ -10,6 +10,7 @@ from spock.exceptions import _SpockEvolveError, _SpockUndecoratedClass
 
 from tests.base.attr_configs_test import *
 
+
 @attr.s(auto_attribs=True)
 class FailedClass:
     one: int = 30
@@ -23,13 +24,13 @@ class NotEvolved:
 @spock
 class EvolveNestedStuff:
     one: int = 10
-    two: str = 'hello'
+    two: str = "hello"
 
 
 @spock
 class EvolveNestedListStuff:
     one: int = 10
-    two: str = 'hello'
+    two: str = "hello"
 
 
 class EvolveClassChoice(Enum):
@@ -60,13 +61,13 @@ class TypeThinDefaultConfig:
     # Required List -- Bool
     list_p_bool_def: List[bool] = [True, False]
     # Required Tuple -- Float
-    tuple_p_float_def: Tuple[float] = (10.0, 20.0)
+    tuple_p_float_def: Tuple[float, float] = (10.0, 20.0)
     # Required Tuple -- Int
-    tuple_p_int_def: Tuple[int] = (10, 20)
+    tuple_p_int_def: Tuple[int, int] = (10, 20)
     # Required Tuple -- Str
-    tuple_p_str_def: Tuple[str] = ("Spock", "Package")
+    tuple_p_str_def: Tuple[str, str] = ("Spock", "Package")
     # Required Tuple -- Bool
-    tuple_p_bool_def: Tuple[bool] = (True, False)
+    tuple_p_bool_def: Tuple[bool, bool] = (True, False)
     # Required choice
     choice_p_str_def: StrChoice = "option_2"
     # Required list of choice -- Str
@@ -85,13 +86,13 @@ class TestEvolve:
     def arg_builder(monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", [""])
-            config = SpockBuilder(EvolveNestedStuff, EvolveNestedListStuff, TypeThinDefaultConfig)
+            config = SpockBuilder(
+                EvolveNestedStuff, EvolveNestedListStuff, TypeThinDefaultConfig
+            )
             return config
 
     def test_evolve(self, arg_builder):
-        evolve_nested_stuff = EvolveNestedStuff(
-            one=12345, two='abcdef'
-        )
+        evolve_nested_stuff = EvolveNestedStuff(one=12345, two="abcdef")
         evolve_type_config = TypeThinDefaultConfig(
             bool_p_set_def=False,
             int_p_def=16,
@@ -107,7 +108,7 @@ class TestEvolve:
             tuple_p_bool_def=(False, True),
             choice_p_str_def="option_1",
             list_choice_p_str_def=["option_2"],
-            list_list_choice_p_str_def=[["option_2"], ["option_2"]]
+            list_list_choice_p_str_def=[["option_2"], ["option_2"]],
         )
         # Evolve the class
         new_class = arg_builder.evolve(evolve_nested_stuff, evolve_type_config)
@@ -122,7 +123,10 @@ class TestEvolve:
         assert new_class.TypeThinDefaultConfig.list_p_bool_def == [False, True]
         assert new_class.TypeThinDefaultConfig.tuple_p_float_def == (16.0, 26.0)
         assert new_class.TypeThinDefaultConfig.tuple_p_int_def == (16, 26)
-        assert new_class.TypeThinDefaultConfig.tuple_p_str_def == ("Spocked", "Packaged")
+        assert new_class.TypeThinDefaultConfig.tuple_p_str_def == (
+            "Spocked",
+            "Packaged",
+        )
         assert new_class.TypeThinDefaultConfig.tuple_p_bool_def == (False, True)
         assert new_class.TypeThinDefaultConfig.choice_p_str_def == "option_1"
         assert new_class.TypeThinDefaultConfig.list_choice_p_str_def == ["option_2"]
@@ -131,15 +135,11 @@ class TestEvolve:
             ["option_2"],
         ]
         assert new_class.TypeThinDefaultConfig.class_enum_def.one == 12345
-        assert new_class.TypeThinDefaultConfig.class_enum_def.two == 'abcdef'
+        assert new_class.TypeThinDefaultConfig.class_enum_def.two == "abcdef"
 
     def test_raise_multiples(self, arg_builder):
-        evolve_nested_stuff = EvolveNestedStuff(
-            one=12345, two='abcdef'
-        )
-        evolve_nested_stuff_2 = EvolveNestedStuff(
-            one=123456, two='abcdefg'
-        )
+        evolve_nested_stuff = EvolveNestedStuff(one=12345, two="abcdef")
+        evolve_nested_stuff_2 = EvolveNestedStuff(one=123456, two="abcdefg")
         with pytest.raises(_SpockEvolveError):
             new_class = arg_builder.evolve(evolve_nested_stuff, evolve_nested_stuff_2)
 
@@ -149,9 +149,7 @@ class TestEvolve:
             new_class = arg_builder.evolve(evolve_not_evolved)
 
     def test_2_dict(self, arg_builder):
-        evolve_nested_stuff = EvolveNestedStuff(
-            one=12345, two='abcdef'
-        )
+        evolve_nested_stuff = EvolveNestedStuff(one=12345, two="abcdef")
         evolve_type_config = TypeThinDefaultConfig(
             bool_p_set_def=False,
             int_p_def=16,
@@ -167,11 +165,8 @@ class TestEvolve:
             tuple_p_bool_def=(False, True),
             choice_p_str_def="option_1",
             list_choice_p_str_def=["option_2"],
-            list_list_choice_p_str_def=[["option_2"], ["option_2"]]
+            list_list_choice_p_str_def=[["option_2"], ["option_2"]],
         )
         # Evolve the class
         new_class = arg_builder.evolve(evolve_nested_stuff, evolve_type_config)
         assert isinstance(arg_builder.spockspace_2_dict(new_class), dict) is True
-
-
-

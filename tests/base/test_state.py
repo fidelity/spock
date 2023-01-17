@@ -12,9 +12,7 @@ class TestSerializedState:
     def test_serialization_deserialization(self, monkeypatch, tmp_path):
         """Test serialization/de-serialization"""
         with monkeypatch.context() as m:
-            m.setattr(
-                sys, "argv", ["", "--config", "./tests/conf/yaml/test.yaml"]
-            )
+            m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test.yaml"])
             # Serialize
             config = ConfigArgBuilder(
                 *all_configs,
@@ -25,12 +23,12 @@ class TestSerializedState:
             config_values = config.save(
                 file_extension=".yaml",
                 file_name=f"pytest.{curr_int_time}",
-                user_specified_path=tmp_path
+                user_specified_path=tmp_path,
             ).generate()
             yaml_regex = re.compile(
-                fr"pytest.{curr_int_time}."
-                fr"[a-fA-F0-9]{{8}}-[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{4}}-"
-                fr"[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{12}}.spock.cfg.yaml"
+                rf"pytest.{curr_int_time}."
+                rf"[a-fA-F0-9]{{8}}-[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{4}}-"
+                rf"[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{12}}.spock.cfg.yaml"
             )
             matches = [
                 re.fullmatch(yaml_regex, val)
@@ -39,15 +37,13 @@ class TestSerializedState:
             ]
             fname = f"{str(tmp_path)}/{matches[0].string}"
             # Deserialize
-            m.setattr(
-                sys, "argv", ["", "--config", f"{fname}"]
-            )
+            m.setattr(sys, "argv", ["", "--config", f"{fname}"])
             de_serial_config = ConfigArgBuilder(
                 *all_configs,
                 desc="Test Builder",
             ).generate()
-            delattr(config_values, '__key__')
-            delattr(config_values, '__salt__')
-            delattr(de_serial_config, '__key__')
-            delattr(de_serial_config, '__salt__')
+            delattr(config_values, "__key__")
+            delattr(config_values, "__salt__")
+            delattr(de_serial_config, "__key__")
+            delattr(de_serial_config, "__salt__")
             assert config_values == de_serial_config

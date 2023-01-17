@@ -4,7 +4,13 @@ import sys
 import pytest
 
 from spock.builder import ConfigArgBuilder
-from spock.exceptions import _SpockUndecoratedClass, _SpockNotOptionalError, _SpockValueError
+from spock.exceptions import (
+    _SpockUndecoratedClass,
+    _SpockNotOptionalError,
+    _SpockValueError,
+    _SpockInstantiationError,
+    _SpockFieldHandlerError,
+)
 from tests.base.attr_configs_test import *
 from tests.base.base_asserts_test import *
 
@@ -115,16 +121,19 @@ class TestNonAttrs:
 class TestRaiseIncorrectKeyType:
     def test_raises_missing_class(self, monkeypatch):
         with monkeypatch.context() as m:
-            m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test_fail_dict_key.yaml"])
+            m.setattr(
+                sys,
+                "argv",
+                ["", "--config", "./tests/conf/yaml/test_fail_dict_key.yaml"],
+            )
             with pytest.raises(TypeError):
+
                 @spock
                 class FailDictKey:
                     # Dict w/ int keys -- List of strings
                     int_list_str_dict: Dict[int, List[str]]
 
-                config = ConfigArgBuilder(
-                    FailDictKey
-                )
+                config = ConfigArgBuilder(FailDictKey)
                 return config.generate()
 
 
@@ -135,9 +144,7 @@ class TestRaisesMissingClass:
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test.yaml"])
             with pytest.raises(ValueError):
-                config = ConfigArgBuilder(
-                    *all_configs[:-1]
-                )
+                config = ConfigArgBuilder(*all_configs[:-1])
                 return config.generate()
 
 
@@ -162,9 +169,7 @@ class TestUnknownArg:
                 sys, "argv", ["", "--config", "./tests/conf/yaml/test_incorrect.yaml"]
             )
             with pytest.raises(ValueError):
-                ConfigArgBuilder(
-                    *all_configs, desc="Test Builder"
-                )
+                ConfigArgBuilder(*all_configs, desc="Test Builder")
 
 
 class TestUnknownClassParameterArg:
@@ -176,9 +181,7 @@ class TestUnknownClassParameterArg:
                 ["", "--config", "./tests/conf/yaml/test_class_incorrect.yaml"],
             )
             with pytest.raises(ValueError):
-                ConfigArgBuilder(
-                    *all_configs, desc="Test Builder"
-                )
+                ConfigArgBuilder(*all_configs, desc="Test Builder")
 
 
 class TestUnknownClassArg:
@@ -190,9 +193,7 @@ class TestUnknownClassArg:
                 ["", "--config", "./tests/conf/yaml/test_missing_class.yaml"],
             )
             with pytest.raises(TypeError):
-                ConfigArgBuilder(
-                    *all_configs, desc="Test Builder"
-                )
+                ConfigArgBuilder(*all_configs, desc="Test Builder")
 
 
 class TestWrongRepeatedClass:
@@ -208,9 +209,7 @@ class TestWrongRepeatedClass:
                 ],
             )
             with pytest.raises(ValueError):
-                ConfigArgBuilder(
-                    *all_configs, desc="Test Builder"
-                )
+                ConfigArgBuilder(*all_configs, desc="Test Builder")
 
 
 class TestDynamic(AllDynamic):
@@ -227,6 +226,7 @@ class TestDynamic(AllDynamic):
 
 class TestBasicLazy(AllTypes):
     """Testing basic lazy evaluation"""
+
     @staticmethod
     @pytest.fixture
     def arg_builder(monkeypatch):
@@ -238,6 +238,7 @@ class TestBasicLazy(AllTypes):
 
 class TestLazyNotFlagged:
     """Testing failed lazy evaluation"""
+
     def test_lazy_raise(self, monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", [""])
@@ -248,16 +249,18 @@ class TestLazyNotFlagged:
 
 class TestLazyNotDecorated:
     """Testing failed lazy evaluation"""
+
     def test_lazy_raise(self, monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", [""])
-            with pytest.raises(_SpockNotOptionalError):
+            with pytest.raises(_SpockFieldHandlerError):
                 config = ConfigArgBuilder(RaiseNotDecorated, lazy=False)
                 config.generate()
 
 
 class TestDynamic(AllDynamic):
     """Testing basic dynamic inheritance"""
+
     @staticmethod
     @pytest.fixture
     def arg_builder(monkeypatch):
@@ -269,6 +272,7 @@ class TestDynamic(AllDynamic):
 
 class TestDynamicRaise:
     """Testing dynamic raise fail"""
+
     def test_dynamic_raise(self, monkeypatch):
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", [""])
@@ -277,7 +281,7 @@ class TestDynamicRaise:
                 @spock
                 class TestConfigDefaultsFail(Foo, Bar):
                     x: int = 235
-                    y: str = 'yarghhh'
+                    y: str = "yarghhh"
                     z: List[int] = [10, 20]
 
                 config = ConfigArgBuilder(TestConfigDefaultsFail)
@@ -287,8 +291,12 @@ class TestDynamicRaise:
 class TestCallableModulePathRaise:
     def test_callable_module(self, monkeypatch):
         with monkeypatch.context() as m:
-            m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test_fail_callable_module.yaml"])
-            with pytest.raises(_SpockValueError):
+            m.setattr(
+                sys,
+                "argv",
+                ["", "--config", "./tests/conf/yaml/test_fail_callable_module.yaml"],
+            )
+            with pytest.raises(_SpockFieldHandlerError):
                 config = ConfigArgBuilder(*all_configs)
                 return config.generate()
 
@@ -296,7 +304,26 @@ class TestCallableModulePathRaise:
 class TestCallableModuleCallableRaise:
     def test_callable_module(self, monkeypatch):
         with monkeypatch.context() as m:
-            m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test_fail_callable.yaml"])
-            with pytest.raises(_SpockValueError):
+            m.setattr(
+                sys,
+                "argv",
+                ["", "--config", "./tests/conf/yaml/test_fail_callable.yaml"],
+            )
+            with pytest.raises(_SpockFieldHandlerError):
                 config = ConfigArgBuilder(*all_configs)
+                return config.generate()
+
+
+class TestUnannotatedVariable:
+    def test_unannotated_value(self, monkeypatch):
+        with monkeypatch.context() as m:
+            m.setattr(sys, "argv", [""])
+
+            with pytest.raises(_SpockInstantiationError):
+
+                @spock
+                class TestUnannotatedVarFail:
+                    foo = 6
+
+                config = ConfigArgBuilder(TestUnannotatedVarFail)
                 return config.generate()

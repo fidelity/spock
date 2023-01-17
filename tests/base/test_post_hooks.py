@@ -33,7 +33,14 @@ class WithinNoneFailConfig:
     other: Optional[float] = None
 
     def __post_hook__(self):
-        within(self.other, 0.9, 1.1, inclusive_lower=False, inclusive_upper=False, allow_optional=False)
+        within(
+            self.other,
+            0.9,
+            1.1,
+            inclusive_lower=False,
+            inclusive_upper=False,
+            allow_optional=False,
+        )
 
 
 @spock
@@ -103,7 +110,7 @@ class LEFailNoneConfig:
 @spock
 class EqLenNoneFailConfig:
     val_1: List[int] = [10, 12, 14]
-    val_2: Optional[Tuple[int]] = None
+    val_2: Optional[Tuple[int, int]] = None
     val_3: Tuple[int, int, int] = (1, 2, 3)
 
     def __post_hook__(self):
@@ -113,7 +120,7 @@ class EqLenNoneFailConfig:
 @spock
 class EqLenNoneConfig:
     val_1: List[int] = [10, 12, 14]
-    val_2: Optional[Tuple[int]] = None
+    val_2: Optional[Tuple[int, int]] = None
     val_3: Tuple[int, int, int] = (1, 2, 3)
 
     def __post_hook__(self):
@@ -123,7 +130,7 @@ class EqLenNoneConfig:
 @spock
 class EqLenNoneTwoLenConfig:
     val_1: List[int] = [10, 12]
-    val_2: Optional[Tuple[int]] = None
+    val_2: Optional[Tuple[int, int]] = None
     val_3: Tuple[int, int, int] = (1, 2, 3)
 
     def __post_hook__(self):
@@ -137,7 +144,9 @@ class SumNoneFailConfig:
     val_3: Optional[float] = None
 
     def __post_hook__(self):
-        sum_vals([self.val_1, self.val_2, self.val_3], sum_val=1.0, allow_optional=False)
+        sum_vals(
+            [self.val_1, self.val_2, self.val_3], sum_val=1.0, allow_optional=False
+        )
 
 
 @spock
@@ -151,7 +160,6 @@ class SumNoneNotEqualConfig:
 
 
 class TestPostHooks:
-
     def test_sum_none_fail_config(self, monkeypatch, tmp_path):
         """Test serialization/de-serialization"""
         with monkeypatch.context() as m:

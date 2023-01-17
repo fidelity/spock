@@ -31,6 +31,7 @@ class Spockspace(argparse.Namespace):
         """Overloaded repr to pretty print the spock object"""
         # Remove aliases in YAML print
         yaml.Dumper.ignore_aliases = lambda *args: True
+        # yaml.emitter.Emitter.process_tag = lambda self, *args, **kw: None
         return yaml.dump(self.__repr_dict__, default_flow_style=False)
 
     def __iter__(self):

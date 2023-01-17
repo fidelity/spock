@@ -1,14 +1,16 @@
 [tool.isort]
 profile = "black"
-extend_skip = ["debug", "tests", "examples"]
+extend_skip = ["debug", "tests", "examples", "versioneer.py", "_version.py"]
 
 [tool.black]
-target-version = ['py36', 'py37', 'py38', 'py39']
+target-version = ['py36', 'py37', 'py38', 'py39', 'py310']
 exclude = '''
 /(
   | debug
   | docs
   | examples
   | tests
+  | versioneer.py
+  | _version.py
 )/
 '''

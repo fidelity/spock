@@ -52,8 +52,7 @@ generating CLI arguments, and hierarchical configuration by composition.
 * Automatic type checked CLI generation w/o argparser boilerplate (i.e click and/or typer for free!)
 * Easily maintain parity between CLIs and Python APIs (i.e. single line changes between CLI and Python API definitions)
 * Unified hyper-parameter definitions and interface (i.e. don't write different definitions for Ax or Optuna)
-* Resolver that supports value definitions from environmental variables, dynamic template re-injection, and 
-encryption of sensitive values
+* Resolver that supports value definitions from reference to other defined variables, environmental variables, dynamic template re-injection, and encryption of sensitive values
 
 ## Key Features
 
@@ -103,6 +102,12 @@ See [Releases](https://github.com/fidelity/spock/releases) for more information.
 
 <details>
 
+### Jan 12th, 2023
+* Added support for resolving value definitions from references to other defined variables with the following syntax,`${spock.var:SpockClass.defined_variable}`
+* Added support for new fundamental types: (1) file: this is an overload of a str that verifies file existence and (r/w) access (2) directory: this is an overload of a str that verifies directory existence, creation if not existing, and (r/w) access
+* Deprecated support for `List` of repeated `@spock` decorated classes.
+* Collection of bugfixes
+
 #### May 17th, 2022
 * Added support for resolving value definitions from environmental variables with the following syntax, 
 `${spock.env:name, default}`
@@ -119,17 +124,8 @@ Additionally, added some common validation check to utils (within, greater than,
 * Updated unit tests to support Python 3.10
 
 #### January 26th, 2022
-* Added `evolve` support to the underlying `SpockBuilder` class. This provides functionality similar to the underlying
-attrs library ([attrs.evolve](https://www.attrs.org/en/stable/api.html#attrs.evolve)). `evolve()` creates a new 
-`Spockspace` instance based on differences between the underlying declared state and any passed in instantiated 
-`@spock` decorated classes.
-
-#### January 18th, 2022
-* Support for lazy evaluation: (1) inherited classes do not need to be `@spock` decorated, (2) dependencies/references 
-between `spock` classes can be lazily handled thus preventing the need for every `@spock` decorated classes to be 
-passed into `*args` within the main `SpockBuilder` API
-* Updated main API interface for better top-level imports (backwards compatible): `ConfigArgBuilder`->`SpockBuilder`
-* Added stubs to the underlying decorator that should help with type hinting in VSCode (pylance/pyright)
+* Added `evolve` support to the underlying `SpockBuilder` class. This provides functionality similar to the underlying attrs library ([attrs.evolve](https://www.attrs.org/en/stable/api.html#attrs.evolve)). `evolve()` creates a new `Spockspace` instance based on differences between the underlying declared state and any passed
+ in instantiated `@spock` decorated classes.
 
 </details>
 

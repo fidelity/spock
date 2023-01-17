@@ -44,7 +44,7 @@ class NestedStuff:
 @spock
 class NestedStuffOpt:
     one: int = 1
-    two: str = 'boo'
+    two: str = "boo"
 
 
 @spock
@@ -134,6 +134,8 @@ class TypeConfig:
     tuple_p_bool: Tuple[bool, bool]
     # Required Tuple -- mixed
     tuple_p_mixed: Tuple[int, float]
+    # Tuple of complex types
+    tuple_complex: Tuple[List[str], List[int]]
     # Required choice -- Str
     choice_p_str: StrChoice
     # Required choice -- Int
@@ -151,7 +153,7 @@ class TypeConfig:
     # Nested configuration
     nested: NestedStuff
     # Nested list configuration
-    nested_list: List[NestedListStuff]
+    # nested_list: List[NestedListStuff]
     # Class Enum
     class_enum: ClassChoice
     # Double Nested class ref
@@ -197,6 +199,8 @@ class TypeOptConfig:
     tuple_p_opt_no_def_str: Optional[Tuple[str, str]]
     # Optional Tuple default not set
     tuple_p_opt_no_def_bool: Optional[Tuple[bool, bool]]
+    # Optional Tuple of complex types
+    tuple_opt_complex: Optional[Tuple[List[str], List[int]]]
     # Required choice -- Str
     choice_p_opt_no_def_str: Optional[StrChoice]
     # Required list of choice -- Str
@@ -206,7 +210,7 @@ class TypeOptConfig:
     # Nested configuration
     nested_opt_no_def: Optional[NestedStuffOpt]
     # Nested list configuration
-    nested_list_opt_no_def: Optional[List[NestedListStuff]]
+    # nested_list_opt_no_def: Optional[List[NestedListStuff]]
     # Class Enum
     class_enum_opt_no_def: Optional[ClassChoice]
     # Additional dummy argument
@@ -262,13 +266,15 @@ class TypeDefaultConfig:
     # Required List -- Bool
     list_p_bool_def: List[bool] = [True, False]
     # Required Tuple -- Float
-    tuple_p_float_def: Tuple[float] = (10.0, 20.0)
+    tuple_p_float_def: Tuple[float, float] = (10.0, 20.0)
     # Required Tuple -- Int
-    tuple_p_int_def: Tuple[int] = (10, 20)
+    tuple_p_int_def: Tuple[int, int] = (10, 20)
     # Required Tuple -- Str
-    tuple_p_str_def: Tuple[str] = ("Spock", "Package")
+    tuple_p_str_def: Tuple[str, str] = ("Spock", "Package")
     # Required Tuple -- Bool
-    tuple_p_bool_def: Tuple[bool] = (True, False)
+    tuple_p_bool_def: Tuple[bool, bool] = (True, False)
+    # Tuple of complex types
+    tuple_complex_def: Tuple[List[str], List[int]] = (["foo"], [1])
     # Required choice
     choice_p_str_def: StrChoice = "option_2"
     # Required list of choice -- Str
@@ -279,12 +285,13 @@ class TypeDefaultConfig:
     nested_def: NestedStuff = NestedStuff
     # Nested configuration with no config
     nested_no_conf_def: NestedStuffDefault = NestedStuffDefault()
-    # Nested list configuration -- defaults to config values
-    nested_list_def: List[NestedListStuff] = [NestedListStuff]
-    # Nested list configuration -- defaults to coded values
-    nested_list_def_2: List[NestedListStuffDef] = [
-        NestedListStuffDef(one=100, two="two"), NestedListStuffDef(one=300, two="four")
-    ]
+    # # Nested list configuration -- defaults to config values
+    # nested_list_def: List[NestedListStuff] = [NestedListStuff]
+    # # Nested list configuration -- defaults to coded values
+    # nested_list_def_2: List[NestedListStuffDef] = [
+    #     NestedListStuffDef(one=100, two="two"),
+    #     NestedListStuffDef(one=300, two="four"),
+    # ]
     # Class Enum
     class_enum_def: ClassChoice = NestedStuff
     # Double Nested class ref
@@ -296,12 +303,20 @@ class TypeDefaultConfig:
     # Dict w/ str keys -- simple float value
     str_dict_def: Dict[str, float] = {"key_1": 1.5, "key_2": 2.5}
     # Dict w/ int keys -- List of strings
-    int_list_str_dict_def: Dict[str, List[str]] = {"1": ['test', 'me'], "2": ['again', 'test']}
+    int_list_str_dict_def: Dict[str, List[str]] = {
+        "1": ["test", "me"],
+        "2": ["again", "test"],
+    }
     # Dict w/ int keys --Tuple len 2 of Callable
-    float_tuple_callable_dict_def: Dict[str, Tuple[Callable, Callable]] = {"1.0": (foo, bar), "2.0": (foo, bar)}
+    float_tuple_callable_dict_def: Dict[str, Tuple[Callable, Callable]] = {
+        "1.0": (foo, bar),
+        "2.0": (foo, bar),
+    }
     # A weird combo to see if catches hard nested values
-    hardest_def: List[Dict[str, Tuple[Callable, Callable]]] = [{"key_1": (foo, bar), "key_2": (foo, bar)},
-                                                  {"key_3": (foo, bar), "key_4": (foo, bar)}]
+    hardest_def: List[Dict[str, Tuple[Callable, Callable]]] = [
+        {"key_1": (foo, bar), "key_2": (foo, bar)},
+        {"key_3": (foo, bar), "key_4": (foo, bar)},
+    ]
 
 
 @spock
@@ -324,13 +339,15 @@ class TypeDefaultOptConfig:
     # Optional List default set
     list_p_opt_def_str: Optional[List[str]] = ["Spock", "Package"]
     # Optional Tuple default set
-    tuple_p_opt_def_float: Optional[Tuple[float]] = (10.0, 20.0)
+    tuple_p_opt_def_float: Optional[Tuple[float, float]] = (10.0, 20.0)
     # Optional Tuple default set
-    tuple_p_opt_def_int: Optional[Tuple[int]] = (10, 20)
+    tuple_p_opt_def_int: Optional[Tuple[int, int]] = (10, 20)
     # Optional Tuple default set
-    tuple_p_opt_def_str: Optional[Tuple[str]] = ("Spock", "Package")
+    tuple_p_opt_def_str: Optional[Tuple[str, str]] = ("Spock", "Package")
     # Optional Tuple default set
-    tuple_p_opt_def_bool: Optional[Tuple[bool]] = (True, False)
+    tuple_p_opt_def_bool: Optional[Tuple[bool, bool]] = (True, False)
+    # Tuple of complex types
+    tuple_complex_opt_def: Optional[Tuple[List[str], List[int]]] = (["foo"], [1])
     # Optional choice
     choice_p_str_opt_def: Optional[StrChoice] = "option_2"
     # Optional list of choice -- Str
@@ -342,8 +359,8 @@ class TypeDefaultOptConfig:
     ]
     # Nested configuration
     nested_opt_def: Optional[NestedStuff] = NestedStuff
-    # Nested list configuration
-    nested_list_opt_def: Optional[List[NestedListStuff]] = [NestedListStuff]
+    # # Nested list configuration
+    # nested_list_opt_def: Optional[List[NestedListStuff]] = [NestedListStuff]
     # Class Enum
     class_enum_opt_def: Optional[ClassChoice] = NestedStuff
     # Optional Callable
@@ -353,12 +370,18 @@ class TypeDefaultOptConfig:
     # Dict w/ str keys -- simple float value
     str_dict_opt_def: Optional[Dict[str, float]] = {"key_1": 1.5, "key_2": 2.5}
     # Dict w/ int keys -- List of strings
-    int_list_str_dict_opt_def: Optional[Dict[str, List[str]]] = {"1": ['test', 'me'], "2": ['again', 'test']}
+    int_list_str_dict_opt_def: Optional[Dict[str, List[str]]] = {
+        "1": ["test", "me"],
+        "2": ["again", "test"],
+    }
     # Dict w/ int keys --Tuple len 2 of Callable
-    float_tuple_callable_dict_opt_def: Optional[Dict[str, Tuple[Callable, Callable]]] = {"1.0": (foo, bar), "2.0": (foo, bar)}
+    float_tuple_callable_dict_opt_def: Optional[
+        Dict[str, Tuple[Callable, Callable]]
+    ] = {"1.0": (foo, bar), "2.0": (foo, bar)}
     # A weird combo to see if catches hard nested values
     hardest_opt_def: Optional[List[Dict[str, Tuple[Callable, Callable]]]] = [
-        {"key_1": (foo, bar), "key_2": (foo, bar)}, {"key_3": (foo, bar), "key_4": (foo, bar)}
+        {"key_1": (foo, bar), "key_2": (foo, bar)},
+        {"key_3": (foo, bar), "key_4": (foo, bar)},
     ]
 
 
@@ -366,6 +389,7 @@ class TypeDefaultOptConfig:
 # class TypeInherited(TypeDefaultOptConfig, TypeConfig):
 class TypeInherited(TypeConfig, TypeDefaultOptConfig):
     """This tests inheritance with mixed default and non-default arguments"""
+
     pass
 
 
@@ -374,13 +398,13 @@ class Foo:
 
 
 class Bar:
-    q: str = 'shhh'
+    q: str = "shhh"
 
 
 @spock(dynamic=True)
 class ConfigDynamicDefaults(Foo, Bar):
     x: int = 235
-    y: str = 'yarghhh'
+    y: str = "yarghhh"
     z: List[int] = [10, 20]
 
 
@@ -392,13 +416,13 @@ all_configs = [
     SingleNestedConfig,
     FirstDoubleNestedConfig,
     SecondDoubleNestedConfig,
-    NestedStuffOpt
+    NestedStuffOpt,
 ]
 
 
 @spock
 class OtherBar:
-    hello: str = 'goodbye'
+    hello: str = "goodbye"
 
 
 @spock

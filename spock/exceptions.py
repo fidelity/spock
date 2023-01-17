@@ -46,7 +46,31 @@ class _SpockResolverError(Exception):
     pass
 
 
+class _SpockEnvResolverError(Exception):
+    """Custom exception for environment resolver"""
+
+    pass
+
+
+class _SpockCryptoResolverError(Exception):
+    """Custom exception for environment resolver"""
+
+    pass
+
+
 class _SpockCryptoError(Exception):
     """Custom exception for dealing with the crypto side of things"""
+
+    pass
+
+
+class _SpockVarResolverError(Exception):
+    """Custom exception for deal with the variable resolver"""
+
+    pass
+
+
+class _SpockFieldHandlerError(Exception):
+    """Custom exception for failing within the field handler"""
 
     pass

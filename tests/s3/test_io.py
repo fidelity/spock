@@ -64,9 +64,9 @@ class TestS3MockYAMLWriter:
                 file_name=f"pytest.s3save.{curr_int_time}",
             ).generate()
             yaml_regex = re.compile(
-                fr"{mock_s3_object}pytest.s3save.{curr_int_time}."
-                fr"[a-fA-F0-9]{{8}}-[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{4}}-"
-                fr"[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{12}}.spock.cfg.yaml"
+                rf"{mock_s3_object}pytest.s3save.{curr_int_time}."
+                rf"[a-fA-F0-9]{{8}}-[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{4}}-"
+                rf"[a-fA-F0-9]{{4}}-[a-fA-F0-9]{{12}}.spock.cfg.yaml"
             )
             matches = [
                 re.fullmatch(yaml_regex, val["Key"])

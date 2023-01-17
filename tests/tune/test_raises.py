@@ -8,13 +8,18 @@ from spock import spock
 
 from spock.addons.tune import AxTunerConfig, OptunaTunerConfig
 from spock.builder import ConfigArgBuilder
+from spock.exceptions import _SpockFieldHandlerError
 from tests.tune.attr_configs_test import *
 
 
 class TestWrongPayload:
     def test_unknown_arg(self, monkeypatch):
         with monkeypatch.context() as m:
-            m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test_hp_unknown_arg.yaml"])
+            m.setattr(
+                sys,
+                "argv",
+                ["", "--config", "./tests/conf/yaml/test_hp_unknown_arg.yaml"],
+            )
             optuna_config = OptunaTunerConfig(
                 study_name="Basic Tests", direction="maximize"
             )
@@ -24,7 +29,11 @@ class TestWrongPayload:
 
     def test_unknown_class(self, monkeypatch):
         with monkeypatch.context() as m:
-            m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/test_hp_unknown_class.yaml"])
+            m.setattr(
+                sys,
+                "argv",
+                ["", "--config", "./tests/conf/yaml/test_hp_unknown_class.yaml"],
+            )
             optuna_config = OptunaTunerConfig(
                 study_name="Basic Tests", direction="maximize"
             )
@@ -93,7 +102,7 @@ class TestOptunaInvalidCastRange:
             optuna_config = OptunaTunerConfig(
                 study_name="Basic Tests", direction="maximize"
             )
-            with pytest.raises(TypeError):
+            with pytest.raises(_SpockFieldHandlerError):
                 config = ConfigArgBuilder(HPOne, HPTwo).tuner(optuna_config)
 
 
@@ -127,5 +136,5 @@ class TestAxInvalidCastRange:
                 objective_name="None",
                 verbose_logging=False,
             )
-            with pytest.raises(TypeError):
+            with pytest.raises(_SpockFieldHandlerError):
                 config = ConfigArgBuilder(HPOne, HPTwo).tuner(ax_config)

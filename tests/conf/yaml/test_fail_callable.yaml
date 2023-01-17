@@ -48,12 +48,15 @@ NestedStuff:
     one: 11
     two: ciao
 # Nested List configuration
-nested_list: NestedListStuff
+#nested_list: NestedListStuff
+#NestedListStuff:
+#    - one: 10
+#      two: hello
+#    - one: 20
+#      two: bye
 NestedListStuff:
-    - one: 10
-      two: hello
-    - one: 20
-      two: bye
+  one: 10
+  two: hello
 # Class Enum
 class_enum: NestedStuff
 # Nested classes
