@@ -75,6 +75,11 @@ class FooBar:
 
 
 @spock
+class OtherRef:
+    other_str: str = "yes"
+
+
+@spock
 class RefClass:
     a_float: float = 12.1
     a_int: int = 3
@@ -113,6 +118,9 @@ class RefClassDefault:
     ref_nested_to_str: str = "${spock.var:FooBar.val}.${spock.var:Lastly.tester}"
     ref_nested_to_float: float = "${spock.var:FooBar.val}.${spock.var:Lastly.tester}"
     ref_self: float = "${spock.var:RefClassDefault.ref_float}"
+    ref_self_nested: str = (
+        "${spock.var:RefClassDefault.ref_string}-${spock.var:OtherRef.other_str}"
+    )
 
 
 class TestRefResolver:
@@ -162,7 +170,7 @@ class TestRefResolver:
         with monkeypatch.context() as m:
             m.setattr(sys, "argv", [""])
             config = SpockBuilder(
-                RefClassDefault, RefClass, Lastly, BarFoo, FooBar
+                RefClassDefault, RefClass, Lastly, BarFoo, FooBar, OtherRef
             ).generate()
 
             assert config.RefClassDefault.ref_float == 12.1
@@ -172,6 +180,7 @@ class TestRefResolver:
             assert config.RefClassDefault.ref_nested_to_str == "12.1"
             assert config.RefClassDefault.ref_nested_to_float == 12.1
             assert config.RefClassDefault.ref_self == config.RefClassDefault.ref_float
+            assert config.RefClassDefault.ref_self_nested == "helloo-yes"
 
 
 @spock
