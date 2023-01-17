@@ -60,7 +60,7 @@ def _is_file(type: _T, check_access: bool, attr: attr.Attribute, value: str) -> 
     _check_instance(value, attr.name, str)
     # # If so then cast to underlying type
     # value = file(value)
-    if not Path(value).is_file():
+    if not Path(value).resolve().is_file():
         raise ValueError(f"{attr.name} must be a file: {value} is not a valid file")
     r = os.access(value, os.R_OK)
     w = os.access(value, os.W_OK)
@@ -141,13 +141,13 @@ def _is_directory(
     # Check the instance type first
     _check_instance(value, attr.name, str)
     # If it's not a path and not flagged to create then raise exception
-    if not Path(value).is_dir() and not create:
+    if not Path(value).resolve().is_dir() and not create:
         raise ValueError(
             f"{attr.name} must be a directory: {value} is not a " f"valid directory"
         )
     # Else just try and create the path -- exist_ok means if the path already exists
     # it won't throw an exception
-    elif not Path(value).is_dir() and create:
+    elif not Path(value).resolve().is_dir() and create:
         try:
             os.makedirs(value, exist_ok=True)
             print(
