@@ -640,21 +640,26 @@ class ConfigArgBuilder:
         Returns:
             dictionary where the class names are keys and the values are the dictionary representations
         """
-        if isinstance(obj, (List, Tuple)):
-            obj_dict = {}
-            for val in obj:
-                if not _is_spock_instance(val):
-                    raise _SpockValueError(
-                        f"Object is not a @spock decorated class object -- currently `{type(val)}`"
-                    )
-                obj_dict.update({type(val).__name__: val})
-        elif _is_spock_instance(obj):
-            obj_dict = {type(obj).__name__: obj}
-        else:
-            raise _SpockValueError(
-                f"Object is not a @spock decorated class object -- currently `{type(obj)}`"
-            )
-        return self.spockspace_2_dict(Spockspace(**obj_dict))
+
+        from spock.helpers import to_dict
+
+        return to_dict(obj, self._saver_obj)
+
+        # if isinstance(obj, (List, Tuple)):
+        #     obj_dict = {}
+        #     for val in obj:
+        #         if not _is_spock_instance(val):
+        #             raise _SpockValueError(
+        #                 f"Object is not a @spock decorated class object -- currently `{type(val)}`"
+        #             )
+        #         obj_dict.update({type(val).__name__: val})
+        # elif _is_spock_instance(obj):
+        #     obj_dict = {type(obj).__name__: obj}
+        # else:
+        #     raise _SpockValueError(
+        #         f"Object is not a @spock decorated class object -- currently `{type(obj)}`"
+        #     )
+        # return self.spockspace_2_dict(Spockspace(**obj_dict))
 
     def evolve(self, *args: _C) -> Spockspace:
         """Function that allows a user to evolve the underlying spock classes with

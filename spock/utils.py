@@ -92,11 +92,6 @@ def _get_callable_type():
     return _VariadicGenericAlias
 
 
-def _get_new_type():
-
-    pass
-
-
 _SpockGenericAlias = _get_alias_type()
 _SpockVariadicGenericAlias = _get_callable_type()
 _T = TypeVar("_T")

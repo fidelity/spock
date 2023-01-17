@@ -23,9 +23,11 @@ __all__ = [
     "config",
     "directory",
     "file",
+    "helpers",
     "SavePath",
     "spock",
     "SpockBuilder",
+    "utils",
 ]
 
 __version__ = get_versions()["version"]
