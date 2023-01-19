@@ -257,13 +257,16 @@ class SelfGraph(BaseGraph):
     def nodes(self):
         return [k.name for k in self._cls.__attrs_attrs__]
 
-    def _cast_all_maps(self, changed_vars: Set):
-        for val in changed_vars:
-            self._fields[val] = self.var_resolver.attempt_cast(
-                self._fields[val], getattr(self._cls.__attrs_attrs__, val).type, val
-            )
+    def resolve(self) -> Tuple[Dict, Set]:
+        """Resolves variable references by searching thorough the current spock_space
 
-    def resolve(self) -> Dict:
+        Args:
+
+        Returns:
+            field dictionary containing the resolved values and a set containing all
+            changed variables to delay casting post resolution
+
+        """
         # Iterate in topo order
         for k in self.topological_order:
             # get the self dependent values and swap within the fields dict
@@ -275,9 +278,8 @@ class SelfGraph(BaseGraph):
                     name=v,
                 )
                 self._fields[v] = typed_val
-        # Get a set of all changed variables and attempt to cast them
-        self._cast_all_maps(set(self._ref_map.keys()))
-        return self._fields
+        # Get a set of all changed variables
+        return self._fields, set(self._ref_map.keys())
 
     def _build(self) -> Tuple[Dict, Dict]:
         """Builds a dictionary of nodes and their edges (essentially builds the DAG)
@@ -363,24 +365,7 @@ class VarGraph(BaseGraph):
         """Returns the values that need to be resolved"""
         return set(self.ref_map.keys())
 
-    def _cast_all_maps(self, cls_name: str, changed_vars: Set) -> None:
-        """Casts all the resolved references to the requested type
-
-        Args:
-            cls_name: name of the underlying class
-            changed_vars: set of resolved variables that need to be cast
-
-        Returns:
-
-        """
-        for val in changed_vars:
-            self.cls_map[cls_name][val] = self.var_resolver.attempt_cast(
-                self.cls_map[cls_name][val],
-                getattr(self.node_map[cls_name].__attrs_attrs__, val).type,
-                val,
-            )
-
-    def resolve(self, spock_cls: str, spock_space: Dict) -> Dict:
+    def resolve(self, spock_cls: str, spock_space: Dict) -> Tuple[Dict, Set]:
         """Resolves variable references by searching thorough the current spock_space
 
         Args:
@@ -388,10 +373,12 @@ class VarGraph(BaseGraph):
             spock_space: current spock_space to look for the underlying value
 
         Returns:
-            field dictionary containing the resolved values
+            field dictionary containing the resolved values and a set containing all
+            changed variables to delay casting post resolution
 
         """
         # First we check for any needed variable resolution
+        changed_vars = set()
         if spock_cls in self.ref_2_resolve:
             # iterate over the mapped refs to swap values -- using the var resolver
             # to get the correct values
@@ -406,11 +393,10 @@ class VarGraph(BaseGraph):
                 )
                 # Swap the value to the replaced version
                 self.cls_map[spock_cls][ref["val"]] = typed_val
-            # Get a set of all changed variables and attempt to cast them
+            # Get a set of all changed variables
             changed_vars = {n["val"] for n in self.ref_map[spock_cls]}
-            self._cast_all_maps(spock_cls, changed_vars)
         # Return the field dict
-        return self.cls_map[spock_cls]
+        return self.cls_map[spock_cls], changed_vars
 
     def _build(self) -> Tuple[Dict, Dict]:
         """Builds a dictionary of nodes and their edges (essentially builds the DAG)

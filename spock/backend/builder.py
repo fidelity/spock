@@ -7,13 +7,14 @@
 import argparse
 from abc import ABC, abstractmethod
 from enum import EnumMeta
-from typing import ByteString, Dict, List, Optional, Tuple
+from typing import ByteString, Dict, List, Optional, Set, Tuple
 
 import attr
 
 from spock.args import SpockArguments
 from spock.backend.field_handlers import RegisterSpockCls
 from spock.backend.help import attrs_help
+from spock.backend.resolvers import VarResolver
 from spock.backend.spaces import BuilderSpace
 from spock.backend.wrappers import Spockspace
 from spock.exceptions import _SpockInstantiationError
@@ -196,17 +197,23 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
         # dependencies in the correct order
         for spock_name in merged_graph.topological_order:
             # First we check for any needed cls dependent variable resolution
-            cls_fields = var_graph.resolve(spock_name, builder_space.spock_space)
+            cls_fields, cls_changed_vars = var_graph.resolve(
+                spock_name, builder_space.spock_space
+            )
             # Then we map cls references to their instantiated version
             cls_fields = self._clean_up_cls_refs(cls_fields, builder_space.spock_space)
             # Lastly we have to check for self-resolution -- we do this w/ yet another
             # graph -- graphs FTW! -- this maps back to the fields dict in the tuple
-            cls_fields = SelfGraph(
+            cls_fields, var_changed_vars = SelfGraph(
                 cls_fields_dict[spock_name]["cls"], cls_fields
             ).resolve()
-
-            # Once all resolution occurs we attempt to instantiate the cls
+            # Get the actual underlying class
             spock_cls = merged_graph.node_map[spock_name]
+            # Merge the changed sets -- then attempt to cast them all post resolution
+            self._cast_all_maps(
+                spock_cls, cls_fields, cls_changed_vars | var_changed_vars
+            )
+            # Once all resolution occurs we attempt to instantiate the cls
             try:
                 spock_instance = spock_cls(**cls_fields)
             except Exception as e:
@@ -217,6 +224,25 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
             # Push back into the builder_space
             builder_space.spock_space[spock_cls.__name__] = spock_instance
         return builder_space.spock_space
+
+    @staticmethod
+    def _cast_all_maps(cls, cls_fields: Dict, changed_vars: Set) -> None:
+        """Casts all the resolved references to the requested type
+
+        Args:
+            cls: current spock class
+            cls_fields: current fields dictionary to attempt cast within
+            changed_vars: set of resolved variables that need to be cast
+
+        Returns:
+
+        """
+        for val in changed_vars:
+            cls_fields[val] = VarResolver._attempt_cast(
+                maybe_env=cls_fields[val],
+                value_type=getattr(cls.__attrs_attrs__, val).type,
+                ref_value=val,
+            )
 
     @staticmethod
     def _clean_up_cls_refs(fields: Dict, spock_space: Dict) -> Dict:
