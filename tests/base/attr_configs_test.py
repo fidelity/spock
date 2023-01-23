@@ -393,6 +393,11 @@ class TypeInherited(TypeConfig, TypeDefaultOptConfig):
     pass
 
 
+@spock
+class TypeOptionalInherited(TypeOptConfig):
+    pass
+
+
 class Foo:
     p: int = 1
 

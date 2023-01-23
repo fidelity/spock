@@ -60,6 +60,7 @@ class TestInheritance(AllInherited):
             m.setattr(sys, "argv", ["", "--config", "./tests/conf/yaml/inherited.yaml"])
             config = ConfigArgBuilder(
                 TypeInherited,
+                TypeOptionalInherited,
                 NestedStuff,
                 NestedStuffOpt,
                 NestedListStuff,
