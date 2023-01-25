@@ -38,6 +38,7 @@ def _base_attr(cls, kw_only, make_init, dynamic):
     bases = ()
     base_annotation = {}
     base_defaults = {}
+    base_optional = {}
     if len(cls.__mro__[1:-1]) > 0:
         # Get bases minus self and python class object
         bases = list(cls.__mro__[1:-1])
@@ -63,6 +64,10 @@ def _base_attr(cls, kw_only, make_init, dynamic):
                     else:
                         base_annotation.update(
                             {attribute.name: val.__annotations__[attribute.name]}
+                        )
+                    if "optional" in attribute.metadata:
+                        base_optional.update(
+                            {attribute.name: attribute.metadata["optional"]}
                         )
         base_defaults = {
             attribute.name: attribute.default
@@ -120,7 +125,13 @@ def _base_attr(cls, kw_only, make_init, dynamic):
             default = base_defaults[k]
         else:
             default = None
-        attrs_dict.update({k: katra(typed=v, default=default)})
+        # If the parent was optional then set the child to optional
+        optional = False
+        if k in base_optional:
+            optional = base_optional[k]
+        attrs_dict.update(
+            {k: katra(typed=v, default=default, inherit_optional=optional)}
+        )
     return bases, attrs_dict, merged_annotations
 
 

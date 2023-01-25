@@ -561,16 +561,18 @@ def _callable_katra(typed, default=None, optional=False):
     return x
 
 
-def katra(typed, default=None):
+def katra(typed, default=None, inherit_optional=False):
     """Public interface to create a katra
 
-    A 'katra' is the basic functional unit of `spock`. It defines a parameter using attrs as the backend, type checks
-    both simple types and subscripted GenericAlias types (e.g. lists and tuples), handles setting default parameters,
+    A 'katra' is the basic functional unit of `spock`. It defines a parameter using
+    attrs as the backend, type checks both simple types and subscripted GenericAlias
+    types (e.g. lists and tuples), handles setting default parameters,
     and deals with parameter optionality
 
     Args:
         typed: the type of the parameter to define
         default: the default value to assign if given
+        inherit_optional: optionality from inheritance
 
     Returns:
         x: Attribute from attrs
@@ -578,6 +580,9 @@ def katra(typed, default=None):
     """
     # Handle optionals
     typed, optional = _handle_optional_typing(typed)
+    # Since we strip away the optional typing notation for Generics -- we need to
+    # override with optional coming from the parent
+    optional = True if (optional or inherit_optional) else False
     # Checks for callables via the different Variadic types across versions
     if isinstance(typed, _SpockVariadicGenericAlias):
         x = _callable_katra(typed=typed, default=default, optional=optional)
