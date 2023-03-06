@@ -6,17 +6,19 @@
 """Utility functions for Spock"""
 
 import ast
+import inspect
 import os
 import random
 import socket
 import subprocess
 import sys
+import textwrap
 from argparse import _ArgumentGroup
 from enum import EnumMeta
 from math import isclose
 from pathlib import Path
 from time import localtime, strftime
-from typing import Any, Dict, List, Tuple, Type, TypeVar, Union
+from typing import Any, Callable, Dict, List, Tuple, Type, TypeVar, Union
 from warnings import warn
 
 import attr
@@ -26,6 +28,25 @@ import pkg_resources
 from spock.exceptions import _SpockValueError
 
 minor = sys.version_info.minor
+
+
+def contains_return(func: Callable):
+    """Checks if a function/callable has an explict return def
+
+    Args:
+        func: function to check for direct return
+
+    Returns:
+        boolean if defined return is found
+
+    References:
+        https://stackoverflow.com/questions/48232810/python-check-if-function-has-return-statement
+
+    """
+    return any(
+        isinstance(node, ast.Return)
+        for node in ast.walk(ast.parse(textwrap.dedent(inspect.getsource(func))))
+    )
 
 
 def vars_dict_non_dunder(__obj: object):

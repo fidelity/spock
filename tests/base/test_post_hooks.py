@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# -*- coding: utf-8 -*-
 import sys
 
 from typing import List, Tuple, Optional
@@ -160,8 +159,29 @@ class SumNoneNotEqualConfig:
 
 
 class TestPostHooks:
+    def test_return_raise(self, monkeypatch, tmp_path):
+        with monkeypatch.context() as m:
+            m.setattr(
+                sys,
+                "argv",
+                [""],
+            )
+            with pytest.raises(_SpockInstantiationError):
+
+                @spock
+                class FailReturnConfig:
+                    val_1: float = 0.5
+
+                    def __post_hook__(self):
+                        return self.val_1
+
+                config = SpockBuilder(
+                    FailReturnConfig,
+                    desc="Test Builder",
+                )
+                config.generate()
+
     def test_sum_none_fail_config(self, monkeypatch, tmp_path):
-        """Test serialization/de-serialization"""
         with monkeypatch.context() as m:
             m.setattr(
                 sys,
@@ -176,7 +196,6 @@ class TestPostHooks:
                 config.generate()
 
     def test_sum_not_equal_config(self, monkeypatch, tmp_path):
-        """Test serialization/de-serialization"""
         with monkeypatch.context() as m:
             m.setattr(
                 sys,
@@ -191,7 +210,6 @@ class TestPostHooks:
                 config.generate()
 
     def test_eq_len_two_len_fail(self, monkeypatch, tmp_path):
-        """Test serialization/de-serialization"""
         with monkeypatch.context() as m:
             m.setattr(
                 sys,
@@ -206,7 +224,6 @@ class TestPostHooks:
                 config.generate()
 
     def test_eq_len_none_fail(self, monkeypatch, tmp_path):
-        """Test serialization/de-serialization"""
         with monkeypatch.context() as m:
             m.setattr(
                 sys,
@@ -221,7 +238,6 @@ class TestPostHooks:
                 config.generate()
 
     def test_eq_len_none(self, monkeypatch, tmp_path):
-        """Test serialization/de-serialization"""
         with monkeypatch.context() as m:
             m.setattr(
                 sys,
@@ -235,7 +251,6 @@ class TestPostHooks:
             config.generate()
 
     def test_within_low(self, monkeypatch, tmp_path):
-        """Test serialization/de-serialization"""
         with monkeypatch.context() as m:
             m.setattr(
                 sys,
@@ -250,7 +265,6 @@ class TestPostHooks:
                 config.generate()
 
     def test_within_high(self, monkeypatch, tmp_path):
-        """Test serialization/de-serialization"""
         with monkeypatch.context() as m:
             m.setattr(
                 sys,
@@ -265,7 +279,6 @@ class TestPostHooks:
                 config.generate()
 
     def test_within_none(self, monkeypatch, tmp_path):
-        """Test serialization/de-serialization"""
         with monkeypatch.context() as m:
             m.setattr(
                 sys,
@@ -310,7 +323,6 @@ class TestPostHooks:
                 config.generate()
 
     def test_ge(self, monkeypatch, tmp_path):
-        """Test serialization/de-serialization"""
         with monkeypatch.context() as m:
             m.setattr(
                 sys,
@@ -325,7 +337,6 @@ class TestPostHooks:
                 config.generate()
 
     def test_ge_none(self, monkeypatch, tmp_path):
-        """Test serialization/de-serialization"""
         with monkeypatch.context() as m:
             m.setattr(
                 sys,
@@ -340,7 +351,6 @@ class TestPostHooks:
                 config.generate()
 
     def test_lt(self, monkeypatch, tmp_path):
-        """Test serialization/de-serialization"""
         with monkeypatch.context() as m:
             m.setattr(
                 sys,
@@ -355,7 +365,6 @@ class TestPostHooks:
                 config.generate()
 
     def test_lt_none(self, monkeypatch, tmp_path):
-        """Test serialization/de-serialization"""
         with monkeypatch.context() as m:
             m.setattr(
                 sys,
@@ -370,7 +379,6 @@ class TestPostHooks:
                 config.generate()
 
     def test_le(self, monkeypatch, tmp_path):
-        """Test serialization/de-serialization"""
         with monkeypatch.context() as m:
             m.setattr(
                 sys,
@@ -385,7 +393,6 @@ class TestPostHooks:
                 config.generate()
 
     def test_le_none(self, monkeypatch, tmp_path):
-        """Test serialization/de-serialization"""
         with monkeypatch.context() as m:
             m.setattr(
                 sys,

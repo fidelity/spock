@@ -11,7 +11,7 @@ import attr
 
 from spock.backend.typed import katra
 from spock.exceptions import _SpockInstantiationError, _SpockUndecoratedClass
-from spock.utils import _is_spock_instance, vars_dict_non_dunder
+from spock.utils import _is_spock_instance, contains_return, vars_dict_non_dunder
 
 
 def _base_attr(cls, kw_only, make_init, dynamic):
@@ -150,10 +150,31 @@ def _process_class(cls, kw_only: bool, make_init: bool, dynamic: bool):
     """
     # Handles the MRO and gets old annotations
     bases, attrs_dict, merged_annotations = _base_attr(cls, kw_only, make_init, dynamic)
-    # Copy over the post init function -- borrow a bit from attrs library to add the __post__hook__ method to the
-    # init call via `"__attrs_post_init__"`
-    if hasattr(cls, "__post_hook__"):
-        attrs_dict.update({"__attrs_post_init__": cls.__post_hook__})
+    # Copy over the post init function -- borrow a bit from attrs library to add the
+    # __post__hook__ method and/or the __maps__ method (via a shim method) to the init
+    # call via `"__attrs_post_init__"`
+    if hasattr(cls, "__post_hook__") or hasattr(cls, "__maps__"):
+        # Force the post_hook function to have no explict return
+        if hasattr(cls, "__post_hook__") and contains_return(cls.__post_hook__):
+            raise _SpockInstantiationError(
+                f"__post_hook__ function contains an explict return. This function "
+                f"cannot return any values (i.e. requires an implicit None return)"
+            )
+        if hasattr(cls, "__maps__") and not contains_return(cls.__maps__):
+            raise _SpockInstantiationError(
+                f"__maps__ function is missing an explict return. This function "
+                f"needs to explicitly return any type of values"
+            )
+
+        # Create a shim function to combine __post_hook__ and __maps__
+        def __shim__(self):
+            if hasattr(cls, "__post_hook__"):
+                cls.__post_hook__(self)
+            if hasattr(cls, "__maps__"):
+                object.__setattr__(self, "_maps", cls.__maps__(self))
+
+        # Map the __shim__ function into __attrs_post_init__
+        attrs_dict.update({"__attrs_post_init__": __shim__})
     # Dynamically make an attr class
     obj = attr.make_class(
         name=cls.__name__,
