@@ -216,8 +216,6 @@ class AttrSaver(BaseSaver):
         return AttrSaver(*args, **kwargs)
 
     def _clean_up_values(self, payload: Spockspace, remove_crypto: bool = True) -> Dict:
-        # Strip annotations and protected attributes
-        payload = payload.clean
         # Dictionary to recursively write to
         out_dict = {}
         # All of the classes are defined at the top level
@@ -229,7 +227,21 @@ class AttrSaver(BaseSaver):
         clean_dict = self._clean_output(out_dict)
         # Clip any empty dictionaries
         clean_dict = {k: v for k, v in clean_dict.items() if len(v) > 0}
-        return clean_dict
+        # Clean up annotations
+        if remove_crypto:
+            if "__salt__" in clean_dict:
+                _ = clean_dict.pop("__salt__")
+            if "__key__" in clean_dict:
+                _ = clean_dict.pop("__key__")
+        # Clean up protected attributes
+        out_dict = {}
+        for k, v in clean_dict.items():
+            cls_dict = {}
+            for ik, iv in v.items():
+                if not ik.startswith("_"):
+                    cls_dict.update({ik: iv})
+            out_dict.update({k: cls_dict})
+        return out_dict
 
     def _clean_tuner_values(self, payload: Spockspace) -> Dict:
         # Just a double nested dict comprehension to unroll to dicts
