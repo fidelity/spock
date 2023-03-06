@@ -45,8 +45,8 @@ parameters within the `__post_hook__` methods and use them in custom functions (
 
 ### Map Hooks
 
-Simply add the `__map__` method to your `@spock` decorated class. This method must
-contain an explict return. The return(s) of the `__map__` method will be mapped to the 
+Simply add the `__maps__` method to your `@spock` decorated class. This method must
+contain an explict return. The return(s) of the `__maps__` method will be mapped to the 
 `_map` variable within the instantiated class> For instance: 
 
 
@@ -96,7 +96,7 @@ def main():
 
 ```
 
-The `__map__` method will be triggered post-instantiation. This means that the parameter
+The `__maps__` method will be triggered post-instantiation. This means that the parameter
 values defined within the `S3ScratchConfig` class will get mapped into the creation of
 the `ProcessingInput` instance. Therefore, the return of `_maps` will be the 
 instantiated `ProcessingInput` object with the `spock` defined parameters.
