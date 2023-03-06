@@ -62,18 +62,12 @@ class UploadMode(Enum):
     end_of_job = "EndOfJob"
     continuous = "Continuous"
 
-
 @spock
-class SMBaseOutputConfig:
+class S3ScratchConfig:
     name: Optional[str] = None
-    source: str
-    destination: str
+    source: str = "s3://my-path"
+    destination: str = "/local/path"
     upload_mode: UploadMode = UploadMode.end_of_job
-
-
-@spock
-class S3ScratchConfig(SMBaseOutputConfig):
-    ...
 
     def __post_hook__(self):
         print(self.name)
