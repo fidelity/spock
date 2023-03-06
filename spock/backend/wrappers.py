@@ -21,10 +21,6 @@ class Spockspace(argparse.Namespace):
         super(Spockspace, self).__init__(**kwargs)
 
     @property
-    def clean(self):
-        return Spockspace(**self.__repr_dict__)
-
-    @property
     def __repr_dict__(self):
         """Handles making a clean dict to hide the salt and key on print"""
         clean_dict = {
