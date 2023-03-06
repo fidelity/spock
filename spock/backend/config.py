@@ -160,7 +160,7 @@ def _handle_hooks(
     # Copy over the post init function -- borrow a bit from attrs library to add the
     # __post__hook__ method and/or the __maps__ method (via a shim method) to the init
     # call via `"__attrs_post_init__"`
-    if hasattr(cls, "__post_hook__") or hasattr(cls, "__maps__"):
+    if hasattr(cls, "__post_hook__") or hasattr(cls, "__maps__") or (len(hooks) > 0):
         # Force the post_hook function to have no explict return
         if hasattr(cls, "__post_hook__") and contains_return(cls.__post_hook__):
             raise _SpockInstantiationError(
