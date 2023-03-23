@@ -181,10 +181,12 @@ def _handle_hooks(
                     cls.__post_hook__(self)
                 # Call the parents hooks
                 all_hooks = [val(self) for val in hooks]
+                # Pop any None values
+                all_hooks = [val for val in all_hooks if val is not None]
                 # Add in the given hook
                 if hasattr(cls, "__maps__"):
                     all_hooks = [cls.__maps__(self)] + all_hooks
-                elif len(all_hooks) == 1:
+                if len(all_hooks) == 1:
                     all_hooks = all_hooks[0]
                 # Set maps to the mapped values
                 object.__setattr__(self, "_maps", all_hooks)
