@@ -101,7 +101,7 @@ python simple.py --help
 ```
 
 ```shell
-usage: /Users/a635179/Documents/git_repos/open_source/spock/examples/quick-start/simple.py -c [--config] config1 [config2, config3, ...]
+usage: ~/Documents/git_repos/open_source/spock/examples/quick-start/simple.py -c [--config] config1 [config2, config3, ...]
 
 Quick start example
 

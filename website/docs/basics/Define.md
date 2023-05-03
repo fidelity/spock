@@ -121,7 +121,7 @@ python tutorial.py --help
 We should see the help information we added to the docstring(s):
 
 ```shell
-usage: /Users/a635179/Documents/git_repos/open_source/spock/examples/tutorial/basic/tutorial.py -c [--config] config1 [config2, config3, ...]
+usage: ~/Documents/git_repos/open_source/spock/examples/tutorial/basic/tutorial.py -c [--config] config1 [config2, config3, ...]
 
 spock Basic Tutorial
 
