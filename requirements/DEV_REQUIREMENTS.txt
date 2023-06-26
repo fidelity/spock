@@ -8,6 +8,6 @@ pre-commit~=2.20 ; python_version >= '3.7'
 pre-commit~=2.17 ; python_version == '3.6'
 pydoc-markdown~=4.3, < 4.6.* ; python_version >= '3.7'
 pydoc-markdown~=3.13 ; python_version == '3.6'
-pytest~=7.0
+pytest~=7.4
 pytest-cov~=3.0
 pylint~=2.11
