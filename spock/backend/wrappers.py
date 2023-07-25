@@ -24,7 +24,9 @@ class Spockspace(argparse.Namespace):
     def __repr_dict__(self):
         """Handles making a clean dict to hide the salt and key on print"""
         clean_dict = {
-            k: v for k, v in self.__dict__.items() if k not in {"__key__", "__salt__"}
+            k: v
+            for k, v in self.__dict__.items()
+            if k not in {"__key__", "__salt__", "__maps__"}
         }
         repr_dict = {}
         for k, v in clean_dict.items():
