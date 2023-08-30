@@ -1,4 +1,5 @@
 mypy_extensions~=0.4; python_version < '3.8'
 optuna~=3.3
 torch~=2.0
-ax-platform~=0.3.4; python_version >= '3.7'
+ax-platform~=0.3.4; python_version >= '3.9'
+ax-platform~=0.3.3; python_version == '3.8'
