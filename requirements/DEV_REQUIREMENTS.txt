@@ -2,7 +2,8 @@ black~=23.7 ; python_version >= '3.8'
 black~=23.3 ; python_version == '3.7'
 black~=21.4b0 ; python_version == '3.6'
 # coveralls~=3.3
-coverage[toml]~=7.3 ; python_version >= '3.7'
+coverage[toml]~=7.3 ; python_version >= '3.8'
+coverage[toml]~=7.2 ; python_version == '3.7'
 coverage[toml]~=6.2 ; python_version == '3.6'
 isort~=5.12
 moto~=3.1
