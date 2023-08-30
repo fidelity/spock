@@ -40,7 +40,7 @@ jobs:
         coverage run -m pytest --cov-config=.coveragerc
 
     - name: Convert to LCO
-      run: coverage lcov --cov-config=.coveragerc
+      run: coverage lcov --rcfile=.coveragerc
 
     - name: Upload coverage data to coveralls.io
       uses: coverallsapp/github-action@v2

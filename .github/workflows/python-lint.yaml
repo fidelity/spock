@@ -37,8 +37,8 @@ jobs:
 
     - name: Run isort linter
       run: |
-        isort --check . --skip="debug" --skip="versioneer.py" --skip="tests" --skip="_version.py"
+        isort --check .
 
     - name: Run black linter
       run: |
-        black --check . --exclude="versioneer.py|_version.py|debug|tests"
+        black --check .
