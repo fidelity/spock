@@ -1,4 +1,5 @@
-attrs~=23.1
+attrs~=23.1 ; python_version >= '3.7'
+attrs~=22.2 ; python_version == '3.6'
 cryptography~=37.0
 GitPython~=3.1
 pytomlpp~=1.0
