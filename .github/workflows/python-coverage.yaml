@@ -38,11 +38,11 @@ jobs:
     - name: Test with pytest
       run: |
         coverage run -m pytest --cov-config=.coveragerc
-        
-    - name: Debug coverage
-      run: coverage report -m
+
+    - name: Convert to LCO
+      run: coverage lcov --cov-config=.coveragerc
 
     - name: Upload coverage data to coveralls.io
-      run: coveralls --service=github --rcfile=.coveragerc
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: coverallsapp/github-action@v2
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
