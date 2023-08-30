@@ -390,7 +390,6 @@ class _OrderedIsInstanceDeepIterable:
             validator(inst, attr, member)
 
     def __repr__(self):
-
         return (
             f"<ordered is instance deep_iterable validator for types "
             f"{self.ordered_types}>"

@@ -4,5 +4,4 @@ torch~=2.0 ; python_version >= '3.8'
 torch~=1.13 ; python_version <= '3.7'
 ax-platform~=0.3.4; python_version >= '3.9'
 ax-platform~=0.3.3; python_version == '3.8'
-# ax-platform~=0.2.4; python_version == '3.7'
 
