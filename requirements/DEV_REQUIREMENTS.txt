@@ -14,6 +14,7 @@ pre-commit~=2.21 ; python_version == '3.7'
 pre-commit~=2.17 ; python_version == '3.6'
 pydoc-markdown~=4.8 ; python_version >= '3.7'
 pydoc-markdown~=3.13 ; python_version == '3.6'
-pytest~=7.4
+pytest~=7.4 ; python_version >= '3.7'
+pytest~=7.0 ; python_version == '3.6'
 pytest-cov~=4.1
 pylint~=2.17
