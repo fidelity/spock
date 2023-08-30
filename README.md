@@ -84,7 +84,7 @@ generating CLI arguments, and hierarchical configuration by composition.
 
 ## Quick Install
 
-The basic install and `[s3]` extension require Python 3.6+ while the `[tune]` extension requires Python 3.7+
+The basic install and `[s3]` extension require Python 3.6+ while the `[tune]` extension requires Python 3.8+
 
 | Base | w/ S3 Extension | w/ Hyper-Parameter Tuner |
 |------|-----------------|--------------------------|
