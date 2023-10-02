@@ -230,7 +230,6 @@ class MergeGraph(BaseGraph):
 
 
 class SelfGraph(BaseGraph):
-
     var_resolver = VarResolver()
 
     def __init__(self, cls: _C, fields: Dict):

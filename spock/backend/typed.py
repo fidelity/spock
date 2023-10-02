@@ -73,7 +73,6 @@ def _recursive_generic_validator(typed):
         # Iterate through since there might be multiple types?
         # Handle Tuple type
         if _get_name_py_version(typed) == "Tuple":
-
             # Tuples by def have len more than 1. We throw an exception if not since
             # a tuple is not necessary in that case. Tuples can also have mixed types,
             # thus we need to handle this oddity here -- we do this by passing each

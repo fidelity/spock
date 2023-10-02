@@ -110,20 +110,22 @@ def handle_attributes_print(info_dict, max_indent: int):
         max_indent: max indent for pretty print of help
 
     """
-    # Figure out indents
-    max_param_length = max([len(k) for k in info_dict.keys()])
-    max_type_length = max([v["len"]["type"] for v in info_dict.values()])
-    # Print akin to the argparser
-    for k, v in info_dict.items():
-        print(
-            f"    {k}"
-            + (" " * (max_param_length - v["len"]["name"] + max_indent))
-            + f'{v["type"]}'
-            + (" " * (max_type_length - v["len"]["type"] + max_indent))
-            + f'{v["desc"]} {v["default"]}'
-        )
-    # Blank for spacing :-/
-    print("")
+    # Add check for an empty dict (corresponds to any empty spock class)
+    if len(info_dict) > 0:
+        # Figure out indents
+        max_param_length = max([len(k) for k in info_dict.keys()])
+        max_type_length = max([v["len"]["type"] for v in info_dict.values()])
+        # Print akin to the argparser
+        for k, v in info_dict.items():
+            print(
+                f"    {k}"
+                + (" " * (max_param_length - v["len"]["name"] + max_indent))
+                + f'{v["type"]}'
+                + (" " * (max_type_length - v["len"]["type"] + max_indent))
+                + f'{v["desc"]} {v["default"]}'
+            )
+        # Blank for spacing :-/
+        print("")
 
 
 def get_type_string(val, nested_others):
