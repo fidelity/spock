@@ -12,14 +12,14 @@ on:
 jobs:
   run_lint:
 
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.8'
+        python-version: '3.10'
 
     - uses: actions/cache@v2
       with:
@@ -37,8 +37,8 @@ jobs:
 
     - name: Run isort linter
       run: |
-        isort --check . --skip="debug" --skip="versioneer.py" --skip="tests" --skip="_version.py"
+        isort --check .
 
     - name: Run black linter
       run: |
-        black --check . --exclude="versioneer.py|_version.py|debug|tests"
+        black --check .

@@ -1,13 +1,14 @@
-black~=22.1 ; python_version >= '3.7'
-black~=21.4b0 ; python_version == '3.6'
-coveralls~=3.3
-coverage[toml]~=6.1
-isort~=5.10
+black~=23.7 ; python_version >= '3.8'
+black~=23.3 ; python_version == '3.7'
+# coveralls~=3.3
+coverage[toml]~=7.3 ; python_version >= '3.8'
+coverage[toml]~=7.2 ; python_version == '3.7'
+isort~=5.12 ; python_version >= '3.8'
+isort~=5.11 ; python_version == '3.7'
 moto~=3.1
-pre-commit~=2.20 ; python_version >= '3.7'
-pre-commit~=2.17 ; python_version == '3.6'
-pydoc-markdown~=4.3, < 4.6.* ; python_version >= '3.7'
-pydoc-markdown~=3.13 ; python_version == '3.6'
-pytest~=7.0
-pytest-cov~=3.0
-pylint~=2.11
+pre-commit~=3.3 ; python_version >= '3.8'
+pre-commit~=2.21 ; python_version == '3.7'
+pydoc-markdown~=4.8 ; python_version >= '3.7'
+pytest~=7.4 ; python_version >= '3.7'
+pytest-cov~=4.1 ; python_version >= '3.7'
+pylint~=2.17 ; python_version >= '3.7'

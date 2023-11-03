@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     steps:
     - uses: actions/checkout@v2
@@ -19,7 +19,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.8'
+        python-version: '3.10'
 
     - uses: actions/cache@v2
       with:
@@ -38,11 +38,11 @@ jobs:
     - name: Test with pytest
       run: |
         coverage run -m pytest --cov-config=.coveragerc
-        
-    - name: Debug coverage
-      run: coverage report -m
+
+    - name: Convert to LCO
+      run: coverage lcov --rcfile=.coveragerc
 
     - name: Upload coverage data to coveralls.io
-      run: coveralls --service=github --rcfile=.coveragerc
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: coverallsapp/github-action@v2
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}

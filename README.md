@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-  <a><img src="https://img.shields.io/badge/python-3.6+-informational.svg"/></a>
+  <a><img src="https://img.shields.io/badge/python-3.7+-informational.svg"/></a>
   <a href="https://github.com/psf/black"><img src="https://img.shields.io/badge/code%20style-black-000000.svg"/></a>
   <a href="https://badge.fury.io/py/spock-config"><img src="https://badge.fury.io/py/spock-config.svg"/></a>
   <a href="https://pepy.tech/project/spock-config"><img src="https://static.pepy.tech/personalized-badge/spock-config?period=total&units=international_system&left_color=grey&right_color=orange&left_text=Downloads"/></a>
@@ -84,7 +84,7 @@ generating CLI arguments, and hierarchical configuration by composition.
 
 ## Quick Install
 
-The basic install and `[s3]` extension require Python 3.6+ while the `[tune]` extension requires Python 3.7+
+The basic install and `[s3]` extension require Python 3.7+ while the `[tune]` extension requires Python 3.8+
 
 | Base | w/ S3 Extension | w/ Hyper-Parameter Tuner |
 |------|-----------------|--------------------------|
@@ -102,7 +102,11 @@ See [Releases](https://github.com/fidelity/spock/releases) for more information.
 
 <details>
 
-### Jan 12th, 2023
+#### August 30th, 2023
+* Removed Python 3.6 support as it was causing dependency hell
+* Collection of bugfixes
+
+#### Jan 12th, 2023
 * Added support for resolving value definitions from references to other defined variables with the following syntax,`${spock.var:SpockClass.defined_variable}`
 * Added support for new fundamental types: (1) file: this is an overload of a str that verifies file existence and (r/w) access (2) directory: this is an overload of a str that verifies directory existence, creation if not existing, and (r/w) access
 * Deprecated support for `List` of repeated `@spock` decorated classes.

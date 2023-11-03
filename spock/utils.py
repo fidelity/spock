@@ -602,6 +602,7 @@ def add_repo_info(out_dict: Dict) -> Dict:
             head_result = subprocess.run(
                 "git rev-parse --abbrev-ref --symbolic-full-name HEAD",
                 stdout=subprocess.PIPE,
+                stdin=subprocess.DEVNULL if sys.platform == "win32" else None,
                 shell=True,
                 check=False,
             )
@@ -609,6 +610,7 @@ def add_repo_info(out_dict: Dict) -> Dict:
             head_result = subprocess.run(
                 "git rev-parse --abbrev-ref --symbolic-full-name HEAD",
                 capture_output=True,
+                stdin=subprocess.DEVNULL if sys.platform == "win32" else None,
                 shell=True,
                 check=False,
             )
@@ -631,6 +633,9 @@ def add_repo_info(out_dict: Dict) -> Dict:
             out_dict.update(
                 {"# Git Origin": repo.active_branch.commit.repo.remotes.origin.url}
             )
+        # Attempt to close to not leak resources
+        # https://github.com/gitpython-developers/GitPython#leakage-of-system-resources
+        repo.close()
     except git.InvalidGitRepositoryError:  # pragma: no cover
         # But it's okay if we are not
         out_dict = make_blank_git(out_dict)
