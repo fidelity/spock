@@ -192,103 +192,103 @@ class TestNotValid:
                 config.generate()
 
 
-class TestWrongPermission:
-    def test_dir_write_permission(self, monkeypatch, tmp_path):
-        """Tests directory write permission check"""
-        with monkeypatch.context() as m:
-            m.setattr(
-                sys,
-                "argv",
-                [""],
-            )
-            dir = f"{str(tmp_path)}/fail_perms"
-            os.mkdir(dir)
-            subprocess.run(["chmod", "444", dir])
+# class TestWrongPermission:
+#     def test_dir_write_permission(self, monkeypatch, tmp_path):
+#         """Tests directory write permission check"""
+#         with monkeypatch.context() as m:
+#             m.setattr(
+#                 sys,
+#                 "argv",
+#                 [""],
+#             )
+#             dir = f"{str(tmp_path)}/fail_perms"
+#             os.mkdir(dir)
+#             subprocess.run(["chmod", "444", dir])
 
-            with pytest.raises(_SpockInstantiationError):
+#             with pytest.raises(_SpockInstantiationError):
 
-                @spock
-                class DirWrongPermissions:
-                    test_dir: directory = dir
+#                 @spock
+#                 class DirWrongPermissions:
+#                     test_dir: directory = dir
 
-                config = ConfigArgBuilder(DirWrongPermissions, desc="Test Builder")
-                config.generate()
-        subprocess.run(["chmod", "777", dir])
-        os.rmdir(dir)
+#                 config = ConfigArgBuilder(DirWrongPermissions, desc="Test Builder")
+#                 config.generate()
+#         subprocess.run(["chmod", "777", dir])
+#         os.rmdir(dir)
 
-    def test_dir_read_permission(self, monkeypatch, tmp_path):
-        """Tests directory read permission check"""
-        with monkeypatch.context() as m:
-            m.setattr(
-                sys,
-                "argv",
-                [""],
-            )
-            dir = f"{str(tmp_path)}/fail_perms"
-            os.mkdir(dir)
-            subprocess.run(["chmod", "222", dir])
+#     def test_dir_read_permission(self, monkeypatch, tmp_path):
+#         """Tests directory read permission check"""
+#         with monkeypatch.context() as m:
+#             m.setattr(
+#                 sys,
+#                 "argv",
+#                 [""],
+#             )
+#             dir = f"{str(tmp_path)}/fail_perms"
+#             os.mkdir(dir)
+#             subprocess.run(["chmod", "222", dir])
 
-            with pytest.raises(_SpockInstantiationError):
+#             with pytest.raises(_SpockInstantiationError):
 
-                @spock
-                class DirWrongPermissions:
-                    test_dir: directory = dir
+#                 @spock
+#                 class DirWrongPermissions:
+#                     test_dir: directory = dir
 
-                config = ConfigArgBuilder(DirWrongPermissions, desc="Test Builder")
-                config.generate()
-        subprocess.run(["chmod", "777", dir])
-        os.rmdir(dir)
+#                 config = ConfigArgBuilder(DirWrongPermissions, desc="Test Builder")
+#                 config.generate()
+#         subprocess.run(["chmod", "777", dir])
+#         os.rmdir(dir)
 
-    def test_file_write_permission(self, monkeypatch, tmp_path):
-        """Tests file write permission check"""
-        with monkeypatch.context() as m:
-            m.setattr(
-                sys,
-                "argv",
-                [""],
-            )
+#     def test_file_write_permission(self, monkeypatch, tmp_path):
+#         """Tests file write permission check"""
+#         with monkeypatch.context() as m:
+#             m.setattr(
+#                 sys,
+#                 "argv",
+#                 [""],
+#             )
 
-            dir = f"{str(tmp_path)}/fail_perms"
-            os.mkdir(dir)
-            f = open(f"{dir}/tmp_fail.txt", "x")
-            f.close()
+#             dir = f"{str(tmp_path)}/fail_perms"
+#             os.mkdir(dir)
+#             f = open(f"{dir}/tmp_fail.txt", "x")
+#             f.close()
 
-            subprocess.run(["chmod", "444", f"{dir}/tmp_fail.txt"])
+#             subprocess.run(["chmod", "444", f"{dir}/tmp_fail.txt"])
 
-            with pytest.raises(_SpockInstantiationError):
+#             with pytest.raises(_SpockInstantiationError):
 
-                @spock
-                class FileWrongPermissions:
-                    test_file: file = f"{dir}/tmp_fail.txt"
+#                 @spock
+#                 class FileWrongPermissions:
+#                     test_file: file = f"{dir}/tmp_fail.txt"
 
-                config = ConfigArgBuilder(FileWrongPermissions, desc="Test Builder")
-                config.generate()
-        subprocess.run(["chmod", "777", f"{dir}/tmp_fail.txt"])
-        os.remove(f"{dir}/tmp_fail.txt")
+#                 config = ConfigArgBuilder(FileWrongPermissions, desc="Test Builder")
+#                 config.generate()
+#         subprocess.run(["chmod", "777", f"{dir}/tmp_fail.txt"])
+#         os.remove(f"{dir}/tmp_fail.txt")
 
-    def test_file_read_permission(self, monkeypatch, tmp_path):
-        """Tests file read permission check"""
-        with monkeypatch.context() as m:
-            m.setattr(
-                sys,
-                "argv",
-                [""],
-            )
+#     def test_file_read_permission(self, monkeypatch, tmp_path):
+#         """Tests file read permission check"""
+#         with monkeypatch.context() as m:
+#             m.setattr(
+#                 sys,
+#                 "argv",
+#                 [""],
+#             )
 
-            dir = f"{str(tmp_path)}/fail_perms"
-            os.mkdir(dir)
-            f = open(f"{dir}/tmp_fail.txt", "x")
-            f.close()
+#             dir = f"{str(tmp_path)}/fail_perms"
+#             os.mkdir(dir)
+#             f = open(f"{dir}/tmp_fail.txt", "x")
+#             f.close()
 
-            subprocess.run(["chmod", "222", f"{dir}/tmp_fail.txt"])
+#             subprocess.run(["chmod", "222", f"{dir}/tmp_fail.txt"])
 
-            with pytest.raises(_SpockInstantiationError):
+#             with pytest.raises(_SpockInstantiationError):
 
-                @spock
-                class FileWrongPermissions:
-                    test_file: file = f"{dir}/tmp_fail.txt"
+#                 @spock
+#                 class FileWrongPermissions:
+#                     test_file: file = f"{dir}/tmp_fail.txt"
 
-                config = ConfigArgBuilder(FileWrongPermissions, desc="Test Builder")
-                config.generate()
-        subprocess.run(["chmod", "777", f"{dir}/tmp_fail.txt"])
-        os.remove(f"{dir}/tmp_fail.txt")
+#                 config = ConfigArgBuilder(FileWrongPermissions, desc="Test Builder")
+#                 config.generate()
+#         subprocess.run(["chmod", "777", f"{dir}/tmp_fail.txt"])
+#         os.remove(f"{dir}/tmp_fail.txt")

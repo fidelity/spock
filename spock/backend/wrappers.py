@@ -22,10 +22,18 @@ class Spockspace(argparse.Namespace):
 
     @property
     def __repr_dict__(self):
-        """Handles making a clean dict to hind the salt and key on print"""
-        return {
-            k: v for k, v in self.__dict__.items() if k not in {"__key__", "__salt__"}
+        """Handles making a clean dict to hide the salt and key on print"""
+        clean_dict = {
+            k: v
+            for k, v in self.__dict__.items()
+            if k not in {"__key__", "__salt__", "__maps__"}
         }
+        repr_dict = {}
+        for k, v in clean_dict.items():
+            repr_dict.update(
+                {k: {ik: iv for ik, iv in vars(v).items() if not ik.startswith("_")}}
+            )
+        return repr_dict
 
     def __repr__(self):
         """Overloaded repr to pretty print the spock object"""

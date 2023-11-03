@@ -238,9 +238,14 @@ class BaseBuilder(ABC):  # pylint: disable=too-few-public-methods
 
         """
         for val in changed_vars:
+            # Make sure we cast directory and file types back to strings
+            if getattr(cls.__attrs_attrs__, val).type.__name__ in ("directory", "file"):
+                value_type = str
+            else:
+                value_type = getattr(cls.__attrs_attrs__, val).type
             cls_fields[val] = VarResolver._attempt_cast(
                 maybe_env=cls_fields[val],
-                value_type=getattr(cls.__attrs_attrs__, val).type,
+                value_type=value_type,
                 ref_value=val,
             )
 

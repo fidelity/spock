@@ -6,12 +6,13 @@
 """Creates the spock config interface that wraps attr"""
 
 import sys
+from typing import Dict
 
 import attr
 
 from spock.backend.typed import katra
 from spock.exceptions import _SpockInstantiationError, _SpockUndecoratedClass
-from spock.utils import _is_spock_instance, vars_dict_non_dunder
+from spock.utils import _is_spock_instance, contains_return, vars_dict_non_dunder
 
 
 def _base_attr(cls, kw_only, make_init, dynamic):
@@ -27,7 +28,7 @@ def _base_attr(cls, kw_only, make_init, dynamic):
         dynamic: allows inherited classes to not be @spock decorated
 
     Returns:
-        cls: base spock classes derived from the MRO
+        bases: all the base classes
         attrs_dict: the current dictionary of attr.attribute values
         merged_annotations: dictionary of type annotations
 
@@ -83,6 +84,7 @@ def _base_attr(cls, kw_only, make_init, dynamic):
     merged_annotations = {**base_annotation, **new_annotations}
 
     cls_attrs = set()
+    hooks = set()
     # Iterate through the bases first
     for val in bases:
         # Get the underlying attribute defs
@@ -135,6 +137,79 @@ def _base_attr(cls, kw_only, make_init, dynamic):
     return bases, attrs_dict, merged_annotations
 
 
+def _handle_hooks(
+    cls,
+    bases,
+):
+    """Handles creating a single function for all hooks from the given class and
+    all its parents
+
+    Args:
+        cls: basic class definition
+
+    Returns:
+        function that contains all necessary hooks
+
+    """
+
+    # Check if the base classes have any hook functions
+    hooks = [
+        val.__attrs_post_init__ for val in bases if hasattr(val, "__attrs_post_init__")
+    ]
+    # maps = [val.__maps__ for val in bases if hasattr(val, "__maps__")]
+    # Copy over the post init function -- borrow a bit from attrs library to add the
+    # __post__hook__ method and/or the __maps__ method (via a shim method) to the init
+    # call via `"__attrs_post_init__"`
+    if hasattr(cls, "__post_hook__") or hasattr(cls, "__maps__") or (len(hooks) > 0):
+        # Force the post_hook function to have no explict return
+        if hasattr(cls, "__post_hook__") and contains_return(cls.__post_hook__):
+            raise _SpockInstantiationError(
+                f"__post_hook__ function contains an explict return. This function "
+                f"cannot return any values (i.e. requires an implicit None return)"
+            )
+        if hasattr(cls, "__maps__") and not contains_return(cls.__maps__):
+            raise _SpockInstantiationError(
+                f"__maps__ function is missing an explict return. This function "
+                f"needs to explicitly return any type of values"
+            )
+        # if there are parent hooks we need to map them into a function
+        if len(hooks) > 0:
+            # Create a shim function to combine __post_hook__ and __maps__
+            # in addition to the parental hooks
+            def __shim__(self):
+                if hasattr(cls, "__post_hook__"):
+                    cls.__post_hook__(self)
+                # Call the parents hooks
+                all_hooks = [val(self) for val in hooks]
+                # Pop any None values
+                all_hooks = [val for val in all_hooks if val is not None]
+                # Add in the given hook
+                if hasattr(cls, "__maps__"):
+                    all_hooks = [cls.__maps__(self)] + all_hooks
+                if len(all_hooks) == 1:
+                    all_hooks = all_hooks[0]
+                # Set maps to the mapped values
+                object.__setattr__(self, "_maps", all_hooks)
+
+        else:
+            # Create a shim function to combine __post_hook__ and __maps__
+            def __shim__(self):
+                if hasattr(cls, "__post_hook__"):
+                    cls.__post_hook__(self)
+                if hasattr(cls, "__maps__"):
+                    object.__setattr__(self, "_maps", cls.__maps__(self))
+                    return cls.__maps__(self)
+                else:
+                    return None
+
+    else:
+
+        def __shim__(self):
+            ...
+
+    return __shim__
+
+
 def _process_class(cls, kw_only: bool, make_init: bool, dynamic: bool):
     """Process a given class
 
@@ -150,10 +225,12 @@ def _process_class(cls, kw_only: bool, make_init: bool, dynamic: bool):
     """
     # Handles the MRO and gets old annotations
     bases, attrs_dict, merged_annotations = _base_attr(cls, kw_only, make_init, dynamic)
-    # Copy over the post init function -- borrow a bit from attrs library to add the __post__hook__ method to the
-    # init call via `"__attrs_post_init__"`
-    if hasattr(cls, "__post_hook__"):
-        attrs_dict.update({"__attrs_post_init__": cls.__post_hook__})
+    # if hasattr(cls, "__post_hook__"):
+    #     attrs_dict.update({"__post_hook__": cls.__post_hook__})
+    # if hasattr(cls, "__maps__"):
+    #     attrs_dict.update({"__maps__": cls.__maps__})
+    # Map the __shim__ function into __attrs_post_init__
+    attrs_dict.update({"__attrs_post_init__": _handle_hooks(cls, bases)})
     # Dynamically make an attr class
     obj = attr.make_class(
         name=cls.__name__,
@@ -164,7 +241,8 @@ def _process_class(cls, kw_only: bool, make_init: bool, dynamic: bool):
         auto_attribs=True,
         init=make_init,
     )
-    # For each class we dynamically create we need to register it within the system modules for pickle to work
+    # For each class we dynamically create we need to register it within the system
+    # modules for pickle to work
     setattr(sys.modules["spock"].backend.config, obj.__name__, obj)
     # Swap the __doc__ string from cls to obj
     obj.__doc__ = cls.__doc__
